@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: "maintain-headerRight"
+  name: 'maintain-headerRight'
 }
 </script>
 
