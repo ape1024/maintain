@@ -59,6 +59,10 @@ const routes = [
     // 上报
     path: '/report',
     component: report
+  },
+  {
+    path: '/',
+    redirect: '/home'
   }
 ]
 

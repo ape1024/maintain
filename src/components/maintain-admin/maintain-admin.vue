@@ -1,6 +1,6 @@
 <template>
-  <div>
-    22222
+  <div class="container">
+
   </div>
 </template>
 
@@ -10,6 +10,11 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="stylus" rel="stylesheet/stylus">
+@import "~common/stylus/variable"
+  .container
+    display: flex;
+    padding: 15px;
+    overflow hidden
+    position relative
 </style>
