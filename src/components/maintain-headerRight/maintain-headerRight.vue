@@ -58,7 +58,7 @@ export default {
           margin 16px 0 18px 0
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
+ /* .el-input__inner
     width 185px
     height 20px
     line-height 20px
@@ -74,5 +74,5 @@ export default {
     border-color  rgba(255,255,255,.4)
   .el-select .el-input.is-focus .el-input__inner
     border-color  rgba(255,255,255,.4)
-
+*/
 </style>

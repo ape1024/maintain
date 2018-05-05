@@ -126,7 +126,6 @@ export default {
    color $color-text
    border-color #5ea8d7
   .subject
-    width 100%
     overflow hidden
     position relative
     margin-bottom: 12px;
