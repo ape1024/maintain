@@ -60,7 +60,6 @@
     </header>
     <section class="subject">
       <router-view>
-
       </router-view>
     </section>
   </div>
@@ -129,4 +128,5 @@ export default {
     overflow hidden
     position relative
     margin-bottom: 12px;
+    min-height 985px
 </style>

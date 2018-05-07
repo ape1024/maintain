@@ -2,27 +2,27 @@
   <div class="container">
     <div class="container_top">
       <div class="top_left">
-        <el-progress type="circle" :percentage='30' color="#59cba4" stroke-width='10'></el-progress>
+        <el-progress type="circle" :percentage='30' color="#59cba4" :stroke-width='10'></el-progress>
        <p>日常巡检完成率</p>
       </div>
       <div class="top_right">
-        <el-progress type="circle" :percentage='20' color="#8a5ea3" stroke-width='10'></el-progress>
+        <el-progress type="circle" :percentage='20' color="#8a5ea3" :stroke-width='10'></el-progress>
         <p>维保计划完成率</p>
       </div>
     </div>
     <div class="container_middle">
       <div>
-        <el-progress type="circle" :percentage='20' color="#8a5ea3" stroke-width='10'></el-progress>
+        <el-progress type="circle" :percentage='20' color="#8a5ea3" :stroke-width='10'></el-progress>
         <p>维保计划完成率</p>
       </div>
     </div>
     <div class="container_bottom">
       <div class="bottom_left">
-        <el-progress type="circle" :percentage='20' color="#8a5ea3" stroke-width='10'></el-progress>
+        <el-progress type="circle" :percentage='20' color="#8a5ea3" :stroke-width='10'></el-progress>
         <p>维保计划完成率</p>
       </div>
       <div class="bottom_right">
-        <el-progress type="circle" :percentage='20' color="#8a5ea3" stroke-width='10'></el-progress>
+        <el-progress type="circle" :percentage='20' color="#8a5ea3" :stroke-width='10'></el-progress>
         <p>维保计划完成率</p>
       </div>
     </div>
