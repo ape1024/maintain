@@ -43,9 +43,12 @@
             <p class="list_data_li_ptwo">快速分配</p>
           </li>
         </ul>
+        <transition enter-active-class="fadeInUp"
+          leave-active-class="fadeOutDown">
         <div v-show="item.active" class="threelevel">
           <dailythree></dailythree>
         </div>
+        </transition>
       </li>
     </ul>
   </div>

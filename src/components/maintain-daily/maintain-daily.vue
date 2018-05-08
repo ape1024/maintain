@@ -107,9 +107,12 @@
               <div class="examine" v-if="item.operation =='false'">审 核</div>
             </li>
           </ul>
+          <transition enter-active-class="fadeInUp"
+            leave-active-class="fadeOutDown">
           <div v-show="item.active" class="inline_div">
-            <dailytwo></dailytwo>
+              <dailytwo></dailytwo>
           </div>
+          </transition>
         </li>
       </ul>
     </section>
@@ -215,7 +218,7 @@ export default {
            font-size $color-text-title
            color $color-text-title
            margin-right 10px
-           line-height: 40px;
+           line-height: 30px;
           .div_input
            float left
            width 167px
