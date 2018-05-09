@@ -33,7 +33,7 @@
           导 入
         </div>
         <!--新增-->
-        <div class="newly">
+        <div @click.stop="auditing" class="newly">
           新 增
         </div>
       </div>
@@ -64,7 +64,7 @@
             <li class="header_li">{{item.await}}</li>
             <li class="header_li">{{item.normal}}</li>
             <li class="header_li">
-              <div v-show="item.auditin" @click.stop="auditing(item, $index, tableData)" class="examine">审 核</div>
+              <div v-show="item.auditin" @click.stop="examine(item)"  class="examine">审 核</div>
               <div class="admin_show" v-show="item.admin_show">
                 <div class="admin_selve">
                     <el-select v-model="item.value" placeholder="">
@@ -95,19 +95,28 @@
       </ul>
 
     </section>
+    <section v-if="review_boolean" @click.stop class="review">
+      <increase :msg="review_boolean" @say="onSay"></increase>
+
+    </section>
+
   </div>
 </template>
 
 <script>
 import adminchild from '../admin-child/admin-child'
+import increase from '../maintain-review/maintain-increase'
 export default {
   name: 'maintain-admin',
   components: {
-    adminchild
+    adminchild,
+    increase
   },
   methods: {
     selectStyle (item, index, tableData) {
-      console.log(item.id)
+      // 点击一级出现二级
+      console.log(event)
+      event.cancelBubble = true
       this.tableData.forEach(function (item) {
         if (index !== item.index) {
           item.active = false
@@ -115,22 +124,29 @@ export default {
       })
       item.active = !item.active
     },
-    auditing (item, $index) {
-      item.auditin = false
-      item.admin_show = true
-      console.log(item)
-      console.log($index)
+    examine (item) {
+      // 一级审核
+      item.auditin = !item.auditin
+      item.admin_show = !item.admin_show
+    },
+    auditing () {
+      // 点击新增 出现 新增组件
+      this.review_boolean = true
     },
     preservation (item) {
-      //  保存
+      // 一级 审核 保存
       console.log(item.value)
       item.admin_show = !item.admin_show
       item.auditin = !item.auditin
     },
     cancel (item) {
-      // 取消
+      // 一级 审核 取消
       item.admin_show = !item.admin_show
       item.auditin = !item.auditin
+    },
+    onSay (ev) {
+      // 子级组件传递 参数 让新增组件 隐藏
+      this.review_boolean = ev
     }
   },
   data () {
@@ -140,6 +156,7 @@ export default {
       input3: '',
       input4: '',
       input5: '',
+      review_boolean: false,
       // 获取点击的id
       click_id: '',
       tableData: [{
@@ -384,6 +401,16 @@ export default {
     transition .2s
   .examine:hover
     background #4b92bf
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background rgba(000,000,000,.4)
+    z-index 11
+    overflow hidden
+
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner

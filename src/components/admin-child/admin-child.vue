@@ -1,5 +1,6 @@
 <template>
   <div class="admin_child">
+
     <ul class="threelevel_header">
       <li class="threelevel_lithree">
         设施编码
@@ -75,34 +76,21 @@
         </ul>
       </li>
     </ul>
-    <section @click.stop class="review">
-      <!--新增-->
-      <div class="newlyadded">
-        <increase></increase>
-      </div>
+    <section v-if="examineBoolean" @click.stop class="review">
       <!--审核-->
-      <div>
-
-      </div>
-      <!--查看-->
-      <div>
-
-      </div>
-      <!--修改-->
-      <div>
-
-      </div>
+      <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
     </section>
   </div>
 
 </template>
 
 <script>
-import increase from '../maintain-review/maintain-increase'
+import childExamine from '../adminChild-examine/adminChild-examine'
 export default {
   name: 'admin-child',
   components: {
-    increase
+    // 审核
+    childExamine
   },
   methods: {
     amputate ($index, content) {
@@ -119,7 +107,11 @@ export default {
     },
     question () {
       // 点击审核
-      alert('审核')
+      this.examineBoolean = true
+    },
+    Mine (ev) {
+      // 审核 传递的参数
+      this.examineBoolean = ev
     }
   },
   data () {
@@ -146,7 +138,8 @@ export default {
         timer: '2018.6',
         state: '正常',
         examine: '1'
-      }]
+      }],
+      examineBoolean: false
     }
   }
 }
@@ -274,17 +267,13 @@ export default {
             text-decoration underline
             cursor pointer
   .review
-     position fixed
-     top 0
-     left 0
-     width 100%
-     height 100%
-     background rgba(000,000,000,.4)
-     z-index 11
-     overflow hidden
-     .newlyadded
-       margin 180px 0 0
-       width 100%
-       overflow hidden
-       background #111a28
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background rgba(000,000,000,.4)
+    z-index 11
+    overflow hidden
+
 </style>

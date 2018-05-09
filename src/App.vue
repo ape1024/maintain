@@ -5,49 +5,49 @@
         <ul class="ul_router">
           <router-link to="/home">
             <li>
-              <img src="../static/img/home.png" alt="">
+              <i class="headerHome"></i>
               首页
             </li>
           </router-link>
           <router-link to="/admin">
             <li>
-              <img src="../static/img/admin.png" alt="">
+              <i class="headerAdmin"></i>
               消防设施管理
             </li>
           </router-link>
           <router-link to="/daily">
             <li>
-              <img src="../static/img/daily.png" alt="">
+              <i class="headerDaily"></i>
               日常巡检
             </li>
           </router-link>
           <router-link to="/inspect">
             <li>
-              <img src="../static/img/inspect.png" alt="">
+              <i class="headerInspect"></i>
               检查测试
             </li>
           </router-link>
           <router-link to="/maintain">
             <li>
-              <img src="../static/img/inspect.png" alt="">
+              <i class="headerMaintain"></i>
               维护保养
             </li>
           </router-link>
-          <li>
-            <router-link to="/repair">
-              <img src="../static/img/repair.png" alt="">
+          <router-link to="/repair">
+            <li>
+              <i class="headerRepair"></i>
               故障维修
-            </router-link>
-          </li>
+            </li>
+          </router-link>
           <router-link to="/archives">
             <li>
-              <img src="../static/img/archives.png" alt="">
+              <i class="headerArchives"></i>
               工作档案管理
             </li>
           </router-link>
           <router-link to="/report">
             <li>
-              <img src="../static/img/report.png" alt="">
+              <i class="headerReport"></i>
               上报问题管理
             </li>
           </router-link>
@@ -110,16 +110,18 @@ export default {
    margin-top 10px
    overflow hidden
    li
-    float left
-    width 83px
-   height 72px
-   text-align center
-   margin-left 20px
-   border-bottom 4px solid transparent
-   overflow hidden
+     float left
+     width 83px
+     height 72px
+     text-align center
+     margin-left 20px
+     border-bottom 4px solid transparent
+     overflow hidden
+     transition .6s
+     padding-bottom: 2px;
    img
      display block
-     margin 12px auto 6px
+     margin 6px auto 6px
  .ul li:hover
    background #1C2B44
    color $color-text
@@ -129,4 +131,86 @@ export default {
     position relative
     margin-bottom: 12px;
     min-height 985px
+  .headerHome
+    display: block;
+    margin: 6px auto 6px;
+    width 44px
+    height 44px
+    background url("../static/img/home.png") no-repeat
+    background-size cover
+  .headerAdmin
+    display: block;
+    margin: 6px auto 6px;
+    width 44px
+    height 44px
+    background url("../static/img/admin.png") no-repeat
+    background-size cover
+   .headerDaily
+    display: block;
+    margin: 6px auto 6px;
+    width 44px
+    height 44px
+    background url("../static/img/daily.png") no-repeat
+   .headerInspect
+     display: block;
+     margin: 6px auto 6px;
+     width 44px
+     height 44px
+     background url("../static/img/inspect.png") no-repeat
+   .headerMaintain
+     display: block;
+     margin: 6px auto 6px;
+     width 44px
+     height 44px
+     background url("../static/img/maintain.png") no-repeat
+     background-size cover
+   .headerRepair
+     display: block;
+     margin: 6px auto 6px;
+     width 44px
+     height 44px
+     background url("../static/img/repair.png") no-repeat
+     background-size cover
+   .headerArchives
+     display: block;
+     margin: 6px auto 6px;
+     width 44px
+     height 44px
+     background url("../static/img/archives.png") no-repeat
+     background-size cover
+   .headerReport
+     display: block;
+     margin: 6px auto 6px;
+     width 44px
+     height 44px
+     background url("../static/img/report.png") no-repeat
+     background-size cover
+  .router-link-active li
+    background rgba(255,255,255,.1)
+    color $color-text
+    border-bottom 4px solid #5ea8d7
+ .router-link-active .headerHome
+   background url("../static/img/home_select.png") no-repeat
+   background-size cover
+ .router-link-active .headerAdmin
+   background url("../static/img/admin_select.png") no-repeat
+   background-size cover
+ .router-link-active .headerDaily
+   background url("../static/img/daily_select.png") no-repeat
+   background-size cover
+ .router-link-active .headerInspect
+   background url("../static/img/inspect_select.png") no-repeat
+   background-size cover
+ .router-link-active .headerMaintain
+   background url("../static/img/maintain_select.png") no-repeat
+   background-size cover
+ .router-link-active .headerRepair
+   background url("../static/img/repair_select.png") no-repeat
+   background-size cover
+ .router-link-active .headerArchives
+   background url("../static/img/archives_select.png") no-repeat
+   background-size cover
+ .router-link-active .headerReport
+   background url("../static/img/report_select.png") no-repeat
+   background-size cover
 </style>
