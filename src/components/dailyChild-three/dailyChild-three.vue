@@ -57,30 +57,62 @@
               <p class="header_p_nine" v-if="dataset.operation == '0'">
                 审核
               </p>
-              <p class="header_p_eight threelevel_litwo_p" v-if="dataset.operation == '1'">
+              <p @click.stop="examine" class="header_p_eight threelevel_litwo_p" v-if="dataset.operation == '1'">
                 审核
               </p>
-              <p>查看</p>
+              <p @click.stop="lookover">查看</p>
               <p v-on:click="amputate($event, $index, content)">删除</p>
             </li>
           </ul>
         </li>
+        <section v-if="examineBoolean" @click.stop class="review">
+          <!--审核-->
+          <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
+        </section>
+        <!--查看-->
+        <section v-if="lookoverBoolean" @click.stop class="review">
+          <childLookover :examine="lookoverBoolean" @mine="Lookover"></childLookover>
+        </section>
       </ul>
     </div>
 </template>
 
 <script>
+import childExamine from '../dailyChild-operation/dailyChild-examine'
+import childLookover from '../dailyChild-operation/dailyChild-lookover'
 export default {
   name: 'maintain-dailythree',
+  components: {
+    childExamine,
+    childLookover
+  },
   methods: {
     amputate ($event, $index, content) {
       $event.cancelBubble = true
       content.splice([$index], 1)
+    },
+    examine () {
+      // 审核
+      this.examineBoolean = true
+    },
+    lookover () {
+      // 查看
+      this.lookoverBoolean = true
+    },
+    Mine (ev) {
+      this.examineBoolean = ev
+    },
+    Lookover (ev) {
+      this.lookoverBoolean = ev
     }
   },
   data () {
     return {
-    // 第三级组件
+      // 审核
+      examineBoolean: false,
+      // 查看
+      lookoverBoolean: false,
+      // 第三级组件
       defined: false,
       content: [{
         id: '1-1-1',
@@ -374,9 +406,18 @@ export default {
             float left
             width 9%
             padding-left 2%
-  .threelevel_litwo p
-    float left
-    margin-right 35px
-    text-decoration underline
-    cursor pointer
+    .threelevel_litwo p
+      float left
+      margin-right 35px
+      text-decoration underline
+      cursor pointer
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background rgba(000,000,000,.4)
+    z-index 11
+    overflow hidden
 </style>

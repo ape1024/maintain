@@ -80,16 +80,27 @@
       <!--审核-->
       <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
     </section>
+    <section v-if="lookoverBoolean" @click.stop class="review">
+      <!--查看-->
+      <childLookover :msg="lookoverBoolean" @look="Onlook"></childLookover>
+    </section>
+    <section v-if="modifyBoolean" @click.stop class="review">
+      <!--修改-->
+      <childModify :msg="modifyBoolean" @say="Modify"></childModify>
+    </section>
   </div>
 
 </template>
 
 <script>
-import childExamine from '../adminChild-examine/adminChild-examine'
+import childLookover from '../adminChild-operation/adminChild-lookover'
+import childModify from '../adminChild-operation/adminChild-modify'
+import childExamine from '../adminChild-operation/adminChild-examine'
 export default {
   name: 'admin-child',
   components: {
-    // 审核
+    childLookover,
+    childModify,
     childExamine
   },
   methods: {
@@ -99,11 +110,11 @@ export default {
     },
     examine () {
       // 点击查看
-      alert('查看')
+      this.lookoverBoolean = true
     },
     modify () {
       // 点击修改
-      alert('修改')
+      this.modifyBoolean = true
     },
     question () {
       // 点击审核
@@ -112,6 +123,12 @@ export default {
     Mine (ev) {
       // 审核 传递的参数
       this.examineBoolean = ev
+    },
+    Onlook (ev) {
+      this.lookoverBoolean = ev
+    },
+    Modify (ev) {
+      this.modifyBoolean = ev
     }
   },
   data () {
@@ -139,7 +156,9 @@ export default {
         state: '正常',
         examine: '1'
       }],
-      examineBoolean: false
+      examineBoolean: false,
+      lookoverBoolean: false,
+      modifyBoolean: false
     }
   }
 }

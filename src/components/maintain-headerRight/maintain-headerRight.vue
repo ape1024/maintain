@@ -5,14 +5,17 @@
           维护管理系统
         </h4>
         <div class="headerRight_bottom">
-          <el-select v-model="value" placeholder="">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+          <img class="project" src="../../../static/img/project.png" alt="">
+          <div class="headerRight">
+            <el-select v-model="value" placeholder="">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
         </div>
      </div>
   </div>
@@ -50,29 +53,14 @@ export default {
   .headerRight
       overflow hidden
       position relative
-    .headerRight_left
-          float left
     .headerRight_left_h4
-          font-size $font-size-large-x
-          color $color-text
-          margin 16px 0 18px 0
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
- /* .el-input__inner
-    width 185px
-    height 20px
-    line-height 20px
-    background-color transparent
-    border none
-    border-radius 0
-    color $color-text
-    border-bottom 1px solid rgba(255,255,255,.4)
+      font-size $font-size-large-x
+      color $color-text
+      margin 10px 0
+    .headerRight_bottom
+       overflow hidden
+    .project
+      float left
+      margin 8px 8px 0 0
 
-  .el-input__inner:hover
-    border-color  rgba(255,255,255,.4)
-  .el-select .el-input__inner:focus
-    border-color  rgba(255,255,255,.4)
-  .el-select .el-input.is-focus .el-input__inner
-    border-color  rgba(255,255,255,.4)
-*/
 </style>

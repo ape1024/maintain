@@ -30,3 +30,50 @@ $font-size-medium-x = 18px
 $font-size-large = 20px
 $font-size-large-x = 30px
 
+// 保存按钮
+conserve()
+    display inline-block
+    width 107px
+    border-radius 5px
+    height 36px
+    text-align center
+    line-height 36px
+    background $color-background-query
+    transition .2s
+    cursor pointer
+    &:hover
+      background: #4b92bf;
+// 关闭/取消 按钮
+closedown()
+    display inline-block
+    cursor pointer
+    width 107px
+    height 36px
+    background $color-background
+    border-radius 5px
+    text-align center
+    line-height 36px
+    transition .2s
+    &:hover
+      background #29374f
+// 文字不能选中
+prohibit()
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+// 默认初始化
+init()
+  width 100%
+  overflow hidden
+  position relative
+// 导航图片
+headerRouter(item)
+  display: block;
+  margin: 6px auto 6px;
+  width 44px
+  height 44px
+  background url(item) no-repeat
+  background-size cover

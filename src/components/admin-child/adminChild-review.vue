@@ -162,7 +162,7 @@
                 批量编码:
               </p>
               <div class="left_list_div">
-                <el-input-number :disabled="!checked" v-model="num" controls-position="right" :min="1" size="mini" :max="10"></el-input-number>
+                <el-input-number :disabled="!checked" v-model="num" controls-position="right" :min="1" size="mini"></el-input-number>
               </div>
             </div>
             <div class="left_list">
@@ -229,7 +229,7 @@
 
 <script>
 export default {
-  name: 'maintain-increase',
+  name: 'adminChild-review',
   props: ['msg'],
   data () {
     return {

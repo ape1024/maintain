@@ -3,24 +3,69 @@
     <section class="subject_top">
       <ul class="ul_input">
         <li class="li_input">
-          <p class="div_p">区 域</p>
-          <div class="div_input"><el-input v-model="input1" placeholder=""></el-input></div>
+          <p class="div_p">区 域：</p>
+          <div class="div_input">
+            <el-select v-model="value" placeholder="">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
         </li>
         <li class="li_input">
-          <p class="div_p">设备类型</p>
-          <div class="div_input"><el-input v-model="input2" placeholder=""></el-input></div>
+          <p class="div_p">设备类型：</p>
+          <div class="div_input">
+            <el-select v-model="value" placeholder="">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
         </li>
         <li class="li_input">
-          <p class="div_p">执行班组</p>
-          <div class="div_input"><el-input v-model="input3" placeholder=""></el-input></div>
+          <p class="div_p">执行班组：</p>
+          <div class="div_input">
+            <el-select v-model="value" placeholder="">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
         </li>
         <li class="li_input">
-          <p class="div_p">巡查状态</p>
-          <div class="div_input"><el-input v-model="input4" placeholder=""></el-input></div>
+          <p class="div_p">巡查状态：</p>
+          <div class="div_input">
+            <el-select v-model="value" placeholder="">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
         </li>
         <li class="li_input">
-          <p class="div_p">审核状态</p>
-          <div class="div_input"><el-input v-model="input5" placeholder=""></el-input></div>
+          <p class="div_p">审核状态：</p>
+          <div class="div_input">
+            <el-select v-model="value" placeholder="">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          </div>
         </li>
       </ul>
       <div class="button">
@@ -105,7 +150,7 @@
 
 <script>
 import adminchild from '../admin-child/admin-child'
-import increase from '../maintain-review/maintain-increase'
+import increase from '../admin-child/adminChild-review'
 export default {
   name: 'maintain-admin',
   components: {
@@ -151,11 +196,23 @@ export default {
   },
   data () {
     return {
-      input1: '',
-      input2: '',
-      input3: '',
-      input4: '',
-      input5: '',
+      options: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }],
+      value: '',
       review_boolean: false,
       // 获取点击的id
       click_id: '',
@@ -237,12 +294,15 @@ export default {
     overflow hidden
     background #111a28
     padding 38px 0 58px
+    display flex
   .ul_input
     margin-left 30px
     overflow hidden
     float left
     position relative
+    display flex
   .li_input
+    display flex
     float left
     overflow hidden
     margin-right 20px
@@ -257,10 +317,11 @@ export default {
       width 167px
       margin-top 5px
   .button
+    display flex
     float right
     overflow hidden
     position relative
-    margin-right 60px
+    margin-left 60px
     text-align center
     line-height 36px
     font-size $font-size-medium

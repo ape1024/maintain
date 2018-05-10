@@ -51,7 +51,12 @@
               上报问题管理
             </li>
           </router-link>
-
+          <router-link to="/intercalate">
+            <li>
+              <i class="headerIntercalate"></i>
+              系统设置
+            </li>
+          </router-link>
         </ul>
       </div>
       <div class="header_right">
@@ -66,12 +71,10 @@
 </template>
 
 <script>
-import Management from 'components/maintain-header/maintain-header'
 import MaintainheaderRight from 'components/maintain-headerRight/maintain-headerRight'
 export default {
   name: 'App',
   components: {
-    Management,
     MaintainheaderRight
   }
 }
@@ -100,7 +103,6 @@ export default {
           float: left
      .header_right
          float right
-         height: 95px;
          margin-right 25px
  .ul_router
    width 100%
@@ -132,59 +134,23 @@ export default {
     margin-bottom: 12px;
     min-height 985px
   .headerHome
-    display: block;
-    margin: 6px auto 6px;
-    width 44px
-    height 44px
-    background url("../static/img/home.png") no-repeat
-    background-size cover
+    headerRouter("../static/img/home.png")
   .headerAdmin
-    display: block;
-    margin: 6px auto 6px;
-    width 44px
-    height 44px
-    background url("../static/img/admin.png") no-repeat
-    background-size cover
+    headerRouter("../static/img/admin.png")
    .headerDaily
-    display: block;
-    margin: 6px auto 6px;
-    width 44px
-    height 44px
-    background url("../static/img/daily.png") no-repeat
+     headerRouter("../static/img/daily.png")
    .headerInspect
-     display: block;
-     margin: 6px auto 6px;
-     width 44px
-     height 44px
-     background url("../static/img/inspect.png") no-repeat
+     headerRouter("../static/img/inspect.png")
    .headerMaintain
-     display: block;
-     margin: 6px auto 6px;
-     width 44px
-     height 44px
-     background url("../static/img/maintain.png") no-repeat
-     background-size cover
+     headerRouter("../static/img/maintain.png")
    .headerRepair
-     display: block;
-     margin: 6px auto 6px;
-     width 44px
-     height 44px
-     background url("../static/img/repair.png") no-repeat
-     background-size cover
+     headerRouter("../static/img/repair.png")
    .headerArchives
-     display: block;
-     margin: 6px auto 6px;
-     width 44px
-     height 44px
-     background url("../static/img/archives.png") no-repeat
-     background-size cover
+     headerRouter("../static/img/archives.png")
    .headerReport
-     display: block;
-     margin: 6px auto 6px;
-     width 44px
-     height 44px
-     background url("../static/img/report.png") no-repeat
-     background-size cover
+     headerRouter("../static/img/report.png")
+   .headerIntercalate
+     headerRouter("../static/img/intercalate.png")
   .router-link-active li
     background rgba(255,255,255,.1)
     color $color-text
@@ -213,4 +179,8 @@ export default {
  .router-link-active .headerReport
    background url("../static/img/report_select.png") no-repeat
    background-size cover
+ .router-link-active .headerIntercalate
+   background url("../static/img/intercalate_select.png") no-repeat
+   background-size cover
+
 </style>

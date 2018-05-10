@@ -31,7 +31,7 @@
 
 <script>
 export default {
-  name: 'maintain-implement'
+  name: 'homeChild-implement'
 }
 </script>
 

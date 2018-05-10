@@ -39,7 +39,7 @@
             {{item.distribution}}
           </li>
           <li class="list_data_li">
-            <p class="list_data_li_p">审核</p>
+            <p @click.stop="examine" class="list_data_li_p">审核</p>
             <p class="list_data_li_ptwo">快速分配</p>
           </li>
         </ul>
@@ -50,16 +50,22 @@
         </div>
         </transition>
       </li>
+      <section v-if="examineBoolean" @click.stop class="review">
+        <!--审核-->
+        <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
+      </section>
     </ul>
   </div>
 </template>
 
 <script>
-import dailythree from '../maintain-dailythree/maintain-dailythree'
+import dailythree from '../dailyChild-three/dailyChild-three'
+import childExamine from '../dailyChild-operation/dailyChild-examine'
 export default {
-  name: 'maintain-dailytwo',
+  name: 'dailyChild-two',
   components: {
-    dailythree
+    dailythree,
+    childExamine
   },
   methods: {
     selectStyle (item, index, content, $event) {
@@ -69,12 +75,21 @@ export default {
           item.active = false
         }
       })
-
       item.active = !item.active
+    },
+    // 开启审核
+    examine () {
+      this.examineBoolean = true
+    },
+    // 审核
+    Mine (ev) {
+      this.examineBoolean = ev
     }
   },
   data () {
     return {
+      // 审核 显示/隐藏
+      examineBoolean: false,
       content: [{
         active: false,
         index: 0,
@@ -370,4 +385,13 @@ export default {
     margin-right 35px
     text-decoration underline
     cursor pointer
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background rgba(000,000,000,.4)
+    z-index 11
+    overflow hidden
 </style>

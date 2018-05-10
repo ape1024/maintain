@@ -2,7 +2,7 @@
   <div class="newlyadded">
     <section class="increase">
       <h4 class="increase_h4">
-        审核
+        日常巡检查看
       </h4>
       <section class="examine">
         <header class="examine_header">
@@ -15,26 +15,26 @@
             <div class="header_div">222</div>
           </div>
         </header>
-          <div class="examine_div">
-            <ul class="examine_div_ul">
-              <li class="examine_div_li">
-                <p>设施名称：</p>
-                <div>123</div>
-              </li>
-              <li class="examine_div_li">
-                <p>设备编码：</p>
-                <div>321</div>
-              </li>
-              <li class="examine_div_li">
-                <p>设备位置：</p>
-                <div>123</div>
-              </li>
-              <li class="examine_div_li">
-                <p>设施数量：</p>
-                <div>321</div>
-              </li>
-            </ul>
-          </div>
+        <div class="examine_div">
+          <ul class="examine_div_ul">
+            <li class="examine_div_li">
+              <p>设施名称：</p>
+              <div>123</div>
+            </li>
+            <li class="examine_div_li">
+              <p>设备编码：</p>
+              <div>321</div>
+            </li>
+            <li class="examine_div_li">
+              <p>设备位置：</p>
+              <div>123</div>
+            </li>
+            <li class="examine_div_li">
+              <p>设施数量：</p>
+              <div>321</div>
+            </li>
+          </ul>
+        </div>
         <div class="proceeding">
           <div class="matters">
             <header class="matters_header">
@@ -125,28 +125,11 @@
             </div>
             <div class="opinion_right">
               <div class="left_header">
-                <p class="left_hederP">记录审计情况</p>
-                <p class="left_hederPtwo"></p>
-              </div>
-              <div class="choices">
-                <p class="choicesP">
-                  审核结论：
-                </p>
-                <div class="choicesDiv">
-                  <el-radio-group v-model="radio">
-                    <el-radio :label="1">归档</el-radio>
-                    <el-radio :label="2">修改</el-radio>
-                    <el-radio :label="3">返工</el-radio>
-                    <el-radio :label="4">留存</el-radio>
-                  </el-radio-group>
-                </div>
+                <el-checkbox v-model="checked">返工</el-checkbox>
               </div>
               <div class="differing">
-                <p class="choicesP">
-                  审核意见：
-                </p>
                 <div class="differingDiv">
-                  <el-input
+                  <el-input :disabled="!checked"
                     type="textarea"
                     :rows="3"
                     resize="none"
@@ -176,10 +159,12 @@
 
 <script>
 export default {
-  name: 'adminChild-examine',
+  name: 'dailyChild-lookover',
   props: ['examine'],
   data () {
     return {
+      // 返工按钮
+      checked: false,
       radio: 0,
       textarea: '',
       examine_Boolean: false
@@ -250,188 +235,184 @@ export default {
         .examine_p
           float left
           margin-right 6px
-     .proceeding
-       width 100%
-       min-height 400px
-       max-height 400px
-       height calc(100% - 50px)
-       overflow-y auto
-       overflow-x hidden
-      .examine_div
-        margin-left 6px
+          color $color-border-b-fault
+    .proceeding
+      width 100%
+      min-height 400px
+      max-height 400px
+      height calc(100% - 50px)
+      overflow-y auto
+      overflow-x hidden
+    .examine_div
+      margin-left 6px
+      overflow hidden
+      position relative
+      .examine_div_ul
         overflow hidden
-        position relative
-        .examine_div_ul
+        font-size $font-size-medium
+        color $color-text-title
+        padding-top 30px
+        .examine_div_li
+          float left
           overflow hidden
-          font-size $font-size-medium
-          color $color-text-title
-          padding-top 30px
-          .examine_div_li
+          margin-right 40px
+          margin-bottom 30px
+          p
             float left
-            overflow hidden
-            margin-right 40px
-            margin-bottom 30px
-            p
-              float left
-              margin-right 6px
-            div
-              width 276px
-              float left
-         .examine_div_ul li:nth-child(3)
-           margin-right 0
-      .matters
+            margin-right 6px
+            color $color-border-b-fault
+          div
+            width 276px
+            float left
+      .examine_div_ul li:nth-child(3)
+        margin-right 0
+    .matters
+      width 100%
+      overflow hidden
+      position relative
+      margin-bottom 20px
+      .matters_header
         width 100%
         overflow hidden
-        position relative
-        margin-bottom 20px
-        .matters_header
+        background #202f49
+        color $color-text-title
+        font-size $font-size-small
+      .content
+        width 100%
+        overflow hidden
+        background #0c121b
+        color $color-header-b-normal
+        font-size $font-size-small
+      .matters_ul
+        overflow hidden
+        padding 7px 0
+        .matters_li
+          float left
+          width 10%
+        .matters_litwo
+          float left
+          width 20%
+        .matters_lithree
+          float left
+          padding-left 2%
+          width 8%
+      .content_ul
+        overflow hidden
+        padding 30px 0
+        .matters_li
+          float left
+          width 10%
+        .matters_litwo
+          float left
+          width 20%
+        .matters_lithree
+          float left
+          padding-left 2%
+          width 8%
+    .opinion
+      width 100%
+      overflow hidden
+      font-size $font-size-small
+      color $color-text-title
+      position relative
+      .opinion_left
+        float left
+        width 45%
+        overflow hidden
+      .opinion_right
+        float right
+        width 45%
+        overflow hidden
+      .left_header
+        overflow hidden
+        width 100%
+        margin-bottom 12px
+      .left_hederPtwo
+        float right
+        width 400px
+        height 1px
+        background #444d5b
+        margin-top 6px
+      .left_hederP
+        color $color-border-b-fault
+        float left
+      .opinion_title
+        width 100%
+        background #0e1520
+        overflow hidden
+        .opinion_ul
           width 100%
-          overflow hidden
           background #202f49
-          color $color-text-title
-          font-size $font-size-small
-        .content
+          overflow hidden
+          padding 5px 0
+        .opinion_li
+          float left
+          padding-left 5%
+          width 55%
+          overflow hidden
+        .opinion_litwo
+          float left
+          width 20%
+        .title_ul
           width 100%
           overflow hidden
-          background #0c121b
-          color $color-text-title
-          font-size $font-size-small
-        .matters_ul
-          overflow hidden
-          padding 7px 0
-          .matters_li
-            float left
-            width 10%
-          .matters_litwo
-            float left
-            width 20%
-          .matters_lithree
-            float left
-            padding-left 2%
-            width 8%
-        .content_ul
-          overflow hidden
-          padding 30px 0
-          .matters_li
-            float left
-            width 10%
-          .matters_litwo
-            float left
-            width 20%
-          .matters_lithree
-            float left
-            padding-left 2%
-            width 8%
-      .opinion
-         width 100%
-         overflow hidden
-         font-size $font-size-small
-         color $color-text-title
-         position relative
-         .opinion_left
-           float left
-           width 45%
-           overflow hidden
-         .opinion_right
-           float right
-           width 45%
-           overflow hidden
-         .left_header
-           overflow hidden
-           width 100%
-           margin-bottom 12px
-         .left_hederPtwo
-           float right
-           width 400px
-           height 1px
-           background #444d5b
-           margin-top 6px
-         .left_hederP
-           float left
-         .opinion_title
-            width 100%
-            background #0e1520
-            overflow hidden
-            .opinion_ul
-               width 100%
-               background #202f49
-               overflow hidden
-               padding 5px 0
-            .opinion_li
-              float left
-              padding-left 5%
-              width 55%
-              overflow hidden
-            .opinion_litwo
-              float left
-              width 20%
-            .title_ul
-               width 100%
-               overflow hidden
-            .title_li
-               width 100%
-               padding 18px 0
-               overflow hidden
-            .title_li_ul
-               overflow hidden
-          .choices
-            overflow hidden
-            position relative
-            margin: 20px 0;
-          .choicesP
-            float left
-            margin-right 20px
-          .choicesDiv
-            float left
-          .differing
-             overflow hidden
-             position relative
-             margin 10px 0
-          .differingDiv
-             width 430px
-             float left
-             overflow hidden
-      .arrange
+          color $color-header-b-normal
+      .title_li
         width 100%
-        text-align center
+        padding 18px 0
         overflow hidden
-        margin-bottom: 20px;
-        .assignment
-          display inline-block
-          cursor pointer
-          width 107px
-          height 36px
-          background #32a692
-          border-radius 5px
-          text-align center
-          line-height 36px
-          transition .2s
-          margin-right 30px
-          &:hover
-            background #4eb7a5
-        .preservation
-          display inline-block
-          cursor pointer
-          width 107px
-          height 36px
-          background $color-background-query
-          border-radius 5px
-          text-align center
-          line-height 36px
-          transition .2s
-          margin-right 30px
-          &:hover
-            background: #4b92bf;
-        .closeup
-          display inline-block
-          cursor pointer
-          width 107px
-          height 36px
-          background $color-background
-          border-radius 5px
-          text-align center
-          line-height 36px
-          transition .2s
-          &:hover
-            background #29374f
+      .title_li_ul
+        overflow hidden
+      .choices
+        overflow hidden
+        position relative
+        margin: 20px 0;
+      .choicesP
+        float left
+        margin-right 20px
+      .choicesDiv
+        float left
+      .differing
+        overflow hidden
+        position relative
+        margin 10px 0
+      .differingDiv
+        width 430px
+        float left
+        overflow hidden
+    .arrange
+      width 100%
+      text-align center
+      overflow hidden
+      margin-bottom: 20px;
+      .assignment
+        display inline-block
+        cursor pointer
+        width 107px
+        height 36px
+        background #32a692
+        border-radius 5px
+        text-align center
+        line-height 36px
+        transition .2s
+        margin-right 30px
+        &:hover
+          background #4eb7a5
+      .preservation
+        display inline-block
+        cursor pointer
+        width 107px
+        height 36px
+        background $color-background-query
+        border-radius 5px
+        text-align center
+        line-height 36px
+        transition .2s
+        margin-right 30px
+        prohibit()
+        &:hover
+          background: #4b92bf;
+      .closeup
+        closedown()
+        prohibit()
 </style>

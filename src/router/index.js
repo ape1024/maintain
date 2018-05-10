@@ -16,6 +16,8 @@ import repair from '../components/maintain-repair/maintain-repair'
 import archives from '../components/maintain-archives/maintain-archives'
 // 上报问题
 import report from '../components/maintain-report/maintain-report'
+// 系统设置
+import intercalate from '../components/maintain-intercalate/maintain-intercalate'
 
 Vue.use(Router)
 
@@ -59,6 +61,10 @@ const routes = [
     // 上报
     path: '/report',
     component: report
+  },
+  {
+    path: '/intercalate',
+    component: intercalate
   },
   {
     path: '/',

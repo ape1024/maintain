@@ -103,7 +103,7 @@
       </section>
       <section class="right_bottom">
         <h4 class="right_h4">
-          设备运行情况
+          维保执行情况
         </h4>
         <div class="right_bottom_div">
           <implement></implement>
@@ -114,8 +114,8 @@
 </template>
 
 <script>
-import stacked from '../middle_stacked/middle_stacked'
-import implement from '../maintain-implement/maintain-implement'
+import stacked from '../homeChild-stacked/homeChild-stacked'
+import implement from '../homeChild-stacked/homeChild-implement'
 export default {
   name: 'maintain-home',
   components: {
