@@ -40,7 +40,7 @@
           </li>
           <li class="list_data_li">
             <p @click.stop="examine" class="list_data_li_p">审核</p>
-            <p class="list_data_li_ptwo">快速分配</p>
+            <p @click.stop="distriBoolean" class="list_data_li_ptwo">快速分配</p>
           </li>
         </ul>
         <transition enter-active-class="fadeInUp"
@@ -54,6 +54,10 @@
         <!--审核-->
         <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
       </section>
+      <!--快速分配-->
+      <section v-if="distributionBoolean" @click.stop class="distribution">
+        <childDistribution :distriBoolean="distributionBoolean" @dist="Dist"></childDistribution>
+      </section>
     </ul>
   </div>
 </template>
@@ -61,11 +65,13 @@
 <script>
 import dailythree from '../dailyChild-three/dailyChild-three'
 import childExamine from '../dailyChild-operation/dailyChild-examine'
+import childDistribution from '../dailyChild-operation/dailyChild-distribution'
 export default {
   name: 'dailyChild-two',
   components: {
     dailythree,
-    childExamine
+    childExamine,
+    childDistribution
   },
   methods: {
     selectStyle (item, index, content, $event) {
@@ -81,15 +87,25 @@ export default {
     examine () {
       this.examineBoolean = true
     },
+    // 快速分配
+    distriBoolean () {
+      this.distributionBoolean = true
+    },
     // 审核
     Mine (ev) {
       this.examineBoolean = ev
+    },
+    // 快速分配
+    Dist (ev) {
+      this.distributionBoolean = ev
     }
   },
   data () {
     return {
       // 审核 显示/隐藏
       examineBoolean: false,
+      // 快速分配
+      distributionBoolean: false,
       content: [{
         active: false,
         index: 0,
@@ -392,6 +408,15 @@ export default {
     width 100%
     height 100%
     background rgba(000,000,000,.4)
+    z-index 11
+    overflow hidden
+  .distribution
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background transparent
     z-index 11
     overflow hidden
 </style>

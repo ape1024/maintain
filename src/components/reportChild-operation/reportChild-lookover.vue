@@ -1,0 +1,145 @@
+<template>
+  <div class="newlyadded">
+    <section class="increase">
+      <h4 class="increase_h4">
+        问题上报查看
+      </h4>
+      <div class="lookover">
+        <div class="seat">
+          <p class="seatP">设施位置：</p>
+          <p class="seatPtwo">1111111</p>
+        </div>
+        <div class="state">
+          <div class="stateTop">
+            <div class="stateLeft">
+              <p class="seatP">上报人员：</p>
+              <p class="seatPtwo">11111</p>
+            </div>
+            <div class="stateLeft">
+              <p class="seatP">审核状态：</p>
+              <p class="seatPtwo">11111</p>
+            </div>
+          </div>
+          <div class="stateText">
+            <p class="seatP">问题描述：</p>
+            <div class="describe">
+              <el-input
+                type="textarea"
+                :rows="6"
+                resize="none"
+                placeholder=""
+                v-model="textarea">
+              </el-input>
+            </div>
+          </div>
+          <div class="stateText">
+            <p class="seatP">现场照片：</p>
+          </div>
+        </div>
+      </div>
+      <div class="generate">
+        <el-checkbox v-model="checked">是否生成任务</el-checkbox>
+      </div>
+      <div class="lookoverBottom">
+        <div @click.stop="conserve" class="conserve">审核</div>
+        <div @click.stop="closedown" class="closedown">关闭</div>
+      </div>
+    </section>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'reportChild-lookover',
+  props: ['msg'],
+  data () {
+    return {
+      // 显示/隐藏 查看组件
+      lookoverBoolean: false,
+      textarea: '',
+      checked: false
+    }
+  },
+  methods: {
+    conserve () {
+      this.lookoverBoolean = this.msg
+      this.lookoverBoolean = !this.lookoverBoolean
+      this.$emit('look', this.lookoverBoolean)
+    },
+    closedown () {
+      this.lookoverBoolean = this.msg
+      this.lookoverBoolean = !this.lookoverBoolean
+      this.$emit('look', this.lookoverBoolean)
+    }
+  }
+}
+</script>
+
+<style scoped lang="stylus" rel="stylesheet/stylus">
+  @import "~common/stylus/variable"
+  .newlyadded
+    margin 180px 0 0
+    width 100%
+    overflow hidden
+    background #111a28
+  .increase
+    width 1245px
+    margin 0 auto
+    overflow hidden
+    position relative
+    padding-top 45px
+    .increase_h4
+      font-size $font-size-medium-x
+      color $color-text-title
+      margin-bottom 14px
+    .lookover
+      width 1170px
+      margin 0 auto
+      overflow hidden
+      position relative
+      .seat
+        init()
+        margin-bottom 14px
+        font-size $font-size-medium
+      .seatP
+        float left
+        margin-right 6px
+        color $color-border-b-fault
+      .seatPtwo
+        float left
+        color $color-text
+      .state
+         init()
+         min-height 400px
+         padding 15px 0
+         border-top 1px solid #444d5b
+         border-bottom 1px solid #444d5b
+         .stateTop
+           init()
+           margin-bottom 22px
+           .stateLeft
+             float left
+             width 30%
+             position relative
+             overflow hidden
+         .stateText
+            init()
+            margin-bottom 22px
+            .describe
+              float left
+              width 1075px
+              color $color-text
+    .lookoverBottom
+      init()
+      margin-bottom 20px
+      text-align center
+      .conserve
+        examine()
+        margin-right 100px
+      .closedown
+        closedown()
+    .generate
+       init()
+       width 1170px
+       margin 20px auto 40px
+</style>

@@ -18,7 +18,16 @@ import archives from '../components/maintain-archives/maintain-archives'
 import report from '../components/maintain-report/maintain-report'
 // 系统设置
 import intercalate from '../components/maintain-intercalate/maintain-intercalate'
-
+// 系统设置-维保部门管理
+import intercalateDepartment from '../components/intercalate-child/intercalateChild-department'
+// 系统设置-组织结构权限管理
+import intercalateStructure from '../components/intercalate-child/intercalateChild-structure'
+// 系统设置-角色管理
+import intercalateKarakters from '../components/intercalate-child/intercalateChild-karakters'
+// 系统设置-用户设置
+import tercalateConsumer from '../components/intercalate-child/tercalateChild-consumer'
+// 系统设置-项目设置
+import tercalateProject from '../components/intercalate-child/tercalateChild-project'
 Vue.use(Router)
 
 const routes = [
@@ -64,7 +73,26 @@ const routes = [
   },
   {
     path: '/intercalate',
-    component: intercalate
+    component: intercalate,
+    children: [{
+      path: 'department',
+      component: intercalateDepartment
+    }, {
+      path: 'structure',
+      component: intercalateStructure
+    }, {
+      path: 'karakters',
+      component: intercalateKarakters
+    }, {
+      path: 'consumer',
+      component: tercalateConsumer
+    }, {
+      path: 'project',
+      component: tercalateProject
+    }, {
+      path: '/',
+      component: intercalateDepartment
+    }]
   },
   {
     path: '/',

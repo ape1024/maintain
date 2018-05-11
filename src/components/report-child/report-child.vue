@@ -92,11 +92,11 @@
 </template>
 
 <script>
-import childLookover from '../adminChild-operation/adminChild-lookover'
-import childModify from '../adminChild-operation/adminChild-modify'
-import childExamine from '../adminChild-operation/adminChild-examine'
+import childLookover from '../reportChild-operation/reportChild-lookover'
+import childModify from '../reportChild-operation/reportChild-modify'
+import childExamine from '../reportChild-operation/reportChild-examine'
 export default {
-  name: 'admin-child',
+  name: 'report-child',
   components: {
     childLookover,
     childModify,
@@ -252,38 +252,38 @@ export default {
       float left
       width 23.5%
       overflow hidden
-     .threelevel_lithree
-       float left
-       width 7.5%
-       padding-left 1%
+    .threelevel_lithree
+      float left
+      width 7.5%
+      padding-left 1%
   .threelevel_list
-      margin: 4px;
-      overflow: hidden;
-      position: relative;
-    .threelevel_list_li
-        width 100%
+    margin: 4px;
+    overflow: hidden;
+    position: relative;
+  .threelevel_list_li
+    width 100%
+    overflow hidden
+    position relative
+    .threelevel_list_ul
+      width 100%
+      overflow hidden
+      padding: 12px 0;
+      .threelevel_li
+        float left
+        width 8.5%
+      .threelevel_litwo
+        float left
+        width 23.5%
         overflow hidden
-        position relative
-        .threelevel_list_ul
-          width 100%
-          overflow hidden
-          padding: 12px 0;
-          .threelevel_li
-            float left
-            width 8.5%
-          .threelevel_litwo
-            float left
-            width 23.5%
-            overflow hidden
-          .threelevel_lithree
-            float left
-            width 7.5%
-            padding-left 1%
-          .threelevel_litwo p
-            float left
-            margin-right 35px
-            text-decoration underline
-            cursor pointer
+      .threelevel_lithree
+        float left
+        width 7.5%
+        padding-left 1%
+      .threelevel_litwo p
+        float left
+        margin-right 35px
+        text-decoration underline
+        cursor pointer
   .review
     position fixed
     top 0
