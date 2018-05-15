@@ -18,18 +18,23 @@
           <el-button
             type="text"
             size="mini"
-            @click="() => append(node, data)">
+            @click.stop="() => append(node, data)">
             编辑
           </el-button>
           <el-button
             type="text"
             size="mini"
-            @click="() => remove(node, data)">
+            @click.stop="() => remove(node, data)">
             删除
           </el-button>
         </span>
       </span>
             </el-tree>
+            <div v-if="editBoolean" class="intercalateedit">
+              <div class="intercalateeditDiv">
+                <intercalateEdit :examine="editBoolean" @dist="Mine"></intercalateEdit>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -41,13 +46,13 @@
         <div class="rightDiv">
          <div class="rightDate">
            <div class="structure">
-             <p v-for="item in dom" class="structureP">
+             <p v-for="(item, key) in dom" v-bind:key=key class="structureP">
                <span class="structureStair">{{item}}</span> <span class="structurExcision"> > </span>
              </p>
            </div>
            <div class="superinduce">
              <ul class="superinduceUl">
-               <li class="superinduceLi" v-for="amoutItem in amoutItem">
+               <li class="superinduceLi" v-bind:key=key v-for="(amoutItem, key) in amoutItem">
                  <div class="superinduceLiDiv">
                    <el-input v-model="amoutItem.input" placeholder=""></el-input>
                  </div>
@@ -72,8 +77,12 @@
 </template>
 
 <script>
+import intercalateEdit from '../intercalateChild-operation/intercalateChild-edit'
 export default {
   name: 'intercalateChild-department',
+  components: {
+    intercalateEdit
+  },
   data () {
     let data = [{
       id: '1',
@@ -111,8 +120,11 @@ export default {
       }]
     }]
     return {
+      // 编辑 显示隐藏
+      editBoolean: false,
       data5: JSON.parse(JSON.stringify(data)),
       dom: '',
+      dataChildren: [],
       amoutItem: [{
         input: '',
         judge: false
@@ -151,7 +163,7 @@ export default {
       //   this.$set(data, 'children', []);
       // }
       // data.children.push(newChild);
-      console.log(node)
+      this.editBoolean = true
     },
     fn (node, data) {
       let nodeId = data.id
@@ -160,7 +172,8 @@ export default {
       let array = []
       // let Dom = ''
       let nodeDate = node.label
-
+      console.log(node.childNodes)
+      this.dataChildren = node.childNodes
       if (node.parent.parent !== null) {
         // 如不是第一级 走这里，
         for (let i = arr.length; i > 1; i--) {
@@ -218,8 +231,10 @@ export default {
       this.amoutItem.push(superindeuceDate)
       console.log(this.amoutItem)
     },
+    // 保存 目前没有解决
     preservation (node, data) {
-      console.log(this.dom)
+      console.log()
+      console.log(node)
       // let arrAy = []
       // for (let i = 0; i<data.length; i++){
       //   if (this.amoutItem[i].input !==''){
@@ -227,6 +242,10 @@ export default {
       //   }
       // }
       // console.log(arrAy)
+    },
+    Mine (ev) {
+      this.editBoolean = ev
+      console.log(ev)
     }
   }
 }
@@ -345,6 +364,20 @@ export default {
               margin-right 40px
             .closedown
               closedown()
+  .intercalateedit
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    z-index 111
+    overflow hidden
+    background rgba(000,000,000,.4)
+    .intercalateeditDiv
+       width 100%
+       margin-top 180px
+       padding 50px
+       background #111a28
   .el-tree
     background transparent
   .custom-tree-node
