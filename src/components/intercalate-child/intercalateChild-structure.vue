@@ -73,15 +73,31 @@
         <!--权限-->
         <Jurisdiction :pBoolean="popupBoolean" @say="Say"></Jurisdiction>
       </div>
+      <div v-show="memberBoolean" class="popup">
+        <!--成员-->
+        <member :menBer="memberBoolean" @back="Back"></member>
+      </div>
+      <div v-show="bluepencilBoolean" class="popup">
+        <bluepencil :bluePencil="bluepencilBoolean" @circle="Circle"></bluepencil>
+      </div>
+      <div v-show="copyBoolean" class="popup">
+        <structureCopy @wind="Wind" :copyboolean="copyBoolean"></structureCopy>
+      </div>
     </div>
 </template>
 
 <script>
 import Jurisdiction from '../intercalateChild-operation/structureChild-jurisdiction'
+import member from '../intercalateChild-operation/structureChild-member'
+import bluepencil from '../intercalateChild-operation/structureChild-bluepencil'
+import structureCopy from '../intercalateChild-operation/structureChild-copy'
 export default {
   name: 'intercalateChild-structure',
   components: {
-    Jurisdiction
+    Jurisdiction,
+    member,
+    bluepencil,
+    structureCopy
   },
   data () {
     return {
@@ -142,6 +158,9 @@ export default {
         label: 'label'
       },
       popupBoolean: false,
+      memberBoolean: false,
+      bluepencilBoolean: false,
+      copyBoolean: false,
       structureDate: {
         label: '',
         personnel: ''
@@ -166,15 +185,24 @@ export default {
     },
     leaguer () {
       // 点击成员
-      alert('成员')
+      this.memberBoolean = true
+    },
+    Back (ev) {
+      this.memberBoolean = ev
     },
     bluepencil () {
       // 点击编辑
-      alert('编辑')
+      this.bluepencilBoolean = true
+    },
+    Circle (ev) {
+      this.bluepencilBoolean = ev
     },
     printoff () {
       // 点击复制
-      alert('复制')
+      this.copyBoolean = true
+    },
+    Wind (ev) {
+      this.copyBoolean = ev
     },
     amputate () {
       // 点击删除

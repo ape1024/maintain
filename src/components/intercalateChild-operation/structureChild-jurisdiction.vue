@@ -172,7 +172,6 @@ export default {
                 float left
                 padding 10px 0
                 border-right 1px solid #444d5b
-                border-bottom 1px solid #444d5b
                 width 338px
                 text-align center
               .contentLitwo
