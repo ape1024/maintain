@@ -1,14 +1,5 @@
 <template>
   <div class="subject">
-    <section class="subjectLeft">
-      <header class="leftHeader">
-        <img class="subjectImg" src="../../../static/img/department.png" alt="">
-        <p class="subjectP">项目设置</p>
-      </header>
-      <div class="leftBottom">
-
-      </div>
-    </section>
   </div>
 </template>
 

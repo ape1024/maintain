@@ -92,7 +92,7 @@ export default {
           .alterationP
             float left
             width 100px
-            line-height 40px
+            line-height 30px
             font-size $font-size-medium
             color $color-border-b-fault
           .alterationDiv

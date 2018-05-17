@@ -149,7 +149,7 @@ export default {
             float left
             font-size $font-size-small
             color $color-border-b-fault
-            line-height 40px
+            line-height 30px
             margin-right 6px
           .personChargeDiv
             float left

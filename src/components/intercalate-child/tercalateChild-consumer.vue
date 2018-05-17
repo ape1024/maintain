@@ -8,7 +8,7 @@
               登 录 名
             </p>
             <div class="headerDiv">
-              <el-input v-model="input" placeholder="请输入内容"></el-input>
+              <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
             </div>
           </li>
           <li class="headerLi">
@@ -31,7 +31,7 @@
               角 色
             </p>
             <div class="headerDiv">
-              <el-input v-model="input" placeholder="请输入内容"></el-input>
+              <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
             </div>
           </li>
           <li class="headerLi">
@@ -39,7 +39,7 @@
               手 机
             </p>
             <div class="headerDiv">
-              <el-input v-model="input" placeholder="请输入内容"></el-input>
+              <el-input v-model="input" placeholder="请输入内容" clearable>></el-input>
             </div>
           </li>
         </ul>
@@ -52,7 +52,7 @@
           用户列表
         </p>
         <div class="informationDiv">
-          <div class="superinduce">
+          <div @click="induce" class="superinduce">
             添加
           </div>
           <div class="amputate">
@@ -91,7 +91,7 @@
           </li>
         </ul>
         <ul class="entryList">
-          <li v-for="item in information"  v-bind:key="item.id" class="listLi">
+          <li v-for="(item, $index) in information"  v-bind:key="item.id" class="listLi">
             <ul>
               <li class="entryLione">
                 {{item.name}}
@@ -114,19 +114,19 @@
               </li>
               <li class="entryLifour">
                 <!--查看-->
-                <p class="examine">
+                <p @click="exaMine" class="examine">
                   查看
                 </p>
                 <!--修改-->
-                <p class="modify">
+                <p @click="moDify" class="modify">
                   修改
                 </p>
                 <!--修改密码-->
-                <p class="password">
+                <p @click="infor" class="password">
                   修改密码
                 </p>
                 <!--删除-->
-                <p class="amputate">
+                <p @click="amputate($index, information)" class="amputate">
                   删除
                 </p>
               </li>
@@ -145,17 +145,35 @@
     </section>
     <!--新增-->
     <section v-if="adhibitBoolean" class="adhibit">
-      <increase></increase>
+      <increase :increaseBoolean="adhibitBoolean" @incr="Incr"></increase>
+    </section>
+    <!--查看-->
+    <section v-if="examineBoolean"  class="adhibit">
+      <examine :examine="examineBoolean" @mine="Mine"></examine>
+    </section>
+    <!--修改-->
+    <section v-if="modifyBoolean" class="adhibit">
+      <edit :edit="modifyBoolean" @edit="eDit"></edit>
+    </section>
+    <!--修改密码-->
+    <section v-if="inforBoolean" class="adhibit">
+      <information :infor="inforBoolean" @informa="inFourma"></information>
     </section>
   </div>
 </template>
 
 <script>
 import increase from '../intercalateChild-operation/consumerChild-increase'
+import examine from '../intercalateChild-operation/consumerChild-examine'
+import edit from '../intercalateChild-operation/consumerChild-edit'
+import information from '../intercalateChild-operation/consumerChild-informa'
 export default {
   name: 'tercalateChild-consumer',
   components: {
-    increase
+    increase,
+    examine,
+    edit,
+    information
   },
   data () {
     return {
@@ -198,11 +216,40 @@ export default {
         logintime: '2018.9.18 15:00',
         locking: 1
       }],
-      adhibitBoolean: true
+      adhibitBoolean: false,
+      examineBoolean: false,
+      modifyBoolean: false,
+      inforBoolean: false
     }
   },
   methods: {
-
+    induce () {
+      this.adhibitBoolean = true
+    },
+    Incr (ev) {
+      this.adhibitBoolean = ev
+    },
+    exaMine () {
+      this.examineBoolean = true
+    },
+    Mine (ev) {
+      this.examineBoolean = ev
+    },
+    moDify () {
+      this.modifyBoolean = true
+    },
+    eDit (ev) {
+      this.modifyBoolean = ev
+    },
+    infor () {
+      this.inforBoolean = true
+    },
+    inFourma (ev) {
+      this.inforBoolean = ev
+    },
+    amputate ($index, content) {
+      content.splice([$index], 1)
+    }
   }
 }
 </script>
@@ -235,7 +282,7 @@ export default {
           .headerP
             float left
             margin-right 18px
-            line-height 40px
+            line-height 30px
           .headerDiv
            float left
       .search
@@ -361,4 +408,9 @@ export default {
     position fixed
     left 0
     top 0
+</style>
+<style lang="stylus" rel="stylesheet/stylus">
+  .el-input__inner
+    height 30px
+    line-height 30px
 </style>
