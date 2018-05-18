@@ -148,7 +148,7 @@
             </li>
             <li class="header_li">{{item.distribution}}</li>
             <li class="header_li">
-              <div v-on:click="amend($event)" class="modify" v-if="item.operation =='true'">修 改</div>
+              <div @click.stop="amend($event)" class="modify" v-if="item.operation =='true'">修 改</div>
               <div class="examine" v-if="item.operation =='false'">审 核</div>
             </li>
           </ul>
@@ -161,15 +161,21 @@
         </li>
       </ul>
     </section>
+    <section v-show="modifyBoolean" class="review">
+      <modify :sag="modifyBoolean" @say="Say"></modify>
+    </section>
   </div>
 </template>
 
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
+// 修改
+import modify from '../dailyChild-operation/dailyChild-modify'
 export default {
   name: 'maintain-daily',
   components: {
-    dailytwo
+    dailytwo,
+    modify
   },
   methods: {
     selectStyle (item, index, tableData, $event) {
@@ -184,11 +190,16 @@ export default {
     },
     // 修改逻辑
     amend ($event) {
-      $event.cancelBubble = true
+      // $event.cancelBubble = true
+      this.modifyBoolean = true
+    },
+    Say (ev) {
+      this.modifyBoolean = ev
     }
   },
   data () {
     return {
+      modifyBoolean: false,
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -525,5 +536,13 @@ export default {
       margin-right 35px
       text-decoration underline
       cursor pointer
-
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background rgba(000,000,000,.4)
+    z-index 11
+    overflow hidden
 </style>

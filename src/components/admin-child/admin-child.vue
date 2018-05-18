@@ -70,22 +70,29 @@
             <p @click.stop="modify" class="header_p_twelve">
               修改
             </p>
+            <p @click.stop="equipment" class="header_pe_quipment">
+              更换设备
+            </p>
             <p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>
           </li>
         </ul>
       </li>
     </ul>
-    <section v-if="examineBoolean" @click.stop class="review">
+    <section v-show="examineBoolean" @click.stop class="review">
       <!--审核-->
       <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
     </section>
-    <section v-if="lookoverBoolean" @click.stop class="review">
+    <section v-show="lookoverBoolean" @click.stop class="review">
       <!--查看-->
       <childLookover :msg="lookoverBoolean" @look="Onlook"></childLookover>
     </section>
-    <section v-if="modifyBoolean" @click.stop class="review">
+    <section v-show="modifyBoolean" @click.stop class="review">
       <!--修改-->
       <childModify :msg="modifyBoolean" @say="Modify"></childModify>
+    </section>
+    <section v-show="quipmentBoolean" class="review" @click.stop>
+      <!--更换设备-->
+      <childquipment :msg="quipmentBoolean" @quipment="Quipment"></childquipment>
     </section>
   </div>
 
@@ -95,12 +102,14 @@
 import childLookover from '../adminChild-operation/adminChild-lookover'
 import childModify from '../adminChild-operation/adminChild-modify'
 import childExamine from '../adminChild-operation/adminChild-examine'
+import childquipment from '../adminChild-operation/adminChild-quipment'
 export default {
   name: 'admin-child',
   components: {
     childLookover,
     childModify,
-    childExamine
+    childExamine,
+    childquipment
   },
   methods: {
     amputate ($index, content) {
@@ -128,6 +137,12 @@ export default {
     },
     Modify (ev) {
       this.modifyBoolean = ev
+    },
+    equipment () {
+      this.quipmentBoolean = true
+    },
+    Quipment (ev) {
+      this.quipmentBoolean = ev
     }
   },
   data () {
@@ -157,7 +172,8 @@ export default {
       }],
       examineBoolean: false,
       lookoverBoolean: false,
-      modifyBoolean: false
+      modifyBoolean: false,
+      quipmentBoolean: false
     }
   }
 }
@@ -219,6 +235,8 @@ export default {
     color #83292b
   .header_p_twelve
     color $color-background-introduce
+  .header_pe_quipment
+    color #32a697
   .table_ul
     width 100%
     overflow hidden

@@ -61,5 +61,5 @@ export default {
        overflow hidden
     .project
       float left
-      margin 10px 8px 0 0
+      margin 8px 8px 0 0
 </style>
