@@ -475,4 +475,5 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner
     height 30px
+    line-height 30px
 </style>

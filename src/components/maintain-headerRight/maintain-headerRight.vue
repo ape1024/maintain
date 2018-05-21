@@ -18,6 +18,20 @@
           </div>
         </div>
      </div>
+     <div class="headerRight_right">
+       <div class="portrait">
+         <img class="portraitImg" src="../../../static/img/portrait.png" alt="">
+       </div>
+       <div class="userOperation">
+         <p class="userOperationP">
+           123
+         </p>
+         <div class="userBottom">
+           <img class="userBottomImg" src="../../../static/img/secede.png" alt="">
+           <span>安全退出</span>
+         </div>
+       </div>
+     </div>
   </div>
 </template>
 
@@ -53,13 +67,65 @@ export default {
   .headerRight
       overflow hidden
       position relative
+    .headerRight_left
+       float left
+       position relative
+       overflow hidden
     .headerRight_left_h4
       font-size $font-size-large-x
       color $color-text
-      margin 10px 0
+      margin 14px 0
     .headerRight_bottom
        overflow hidden
     .project
       float left
       margin 8px 8px 0 0
+    .headerRight_right
+      float right
+      position relative
+      overflow hidden
+      margin 18px 20px 0 75px
+      .portrait
+         float left
+         width 55px
+         height 55px
+         border-radius 50%
+         margin-right 14px
+         border 5px solid #202f49
+         .portraitImg
+           width 55px
+           height 55px
+           display inline-block
+           border-radius 50%
+           -moz-box-shadow 0px 3px 2px #000
+           -webkit-box-shadow 0px 3px 2px #000
+           box-shadow 0px 3px 2px #000
+      .userOperation
+         margin-left 12px
+         overflow hidden
+         .userOperationP
+            font-size $font-size-small-s
+            color $color-text
+            margin-top 18px
+            overflow hidden
+         .userBottom
+            font-size $font-size-small-s
+            color #cc5966
+            cursor pointer
+            margin-top 6px
+            overflow hidden
+            .userBottomImg
+               display inline-block
+               margin-top -2px
+               vertical-align middle
+  .el-input--suffix .el-input__inner
+      background transparent
+      height 30px
+      border none
+      line-height 30px
+</style>
+<style lang="stylus" rel="stylesheet/stylus">
+  .el-input__inner
+      height 30px
+      line-height 30px
 </style>
