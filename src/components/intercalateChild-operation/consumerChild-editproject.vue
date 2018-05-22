@@ -2,7 +2,7 @@
   <div class="subject">
     <section class="section">
       <h4 class="subjectH">
-        新增项目信息
+        修改项目信息
       </h4>
       <div class="information">
         <ul class="informationUl">
@@ -192,8 +192,8 @@
 
 <script>
 export default {
-  name: 'consumerChild-edit',
-  props: ['increaseBoolean'],
+  name: 'consumerChild-editproject',
+  props: ['edit'],
   data () {
     return {
       // 本页面的显示隐藏
@@ -216,13 +216,11 @@ export default {
       this.fileList3 = fileList.slice(-3)
     },
     conserve () {
-      this.Thispage = this.increaseBoolean
+      this.Thispage = this.edit
       this.Thispage = !this.Thispage
-      alert(this.increaseBoolean)
-      this.$emit('edit', this.Thispage)
+      this.$emit('editt', this.Thispage)
     },
     closedown () {
-
     }
   }
 }

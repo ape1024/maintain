@@ -281,7 +281,8 @@ export default {
     overflow hidden
     background #111a28
     .informationDiv
-       margin 0 340px
+       width 1000px
+       margin 0 auto
        overflow hidden
        position relative
        .informationH
@@ -296,7 +297,7 @@ export default {
       .subject
          overflow hidden
          position relative
-         margin 0 120px 200px
+         margin 0 120px 130px
          .subjectLeft
            float left
            overflow hidden

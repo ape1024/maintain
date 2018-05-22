@@ -76,7 +76,8 @@ export default {
     .editSection
       overflow hidden
       position relative
-      margin 0 336px
+      width 1230px
+      margin 0 auto
       .editH4
         color $color-text
         margin-bottom 145px

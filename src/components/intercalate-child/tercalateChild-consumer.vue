@@ -153,20 +153,20 @@
     </section>
     <!--修改-->
     <section v-if="modifyBoolean" class="adhibit">
-      <edit :edit="modifyBoolean" @edit="eDit"></edit>
+      <information :changei="modifyBoolean" @informa="inFourma"></information>
     </section>
     <!--修改密码-->
     <section v-if="inforBoolean" class="adhibit">
-      <information :infor="inforBoolean" @informa="inFourma"></information>
+      <edit :edit="inforBoolean" @edit="eDit"></edit>
     </section>
   </div>
 </template>
 
 <script>
 import increase from '../intercalateChild-operation/consumerChild-increase'
-import examine from '../intercalateChild-operation/consumerChild-examine'
-import edit from '../intercalateChild-operation/consumerChild-edit'
-import information from '../intercalateChild-operation/consumerChild-informa'
+import examine from '../intercalateChild-operation/consumerChild-seeinfo'
+import edit from '../intercalateChild-operation/consumerChild-steganogram'
+import information from '../intercalateChild-operation/consumerChild-changeinfo'
 export default {
   name: 'tercalateChild-consumer',
   components: {
@@ -239,13 +239,14 @@ export default {
       this.modifyBoolean = true
     },
     eDit (ev) {
-      this.modifyBoolean = ev
+      this.inforBoolean = ev
     },
     infor () {
       this.inforBoolean = true
     },
     inFourma (ev) {
-      this.inforBoolean = ev
+      //
+      this.modifyBoolean = ev
     },
     amputate ($index, content) {
       content.splice([$index], 1)

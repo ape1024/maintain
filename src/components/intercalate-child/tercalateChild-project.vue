@@ -20,7 +20,7 @@
           </el-select>
         </div>
       </div>
-      <div class="conserve">
+      <div @click="conserve" class="conserve">
         增 加
       </div>
     </div>
@@ -50,8 +50,8 @@
             <li class="headerLitwo">8</li>
             <li class="headerLitwo">9</li>
             <li class="headerLithree">
-              <p class="contentLi_ulP">查看明细</p>
-              <p class="contentLi_ulPtwo">修改</p>
+              <p @click="exaMine" class="contentLi_ulP">查看明细</p>
+              <p @click="modify" class="contentLi_ulPtwo">修改</p>
               <p class="contentLi_ulPthree">删除</p>
             </li>
           </ul>
@@ -83,15 +83,38 @@
         :total="100">
       </el-pagination>
     </div>
+    <!--添加-->
+    <section v-if="adhibitBoolean" class="adhibit">
+      <increase :increaseBoolean="adhibitBoolean" @incr="Incr"></increase>
+    </section>
+    <!--查看-->
+    <section v-if="examineBoolean"  class="adhibit">
+      <examine :examine="examineBoolean" @mine="Mine"></examine>
+    </section>
+    <!--修改-->
+    <section v-if="modifyBoolean" class="adhibit">
+      <edit :edit="modifyBoolean" @editt="eDit"></edit>
+    </section>
   </div>
 </template>
 
 <script>
+import increase from '../intercalateChild-operation/consumerChild-increase'
+import examine from '../intercalateChild-operation/consumerChild-examine'
+import edit from '../intercalateChild-operation/consumerChild-editproject'
 export default {
   name: 'tercalateChild-project',
+  components: {
+    increase,
+    examine,
+    edit
+  },
   data () {
     return {
       input: '',
+      examineBoolean: false,
+      modifyBoolean: false,
+      adhibitBoolean: false,
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -109,6 +132,26 @@ export default {
         label: '北京烤鸭'
       }],
       value: ''
+    }
+  },
+  methods: {
+    exaMine () {
+      this.examineBoolean = true
+    },
+    Mine (ev) {
+      this.examineBoolean = ev
+    },
+    eDit (ev) {
+      this.modifyBoolean = ev
+    },
+    modify () {
+      this.modifyBoolean = true
+    },
+    conserve () {
+      this.adhibitBoolean = true
+    },
+    Incr (ev) {
+      this.adhibitBoolean = ev
     }
   }
 }
@@ -190,6 +233,14 @@ export default {
        init()
        margin 20px 0
        text-align center
+  .adhibit
+    width 100%
+    height 100%
+    background rgba(000,000,000,.4)
+    z-index 111
+    position fixed
+    left 0
+    top 0
 </style>
 <style>
   .el-input--suffix .el-input__inner {

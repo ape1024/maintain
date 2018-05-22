@@ -198,7 +198,8 @@ export default {
     background #111a28
     init()
   .content
-      margin 0 340px
+      width 1225px
+      margin 0 auto
       overflow hidden
     .subjectH
        margin-bottom 38px

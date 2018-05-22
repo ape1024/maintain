@@ -131,8 +131,8 @@ export default {
   .subject
     overflow hidden
     position relative
-    margin-bottom: 12px;
-    min-height 985px
+    margin-bottom 12px
+    min-height 857px
   .headerHome
     headerRouter("../static/img/home.png")
   .headerAdmin

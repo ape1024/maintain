@@ -125,7 +125,8 @@ export default {
     margin-top 210px
     position relative
     .jurisdictionDiv
-      margin 0 330px
+      width 1220px
+      margin 0 auto
       overflow hidden
       position relative
       .jurisdictionH

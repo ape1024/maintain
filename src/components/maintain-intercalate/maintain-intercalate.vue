@@ -41,7 +41,7 @@ export default {
         line-height 34px
         font-size $font-size-medium-x
         color $color-border-b-fault
-        border 1px solid #111a28
+        border 1px solid #2e3d54
         background #202f49
         margin 0 10px
         .headerLi

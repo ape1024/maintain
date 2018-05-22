@@ -237,7 +237,8 @@ export default {
     background #111a28
     padding 40px 0
     .content
-     margin 0 340px
+     width 1223px
+     margin 0 auto
      position relative
      overflow hidden
      .subjectH

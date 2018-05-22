@@ -30,10 +30,10 @@
         <li :key="dataset.id" :id="dataset.id"  v-for="(dataset, $index) in content" class="threelevel_list_li">
           <ul :id="dataset.id" class="threelevel_list_ul">
             <li class="threelevel_lithree">
-              <el-checkbox v-model="dataset.checked" @click.native="fn(dataset)">{{dataset.inspectionitem}}</el-checkbox>
+              <el-checkbox v-model="dataset.checked" @change="fn(dataset)">{{dataset.inspectionitem}}</el-checkbox>
             </li>
-            <li class="threelevel_li">
-              {{dataset.inspectingperson}}
+            <li class="threelevel_li" @click.stop="fnnf">
+              {{dataset.inspectingperson}}111
             </li>
             <li class="threelevel_li">
               {{dataset.state}}
@@ -108,6 +108,9 @@ export default {
     fn (data) {
       var item = data
       console.log(item)
+    },
+    fnnf () {
+      console.log('123')
     }
   },
   data () {
