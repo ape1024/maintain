@@ -30,7 +30,7 @@
         <li :key="dataset.id" :id="dataset.id"  v-for="(dataset, $index) in content" class="threelevel_list_li">
           <ul :id="dataset.id" class="threelevel_list_ul">
             <li class="threelevel_lithree">
-              {{dataset.inspectionitem}}
+              <el-checkbox v-model="dataset.checked" @click.native="fn(dataset)">{{dataset.inspectionitem}}</el-checkbox>
             </li>
             <li class="threelevel_li">
               {{dataset.inspectingperson}}
@@ -104,6 +104,10 @@ export default {
     },
     Lookover (ev) {
       this.lookoverBoolean = ev
+    },
+    fn (data) {
+      var item = data
+      console.log(item)
     }
   },
   data () {
@@ -117,6 +121,7 @@ export default {
       content: [{
         id: '1-1-1',
         inspectionitem: '01项',
+        checked: false,
         inspectingperson: '张三',
         state: '正常',
         timer: '2018-04-10 12:00',
@@ -127,6 +132,7 @@ export default {
       }, {
         id: '1-1-2',
         inspectionitem: '02项',
+        checked: false,
         inspectingperson: '李四',
         state: '正常',
         timer: '2018-04-10 12:00',

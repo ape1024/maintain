@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+// 登录
+import login from '../components/login/login'
 // 首页
 import home from '../components/maintain-home/maintain-home'
 // 设备管理
@@ -31,6 +33,11 @@ import tercalateProject from '../components/intercalate-child/tercalateChild-pro
 Vue.use(Router)
 
 const routes = [
+  {
+    // 登录
+    path: '/login',
+    component: login
+  },
   {
     // 首页
     path: '/home',
@@ -98,7 +105,7 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/login'
   }
 ]
 
