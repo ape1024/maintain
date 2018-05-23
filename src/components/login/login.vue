@@ -16,7 +16,7 @@
       </div>
       <div class="contentDiv">
         <div class="fastener">
-          <div @mouseup="signin($event)" class="fastenerDiv">
+          <div @click="signin($event)" class="fastenerDiv">
             登 录
           </div>
         </div>
@@ -37,6 +37,8 @@ export default {
       account: '',
       //  密码
       password: '',
+      //  用户信息
+      userInformation: {},
       //  默认的图片src
       defaultSrc: '../../../static/img/login.png',
       //  距离屏幕左端距离
@@ -71,9 +73,37 @@ export default {
     },
     signin (e) {
       if (this.confirmSuccess) {
-        let dom = e.target
-        $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
-        this.$router.push({path: '/home'})
+        let account = this.account
+        let password = this.password
+        let this_ = this
+        let pstDate = `http://172.16.6.99:8910/auth/login?usercode=${account}&password=${password}&serviceType=2`
+        this.axios.post(pstDate).then(function (response) {
+          let data = response.data
+          if (data.code === 0) {
+            if (data.data.message === '账户或密码不存在') {
+              alert('账号错误，请重新登录！')
+              return false
+            } else {
+              //  用户已登录
+              if (data.data.message === '密码错误') {
+                alert('密码错误，请重新登录！')
+                return false
+              } else {
+                console.log(data.data.token)
+                let token = {token: data.data.token}
+                let list = data.data.userInfo
+                sessionStorage.token = token
+                sessionStorage.userInfo = list
+                let dom = e.target
+                $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
+                this_.$router.push({path: '/home'})
+                console.log(sessionStorage)
+              }
+            }
+          } else {
+            alert('请求失败，请刷新，重新输入！')
+          }
+        })
       } else {
         alert('请先拖动验证')
       }

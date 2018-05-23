@@ -8,7 +8,7 @@
               登 录 名
             </p>
             <div class="headerDiv">
-              <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+              <el-input v-model="Username" placeholder=""  clearable>></el-input>
             </div>
           </li>
           <li class="headerLi">
@@ -16,7 +16,7 @@
               所属部门
             </p>
             <div class="headerDiv">
-              <el-select v-model="value" placeholder="请选择">
+              <el-select v-model="value" placeholder="">
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -31,7 +31,7 @@
               角 色
             </p>
             <div class="headerDiv">
-              <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+              <el-input v-model="role" placeholder=""  clearable>></el-input>
             </div>
           </li>
           <li class="headerLi">
@@ -39,7 +39,7 @@
               手 机
             </p>
             <div class="headerDiv">
-              <el-input v-model="input" placeholder="请输入内容" clearable>></el-input>
+              <el-input v-model="Handphone" placeholder="" clearable>></el-input>
             </div>
           </li>
         </ul>
@@ -195,6 +195,12 @@ export default {
       }],
       value: '',
       input: '',
+      //  用户名
+      Username: '',
+      //  角色
+      role: '',
+      //  手机
+      Handphone: '',
       information: [{
         id: '1',
         name: '啦啦啦',
@@ -250,7 +256,15 @@ export default {
     },
     amputate ($index, content) {
       content.splice([$index], 1)
+    },
+    postData () {
+      // this.axios.post().then(function (response) {
+      //   console.log(response)
+      // })
     }
+  },
+  mounted () {
+    this.postData()
   }
 }
 </script>

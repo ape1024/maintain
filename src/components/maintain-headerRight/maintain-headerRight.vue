@@ -20,13 +20,13 @@
      </div>
      <div class="headerRight_right">
        <div class="portrait">
-         <img class="portraitImg" src="../../../static/img/portrait.png" alt="">
+         <img class="portraitImg" :src="portrait" alt="">
        </div>
        <div class="userOperation">
-         <p class="userOperationP">
-           123
+         <p class="userOperationP" v-html="headername">
+
          </p>
-         <div class="userBottom">
+         <div @click="signout" class="userBottom">
            <img class="userBottomImg" src="../../../static/img/secede.png" alt="">
            <span>安全退出</span>
          </div>
@@ -36,10 +36,15 @@
 </template>
 
 <script>
+// import $ from 'jquery'
 export default {
   name: 'maintain-headerRight',
   data () {
     return {
+      //  用户名
+      headername: '',
+      //  用户头像
+      portrait: '../../../static/img/portrait.png',
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -58,6 +63,28 @@ export default {
       }],
       value: ''
     }
+  },
+  methods: {
+    getDate () {
+      // let headername = sessionStorage.userInfo.username
+      // let portrait = sessionStorage.userInfo.icon
+      // this.headername = headername
+      // this.portrait = portrait
+      // console.log(sessionStorage.userInfo)
+    },
+    signout () {
+      let this_ = this
+      let signouttoken = sessionStorage.token.token
+      let strIng = `http://172.16.6.99:8910/auth/logout?token=${signouttoken}`
+      this.axios.post(strIng).then(function (response) {
+        //   用户点击退出 清除sessionStorage
+        sessionStorage.clear()
+        this_.$router.push({path: '/login'})
+      })
+    }
+  },
+  mounted () {
+    this.getDate()
   }
 }
 </script>

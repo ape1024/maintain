@@ -2,7 +2,7 @@
   <div class="jurisdiction">
     <div class="jurisdictionDiv">
       <h4 class="jurisdictionH">
-        权限
+        新增角色信息
       </h4>
       <div class="jurisdictionBottom">
         <div class="header">
