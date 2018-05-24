@@ -1,81 +1,112 @@
 <template>
   <div id="app">
-    <header class="header">
-      <div class="header_left">
-        <ul class="ul_router">
-          <router-link to="/home">
-            <li>
-              <i class="headerHome"></i>
-              首页
-            </li>
-          </router-link>
-          <router-link to="/admin">
-            <li>
-              <i class="headerAdmin"></i>
-              消防设施管理
-            </li>
-          </router-link>
-          <router-link to="/daily">
-            <li>
-              <i class="headerDaily"></i>
-              日常巡检
-            </li>
-          </router-link>
-          <router-link to="/inspect">
-            <li>
-              <i class="headerInspect"></i>
-              检查测试
-            </li>
-          </router-link>
-          <router-link to="/maintain">
-            <li>
-              <i class="headerMaintain"></i>
-              维护保养
-            </li>
-          </router-link>
-          <router-link to="/repair">
-            <li>
-              <i class="headerRepair"></i>
-              故障维修
-            </li>
-          </router-link>
-          <router-link to="/archives">
-            <li>
-              <i class="headerArchives"></i>
-              工作档案管理
-            </li>
-          </router-link>
-          <router-link to="/report">
-            <li>
-              <i class="headerReport"></i>
-              上报问题管理
-            </li>
-          </router-link>
-          <router-link to="/intercalate">
-            <li>
-              <i class="headerIntercalate"></i>
-              系统设置
-            </li>
-          </router-link>
-        </ul>
-      </div>
-      <div class="header_right">
-        <MaintainheaderRight></MaintainheaderRight>
-      </div>
-    </header>
-    <section class="subject">
-      <router-view>
-      </router-view>
-    </section>
+   <div class="macrocosm">
+     <header class="header">
+       <div class="header_left">
+         <ul class="ul_router">
+           <router-link to="/home">
+             <li>
+               <i class="headerHome"></i>
+               首页
+             </li>
+           </router-link>
+           <router-link to="/admin">
+             <li>
+               <i class="headerAdmin"></i>
+               消防设施管理
+             </li>
+           </router-link>
+           <router-link to="/daily">
+             <li>
+               <i class="headerDaily"></i>
+               日常巡检
+             </li>
+           </router-link>
+           <router-link to="/inspect">
+             <li>
+               <i class="headerInspect"></i>
+               检查测试
+             </li>
+           </router-link>
+           <router-link to="/maintain">
+             <li>
+               <i class="headerMaintain"></i>
+               维护保养
+             </li>
+           </router-link>
+           <router-link to="/repair">
+             <li>
+               <i class="headerRepair"></i>
+               故障维修
+             </li>
+           </router-link>
+           <router-link to="/archives">
+             <li>
+               <i class="headerArchives"></i>
+               工作档案管理
+             </li>
+           </router-link>
+           <router-link to="/report">
+             <li>
+               <i class="headerReport"></i>
+               上报问题管理
+             </li>
+           </router-link>
+           <router-link to="/intercalate">
+             <li>
+               <i class="headerIntercalate"></i>
+               系统设置
+             </li>
+           </router-link>
+         </ul>
+       </div>
+       <div class="header_right">
+         <MaintainheaderRight></MaintainheaderRight>
+       </div>
+     </header>
+     <section class="subject">
+       <router-view>
+       </router-view>
+     </section>
+   </div>
   </div>
 </template>
 
 <script>
+import login from 'components/login/login'
 import MaintainheaderRight from 'components/maintain-headerRight/maintain-headerRight'
+import { judgeToken } from 'api/user'
+import global_ from 'components/tool/Global'
 export default {
   name: 'App',
   components: {
-    MaintainheaderRight
+    MaintainheaderRight,
+    login
+  },
+  data () {
+    return {
+
+    }
+  },
+  methods: {
+    Land (ve) {
+      this.userToken = ve
+    }
+  },
+  created () {
+    let Judgetoken = window.sessionStorage.token
+    // console.log(window.sessionStorage.token)
+    //  登录接口 失效判断
+    console.log(this.userToken)
+    judgeToken(Judgetoken)
+    if (global_.concealment === true) {
+      this.$router.push('/home')
+    } else {
+      this.$router.push('/login')
+    }
+  },
+  mounted () {
+    alert(global_.concealment)
   }
 }
 </script>
@@ -92,6 +123,14 @@ export default {
    height 100%
    background url("../static/img/back.png") no-repeat
    background-size cover
+ .debarkation
+   position fixed
+   top 0
+   left 0
+   overflow hidden
+   z-index 111111
+ .macrocosm
+   init()
    .header
      width 100%
      overflow hidden

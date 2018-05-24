@@ -37,6 +37,7 @@
 
 <script>
 // import $ from 'jquery'
+import global_ from 'components/tool/Global'
 export default {
   name: 'maintain-headerRight',
   data () {
@@ -66,24 +67,26 @@ export default {
   },
   methods: {
     getDate () {
-      // let headername = sessionStorage.userInfo.username
-      // let portrait = sessionStorage.userInfo.icon
-      // this.headername = headername
-      // this.portrait = portrait
-      // console.log(sessionStorage.userInfo)
+      let sessionUserInfo = JSON.parse(sessionStorage.userInfo)
+      let headername = sessionUserInfo.username
+      let portrait = sessionUserInfo.icon
+      this.headername = headername
+      this.portrait = portrait
     },
     signout () {
       let this_ = this
+      global_.concealment = false
       let signouttoken = sessionStorage.token.token
       let strIng = `http://172.16.6.99:8910/auth/logout?token=${signouttoken}`
       this.axios.post(strIng).then(function (response) {
-        //   用户点击退出 清除sessionStorage
+      //   用户点击退出 清除sessionStorage
         sessionStorage.clear()
         this_.$router.push({path: '/login'})
       })
     }
   },
-  mounted () {
+  beforeMount () {
+    alert('0000')
     this.getDate()
   }
 }

@@ -27,12 +27,16 @@
 
 <script>
 import $ from 'jquery'
+import { userLogin } from '../../api/user'
+import global_ from 'components/tool/Global'
 export default {
   name: 'login',
   components: {},
   props: {},
   data () {
     return {
+      //  传给 首页的布尔值
+      land: false,
       //  账号
       account: '',
       //  密码
@@ -53,7 +57,9 @@ export default {
       confirmSuccess: false
     }
   },
-  created () {},
+  created () {
+    console.log()
+  },
   methods: {
     mousedownFn: function (e) {
       this.mouseMoveStata = true
@@ -76,28 +82,34 @@ export default {
         let account = this.account
         let password = this.password
         let this_ = this
-        let pstDate = `http://172.16.6.99:8910/auth/login?usercode=${account}&password=${password}&serviceType=2`
+        //  获取登录 url
+        let pstDate = userLogin(account, password, 2)
         this.axios.post(pstDate).then(function (response) {
           let data = response.data
           if (data.code === 0) {
-            if (data.data.message === '账户或密码不存在') {
+            if (data.data.code === -1) {
               alert('账号错误，请重新登录！')
               return false
             } else {
               //  用户已登录
-              if (data.data.message === '密码错误') {
+              if (data.data.code === -3) {
                 alert('密码错误，请重新登录！')
                 return false
               } else {
-                console.log(data.data.token)
-                let token = {token: data.data.token}
-                let list = data.data.userInfo
-                sessionStorage.token = token
-                sessionStorage.userInfo = list
-                let dom = e.target
-                $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
-                this_.$router.push({path: '/home'})
-                console.log(sessionStorage)
+                if (data.data.code === 0) {
+                  let userinfo = JSON.stringify(response.data.data.userInfo)
+                  let token = JSON.stringify(response.data.data.token)
+                  window.sessionStorage.setItem('userInfo', userinfo)
+                  window.sessionStorage.setItem('token', token)
+                  let dom = e.target
+                  $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
+                  this_.land = 'true'
+                  global_.concealment = true
+                  this_.$router.push('/home')
+                  alert('00000')
+                } else {
+                  alert('登录失败')
+                }
               }
             }
           } else {
