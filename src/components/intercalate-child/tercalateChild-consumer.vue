@@ -91,34 +91,36 @@
           </li>
         </ul>
         <ul class="entryList">
-          <li v-for="(item, $index) in information"  v-bind:key="item.id" class="listLi">
+          <li v-for="(item, $index) in information"  v-bind:key="item.userid" class="listLi">
             <ul>
               <li class="entryLione">
-                {{item.name}}
+                {{item.usercode}}
               </li>
               <li class="entryLitwo">
-                {{item.compellation}}
+                {{item.username}}
               </li>
-              <li class="entryLitwo">{{item.identity}}</li>
-              <li class="entryLifive">{{item.mailbox}}</li>
-              <li class="entryLitwo">{{item.phone}}</li>
-              <li class="entryLitwo">{{item.mechanism}}</li>
-              <li class="entryLitwo">{{item.logintime}}</li>
+              <li class="entryLitwo">{{item.rolename}}</li>
+              <li class="entryLifive">{{item.email}}</li>
+              <li class="entryLitwo">{{item.tel}}</li>
+              <li class="entryLitwo">{{item.organizationid}}</li>
+              <li class="entryLitwo">{{item.lastlogintime}}</li>
               <li class="entryLithree">
-                <div v-if="item.locking == 0">
-                  <img src="../../../static/img/locking.png" alt="">
-                </div>
-                <div v-if="item.locking == 1">
-                  <img src="../../../static/img/unlock.png" alt="">
-                </div>
+                {{item.organizationname}}
+                <!--判断锁定情况，目前没有参数-->
+                <!--<div v-if="item.locking == 0">-->
+                  <!--<img src="../../../static/img/locking.png" alt="">-->
+                <!--</div>-->
+                <!--<div v-if="item.locking == 1">-->
+                  <!--<img src="../../../static/img/unlock.png" alt="">-->
+                <!--</div>-->
               </li>
               <li class="entryLifour">
                 <!--查看-->
-                <p @click="exaMine" class="examine">
+                <p @click="exaMine(item.userid)" class="examine">
                   查看
                 </p>
                 <!--修改-->
-                <p @click="moDify" class="modify">
+                <p @click="moDify(item)" class="modify">
                   修改
                 </p>
                 <!--修改密码-->
@@ -149,7 +151,7 @@
     </section>
     <!--查看-->
     <section v-if="examineBoolean"  class="adhibit">
-      <examine :examine="examineBoolean" @mine="Mine"></examine>
+      <examine :examine="examineBoolean" :exaMineCodo="exaMineCodo" @mine="Mine"></examine>
     </section>
     <!--修改-->
     <section v-if="modifyBoolean" class="adhibit">
@@ -163,6 +165,8 @@
 </template>
 
 <script>
+import { judgeToken } from '../../api/user'
+import { iConsumerexamine } from '../../api/user'
 import increase from '../intercalateChild-operation/consumerChild-increase'
 import examine from '../intercalateChild-operation/consumerChild-seeinfo'
 import edit from '../intercalateChild-operation/consumerChild-steganogram'
@@ -201,31 +205,13 @@ export default {
       role: '',
       //  手机
       Handphone: '',
-      information: [{
-        id: '1',
-        name: '啦啦啦',
-        compellation: '埃克索图斯',
-        identity: '独裁者',
-        mailbox: '188986798@qq.com',
-        phone: '1831990111',
-        mechanism: '光明顶',
-        logintime: '2018.9.18 17:00',
-        locking: 0
-      }, {
-        id: '2',
-        name: '嘤嘤嘤',
-        compellation: '李四',
-        identity: '管理者',
-        mailbox: '288986798@qq.com',
-        phone: '3831990111',
-        mechanism: '光明顶',
-        logintime: '2018.9.18 15:00',
-        locking: 1
-      }],
+      information: [],
       adhibitBoolean: false,
       examineBoolean: false,
       modifyBoolean: false,
-      inforBoolean: false
+      inforBoolean: false,
+      //  查看：向子级传递的值
+      exaMineCodo: []
     }
   },
   methods: {
@@ -235,13 +221,21 @@ export default {
     Incr (ev) {
       this.adhibitBoolean = ev
     },
-    exaMine () {
-      this.examineBoolean = true
+    exaMine (userid) {
+      let url = iConsumerexamine(userid)
+      this.axios.post(url).then((response) => {
+        if (response.data.code === 0) {
+          this.exaMineCodo = response.data.data
+          this.examineBoolean = true
+        }
+      })
     },
     Mine (ev) {
       this.examineBoolean = ev
     },
-    moDify () {
+    moDify (userid) {
+      //  修改用户信息
+      // let url = ``
       this.modifyBoolean = true
     },
     eDit (ev) {
@@ -265,6 +259,21 @@ export default {
   },
   mounted () {
     this.postData()
+  },
+  created () {
+    //  判断当前页 是否有token
+    let Judgetoken = window.sessionStorage.token
+    judgeToken(Judgetoken)
+    if (this.tokenStatus === false) {
+      this.$router.push('/login')
+      return false
+    }
+  },
+  beforeMount () {
+    let url = `http://172.16.6.16:8920/users/findAllBy?pageIndex=1&pageSize=10`
+    this.axios.post(url).then((response) => {
+      this.information = response.data.data.data
+    })
   }
 }
 </script>
@@ -367,6 +376,9 @@ export default {
       width 5%
       text-align left
       float left
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis
     .entryLifour
       width 20%
       float left

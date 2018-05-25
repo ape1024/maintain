@@ -27,16 +27,16 @@
 
 <script>
 import $ from 'jquery'
+import { judgeToken } from '../../api/user'
 import { userLogin } from '../../api/user'
-import global_ from 'components/tool/Global'
 export default {
   name: 'login',
   components: {},
   props: {},
   data () {
     return {
-      //  传给 首页的布尔值
-      land: false,
+      //  检验是否有token
+      tokenStatus: '',
       //  账号
       account: '',
       //  密码
@@ -56,9 +56,6 @@ export default {
       // 验证成功判断
       confirmSuccess: false
     }
-  },
-  created () {
-    console.log()
   },
   methods: {
     mousedownFn: function (e) {
@@ -81,10 +78,9 @@ export default {
       if (this.confirmSuccess) {
         let account = this.account
         let password = this.password
-        let this_ = this
         //  获取登录 url
         let pstDate = userLogin(account, password, 2)
-        this.axios.post(pstDate).then(function (response) {
+        this.axios.post(pstDate).then((response) => {
           let data = response.data
           if (data.code === 0) {
             if (data.data.code === -1) {
@@ -103,10 +99,7 @@ export default {
                   window.sessionStorage.setItem('token', token)
                   let dom = e.target
                   $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
-                  this_.land = 'true'
-                  global_.concealment = true
-                  this_.$router.push('/home')
-                  alert('00000')
+                  this.$router.push('/home')
                 } else {
                   alert('登录失败')
                 }
@@ -140,6 +133,23 @@ export default {
       if (width < this.maxwidth) {
         $('.handler').css({'left': 0})
         $('.drag_bg').css({'width': 0})
+      }
+    })
+  },
+  created () {
+    let Judgetoken = window.sessionStorage.token
+    // let token = judgeToken(Judgetoken)
+    judgeToken(Judgetoken).then(res => {
+      this.tokenStatus = res
+      if (this.tokenStatus === true) {
+        let sessionUserInfo = JSON.parse(sessionStorage.userInfo)
+        let headername = sessionUserInfo.username
+        let portrait = sessionUserInfo.icon
+        this.headername = headername
+        this.portrait = portrait
+        this.$router.push('/home')
+      } else {
+        this.$router.push('/login')
       }
     })
   }

@@ -11,14 +11,12 @@
               登 录 名：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="value" disabled placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+              <el-input
+                :disabled="true"
+                placeholder=""
+                v-model="exaMineCodo.usercode"
+                clearable>
+              </el-input>
             </div>
           </div>
           <div class="subjectDiv">
@@ -29,7 +27,7 @@
               <el-input
                 :disabled="true"
                 placeholder=""
-                v-model="input"
+                v-model="exaMineCodo.username"
                 clearable>
               </el-input>
             </div>
@@ -42,7 +40,7 @@
               <el-input
                 :disabled="true"
                 placeholder=""
-                v-model="input"
+                v-model="exaMineCodo.email"
                 clearable>
               </el-input>
             </div>
@@ -52,14 +50,12 @@
               用户角色：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="value" disabled placeholder="">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+              <el-input
+                :disabled="true"
+                placeholder=""
+                v-model="exaMineCodo.rolename"
+                clearable>
+              </el-input>
             </div>
           </div>
           <div class="subjectDiv">
@@ -70,7 +66,7 @@
               <el-input
                 :disabled="true"
                 placeholder=""
-                v-model="input"
+                v-model="exaMineCodo.tel"
                 clearable>
               </el-input>
             </div>
@@ -80,15 +76,7 @@
               用户头像：
             </p>
             <div class="upload">
-              <el-upload
-                class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i class="uploaderAvatar">添加头像</i>
-              </el-upload>
+              <img class="uploadImg" :src="exaMineCodo.icon" alt="">
             </div>
           </div>
         </div>
@@ -98,29 +86,12 @@
               所属组织：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="value" disabled placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </div>
-          </div>
-          <div class="subjectDiv">
-            <p class="subjectP">
-              工作职务：
-            </p>
-            <div class="subjectRigh">
-              <el-select v-model="value" disabled placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+              <el-input
+                :disabled="true"
+                placeholder=""
+                v-model="exaMineCodo.organizationname"
+                clearable>
+              </el-input>
             </div>
           </div>
           <div class="subjectDiv">
@@ -129,22 +100,32 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                :disabled="true"
+                placeholder=""
+                v-model="exaMineCodo.jobname"
+                clearable>
+              </el-input>
+            </div>
+          </div>
+          <div class="subjectDiv">
+            <p class="subjectP">
+              备注信息：
+            </p>
+            <div class="subjectRigh">
+              <el-input
                 type="textarea"
                 :rows="2"
                 :disabled="true"
                 resize="none"
                 placeholder=""
-                v-model="textarea">
+                v-model="exaMineCodo.memo">
               </el-input>
             </div>
           </div>
         </div>
       </div>
       <div class="fastener">
-        <div @click="conserve" class="conserve">
-          保存
-        </div>
-        <div class="closedown">
+        <div @click="conserve" class="closedown">
           关闭
         </div>
       </div>
@@ -155,7 +136,7 @@
 <script>
 export default {
   name: 'consumerChild-seeinfo',
-  props: ['examine'],
+  props: ['examine', 'exaMineCodo'],
   data () {
     return {
       thisPage: false,
@@ -194,19 +175,10 @@ export default {
     },
     blockedOut () {
       this.condition = !this.condition
-    },
-    beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
     }
+  },
+  created () {
+    console.log(this.exaMineCodo)
   }
 }
 </script>
@@ -291,6 +263,10 @@ export default {
         color #3ACF76
         margin-left 10px
         line-height 40px
+  .uploadImg
+     display inline-block
+     width 100%
+     height 100%
   .fastener
     init()
     text-align center

@@ -23,7 +23,7 @@
          <img class="portraitImg" :src="portrait" alt="">
        </div>
        <div class="userOperation">
-         <p class="userOperationP" v-html="headername">
+         <p class="userOperationP" v-html="username">
 
          </p>
          <div @click="signout" class="userBottom">
@@ -37,15 +37,12 @@
 
 <script>
 // import $ from 'jquery'
-import global_ from 'components/tool/Global'
+import { secede } from '../../api/user'
 export default {
   name: 'maintain-headerRight',
+  props: ['portrait', 'username'],
   data () {
     return {
-      //  用户名
-      headername: '',
-      //  用户头像
-      portrait: '../../../static/img/portrait.png',
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -66,18 +63,10 @@ export default {
     }
   },
   methods: {
-    getDate () {
-      let sessionUserInfo = JSON.parse(sessionStorage.userInfo)
-      let headername = sessionUserInfo.username
-      let portrait = sessionUserInfo.icon
-      this.headername = headername
-      this.portrait = portrait
-    },
     signout () {
       let this_ = this
-      global_.concealment = false
       let signouttoken = sessionStorage.token.token
-      let strIng = `http://172.16.6.99:8910/auth/logout?token=${signouttoken}`
+      let strIng = secede(signouttoken)
       this.axios.post(strIng).then(function (response) {
       //   用户点击退出 清除sessionStorage
         sessionStorage.clear()
@@ -85,9 +74,9 @@ export default {
       })
     }
   },
-  beforeMount () {
-    alert('0000')
-    this.getDate()
+  created () {
+    console.log(this.portrait)
+    console.log(this.username)
   }
 }
 </script>

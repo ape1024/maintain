@@ -1,5 +1,5 @@
 import axios from 'axios'
-import global_ from '../components/tool/Global'
+
 //  登录接口
 export const userLogin = (username, password, genre) => {
   let url = `http://172.16.6.99:8910/auth/login?usercode=${username}&password=${password}&serviceType=${genre}`
@@ -7,16 +7,29 @@ export const userLogin = (username, password, genre) => {
 }
 //  判断token 是否失效接口
 export const judgeToken = (Judgetoken) => {
-  console.log(Judgetoken)
-  if (window.sessionStorage.token === undefined) {
-    global_.concealment = false
+  console.log(Judgetoken + '123')
+  if (Judgetoken === undefined) {
+    return Promise.resolve(false)
   } else {
-    let url = null
-    global_.concealment = true
-    url = `http://172.16.6.99:8910/auth/tokenCheck?token=${Judgetoken}`
-    axios.post(url).then(function (response) {
-      alert(Judgetoken)
-      global_.concealment = true
+    console.log('当前有token')
+    let url = `http://172.16.6.99:8910/auth/tokenCheck?token=${Judgetoken}`
+    return axios.post(url).then((response) => {
+      console.log(response.data.code)
+      if (response.data.code === 0) {
+        return true
+      } else {
+        return false
+      }
     })
   }
+}
+//  退出登录
+export const secede = (toKen) => {
+  let url = `http://172.16.6.99:8910/auth/logout?token=${toKen}`
+  return url
+}
+//  系统设置->用户设置->查看用户信息
+export const iConsumerexamine = (userId) => {
+  let url = `http://172.16.6.16:8920/users/findUser?userid=${userId}`
+  return url
 }

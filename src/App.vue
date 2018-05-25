@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-   <div class="macrocosm">
+   <div  class="macrocosm">
      <header class="header">
        <div class="header_left">
          <ul class="ul_router">
@@ -61,7 +61,7 @@
          </ul>
        </div>
        <div class="header_right">
-         <MaintainheaderRight></MaintainheaderRight>
+         <MaintainheaderRight :username='headername' :portrait='portrait'></MaintainheaderRight>
        </div>
      </header>
      <section class="subject">
@@ -76,7 +76,7 @@
 import login from 'components/login/login'
 import MaintainheaderRight from 'components/maintain-headerRight/maintain-headerRight'
 import { judgeToken } from 'api/user'
-import global_ from 'components/tool/Global'
+
 export default {
   name: 'App',
   components: {
@@ -85,7 +85,10 @@ export default {
   },
   data () {
     return {
-
+      tokenStatus: '',
+      isShowed: false,
+      headername: '',
+      portrait: ''
     }
   },
   methods: {
@@ -95,18 +98,23 @@ export default {
   },
   created () {
     let Judgetoken = window.sessionStorage.token
-    // console.log(window.sessionStorage.token)
-    //  登录接口 失效判断
-    console.log(this.userToken)
-    judgeToken(Judgetoken)
-    if (global_.concealment === true) {
-      this.$router.push('/home')
-    } else {
-      this.$router.push('/login')
-    }
+    // let token = judgeToken(Judgetoken)
+    // let token = null
+    judgeToken(Judgetoken).then(res => {
+      this.tokenStatus = res
+      if (this.tokenStatus === true) {
+        let sessionUserInfo = JSON.parse(sessionStorage.userInfo)
+        let headername = sessionUserInfo.username
+        let portrait = sessionUserInfo.icon
+        this.headername = headername
+        this.portrait = portrait
+      } else {
+        this.$router.push('/login')
+      }
+    })
   },
   mounted () {
-    alert(global_.concealment)
+
   }
 }
 </script>

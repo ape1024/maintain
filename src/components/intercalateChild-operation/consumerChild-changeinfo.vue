@@ -2,7 +2,7 @@
   <div class="information">
     <section  class="informationDiv">
       <h4 class="informationH">
-        我的信息
+        修改用户信息
       </h4>
       <div class="subject">
         <div class="subjectLeft">
