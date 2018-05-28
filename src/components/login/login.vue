@@ -27,8 +27,7 @@
 
 <script>
 import $ from 'jquery'
-import { judgeToken } from '../../api/user'
-import { userLogin } from '../../api/user'
+import { judgeToken, userLogin } from '../../api/user'
 export default {
   name: 'login',
   components: {},

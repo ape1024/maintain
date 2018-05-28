@@ -11,14 +11,11 @@
               登 录 名：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="value" placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+              <el-input
+                placeholder=""
+                v-model="nameoflanding"
+                clearable>
+              </el-input>
             </div>
           </div>
           <div class="subjectDiv">
@@ -28,7 +25,7 @@
             <div class="subjectRigh">
               <el-input
                 placeholder=""
-                v-model="input"
+                v-model="Username"
                 clearable>
               </el-input>
             </div>
@@ -40,7 +37,7 @@
             <div class="subjectRigh">
               <el-input
                 placeholder=""
-                v-model="input"
+                v-model="Useremail"
                 clearable>
               </el-input>
             </div>
@@ -50,12 +47,12 @@
               用户角色：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="value" placeholder="">
+              <el-select v-model="value5" multiple placeholder="请选择">
                 <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  v-for="item in roleSelect"
+                  :key="item.objectId"
+                  :label="item.creatername"
+                  :value="item.objectId">
                 </el-option>
               </el-select>
             </div>
@@ -67,7 +64,7 @@
             <div class="subjectRigh">
               <el-input
                 placeholder=""
-                v-model="input"
+                v-model="pheneInput"
                 clearable>
               </el-input>
             </div>
@@ -76,17 +73,15 @@
             <p class="subjectP">
               用户头像：
             </p>
-            <div class="upload">
-              <el-upload
-                class="avatar-uploader"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i class="uploaderAvatar">添加头像</i>
-              </el-upload>
-            </div>
+            <el-upload
+              class="avatar-uploader"
+              :action="importFileUrl"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
           </div>
         </div>
         <div class="subjectRight">
@@ -95,14 +90,11 @@
               所属组织：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="value" placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+              <el-cascader
+                :options="organize"
+                :show-all-levels="false"
+                :props="defaultProps"
+              ></el-cascader>
             </div>
           </div>
           <div class="subjectDiv">
@@ -110,11 +102,11 @@
               工作职务：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="value" placeholder="请选择">
+              <el-select v-model="businesspostCode" placeholder="请选择">
                 <el-option
-                  v-for="item in options"
+                  v-for="item in businesspost"
                   :key="item.value"
-                  :label="item.label"
+                  :label="item.name"
                   :value="item.value">
                 </el-option>
               </el-select>
@@ -122,7 +114,7 @@
           </div>
           <div class="subjectDiv">
             <p class="subjectP">
-              工作职务：
+              备注信息：
             </p>
             <div class="subjectRigh">
               <el-input
@@ -140,7 +132,7 @@
         <div @click="conserve" class="conserve">
           保存
         </div>
-        <div class="closedown">
+        <div @click="closedown" class="closedown">
           关闭
         </div>
       </div>
@@ -151,13 +143,34 @@
 <script>
 export default {
   name: 'consumerChild-changeinfo',
-  props: ['changei'],
+  props: ['changei', 'communication'],
   data () {
     return {
       thisPage: false,
       condition: true,
+      //  登陆名
+      nameoflanding: this.communication.usercode,
+      //  用户姓名
+      Username: this.communication.username,
+      //  用户邮箱
+      Useremail: this.communication.email,
+      //  手机号
+      pheneInput: this.communication.tel,
+      //  照片
+      Userportrait: this.communication.icon,
       input: '',
-      imageUrl: '',
+      //  上传图片
+      importFileUrl: `http://172.16.6.16:8920/users/updateUser?userid=${this.communication.organizationid}&roleids=`,
+      //  职务
+      businesspost: '',
+      //  上传这个
+      businesspostCode: '',
+      //  组织结构
+      organize: [],
+      imageUrl: this.communication.icon,
+      roleSelect: '',
+      dialogImageUrl: '',
+      dialogVisible: false,
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -176,24 +189,24 @@ export default {
       }],
       value: '',
       input10: '',
-      textarea: ''
+      textarea: '',
+      value5: [],
+      value11: [],
+      defaultProps: {
+        label: 'organizationName',
+        children: 'subOrgnizations',
+        value: 'organizationCode'
+      }
     }
   },
   methods: {
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
-    conserve () {
-      this.thisPage = this.changei
-      this.thisPage = !this.thisPage
-      this.$emit('informa', this.thisPage)
-    },
-    blockedOut () {
-      this.condition = !this.condition
-    },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
+
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 JPG 格式!')
       }
@@ -201,7 +214,48 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
+    },
+    conserve () {
+      this.thisPage = this.changei
+      this.thisPage = !this.thisPage
+      this.$emit('informa', this.thisPage)
+
+      this.axios(``)
+    },
+    blockedOut () {
+      this.condition = !this.condition
+    },
+    closedown () {
+      console.log(this.communication.usercode)
+    },
+    handleNodeClick (data) {
+      console.log(data)
     }
+  },
+  created () {
+    var token = window.sessionStorage.token
+    //  用户角色 目前用一个临时token，以后修改
+    this.axios.post(`http://172.16.6.16:8920/users/getRolesList?token=5a243968-d1db-4f33-82e7-beee9e0fe38e`).then((response) => {
+      if (response.data.code === 0) {
+        this.roleSelect = response.data.data
+        return false
+      } else {
+        alert('请求失败')
+        return false
+      }
+    })
+    //  获取职务
+    this.axios.post(`http://172.16.6.16:8920/users/getJobList`).then((response) => {
+      if (response.data.code === 0) {
+        this.businesspost = response.data.data
+      }
+    })
+    //  获取组织结构
+    this.axios.post(`http://172.16.6.16:8920/organization/getOrganizationTrees?token=${token}`).then((response) => {
+      if (response.data.code === 0) {
+        this.organize = (response.data.data)
+      }
+    })
   }
 }
 </script>
@@ -321,8 +375,8 @@ export default {
     text-align: center;
   }
   .avatar {
-    width: 178px;
-    height: 178px;
+    width: 40px;
+    height: 40px;
     display: block;
   }
 </style>

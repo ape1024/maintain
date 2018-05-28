@@ -155,7 +155,7 @@
     </section>
     <!--修改-->
     <section v-if="modifyBoolean" class="adhibit">
-      <information :changei="modifyBoolean" @informa="inFourma"></information>
+      <information :communication="moDifynews" :changei="modifyBoolean" @informa="inFourma"></information>
     </section>
     <!--修改密码-->
     <section v-if="inforBoolean" class="adhibit">
@@ -165,8 +165,7 @@
 </template>
 
 <script>
-import { judgeToken } from '../../api/user'
-import { iConsumerexamine } from '../../api/user'
+import { judgeToken, iConsumerexamine } from '../../api/user'
 import increase from '../intercalateChild-operation/consumerChild-increase'
 import examine from '../intercalateChild-operation/consumerChild-seeinfo'
 import edit from '../intercalateChild-operation/consumerChild-steganogram'
@@ -211,7 +210,8 @@ export default {
       modifyBoolean: false,
       inforBoolean: false,
       //  查看：向子级传递的值
-      exaMineCodo: []
+      exaMineCodo: [],
+      moDifynews: ''
     }
   },
   methods: {
@@ -233,9 +233,10 @@ export default {
     Mine (ev) {
       this.examineBoolean = ev
     },
-    moDify (userid) {
+    moDify (user) {
       //  修改用户信息
-      // let url = ``
+      this.moDifynews = user
+      console.log(user)
       this.modifyBoolean = true
     },
     eDit (ev) {
