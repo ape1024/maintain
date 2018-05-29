@@ -98,7 +98,9 @@ export default {
                   window.sessionStorage.setItem('token', token)
                   let dom = e.target
                   $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
-                  this.$router.push('/home')
+                  alert('0')
+                  this.$router.go(0)
+                  this.$router.push('/loginBlank')
                 } else {
                   alert('登录失败')
                 }

@@ -92,9 +92,7 @@ export default {
     }
   },
   methods: {
-    Land (ve) {
-      this.userToken = ve
-    }
+
   },
   created () {
     let Judgetoken = window.sessionStorage.token

@@ -47,7 +47,7 @@
               用户角色：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="value5" multiple placeholder="请选择">
+              <el-select v-model="userstate" multiple placeholder="请选择">
                 <el-option
                   v-for="item in roleSelect"
                   :key="item.objectId"
@@ -94,6 +94,7 @@
                 :options="organize"
                 :show-all-levels="false"
                 :props="defaultProps"
+                @change="handleChange"
               ></el-cascader>
             </div>
           </div>
@@ -141,6 +142,7 @@
 </template>
 
 <script>
+import { modifytheUser } from '../../api/user'
 export default {
   name: 'consumerChild-changeinfo',
   props: ['changei', 'communication'],
@@ -188,10 +190,9 @@ export default {
         label: '北京烤鸭'
       }],
       value: '',
-      input10: '',
       textarea: '',
-      value5: [],
-      value11: [],
+      organizationid: '',
+      userstate: [],
       defaultProps: {
         label: 'organizationName',
         children: 'subOrgnizations',
@@ -216,20 +217,46 @@ export default {
       return isJPG && isLt2M
     },
     conserve () {
-      this.thisPage = this.changei
-      this.thisPage = !this.thisPage
-      this.$emit('informa', this.thisPage)
-
-      this.axios(``)
+      let urlconserve = JSON.parse(window.sessionStorage.userInfo)
+      //  获取当前用户id
+      let userid = urlconserve.userid
+      //  获取组织id
+      let organizationid = this.organizationid
+      //  获取当前用户登录名
+      let usercode = this.nameoflanding
+      //  获取用户姓名
+      let username = this.Username
+      //  获取邮箱
+      let email = this.Useremail
+      //  获取电话
+      let tel = this.pheneInput
+      //  获取角色
+      let userstate = this.userstate
+      //  获取职位
+      let job = this.businesspostCode
+      //  获取备注
+      let memo = this.textarea
+      let url = modifytheUser(userid, organizationid, usercode, username, email, tel, userstate, job, memo)
+      this.axios.post(url).then((response) => {
+        if (response.data.code === 0) {
+          this.thisPage = this.changei
+          this.thisPage = !this.thisPage
+          this.$emit('informa', this.thisPage)
+        }
+      })
     },
     blockedOut () {
       this.condition = !this.condition
     },
     closedown () {
-      console.log(this.communication.usercode)
+      this.thisPage = this.changei
+      this.thisPage = !this.thisPage
+      this.$emit('informa', this.thisPage)
     },
-    handleNodeClick (data) {
-      console.log(data)
+    handleChange (value) {
+      let Value = value[value.length - 1]
+      console.log(Value)
+      this.organizationid = Value
     }
   },
   created () {
@@ -379,6 +406,8 @@ export default {
     height: 40px;
     display: block;
   }
+  .el-cascader
+     width  100%
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner

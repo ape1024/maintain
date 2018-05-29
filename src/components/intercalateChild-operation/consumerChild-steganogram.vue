@@ -13,13 +13,14 @@
             <el-input
               placeholder=""
               type="password"
+              @blur="cryptogramBlur(input10)"
               v-model="input10"
               clearable>
             </el-input>
           </div>
           <div class="estate">
-            <i class="el-icon-error"></i>
-            <!--<i class="el-icon-success"></i>-->
+            <i v-show="showState" class="el-icon-error"></i>
+            <i v-show="!showState" class="el-icon-success"></i>
           </div>
         </div>
         <div class="cryptogramDiv">
@@ -89,10 +90,16 @@ export default {
       }],
       value: '',
       input10: '',
-      textarea: ''
+      textarea: '',
+      showState: true
     }
   },
   methods: {
+    cryptogramBlur (item) {
+      // let original = JSON.parse(window.sessionStorage.userInfo).pwd
+      // if (original === item){
+      // }
+    },
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
@@ -195,11 +202,11 @@ export default {
       .el-icon-error
         color #A63232
         margin-left 10px
-        line-height 40px
+        line-height 30px
       .el-icon-success
         color #3ACF76
         margin-left 10px
-        line-height 40px
+        line-height 30px
   .fastener
     init()
     text-align center

@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // 登录
 import login from '../components/login/login'
+//   登陆空白页
+import loginBlank from '../components/login/loginBlank'
 // 首页
 import home from '../components/maintain-home/maintain-home'
 // 设备管理
@@ -37,6 +39,11 @@ const routes = [
     // 登录
     path: '/login',
     component: login
+  },
+  {
+    //  登陆空白页
+    path: '/loginBlank',
+    component: loginBlank
   },
   {
     // 首页

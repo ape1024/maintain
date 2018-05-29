@@ -102,10 +102,10 @@
               <li class="entryLitwo">{{item.rolename}}</li>
               <li class="entryLifive">{{item.email}}</li>
               <li class="entryLitwo">{{item.tel}}</li>
-              <li class="entryLitwo">{{item.organizationid}}</li>
+              <li class="entryLitwo">{{item.organizationname}}</li>
               <li class="entryLitwo">{{item.lastlogintime}}</li>
               <li class="entryLithree">
-                {{item.organizationname}}
+                {{item.userroleid}}
                 <!--判断锁定情况，目前没有参数-->
                 <!--<div v-if="item.locking == 0">-->
                   <!--<img src="../../../static/img/locking.png" alt="">-->
@@ -169,6 +169,7 @@ import { judgeToken, iConsumerexamine } from '../../api/user'
 import increase from '../intercalateChild-operation/consumerChild-increase'
 import examine from '../intercalateChild-operation/consumerChild-seeinfo'
 import edit from '../intercalateChild-operation/consumerChild-steganogram'
+//  修改
 import information from '../intercalateChild-operation/consumerChild-changeinfo'
 export default {
   name: 'tercalateChild-consumer',

@@ -23,16 +23,18 @@ export const judgeToken = (Judgetoken) => {
 }
 //  退出登录
 export const secede = (toKen) => {
-  let url = `http://172.16.6.99:8910/auth/logout?token=${toKen}`
+  const url = `http://172.16.6.16:8920/auth/logout?token=${toKen}`
   return url
 }
 //  系统设置->用户设置->查看用户信息
 export const iConsumerexamine = (userId) => {
-  let url = `http://172.16.6.16:8920/users/findUser?userid=${userId}`
+  const url = `http://172.16.6.16:8920/users/findUser?userid=${userId}`
   return url
 }
 
 //  用户设置  修改用户
-export const modifytheUser = (userid, organizationid, usercode, username, email, tel, userstate, job, memo, file) => {
-  //  用户id |
+export const modifytheUser = (userid, organizationid, usercode, username, email, tel, userstate, job, memo) => {
+  //  用户id | 组织id | 登录名 | 用户名 | 邮箱 | 电话 | 用户角色 | 职务 | 备注
+  const url = `http://172.16.6.16:8920/users/updateUser?userid=${userid}&organizationid=${organizationid}&usercode=${usercode}&username=${username}&email=${email}&tel=${tel}&userstate=${userstate}&job=${job}&memo=${memo}`
+  return url
 }
