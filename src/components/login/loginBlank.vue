@@ -8,13 +8,11 @@
 export default {
   name: 'loginBlank',
   data () {
-    this.$router.replace('/home')
     return {
-
     }
   },
   created () {
-    this.$router.go(0)
+    this.$router.replace('/home')
   }
 }
 </script>

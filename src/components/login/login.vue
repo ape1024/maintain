@@ -98,7 +98,6 @@ export default {
                   window.sessionStorage.setItem('token', token)
                   let dom = e.target
                   $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
-                  alert('0')
                   this.$router.go(0)
                   this.$router.push('/loginBlank')
                 } else {
@@ -149,6 +148,7 @@ export default {
         this.headername = headername
         this.portrait = portrait
         this.$router.push('/home')
+        this.$router.go(0)
       } else {
         this.$router.push('/login')
       }

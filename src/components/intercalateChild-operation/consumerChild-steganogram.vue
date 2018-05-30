@@ -13,8 +13,8 @@
             <el-input
               placeholder=""
               type="password"
-              @blur="cryptogramBlur(input10)"
-              v-model="input10"
+              @blur="cryptogramBlur(barbarism)"
+              v-model="barbarism"
               clearable>
             </el-input>
           </div>
@@ -31,7 +31,7 @@
             <el-input
               placeholder=""
               type="password"
-              v-model="input10"
+              v-model="newcode"
               clearable>
             </el-input>
           </div>
@@ -44,7 +44,7 @@
             <el-input
               placeholder=""
               type="password"
-              v-model="input10"
+              v-model="duplicate"
               clearable>
             </el-input>
           </div>
@@ -54,7 +54,7 @@
         <div @click="conserve" class="conserve">
           保存
         </div>
-        <div class="closedown">
+        <div @click="closedown" class="closedown">
           关闭
         </div>
       </div>
@@ -65,9 +65,15 @@
 <script>
 export default {
   name: 'consumerChild-steganogram',
-  props: ['edit'],
+  props: ['edit', 'UserId'],
   data () {
     return {
+      //  原始密码
+      barbarism: '',
+      //  新密码
+      newcode: '',
+      //  重复密码
+      duplicate: '',
       thisPage: false,
       condition: true,
       input: '',
@@ -96,17 +102,61 @@ export default {
   },
   methods: {
     cryptogramBlur (item) {
-      // let original = JSON.parse(window.sessionStorage.userInfo).pwd
-      // if (original === item){
-      // }
+      let original = JSON.parse(window.sessionStorage.userInfo).pwd
+      if (original === item) {
+        this.showState = !this.showState
+      } else {
+        alert('原始密码错误!')
+      }
     },
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
     conserve () {
-      this.thisPage = this.edit
-      this.thisPage = !this.thisPage
-      this.$emit('edit', this.thisPage)
+      //  首先判断 原始密码 是否和账号密码一样，其次判断 新密码和重复密码是否一样
+      let original = JSON.parse(window.sessionStorage.userInfo).pwd
+      let userId = JSON.parse(window.sessionStorage.userInfo).userid
+      let useridCurrent = this.UserId
+      console.log(useridCurrent)
+      if (this.barbarism === original) {
+        if (this.newcode !== '') {
+          if (this.newcode !== this.barbarism) {
+            if (this.newcode === this.duplicate) {
+              let url = `http://172.16.6.16:8920/users/updateUser?userid=${useridCurrent}&pwd=${this.newcode}`
+              this.axios.post(url).then((response) => {
+                if (response.data.code === 0) {
+                  if (userId === useridCurrent) {
+                    alert('修改成功，请重新登录！')
+                    sessionStorage.clear()
+                    this.$router.push({path: '/login'})
+                    return false
+                  } else {
+                    this.thisPage = this.edit
+                    this.thisPage = !this.thisPage
+                    this.$emit('edit', this.thisPage)
+                    return false
+                  }
+                } else {
+                  alert('修改失败')
+                  return false
+                }
+              })
+            } else {
+              alert('新旧密码必须相同！')
+              return false
+            }
+          } else {
+            alert('新旧密码不能相同！')
+            return false
+          }
+        } else {
+          alert('新密码不能为空！')
+          return false
+        }
+      } else {
+        alert('原始密码错误！')
+        return false
+      }
     },
     blockedOut () {
       this.condition = !this.condition
@@ -122,6 +172,12 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
+    },
+    closedown () {
+      this.thisPage = this.edit
+      this.thisPage = !this.thisPage
+      this.$emit('edit', this.thisPage)
+      return false
     }
   }
 }

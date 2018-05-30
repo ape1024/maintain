@@ -2,7 +2,7 @@
   <div class="information">
     <section  class="informationDiv">
       <h4 class="informationH">
-        修改用户信息
+        新增用户
       </h4>
       <div class="subject">
         <div class="subjectLeft">
@@ -73,14 +73,8 @@
             <p class="subjectP">
               用户头像：
             </p>
-            <el-upload
-              class="avatar-uploader"
-              :action="importFileUrl"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload">
-              <img v-if="imageUrl" :src="imageUrl" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <el-upload class="upload-demo" ref="upload" action="" :on-change="onChange" :file-list="fileList" :auto-upload="false">
+              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
             </el-upload>
           </div>
         </div>
@@ -144,33 +138,31 @@
 <script>
 import { modifytheUser } from '../../api/user'
 export default {
-  name: 'consumerChild-changeinfo',
-  props: ['changei', 'communication'],
-  components: {
-  },
+  name: 'consumerChild-augment',
   data () {
     return {
+      fileList: [],
       condition: true,
       //  登陆名
-      nameoflanding: this.communication.usercode,
+      nameoflanding: '',
       //  用户姓名
-      Username: this.communication.username,
+      Username: '',
       //  用户邮箱
-      Useremail: this.communication.email,
+      Useremail: '',
       //  手机号
-      pheneInput: this.communication.tel,
+      pheneInput: '',
       //  照片
-      Userportrait: this.communication.icon,
+      Userportrait: '',
       input: '',
-      //  上传图片
-      importFileUrl: `http://172.16.6.16:8920/users/updateUser?userid=${this.communication.organizationid}&roleids=`,
       //  职务
       businesspost: '',
       //  上传这个
       businesspostCode: '',
       //  组织结构
       organize: [],
-      imageUrl: this.communication.icon,
+      //  头像
+      Headportrait: '',
+      imageUrl: '',
       roleSelect: '',
       dialogImageUrl: '',
       dialogVisible: false,
@@ -202,26 +194,17 @@ export default {
     }
   },
   methods: {
-    handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
-    },
-    beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+    onChange (file, fileList) {
+      console.log(file)
+      this.Headportrait = file.url
+      if (fileList.length > 1) {
+        this.fileList = fileList.slice(1, 2)
       }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
     },
     conserve () {
       let urlconserve = JSON.parse(window.sessionStorage.userInfo)
       //  获取当前用户id
       let userid = urlconserve.userid
-      console.log(userid)
       //  获取组织id
       let organizationid = this.organizationid
       //  获取当前用户登录名
@@ -238,20 +221,22 @@ export default {
       let job = this.businesspostCode
       //  获取备注
       let memo = this.textarea
-
+      console.log(userid, organizationid, usercode, username, email, tel, userstate, job, memo)
       let url = modifytheUser(userid, organizationid, usercode, username, email, tel, userstate, job, memo)
       this.axios.post(url).then((response) => {
-        console.log(response)
         if (response.data.code === 0) {
-          this.thisPage = this.changei
-          this.thisPage = !this.thisPage
-          this.$emit('inFourma', this.thisPage)
-          this.communication.usercode = usercode
-          this.communication.username = username
-          this.communication.email = email
-          this.communication.tel = tel
-          this.communication.userstate = userstate
-          this.communication.job = job
+          // this.thisPage = this.changei
+          // this.thisPage = !this.thisPage
+          const thisPage = {
+            usercode: usercode,
+            username: username,
+            email: email,
+            tel: tel,
+            userstate: userstate,
+            job: job
+          }
+          // console.log(thisPage)
+          this.$emit('informa', thisPage)
         }
       })
     },
@@ -417,7 +402,7 @@ export default {
     display: block;
   }
   .el-cascader
-     width  100%
+    width  100%
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner

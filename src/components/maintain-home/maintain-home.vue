@@ -121,6 +121,9 @@ export default {
   components: {
     stacked,
     implement
+  },
+  created () {
+    // this.$router.go(0)
   }
 }
 </script>

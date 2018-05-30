@@ -71,7 +71,7 @@
           <li class="entryLitwo">
             角色
           </li>
-          <li class="entryLifive">
+          <li class="entryLitwo">
             邮箱
           </li>
           <li class="entryLitwo">
@@ -99,8 +99,9 @@
               <li class="entryLitwo">
                 {{item.username}}
               </li>
-              <li class="entryLitwo">{{item.rolename}}</li>
-              <li class="entryLifive">{{item.email}}</li>
+              <li class="entryLitwo">
+                {{item.rolename}}</li>
+              <li class="entryLitwo">{{item.email}}</li>
               <li class="entryLitwo">{{item.tel}}</li>
               <li class="entryLitwo">{{item.organizationname}}</li>
               <li class="entryLitwo">{{item.lastlogintime}}</li>
@@ -124,11 +125,11 @@
                   修改
                 </p>
                 <!--修改密码-->
-                <p @click="infor" class="password">
+                <p @click="infor(item.userid)" class="password">
                   修改密码
                 </p>
                 <!--删除-->
-                <p @click="amputate($index, information)" class="amputate">
+                <p @click="amputate($index, information, item.userid)" class="amputate">
                   删除
                 </p>
               </li>
@@ -155,18 +156,18 @@
     </section>
     <!--修改-->
     <section v-if="modifyBoolean" class="adhibit">
-      <information :communication="moDifynews" :changei="modifyBoolean" @informa="inFourma"></information>
+      <information  :communication="moDifynews" :changei="modifyBoolean" @informa="inFourma"></information>
     </section>
     <!--修改密码-->
     <section v-if="inforBoolean" class="adhibit">
-      <edit :edit="inforBoolean" @edit="eDit"></edit>
+      <edit :UserId="itemUserId" :edit="inforBoolean" @edit="eDit"></edit>
     </section>
   </div>
 </template>
 
 <script>
 import { judgeToken, iConsumerexamine } from '../../api/user'
-import increase from '../intercalateChild-operation/consumerChild-increase'
+import increase from '../intercalateChild-operation/consumerChild-augment'
 import examine from '../intercalateChild-operation/consumerChild-seeinfo'
 import edit from '../intercalateChild-operation/consumerChild-steganogram'
 //  修改
@@ -181,6 +182,8 @@ export default {
   },
   data () {
     return {
+      //  用户id
+      itemUserId: '',
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -243,15 +246,30 @@ export default {
     eDit (ev) {
       this.inforBoolean = ev
     },
-    infor () {
+    infor (item) {
+      console.log(item)
+      this.itemUserId = item
       this.inforBoolean = true
     },
-    inFourma (ev) {
-      //
-      this.modifyBoolean = ev
+    inFourma (ev, item) {
+      this.modifyBoolean = false
+      console.log(ev)
     },
-    amputate ($index, content) {
+    amputate ($index, content, userId) {
       content.splice([$index], 1)
+      console.log(userId)
+      let Userid = JSON.parse(window.sessionStorage.userInfo).userid
+      this.axios.post(`http://172.16.6.16:8920/users/delUser?userid=${userId}`).then((response) => {
+        if (response.data.code === 0) {
+          if (userId === Userid) {
+            sessionStorage.clear()
+            this.$router.push({path: '/login'})
+            content.splice([$index], 1)
+            return false
+          }
+        }
+        console.log(response)
+      })
     },
     postData () {
       // this.axios.post().then(function (response) {

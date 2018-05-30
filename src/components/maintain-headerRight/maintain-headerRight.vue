@@ -64,13 +64,12 @@ export default {
   },
   methods: {
     signout () {
-      let this_ = this
       let signouttoken = sessionStorage.token.token
       let strIng = secede(signouttoken)
-      this.axios.post(strIng).then(function (response) {
+      this.axios.post(strIng).then((response) => {
       //   用户点击退出 清除sessionStorage
         sessionStorage.clear()
-        this_.$router.push({path: '/login'})
+        this.$router.push({path: '/login'})
       })
     }
   },
