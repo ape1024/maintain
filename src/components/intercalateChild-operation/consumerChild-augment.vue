@@ -109,6 +109,19 @@
           </div>
           <div class="subjectDiv">
             <p class="subjectP">
+              密码：
+            </p>
+            <div class="subjectRigh">
+              <el-input
+                type="password"
+                placeholder=""
+                v-model="Userpwd"
+                clearable>
+              </el-input>
+            </div>
+          </div>
+          <div class="subjectDiv">
+            <p class="subjectP">
               备注信息：
             </p>
             <div class="subjectRigh">
@@ -136,9 +149,10 @@
 </template>
 
 <script>
-import { modifytheUser } from '../../api/user'
+import { appUser } from '../../api/user'
 export default {
   name: 'consumerChild-augment',
+  props: ['increaseBoolean'],
   data () {
     return {
       fileList: [],
@@ -162,6 +176,8 @@ export default {
       organize: [],
       //  头像
       Headportrait: '',
+      //  密码
+      Userpwd: '',
       imageUrl: '',
       roleSelect: '',
       dialogImageUrl: '',
@@ -195,16 +211,13 @@ export default {
   },
   methods: {
     onChange (file, fileList) {
-      console.log(file)
       this.Headportrait = file.url
       if (fileList.length > 1) {
         this.fileList = fileList.slice(1, 2)
       }
     },
     conserve () {
-      let urlconserve = JSON.parse(window.sessionStorage.userInfo)
-      //  获取当前用户id
-      let userid = urlconserve.userid
+      let urltoken = window.sessionStorage.token
       //  获取组织id
       let organizationid = this.organizationid
       //  获取当前用户登录名
@@ -221,32 +234,25 @@ export default {
       let job = this.businesspostCode
       //  获取备注
       let memo = this.textarea
-      console.log(userid, organizationid, usercode, username, email, tel, userstate, job, memo)
-      let url = modifytheUser(userid, organizationid, usercode, username, email, tel, userstate, job, memo)
+      //  获取头像
+      let headportrait = this.Headportrait
+      //  获取当前密码
+      let Userpwd = this.Userpwd
+      console.log(headportrait)
+      let url = appUser(urltoken, organizationid, usercode, username, Userpwd, email, tel, job, memo, userstate)
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {
-          // this.thisPage = this.changei
-          // this.thisPage = !this.thisPage
-          const thisPage = {
-            usercode: usercode,
-            username: username,
-            email: email,
-            tel: tel,
-            userstate: userstate,
-            job: job
-          }
-          // console.log(thisPage)
-          this.$emit('informa', thisPage)
+          this.thisPage = this.increaseBoolean
+          this.thisPage = !this.thisPage
+          console.log(response)
+          this.$emit('incr', this.thisPage)
         }
       })
     },
-    blockedOut () {
-      this.condition = !this.condition
-    },
     closedown () {
-      this.thisPage = this.changei
+      this.thisPage = this.increaseBoolean
       this.thisPage = !this.thisPage
-      this.$emit('informa', this.thisPage)
+      this.$emit('incr', this.thisPage)
     },
     handleChange (value) {
       let Value = value[value.length - 1]

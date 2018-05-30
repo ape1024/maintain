@@ -20,11 +20,11 @@
      </div>
      <div class="headerRight_right">
        <div class="portrait">
-         <img class="portraitImg" :src="portrait" alt="">
+         <img class="portraitImg" :src="portrait?portrait:''" alt="">
        </div>
        <div class="userOperation">
-         <p class="userOperationP" v-html="username">
-
+         <p class="userOperationP">
+           {{username?username:''}}
          </p>
          <div @click="signout" class="userBottom">
            <img class="userBottomImg" src="../../../static/img/secede.png" alt="">
@@ -40,9 +40,10 @@
 import { secede } from '../../api/user'
 export default {
   name: 'maintain-headerRight',
-  props: ['portrait', 'username'],
   data () {
     return {
+      portrait: JSON.parse(sessionStorage.userInfo).icon,
+      username: JSON.parse(sessionStorage.userInfo).username,
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -74,8 +75,7 @@ export default {
     }
   },
   created () {
-    console.log(this.portrait)
-    console.log(this.username)
+
   }
 }
 </script>

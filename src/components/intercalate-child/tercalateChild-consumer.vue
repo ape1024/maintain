@@ -92,21 +92,21 @@
         </ul>
         <ul class="entryList">
           <li v-for="(item, $index) in information"  v-bind:key="item.userid" class="listLi">
-            <ul>
+            <ul class="listLiulL">
               <li class="entryLione">
-                {{item.usercode}}
+                {{item.usercode?item.usercode:' '}}
               </li>
               <li class="entryLitwo">
-                {{item.username}}
+                {{item.username?item.username:' '}}
               </li>
               <li class="entryLitwo">
-                {{item.rolename}}</li>
-              <li class="entryLitwo">{{item.email}}</li>
-              <li class="entryLitwo">{{item.tel}}</li>
-              <li class="entryLitwo">{{item.organizationname}}</li>
-              <li class="entryLitwo">{{item.lastlogintime}}</li>
+                {{item.userstate?item.userstate:' '}}</li>
+              <li class="entryLitwo">{{item.email?item.email:' '}}</li>
+              <li class="entryLitwo">{{item.tel?item.tel:' '}}</li>
+              <li class="entryLitwo">{{item.organizationid?item.organizationid:' '}}</li>
+              <li class="entryLitwo">{{item.lastlogintime?item.lastlogintime:' '}}</li>
               <li class="entryLithree">
-                {{item.userroleid}}
+                {{item.userroleid?item.userroleid:' '}}
                 <!--判断锁定情况，目前没有参数-->
                 <!--<div v-if="item.locking == 0">-->
                   <!--<img src="../../../static/img/locking.png" alt="">-->
@@ -252,7 +252,7 @@ export default {
       this.inforBoolean = true
     },
     inFourma (ev, item) {
-      this.modifyBoolean = false
+      this.modifyBoolean = ev
       console.log(ev)
     },
     amputate ($index, content, userId) {
@@ -412,13 +412,16 @@ export default {
       init()
       .listLi
         init()
-        padding 10px 0
+        height 36px
+        line-height  36px
         color $color-text-title
         font-size $font-size-medium
+        .listLiulL li
+           height 36px
     .examine
       float left
       text-decoration underline
-      margin-right 35px
+      margin-right 16px
       cursor pointer
       color $color-background-query
     .modify

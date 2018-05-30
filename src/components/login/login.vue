@@ -34,6 +34,8 @@ export default {
   props: {},
   data () {
     return {
+      icon: '',
+      username: '',
       //  检验是否有token
       tokenStatus: '',
       //  账号
@@ -142,11 +144,10 @@ export default {
     judgeToken(Judgetoken).then(res => {
       this.tokenStatus = res
       if (this.tokenStatus === true) {
-        let sessionUserInfo = JSON.parse(sessionStorage.userInfo)
-        let headername = sessionUserInfo.username
-        let portrait = sessionUserInfo.icon
-        this.headername = headername
-        this.portrait = portrait
+        // let sessionUserInfo = JSON.parse(sessionStorage.userInfo)
+        // this.username = sessionUserInfo.username
+        // this.icon = sessionUserInfo.icon
+        // this.$emit('change', this.username )
         this.$router.push('/home')
         this.$router.go(0)
       } else {

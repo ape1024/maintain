@@ -61,7 +61,7 @@
          </ul>
        </div>
        <div class="header_right">
-         <MaintainheaderRight :username='headername' :portrait='portrait'></MaintainheaderRight>
+         <MaintainheaderRight></MaintainheaderRight>
        </div>
      </header>
      <section class="subject">
@@ -98,14 +98,12 @@ export default {
     let Judgetoken = window.sessionStorage.token
     // let token = judgeToken(Judgetoken)
     // let token = null
+    console.log(this.username)
+    console.log(this.icon)
     judgeToken(Judgetoken).then(res => {
       this.tokenStatus = res
       if (this.tokenStatus === true) {
-        let sessionUserInfo = JSON.parse(sessionStorage.userInfo)
-        let headername = sessionUserInfo.username
-        let portrait = sessionUserInfo.icon
-        this.headername = headername
-        this.portrait = portrait
+        // let sessionUserInfo = JSON.parse(sessionStorage.userInfo)
       } else {
         this.$router.push('/login')
       }

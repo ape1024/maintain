@@ -73,14 +73,8 @@
             <p class="subjectP">
               用户头像：
             </p>
-            <el-upload
-              class="avatar-uploader"
-              :action="importFileUrl"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload">
-              <img v-if="imageUrl" :src="imageUrl" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <el-upload class="upload-demo" ref="upload" action="" :on-change="onChange" :file-list="fileList" :auto-upload="false">
+              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
             </el-upload>
           </div>
         </div>
@@ -162,8 +156,6 @@ export default {
       //  照片
       Userportrait: this.communication.icon,
       input: '',
-      //  上传图片
-      importFileUrl: `http://172.16.6.16:8920/users/updateUser?userid=${this.communication.organizationid}&roleids=`,
       //  职务
       businesspost: '',
       //  上传这个
@@ -193,7 +185,9 @@ export default {
       value: '',
       textarea: '',
       organizationid: '',
+      thisPage: false,
       userstate: [],
+      fileList: [],
       defaultProps: {
         label: 'organizationName',
         children: 'subOrgnizations',
@@ -202,20 +196,11 @@ export default {
     }
   },
   methods: {
-    handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
-    },
-    beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+    onChange (file, fileList) {
+      this.Headportrait = file.url
+      if (fileList.length > 1) {
+        fileList = fileList.slice(1, 2)
       }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
     },
     conserve () {
       let urlconserve = JSON.parse(window.sessionStorage.userInfo)
@@ -243,15 +228,14 @@ export default {
       this.axios.post(url).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
-          this.thisPage = this.changei
-          this.thisPage = !this.thisPage
-          this.$emit('inFourma', this.thisPage)
           this.communication.usercode = usercode
           this.communication.username = username
           this.communication.email = email
           this.communication.tel = tel
           this.communication.userstate = userstate
-          this.communication.job = job
+          this.thisPage = this.changei
+          this.thisPage = !this.thisPage
+          this.$emit('informa', this.thisPage)
         }
       })
     },

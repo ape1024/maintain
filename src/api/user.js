@@ -38,3 +38,9 @@ export const modifytheUser = (userid, organizationid, usercode, username, email,
   const url = `http://172.16.6.16:8920/users/updateUser?userid=${userid}&organizationid=${organizationid}&usercode=${usercode}&username=${username}&email=${email}&tel=${tel}&userstate=${userstate}&job=${job}&memo=${memo}`
   return url
 }
+//  用户设置  添加用户
+export const appUser = (token, organizationid, usercode, username, pwd, email, tel, job, memo, userstate) => {
+  //
+  const url = `http://172.16.6.16:8920/users/createUser?token=${token}&organizationid=${organizationid}&usercode=${usercode}&username=${username}&pwd=${pwd}&email=${email}&tel=${tel}&job=${job}&memo=${memo}&roleids=1`
+  return url
+}
