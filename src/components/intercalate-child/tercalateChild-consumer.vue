@@ -251,16 +251,16 @@ export default {
       this.itemUserId = item
       this.inforBoolean = true
     },
-    inFourma (ev, item) {
+    inFourma (ev) {
       this.modifyBoolean = ev
       console.log(ev)
     },
     amputate ($index, content, userId) {
-      content.splice([$index], 1)
-      console.log(userId)
       let Userid = JSON.parse(window.sessionStorage.userInfo).userid
+      // console.log(Userid)
       this.axios.post(`http://172.16.6.16:8920/users/delUser?userid=${userId}`).then((response) => {
         if (response.data.code === 0) {
+          content.splice([$index], 1)
           if (userId === Userid) {
             sessionStorage.clear()
             this.$router.push({path: '/login'})
@@ -290,7 +290,7 @@ export default {
     }
   },
   beforeMount () {
-    let url = `http://172.16.6.16:8920/users/findAllBy?pageIndex=1&pageSize=10`
+    let url = `http://172.16.6.16:8920/users/findAllBy?pageIndex=1&pageSize=30`
     this.axios.post(url).then((response) => {
       this.information = response.data.data.data
     })
@@ -322,7 +322,7 @@ export default {
         .headerLi
           float left
           overflow hidden
-          margin-right 94px
+          margin-right 50px
           .headerP
             float left
             margin-right 18px

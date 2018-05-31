@@ -199,7 +199,7 @@ export default {
     onChange (file, fileList) {
       this.Headportrait = file.url
       if (fileList.length > 1) {
-        fileList = fileList.slice(1, 2)
+        this.fileList = fileList.slice(1, 2)
       }
     },
     conserve () {

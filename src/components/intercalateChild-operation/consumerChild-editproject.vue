@@ -9,7 +9,7 @@
           <li class="informationLi">
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目名称：
@@ -18,7 +18,7 @@
             <div class="informationDiv">
               <div class="content">
                 <el-date-picker
-                  v-model="value1"
+                  v-model="startdate"
                   type="date"
                   placeholder="选择日期">
                 </el-date-picker>
@@ -29,7 +29,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input v-model="proprieTor" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 业主单位：
@@ -39,7 +39,7 @@
           <li class="informationLitwo">
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input v-model="projectCode" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目编号：
@@ -48,7 +48,7 @@
             <div class="informationDiv">
               <div class="content">
                 <el-date-picker
-                  v-model="value2"
+                  v-model="endDate"
                   type="date"
                   placeholder="选择日期">
                 </el-date-picker>
@@ -59,7 +59,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input v-model="proprietorName" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 服务机构：
@@ -69,7 +69,7 @@
           <li class="informationLitwo">
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input v-model="projectType" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目类别：
@@ -77,7 +77,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input v-model="createrName" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 创建人员：
@@ -85,7 +85,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input v-model="address" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目地址：
@@ -102,7 +102,7 @@
         <div class="purviewDiv">
           <div class="substance">
             <div class="substanceDiv">
-              <el-input v-model="input" placeholder="请输入内容"></el-input>
+              <el-input v-model="projectRange" placeholder="请输入内容"></el-input>
             </div>
             <p class="substanceP">
               建筑范围：
@@ -129,7 +129,7 @@
             :rows="3"
             resize="none"
             placeholder="请输入内容"
-            v-model="textarea">
+            v-model="conTent">
           </el-input>
         </div>
       </div>
@@ -144,7 +144,7 @@
             :rows="3"
             resize="none"
             placeholder="请输入内容"
-            v-model="textarea">
+            v-model="requirement">
           </el-input>
         </div>
       </div>
@@ -159,7 +159,7 @@
             :rows="3"
             resize="none"
             placeholder="请输入内容"
-            v-model="textarea">
+            v-model="comment">
           </el-input>
         </div>
       </div>
@@ -172,7 +172,6 @@
             :on-change="handleChange"
             :file-list="fileList3">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">按需上传PDF、Word、Execl、JPG格式的相关文件</div>
           </el-upload>
         </div>
       </div>
@@ -193,22 +192,40 @@
 <script>
 export default {
   name: 'consumerChild-editproject',
-  props: ['edit'],
+  props: ['edit', 'project'],
   data () {
     return {
       // 本页面的显示隐藏
       Thispage: false,
+      fileList3: [],
+      //  项目名称
+      projectName: this.project.projectname,
+      //  项目开始时间
+      startdate: this.project.startdate,
+      //  业主单位
+      proprieTor: this.project.proprietorname,
+      //  项目编号
+      projectCode: this.project.projectcode,
+      //  项目结束时间
+      endDate: this.project.enddate,
+      //  服务机构
+      proprietorName: this.project.proprietorname,
+      //  项目类别
+      projectType: this.project.projecttype,
+      //  创建人员
+      createrName: this.project.creatername,
+      //  项目地址
+      address: this.project.address,
+      //  建筑范围
+      projectRange: this.project.projectrange,
+      //  消防设备 目前没有
       input: '',
-      value1: '',
-      value2: '',
-      textarea: '',
-      fileList3: [{
-        name: 'food.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }]
+      //  维保内容
+      conTent: this.project.content,
+      //  维保要求
+      requirement: this.project.requirement,
+      //  备注信息
+      comment: this.project.comment
     }
   },
   methods: {
@@ -221,7 +238,11 @@ export default {
       this.$emit('editt', this.Thispage)
     },
     closedown () {
+      console.log(this.project.projecttype)
     }
+  },
+  created () {
+    console.log(this.project)
   }
 }
 </script>

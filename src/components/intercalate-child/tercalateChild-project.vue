@@ -38,39 +38,38 @@
         <li class="headerLithree">操作</li>
       </ul>
       <ul class="contentUl">
-        <li class="contentLi">
+        <li :key="item.projectid" v-for="(item, $index) in contentliDate" class="contentLi">
           <ul class="contentLi_ul">
-            <li class="headerLione">1</li>
-            <li class="headerLitwo">2</li>
-            <li class="headerLitwo">3</li>
-            <li class="headerLitwo">4</li>
-            <li class="headerLitwo">5</li>
-            <li class="headerLitwo">6</li>
-            <li class="headerLitwo">7</li>
-            <li class="headerLitwo">8</li>
-            <li class="headerLitwo">9</li>
-            <li class="headerLithree">
-              <p @click="exaMine" class="contentLi_ulP">查看明细</p>
-              <p @click="modify" class="contentLi_ulPtwo">修改</p>
-              <p class="contentLi_ulPthree">删除</p>
+            <li class="headerLione">
+              {{item.projectname}}
             </li>
-          </ul>
-        </li>
-        <li class="contentLi">
-          <ul class="contentLi_ul">
-            <li class="headerLione">1</li>
-            <li class="headerLitwo">2</li>
-            <li class="headerLitwo">3</li>
-            <li class="headerLitwo">4</li>
-            <li class="headerLitwo">5</li>
-            <li class="headerLitwo">6</li>
-            <li class="headerLitwo">7</li>
-            <li class="headerLitwo">8</li>
-            <li class="headerLitwo">9</li>
+            <li class="headerLitwo">
+              {{item.projectcode}}
+            </li>
+            <li class="headerLitwo">{{item.address}}</li>
+            <li class="headerLitwo">
+              {{item.projectstate}}
+            </li>
+            <li class="headerLitwo">
+              {{item.proprietorname}}
+            </li>
+            <li class="headerLitwo">
+              <!--服务机构-->
+              {{item.proprietorname}}
+            </li>
+            <li class="headerLitwo">
+              {{item.startdate}}
+            </li>
+            <li class="headerLitwo">
+              {{item.enddate}}
+            </li>
+            <li class="headerLitwo">
+              {{item.creatername}}
+            </li>
             <li class="headerLithree">
-              <p class="contentLi_ulP">查看明细</p>
-              <p class="contentLi_ulPtwo">修改</p>
-              <p class="contentLi_ulPthree">删除</p>
+              <p @click="exaMine(item.projectid)" class="contentLi_ulP">查看明细</p>
+              <p @click="modify(item)" class="contentLi_ulPtwo">修改</p>
+              <p @click="amputate($index, contentliDate, item.projectid)" class="contentLi_ulPthree">删除</p>
             </li>
           </ul>
         </li>
@@ -93,7 +92,7 @@
     </section>
     <!--修改-->
     <section v-if="modifyBoolean" class="adhibit">
-      <edit :edit="modifyBoolean" @editt="eDit"></edit>
+      <edit :edit="modifyBoolean" :project="projectDate" @editt="eDit"></edit>
     </section>
   </div>
 </template>
@@ -115,6 +114,7 @@ export default {
       examineBoolean: false,
       modifyBoolean: false,
       adhibitBoolean: false,
+      contentliDate: '',
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -131,12 +131,18 @@ export default {
         value: '选项5',
         label: '北京烤鸭'
       }],
-      value: ''
+      value: '',
+      //  修改信息
+      projectDate: ''
     }
   },
   methods: {
-    exaMine () {
-      this.examineBoolean = true
+    //  查看
+    exaMine (itemId) {
+      this.axios.post(`http://172.16.6.16:8920/projects/findDetailByProjectid?projectId=${itemId}`).then((response) => {
+        console.log(response)
+      })
+      // this.examineBoolean = true
     },
     Mine (ev) {
       this.examineBoolean = ev
@@ -144,7 +150,9 @@ export default {
     eDit (ev) {
       this.modifyBoolean = ev
     },
-    modify () {
+    modify (project) {
+      //  修改
+      this.projectDate = project
       this.modifyBoolean = true
     },
     conserve () {
@@ -152,7 +160,24 @@ export default {
     },
     Incr (ev) {
       this.adhibitBoolean = ev
+    },
+    amputate (index, content, projectId) {
+      console.log(projectId)
+      const url = `http://172.16.6.16:8920/projects/removeProjectById?projectId=${projectId}`
+      this.axios.post(url).then((response) => {
+        if (response.data.code === 0) {
+          content.splice([index], 1)
+          alert('删除成功！')
+        }
+      })
     }
+  },
+  created () {
+    this.axios.post('http://172.16.6.16:8920/projects/findAllProjects?pagesize=10&pageindex=1&pageindex=1').then((response) => {
+      if (response.data.code === 0) {
+        this.contentliDate = response.data.data.data
+      }
+    })
   }
 }
 </script>
@@ -163,13 +188,13 @@ export default {
     init()
     .subjectDiv
       overflow hidden
-      padding 28px 0
+      padding 20px 0
       background #111a28
       position relative
       .subjectLeft
         float left
         margin-left 20px
-        margin-right 70px
+        margin-right 50px
         overflow hidden
         .subjectP
           color $color-text-title
@@ -186,16 +211,31 @@ export default {
     .headerUl
       init()
       background #354d76
-      padding 8px 0
+      line-height 38px
       color $color-header-b-normal
     .headerLione
-        float left
-        padding-left 1%
-        width 8%
+      float left
+      height 38px
+      padding-left 1%
+      width 8%
+      overflow hidden
+      text-overflow ellipsis
+      display -webkit-box
+      -webkit-box-orient vertical
+      -webkit-line-clamp 1
     .headerLitwo
       float left
       width 9%
+      height 38px
+      overflow hidden
+      text-overflow ellipsis
+      display -webkit-box
+      -webkit-box-orient vertical
+      -webkit-line-clamp 1
+      text-indent 2em
     .headerLithree
+      width  18%
+      height 38px
       float left
     .contentUl
       init()
@@ -204,7 +244,8 @@ export default {
     .contentUl .contentLi:nth-child(odd)
       background #1c273a
     .contentLi
-      padding 10px 0
+      height 38px
+      line-height 38px
       init()
     .contentLi_ul
       inti()
@@ -212,7 +253,7 @@ export default {
     .contentLi_ulP
        float left
        color $color-background-query
-       margin-right 30px
+       margin-right 10px
        cursor pointer
        text-decoration underline
        font-size $font-size-medium

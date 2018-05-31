@@ -4,69 +4,150 @@
         <header class="leftHeader">
           <img class="subjectImg" src="../../../static/img/department.png" alt="">
           <p class="subjectP">结构组织权限管理</p>
+          <p class="subjectptwo">新增</p>
         </header>
         <div class="leftBottom">
           <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
         </div>
       </section>
       <section class="subjectRight">
-        <ul class="rightHeader">
-          <li class="rightliFour">
-            编号
-          </li>
-          <li class="rightLi">
-            部门
-          </li>
-          <li class="rightLi">
-            分组名称
-          </li>
-          <li class="rightliTwo">
-            成员
-          </li>
-          <li class="rightliThree">
-            操作
-          </li>
-        </ul>
-        <ul class="content">
-          <li class="contentLi">
-            <ul class="contentliUl">
-              <li class="rightliFour">
-              1
-              </li>
-              <li class="rightLi">
-               {{structureDate.label}}
-              </li>
-              <li class="rightLi">
-               分组
-              </li>
-              <li class="rightliTwo">
-                {{structureDate.personnel}}
-              </li>
-              <li class="rightliThree">
-                <!--权限-->
-                <p @click="power" class="jurisdiction">
-                  权限
+        <div class="information">
+          <ul class="informationUl">
+            <li class="informationLi">
+              <div class="informationDiv">
+                <p class="informationP">
+                  单位名称：
                 </p>
-                <!--成员-->
-                <p @click="leaguer" class="member">
-                  成员
+                <div class="content">
+                  <el-input v-model="projectName" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  单位简称：
                 </p>
-                <!--编辑-->
-                <p @click="bluepencil" class="edit">
-                  编辑
+                <div class="content">
+                  <el-input v-model="abbreviation" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  单位编码：
                 </p>
-                <!--复制-->
-                <p @click="printoff" class="copy">
-                  复制
+                <div class="content">
+                  <el-input v-model="encrypt" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  所在区域：
                 </p>
-                <!--删除-->
-                <p @click="amputate" class="amputate">
-                  删除
+                <div class="content">
+                  <el-input v-model="region" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  所在地址：
                 </p>
-              </li>
-            </ul>
-          </li>
-        </ul>
+                <div class="content">
+                  <el-input v-model="address" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  专业类别：
+                </p>
+                <div class="content">
+                  <el-input v-model="category" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  业务类别：
+                </p>
+                <div class="content">
+                  <el-input v-model="business" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  资质等级：
+                </p>
+                <div class="content">
+                  <el-input v-model="grading" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  资质编号：
+                </p>
+                <div class="content">
+                  <el-input v-model="identifier" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  单位联系人：
+                </p>
+                <div class="content">
+                  <el-input v-model="linkman" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  联系人手机：
+                </p>
+                <div class="content">
+                  <el-input v-model="CellPhone" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLithree">
+              <div class="informationDivthree">
+                <p class="informationP">
+                  组织机构图标：
+                </p>
+                <div class="contenttwo">
+                  <el-upload class="upload-demo" ref="upload" action="" :on-change="onChange" :file-list="fileList" :auto-upload="false">
+                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                  </el-upload>
+                </div>
+              </div>
+            </li>
+            <li class="informationLithree">
+              <div class="informationDivthree">
+                <p class="informationP">
+                  备注说明：
+                </p>
+                <div class="contentthree">
+                  <el-input
+                    type="textarea"
+                    :rows="3"
+                    placeholder=""
+                    resize="none"
+                    v-model="textarea">
+                  </el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLifour">
+              <div class="conserve">
+                保存
+              </div>
+            </li>
+          </ul>
+        </div>
       </section>
       <!--弹出层-->
       <div v-show="popupBoolean" class="popup">
@@ -101,66 +182,40 @@ export default {
   },
   data () {
     return {
-      data: [{
-        label: '项目一',
-        personnel: '王大，曹大，赵大，越大',
-        children: [{
-          label: '部门一',
-          personnel: '曹大',
-          children: [{
-            label: '研发部',
-            personnel: '王大',
-            children: [{
-              label: '下属',
-              personnel: '李大，赵大'
-            }]
-          }]
-        }]
-      }, {
-        label: '项目二',
-        personnel: '邱大，慕大，乔大，刘大',
-        children: [{
-          label: '人事部',
-          personnel: '习大',
-          children: [{
-            label: '下属',
-            personnel: '邱大，慕大，乔大'
-          }]
-        }, {
-          label: '工程部',
-          personnel: '朱大，蔺大，王大，习大',
-          children: [{
-            label: '下属',
-            personnel: '曹大'
-          }]
-        }]
-      }, {
-        label: '项目三',
-        personnel: '孙大，搭大，港大，泽大, 姬大，周大，红大',
-        children: [{
-          label: '人事部',
-          personnel: '孙大',
-          children: [{
-            label: '下属',
-            personnel: '搭大，港大'
-          }]
-        }, {
-          label: '后勤部',
-          personnel: '姬大',
-          children: [{
-            label: '下属',
-            personnel: '周大，红大'
-          }]
-        }]
-      }],
+      data: [],
+      textarea: '',
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        children: 'subOrgnizations',
+        label: 'organizationName'
       },
       popupBoolean: false,
       memberBoolean: false,
       bluepencilBoolean: false,
       copyBoolean: false,
+      //  单位名称
+      projectName: '',
+      //  单位简称
+      abbreviation: '',
+      //  单位编码
+      encrypt: '',
+      //  所在区域
+      region: '',
+      //  所在地址
+      address: '',
+      //  专业类别
+      category: '',
+      //  业务类别
+      business: '',
+      //  资质等级
+      grading: '',
+      //  资质编号
+      identifier: '',
+      //  单位联系人
+      linkman: '',
+      //  联系人手机
+      CellPhone: '',
+      //  组织机构图标
+      fileList: [],
       structureDate: {
         label: '',
         personnel: ''
@@ -168,11 +223,14 @@ export default {
     }
   },
   methods: {
+    onChange (file, fileList) {
+      this.Headportrait = file.url
+      if (fileList.length > 1) {
+        this.fileList = fileList.slice(1, 2)
+      }
+    },
     handleNodeClick (data) {
       console.log(data)
-      console.log(this.structureDate)
-      this.structureDate.label = data.label
-      this.structureDate.personnel = data.personnel
     },
     power () {
       // 点击权限
@@ -208,6 +266,13 @@ export default {
       // 点击删除
       alert('删除')
     }
+  },
+  created () {
+    this.axios.post('http://172.16.6.16:8920/organization/getOrganizationTrees').then((response) => {
+      if (response.data.code === 0) {
+        this.data = response.data.data
+      }
+    })
   }
 }
 </script>
@@ -220,7 +285,7 @@ export default {
       float left
       width 368px
       position relative
-      margin-right 56px
+      /*margin-right 56px*/
       .leftHeader
         width 100%
         overflow hidden
@@ -238,6 +303,11 @@ export default {
          float left
          color $color-text
          line-height 40px
+       .subjectptwo
+         float right
+         cursor pointer
+         color $color-text-tile-complete
+         margin-right 20px
       .leftBottom
         width 100%
         min-height 800px
@@ -333,10 +403,65 @@ export default {
   color $color-text
 .el-button--text
   color $color-border-b-fault
+.information
+  width 900px
+  overflow hidden
+  margin 50px auto
+  .informationUl
+    init()
+    .informationLi
+      overflow hidden
+      position relative
+    .informationLitwo
+      overflow hidden
+      position relative
+    .informationDiv
+      overflow hidden
+      position relative
+      float left
+      margin-bottom 30px
+    .informationDivtwo
+      overflow hidden
+      position relative
+      float right
+      margin-bottom 15px
+    .informationP
+      color $color-border-b-fault
+      font-size $font-size-medium
+      line-height 30px
+      margin-right 10px
+      width 120px
+      text-align right
+      float left
+    .content
+      float left
+      width 267px
+      overflow  hidden
+    .contenttwo
+       float left
+       width 770px
+       height 68px
+       overflow hidden
+    .contentthree
+      float left
+      width 770px
+      overflow hidden
+  .informationDivthree
+    overflow hidden
+    position relative
+    margin-bottom 10px
+  .informationLithree
+     overflow hidden
+     position relative
+  .informationLifour
+    overflow hidden
+    text-align center
+    margin-top 10px
+    position relative
+  .conserve
+    conserve()
 
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
-  /*.el-tree-node__label
-    color $color-text*/
 </style>

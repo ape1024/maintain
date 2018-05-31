@@ -88,29 +88,27 @@ export default {
       tokenStatus: '',
       isShowed: false,
       headername: '',
-      portrait: ''
+      portrait: '',
+      textarea: ''
     }
   },
   methods: {
-
   },
   created () {
-    let Judgetoken = window.sessionStorage.token
-    // let token = judgeToken(Judgetoken)
-    // let token = null
-    console.log(this.username)
-    console.log(this.icon)
-    judgeToken(Judgetoken).then(res => {
-      this.tokenStatus = res
-      if (this.tokenStatus === true) {
-        // let sessionUserInfo = JSON.parse(sessionStorage.userInfo)
-      } else {
-        this.$router.push('/login')
-      }
-    })
+    if (window.sessionStorage.length !== 0) {
+      let Judgetoken = window.sessionStorage.token
+      judgeToken(Judgetoken).then(res => {
+        if (res === true) {
+          return false
+        } else {
+          this.$router.push('/login')
+        }
+      })
+    } else {
+      this.$router.push('/login')
+    }
   },
   mounted () {
-
   }
 }
 </script>

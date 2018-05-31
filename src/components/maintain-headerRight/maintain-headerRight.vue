@@ -42,8 +42,8 @@ export default {
   name: 'maintain-headerRight',
   data () {
     return {
-      portrait: JSON.parse(sessionStorage.userInfo).icon,
-      username: JSON.parse(sessionStorage.userInfo).username,
+      portrait: '',
+      username: '',
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -75,7 +75,10 @@ export default {
     }
   },
   created () {
-
+    if (window.sessionStorage.length !== 0) {
+      this.portrait = JSON.parse(sessionStorage.userInfo).icon
+      this.username = JSON.parse(sessionStorage.userInfo).username
+    }
   }
 }
 </script>

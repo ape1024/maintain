@@ -100,7 +100,7 @@ export default {
                   window.sessionStorage.setItem('token', token)
                   let dom = e.target
                   $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
-                  this.$router.go(0)
+                  // this.$router.go(0)
                   this.$router.push('/loginBlank')
                 } else {
                   alert('登录失败')
@@ -139,21 +139,20 @@ export default {
     })
   },
   created () {
-    let Judgetoken = window.sessionStorage.token
-    // let token = judgeToken(Judgetoken)
-    judgeToken(Judgetoken).then(res => {
-      this.tokenStatus = res
-      if (this.tokenStatus === true) {
-        // let sessionUserInfo = JSON.parse(sessionStorage.userInfo)
-        // this.username = sessionUserInfo.username
-        // this.icon = sessionUserInfo.icon
-        // this.$emit('change', this.username )
-        this.$router.push('/home')
-        this.$router.go(0)
-      } else {
-        this.$router.push('/login')
-      }
-    })
+    if (window.sessionStorage.length !== 0) {
+      console.log(window.sessionStorage.length)
+      let Judgetoken = window.sessionStorage.token
+      // let token = judgeToken(Judgetoken)
+      judgeToken(Judgetoken).then((res) => {
+        if (res === true) {
+          this.$router.push('/home')
+          // this.$router.go(0)
+          return false
+        }
+      })
+    } else {
+      this.$router.push('/login')
+    }
   }
 }
 </script>
