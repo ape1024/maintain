@@ -146,7 +146,6 @@ export default {
       judgeToken(Judgetoken).then((res) => {
         if (res === true) {
           this.$router.push('/home')
-          // this.$router.go(0)
           return false
         }
       })

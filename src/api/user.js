@@ -2,7 +2,7 @@ import axios from 'axios'
 
 //  登录接口
 export const userLogin = (username, password, genre) => {
-  let url = `http://172.16.6.16:8920/auth/login?usercode=${username}&password=${password}&serviceType=${genre}`
+  let url = `http://172.16.6.181:8920/auth/login?usercode=${username}&password=${password}&serviceType=${genre}`
   return url
 }
 //  判断token 是否失效接口
@@ -10,7 +10,7 @@ export const judgeToken = (Judgetoken) => {
   if (Judgetoken === undefined) {
     return Promise.resolve(false)
   } else {
-    let url = `http://172.16.6.16:8920/auth/tokenCheck?token=${Judgetoken}`
+    let url = `http://172.16.6.181:8920/auth/tokenCheck?token=${Judgetoken}`
     return axios.post(url).then((response) => {
       console.log(response.data.code)
       if (response.data.code === 0) {

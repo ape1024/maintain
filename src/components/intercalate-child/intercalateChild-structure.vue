@@ -1,5 +1,5 @@
 <template>
-    <div class="subject">
+    <div @click="shutdown" class="subject">
       <section class="subjectLeft">
         <header class="leftHeader">
           <img class="subjectImg" src="../../../static/img/department.png" alt="">
@@ -7,7 +7,7 @@
           <p class="subjectptwo">新增</p>
         </header>
         <div class="leftBottom">
-          <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+          <el-tree node-click="changClick" :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
         </div>
       </section>
       <section class="subjectRight">
@@ -16,10 +16,14 @@
             <li class="informationLi">
               <div class="informationDiv">
                 <p class="informationP">
-                  单位名称：
+                  上级主管单位：
                 </p>
-                <div class="content">
-                  <el-input v-model="projectName" placeholder=""  clearable>></el-input>
+                <div class="companyContent">
+                  <el-cascader
+                    :options="data"
+                    :props="defaultProps"
+                    change-on-select
+                  ></el-cascader>
                 </div>
               </div>
             </li>
@@ -41,13 +45,30 @@
                 </div>
               </div>
             </li>
-            <li class="informationLitwo">
+            <li class="informationLifive">
               <div class="informationDiv">
                 <p class="informationP">
                   所在区域：
                 </p>
                 <div class="content">
-                  <el-input v-model="region" placeholder=""  clearable>></el-input>
+                  <div @click.stop="accessarea" class="region">
+                    {{regionDate}}
+                  </div>
+                  <ul v-show="regionUl" class="region_ul">
+                    <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
+                      <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
+                        <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">
+                          <i @click.stop="count($event, data.cityid)" class="el-icon-circle-plus-outline region_itwo"></i>
+                          <span class="countSpen" @click="citySpan($event, data)">{{data.cityname}}</span>
+                          <ul class="countUl">
+                            <li @click="countytownSpan(coundata)" :key="coundata.countyid" :id="coundata.countyid" v-for="coundata in countytown" class="countLi">
+                              {{coundata.countyname}}
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
                 </div>
               </div>
               <div class="informationDivtwo">
@@ -65,7 +86,11 @@
                   专业类别：
                 </p>
                 <div class="content">
-                  <el-input v-model="category" placeholder=""  clearable>></el-input>
+                  <el-cascader
+                    :options="category"
+                    v-model="selectedOptions"
+                    @change="handleChange">
+                  </el-cascader>
                 </div>
               </div>
               <div class="informationDivtwo">
@@ -168,6 +193,7 @@
 </template>
 
 <script>
+import $ from 'jquery'
 import Jurisdiction from '../intercalateChild-operation/structureChild-jurisdiction'
 import member from '../intercalateChild-operation/structureChild-member'
 import bluepencil from '../intercalateChild-operation/structureChild-bluepencil'
@@ -182,11 +208,14 @@ export default {
   },
   data () {
     return {
+      selectedOptions: [],
       data: [],
+      specialty: [],
       textarea: '',
       defaultProps: {
         children: 'subOrgnizations',
-        label: 'organizationName'
+        label: 'organizationName',
+        value: 'organizationCode'
       },
       popupBoolean: false,
       memberBoolean: false,
@@ -216,6 +245,22 @@ export default {
       CellPhone: '',
       //  组织机构图标
       fileList: [],
+      //  省份
+      province: '',
+      //  省份下所有的城市
+      conurbation: '',
+      //  县城/区
+      countytown: '',
+      //  判断区域ul 是否存在
+      regionUl: false,
+      //  省份ID
+      provinceId: '',
+      //  城市ID
+      conurbationId: '',
+      //  县城ID
+      countytownId: '',
+      //  展示用户选取的地区
+      regionDate: '',
       structureDate: {
         label: '',
         personnel: ''
@@ -223,6 +268,8 @@ export default {
     }
   },
   methods: {
+    handleChange () {
+    },
     onChange (file, fileList) {
       this.Headportrait = file.url
       if (fileList.length > 1) {
@@ -230,7 +277,28 @@ export default {
       }
     },
     handleNodeClick (data) {
-      console.log(data)
+      const organization = data.organizationId
+      const url = `http://172.16.6.181:8920/organization/getOrganization?organizationid=${organization}`
+      const urltwo = `http://172.16.6.181:8920/organization/getOrganizationInfo?organizationid=${organization}`
+      this.axios.post(urltwo).then((response) => {
+        console.log(response.data.data)
+      })
+      this.axios.post(url).then((response) => {
+        console.log(response.data.data)
+        // cityid:1
+        // countyid:2
+        // creater:null
+        // creatername:""
+        // createtime:1525833639000
+        // icon:"http://172.16.5.34/group1/M00/33/56/3356a9d703734d2caed5eaa973f6c55d.jpg"
+        // organizationcode:"10002"
+        // organizationid:3
+        // organizationname:"海淀项目部"
+        // organizationshortname:""
+        // organizationstate:0
+        // parentid:1
+        // provinceid:1
+      })
     },
     power () {
       // 点击权限
@@ -265,12 +333,121 @@ export default {
     amputate () {
       // 点击删除
       alert('删除')
+    },
+    changClick (a) {
+      console.log(a)
+    },
+    //  点击最父级，关闭地址框
+    shutdown () {
+      this.regionUl = false
+    },
+    accessarea () {
+      this.regionUl = !this.regionUl
+    },
+    deploy (event, provinceid) {
+      if ($(event.currentTarget).siblings('.regionliUl').css('display') === 'block') {
+        $(event.currentTarget).siblings('.regionliUl').slideToggle()
+        $(event.currentTarget).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
+        return false
+      } else {
+        $('.region_i').each(function (index, item) {
+          if ($(item).hasClass('el-icon-circle-plus-outline')) {
+          } else {
+            $(item).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
+          }
+        })
+        $(event.currentTarget).removeClass('el-icon-circle-plus-outline').addClass('el-icon-remove-outline')
+        $('.regionliUl').each(function (index, item) {
+          $(item).css('display', 'none')
+        })
+        $(event.currentTarget).siblings('.regionliUl').slideDown()
+        let url = `http://172.16.6.181:8920/organization/getCitiesByProvinceId?provinceid=${provinceid}`
+        this.axios.post(url).then((response) => {
+          if (response.data.code === 0) {
+            this.conurbation = response.data.data
+            console.log(response.data.data)
+          }
+        })
+      }
+    },
+    count (event, countid) {
+      if ($(event.currentTarget).siblings('.countUl').css('display') === 'block') {
+        $(event.currentTarget).siblings('.countUl').slideToggle()
+        $(event.currentTarget).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
+        return false
+      } else {
+        $('.region_itwo').each(function (index, item) {
+          if ($(item).hasClass('el-icon-circle-plus-outline')) {
+          } else {
+            $(item).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
+          }
+        })
+        $(event.currentTarget).removeClass('el-icon-circle-plus-outline').addClass('el-icon-remove-outline')
+        $('.countUl').each(function (index, item) {
+          $(item).css('display', 'none')
+        })
+        $(event.currentTarget).siblings('.countUl').slideDown()
+        let url = `http://172.16.6.181:8920/organization/getCountiesByCityId?cityid=${countid}`
+        this.axios.post(url).then((response) => {
+          if (response.data.code === 0) {
+            this.countytown = response.data.data
+          }
+        })
+      }
+    },
+    provinceSpan (event, provincename) {
+      //  直接选择省份
+      this.regionDate = provincename.provincename
+      this.provinceId = provincename.provinceid
+    },
+    citySpan (event, cityDate) {
+      let cout = $(event.currentTarget).parents('.region_li').children('.provinceSpan').text()
+      let city = cityDate.cityname
+      let url = `${cout}-${city}`
+      this.regionDate = url
+      console.log()
+      //  省份id
+      this.conurbationId = cityDate.cityid
+      //  城市ID
+      this.provinceId = cityDate.provinceid
+    },
+    countytownSpan (coundata) {
+      let cout = $(event.currentTarget).parents('.region_li').children('.provinceSpan').text()
+      let city = $(event.currentTarget).parents('.regionliul_li').children('.countSpen').text()
+      let url = `${cout}-${city}-${coundata.countyname}`
+      this.regionDate = url
+      console.log($(event.currentTarget).parents('.region_li').attr('id'))
+      console.log(coundata.cityid)
+      console.log(coundata.countyid)
+      //  省份ID
+      this.provinceId = $(event.currentTarget).parents('.region_li').attr('id')
+      //  城市ID
+      this.conurbationId = coundata.cityid
+      //  县城ID
+      this.countytownId = coundata.countyid
     }
   },
   created () {
-    this.axios.post('http://172.16.6.16:8920/organization/getOrganizationTrees').then((response) => {
+    let token = JSON.parse(window.sessionStorage.token)
+    console.log(token)
+    //  左边的树状结构
+    this.axios.post(`http://172.16.6.181:8920/organization/getOrganizationTreeByUser?token=${token}`).then((response) => {
+      console.log(response)
       if (response.data.code === 0) {
-        this.data = response.data.data
+        this.data.push(response.data.data)
+      }
+    })
+    //  省份
+    this.axios.post('http://172.16.6.181:8920/organization/getAllProvince').then((response) => {
+      if (response.data.code === 0) {
+        this.province = response.data.data
+      }
+    })
+    //   专业类别
+    this.axios.post('http://172.16.6.181:8920/organization/getAllLevels').then((response) => {
+      console.log(response.data.data)
+      if (response.data.code === 0) {
+        this.category = response.data.data
       }
     })
   }
@@ -355,7 +532,8 @@ export default {
          float left
          color $color-header-b-normal
       .content
-         init()
+        width 100%
+        position relative
       .contentLi
          init()
          padding 10px 0
@@ -414,9 +592,9 @@ export default {
       position relative
     .informationLitwo
       overflow hidden
+      width 100%
       position relative
     .informationDiv
-      overflow hidden
       position relative
       float left
       margin-bottom 30px
@@ -436,7 +614,7 @@ export default {
     .content
       float left
       width 267px
-      overflow  hidden
+      position relative
     .contenttwo
        float left
        width 770px
@@ -460,7 +638,56 @@ export default {
     position relative
   .conserve
     conserve()
-
+ .informationLifive
+    position relative
+ .region
+    width 100%
+    cursor pointer
+    height  30px
+    line-height 30px
+    border-radius 5px
+    background #fff
+    text-indent 2em
+  .region_ul
+     position absolute
+     top 30px
+     left 0
+     width  100%
+     min-height 300px
+     overflow-y scroll
+     z-index 111
+     max-height 300px
+     background #fff
+     border-radius  5px
+     .region_li
+       cursor pointer
+       width 100%
+       color #000
+       padding 10px 0
+       .region_i
+         cursor pointer
+         margin 0 10px
+        .region_itwo
+          cursor pointer
+          margin 0 10px
+        .regionliUl
+          display none
+          overflow hidden
+          .regionliul_li
+            padding 10px 0
+            text-indent 1em
+            .countUl
+              display none
+              overflow hidden
+              .countLi
+                padding 10px 0
+                text-indent 5em
+ .companyContent
+   false left
+   overflow hidden
+   width 770px
+ .el-cascader
+    width 100%
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
