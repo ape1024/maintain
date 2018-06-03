@@ -4,7 +4,7 @@
         <header class="leftHeader">
           <img class="subjectImg" src="../../../static/img/department.png" alt="">
           <p class="subjectP">结构组织权限管理</p>
-          <p class="subjectptwo">新增</p>
+          <p @click="subjectpCreate" class="subjectptwo">新增</p>
         </header>
         <div class="leftBottom">
           <el-tree node-click="changClick" :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
@@ -22,6 +22,7 @@
                   <el-cascader
                     :options="data"
                     :props="defaultProps"
+                    v-model="companyDate"
                     change-on-select
                   ></el-cascader>
                 </div>
@@ -88,6 +89,7 @@
                 <div class="content">
                   <el-cascader
                     :options="category"
+                    :props="categoryProps"
                     v-model="selectedOptions"
                     @change="handleChange">
                   </el-cascader>
@@ -98,7 +100,12 @@
                   业务类别：
                 </p>
                 <div class="content">
-                  <el-input v-model="business" placeholder=""  clearable>></el-input>
+                  <el-cascader
+                    :options="business"
+                    :props="categoryProps"
+                    v-model="businessOptions"
+                    @change="handleChange">
+                  </el-cascader>
                 </div>
               </div>
             </li>
@@ -167,8 +174,11 @@
               </div>
             </li>
             <li class="informationLifour">
-              <div class="conserve">
+              <div v-show="conserveBoolean" @click="conserve" class="conserve">
                 保存
+              </div>
+              <div v-show="!conserveBoolean" @click="newConserve" class="conserve">
+                新增保存
               </div>
             </li>
           </ul>
@@ -212,6 +222,8 @@ export default {
       data: [],
       specialty: [],
       textarea: '',
+      //  专业类别遍历
+      categoryDate: '',
       defaultProps: {
         children: 'subOrgnizations',
         label: 'organizationName',
@@ -221,6 +233,10 @@ export default {
       memberBoolean: false,
       bluepencilBoolean: false,
       copyBoolean: false,
+      //  保存于新增保存
+      conserveBoolean: true,
+      //  上级主管单位
+      companyDate: [],
       //  单位名称
       projectName: '',
       //  单位简称
@@ -232,9 +248,11 @@ export default {
       //  所在地址
       address: '',
       //  专业类别
-      category: '',
+      category: [],
       //  业务类别
-      business: '',
+      business: [],
+      //  业务类别获取
+      businessOptions: [],
       //  资质等级
       grading: '',
       //  资质编号
@@ -264,10 +282,67 @@ export default {
       structureDate: {
         label: '',
         personnel: ''
+      },
+      categoryProps: {
+        label: 'name',
+        value: 'value'
       }
     }
   },
   methods: {
+    subjectpCreate () {
+      //  点击新增
+      this.companyDate = []
+      this.abbreviation = ''
+      this.encrypt = ''
+      this.regionDate = ''
+      this.address = ''
+      this.selectedOptions = []
+      this.businessOptions = []
+      this.grading = ''
+      this.identifier = ''
+      this.linkman = ''
+      this.CellPhone = ''
+      this.fileList = []
+      this.textarea = ''
+      this.conserveBoolean = false
+    },
+    newConserve () {
+      //  点击新增保存
+      let token = window.sessionStorage.token
+      //   省份
+      let province = this.province
+      //  城市
+      let conurbation = this.conurbation
+      //  县城
+      let countytown = this.countytown
+      console.log(this.data)
+      // let result = this.data.find((val) => val.organizationCode === '10002')
+      // this.data.forEach(val => {
+      //   if (val.organizationCode === '10001'){
+      //     alert(val)
+      //   }
+      // })
+      let result = null
+      let organizationCode = '10001'
+      let findData = (data) => {
+        let flag = true
+        data.forEach(val => {
+          if (val.organizationCode === organizationCode) {
+            result = val
+            flag = false
+          } else if (flag && val.subOrgnizations) {
+            findData(val.subOrgnizations)
+          }
+        })
+      }
+      findData(this.data)
+      //  获取到 对应的数组
+      console.log(result.subOrgnizations)
+    },
+    conserve () {
+      //   点击保存
+    },
     handleChange () {
     },
     onChange (file, fileList) {
@@ -277,27 +352,42 @@ export default {
       }
     },
     handleNodeClick (data) {
+      this.conserveBoolean = true
       const organization = data.organizationId
       const url = `http://172.16.6.181:8920/organization/getOrganization?organizationid=${organization}`
       const urltwo = `http://172.16.6.181:8920/organization/getOrganizationInfo?organizationid=${organization}`
       this.axios.post(urltwo).then((response) => {
-        console.log(response.data.data)
+        // console.log(response.data.data)
+        let urlDate = response.data.data
+        //  专业类别
+        //  目前专业类别对应不上
+        // let categoryId = urlDate.professionalcategory
+        // console.log(categoryId)  这里目前写成死的 应该是categoryId
+        this.selectedOptions.push(21)
+        //  所在地址
+        this.address = urlDate.address
+        //  备注信息
+        this.textarea = urlDate.memo
+        //  资格编号
+        this.identifier = urlDate.qualificationnumber
+        //  电话
+        this.CellPhone = urlDate.tel
+        //  业务类别
+        this.businessOptions.push(urlDate.level)
+        //  资质等级
+        this.grading = urlDate.scope
+        //  联系人
+        this.linkman = urlDate.linkman
       })
       this.axios.post(url).then((response) => {
-        console.log(response.data.data)
-        // cityid:1
-        // countyid:2
-        // creater:null
-        // creatername:""
-        // createtime:1525833639000
-        // icon:"http://172.16.5.34/group1/M00/33/56/3356a9d703734d2caed5eaa973f6c55d.jpg"
-        // organizationcode:"10002"
-        // organizationid:3
-        // organizationname:"海淀项目部"
-        // organizationshortname:""
-        // organizationstate:0
-        // parentid:1
-        // provinceid:1
+        let urlData = JSON.parse(response.data.data)
+        console.log(urlData)
+        //   所在区域
+        this.regionDate = urlData.pcc
+        //  单位简称
+        this.abbreviation = urlData.organizationname
+        //  单位编码
+        this.encrypt = urlData.organizationcode
       })
     },
     power () {
@@ -432,7 +522,6 @@ export default {
     console.log(token)
     //  左边的树状结构
     this.axios.post(`http://172.16.6.181:8920/organization/getOrganizationTreeByUser?token=${token}`).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         this.data.push(response.data.data)
       }
@@ -448,6 +537,13 @@ export default {
       console.log(response.data.data)
       if (response.data.code === 0) {
         this.category = response.data.data
+        this.categoryDate = response.data.data
+      }
+    })
+    //  业务类别
+    this.axios.post('http://172.16.6.181:8920/organization/getAllProfessionalCategory').then((response) => {
+      if (response.data.code === 0) {
+        this.business = response.data.data
       }
     })
   }
