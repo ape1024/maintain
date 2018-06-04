@@ -42,8 +42,8 @@ export default {
   name: 'maintain-headerRight',
   data () {
     return {
-      portrait: '',
-      username: '',
+      portrait: sessionStorage.userInfo?JSON.parse(sessionStorage.userInfo).icon: '',
+      username: sessionStorage.userInfo?JSON.parse(sessionStorage.userInfo).username: '',
       options: [{
         value: '选项1',
         label: '黄金糕'

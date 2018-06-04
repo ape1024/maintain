@@ -23,7 +23,6 @@
                     :options="data"
                     :props="defaultProps"
                     v-model="companyDate"
-                    change-on-select
                   ></el-cascader>
                 </div>
               </div>
@@ -88,9 +87,9 @@
                 </p>
                 <div class="content">
                   <el-cascader
-                    :options="category"
+                    :options="business"
                     :props="categoryProps"
-                    v-model="selectedOptions"
+                    v-model="businessOptions"
                     @change="handleChange">
                   </el-cascader>
                 </div>
@@ -100,12 +99,7 @@
                   业务类别：
                 </p>
                 <div class="content">
-                  <el-cascader
-                    :options="business"
-                    :props="categoryProps"
-                    v-model="businessOptions"
-                    @change="handleChange">
-                  </el-cascader>
+                  <el-input v-model="grading" placeholder=""  clearable>></el-input>
                 </div>
               </div>
             </li>
@@ -115,7 +109,12 @@
                   资质等级：
                 </p>
                 <div class="content">
-                  <el-input v-model="grading" placeholder=""  clearable>></el-input>
+                  <el-cascader
+                    :options="category"
+                    :props="categoryProps"
+                    v-model="selectedOptions"
+                    @change="handleChange">
+                  </el-cascader>
                 </div>
               </div>
               <div class="informationDivtwo">
@@ -142,6 +141,31 @@
                 </p>
                 <div class="content">
                   <el-input v-model="CellPhone" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  组织机构名称：
+                </p>
+                <div class="content">
+                  <el-input v-model="organization" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  组织类别：
+                </p>
+                <div class="content">
+                  <el-select v-model="regimentaValue" placeholder="请选择">
+                    <el-option
+                      v-for="item in regimentation"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
                 </div>
               </div>
             </li>
@@ -239,6 +263,8 @@ export default {
       companyDate: [],
       //  单位名称
       projectName: '',
+      //   组织id
+      organizationId: '',
       //  单位简称
       abbreviation: '',
       //  单位编码
@@ -261,6 +287,8 @@ export default {
       linkman: '',
       //  联系人手机
       CellPhone: '',
+      //  图标
+      filelistDate: '',
       //  组织机构图标
       fileList: [],
       //  省份
@@ -279,6 +307,11 @@ export default {
       countytownId: '',
       //  展示用户选取的地区
       regionDate: '',
+      //  组织机构
+      organization: '',
+      //  设备类别
+      regimentation: [],
+      regimentaValue: '',
       structureDate: {
         label: '',
         personnel: ''
@@ -305,6 +338,7 @@ export default {
       this.CellPhone = ''
       this.fileList = []
       this.textarea = ''
+      this.organization = ''
       this.conserveBoolean = false
     },
     newConserve () {
@@ -316,13 +350,7 @@ export default {
       let conurbation = this.conurbation
       //  县城
       let countytown = this.countytown
-      console.log(this.data)
-      // let result = this.data.find((val) => val.organizationCode === '10002')
-      // this.data.forEach(val => {
-      //   if (val.organizationCode === '10001'){
-      //     alert(val)
-      //   }
-      // })
+
       let result = null
       let organizationCode = '10001'
       let findData = (data) => {
@@ -341,11 +369,61 @@ export default {
       console.log(result.subOrgnizations)
     },
     conserve () {
+      console.log(this.abbreviation)
       //   点击保存
+      const token = JSON.parse(window.sessionStorage.token)
+      console.log(token)
+      //  组织id
+      const organization = this.organizationId
+      //   组织节点parentid
+      //  组织类型
+      const organizationtype = this.regimentaValue
+      //   区县
+      const countyid = this.countytownId
+      //  城市
+      const city = this.conurbationId
+      //  省
+      const province  = this.provinceId
+      //  单位编码
+      const organizationcode = this.encrypt
+      //  单位名称
+      const organizationname = this.abbreviation
+      //   组织缩写
+      const shortname = this.organization
+      //  详细地址
+      const address = this.address
+      //  专业类别
+      const professionalcategory  = (this.businessOptions)[0]
+      //
+      //  业务范围 目前没有
+      //  组织机构的父节点ID  目前没有
+      //
+      //  资质等级  level
+      const level = (this.selectedOptions)[0]
+      //  资质编号
+      const qualificationnumber = this.identifier
+      //  联系人
+      const linkman = this.linkman
+      //  联系电话
+      const tel  = this.CellPhone
+      //  备注
+      const memo = this.textarea
+      //  父级的id
+      const Parent  = this.companyDate
+      const parentid  = Parent[Parent.length - 1]
+      console.log(parentid)
+      console.log('11333')
+      //  url
+      const url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&organizationid=${organization}&parentid=${parentid}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
+      this.axios.post(url).then((response) => {
+        console.log('1111')
+        console.log(response)
+      })
     },
     handleChange () {
     },
     onChange (file, fileList) {
+      console.log(file)
       this.Headportrait = file.url
       if (fileList.length > 1) {
         this.fileList = fileList.slice(1, 2)
@@ -354,15 +432,18 @@ export default {
     handleNodeClick (data) {
       this.conserveBoolean = true
       const organization = data.organizationId
+      this.organizationId = organization
       const url = `http://172.16.6.181:8920/organization/getOrganization?organizationid=${organization}`
       const urltwo = `http://172.16.6.181:8920/organization/getOrganizationInfo?organizationid=${organization}`
       this.axios.post(urltwo).then((response) => {
         // console.log(response.data.data)
         let urlDate = response.data.data
+        console.log(urlDate)
         //  专业类别
         //  目前专业类别对应不上
         // let categoryId = urlDate.professionalcategory
         // console.log(categoryId)  这里目前写成死的 应该是categoryId
+        //  上级主管单位
         this.selectedOptions.push(21)
         //  所在地址
         this.address = urlDate.address
@@ -381,13 +462,27 @@ export default {
       })
       this.axios.post(url).then((response) => {
         let urlData = JSON.parse(response.data.data)
+        //   图标
+        this.filelistDate = urlData.icon
         console.log(urlData)
+        this.companyDate.push(urlData.organizationcode)
         //   所在区域
         this.regionDate = urlData.pcc
         //  单位简称
         this.abbreviation = urlData.organizationname
         //  单位编码
         this.encrypt = urlData.organizationcode
+        //   组织机构名称
+        this.organization = urlData.organizationshortname
+        //  组织类型
+        this.regimentaValue = urlData.organizationtype
+        console.log(this.regimentaValue)
+        //  省份
+        this.provinceId = urlData.provinceid
+        //  省下的市
+        this.conurbationId = urlData.cityid
+        //  县城
+        this.countytownId = urlData.countyid
       })
     },
     power () {
@@ -541,10 +636,17 @@ export default {
       }
     })
     //  业务类别
-    this.axios.post('http://172.16.6.181:8920/organization/getAllProfessionalCategory').then((response) => {
+    this.axios.post(`http://172.16.6.181:8920/organization/getAllProfessionalCategory`).then((response) => {
       if (response.data.code === 0) {
         this.business = response.data.data
       }
+    })
+    //  组织类别
+    this.axios.post(`http://172.16.6.181:8920/organization/getOrganizationType?token=${token}`).then((response) => {
+      console.log(response.data.data)
+      let regimentaDate = response.data.data
+      // regimentaDate
+      this.regimentation = response.data.data
     })
   }
 }
@@ -783,6 +885,8 @@ export default {
    overflow hidden
    width 770px
  .el-cascader
+    width 100%
+  .el-select
     width 100%
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
