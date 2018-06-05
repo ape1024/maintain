@@ -12,7 +12,6 @@ export const judgeToken = (Judgetoken) => {
   } else {
     let url = `http://172.16.6.181:8920/auth/tokenCheck?token=${Judgetoken}`
     return axios.post(url).then((response) => {
-      console.log(response.data.code)
       if (response.data.code === 0) {
         return true
       } else {
@@ -42,5 +41,45 @@ export const modifytheUser = (userid, organizationid, usercode, username, email,
 export const appUser = (token, organizationid, usercode, username, pwd, email, tel, job, memo, userstate) => {
   //
   const url = `http://172.16.6.16:8920/users/createUser?token=${token}&organizationid=${organizationid}&usercode=${usercode}&username=${username}&pwd=${pwd}&email=${email}&tel=${tel}&job=${job}&memo=${memo}&roleids=1`
+  return url
+}
+//  组织结构权限管理  获取左边的树状结构
+export const managementCreatedtree = (token) => {
+  const url = `http://172.16.6.181:8920/organization/getOrganizationTreeByUser?token=${token}`
+  return url
+}
+//  组织结构权限管理 省份
+export const managementCreatedProvince = () => {
+  const url = `http://172.16.6.181:8920/organization/getAllProvince`
+  return url
+}
+//  组织结构权限管理  专业类别
+export const managementCreatedcategory = () => {
+  const url = `http://172.16.6.181:8920/organization/getAllLevels`
+  return url
+}
+//  组织结构权限管理   业务类别
+export const managementCreatedbusiness = () => {
+  const url = `http://172.16.6.181:8920/organization/getAllProfessionalCategory`
+  return url
+}
+//  组织结构权限管理   组织类别
+export const managementCreatedorganization = (token) => {
+  const url = `http://172.16.6.181:8920/organization/getOrganizationType?token=${token}`
+  return url
+}
+//  组织结构权限管理 点击新增保存
+export const managementAuthority = (token, organizationtype, countytown, conurbation, province, organizationcode, organizationname, address, professionalcategory, level, qualificationnumber, linkman, tel) => {
+  const url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&countyid=${countytown}&cityid=${conurbation}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&&address=${address}&professionalcategory=${professionalcategory}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
+  return url
+}
+//  组织结构权限管理  点击左边树状获取数据-one
+export const managementhandleNodeClickOne = (organization) => {
+  const url = `http://172.16.6.181:8920/organization/getOrganization?organizationid=${organization}`
+  return url
+}
+//  组织结构权限管理  点击左边树状获取数据-two
+export const managementhandleNodeClickTwo = (organization) => {
+  const url = `http://172.16.6.181:8920/organization/getOrganizationInfo?organizationid=${organization}`
   return url
 }

@@ -22,6 +22,7 @@
                   <el-cascader
                     :options="data"
                     :props="defaultProps"
+                    change-on-select
                     v-model="companyDate"
                   ></el-cascader>
                 </div>
@@ -232,6 +233,7 @@ import Jurisdiction from '../intercalateChild-operation/structureChild-jurisdict
 import member from '../intercalateChild-operation/structureChild-member'
 import bluepencil from '../intercalateChild-operation/structureChild-bluepencil'
 import structureCopy from '../intercalateChild-operation/structureChild-copy'
+import {managementAuthority, managementhandleNodeClickOne, managementhandleNodeClickTwo, managementCreatedtree, managementCreatedProvince, managementCreatedcategory, managementCreatedbusiness, managementCreatedorganization} from '../../api/user'
 export default {
   name: 'intercalateChild-structure',
   components: {
@@ -312,6 +314,8 @@ export default {
       //  设备类别
       regimentation: [],
       regimentaValue: '',
+      //  父级id 保存使用
+      parentid: '',
       structureDate: {
         label: '',
         personnel: ''
@@ -340,36 +344,102 @@ export default {
       this.textarea = ''
       this.organization = ''
       this.conserveBoolean = false
+      this.regimentaValue = ''
     },
     newConserve () {
       //  点击新增保存
-      let token = window.sessionStorage.token
+      let token = JSON.parse(window.sessionStorage.token)
+      console.log(token)
+      //  类型
+      let organizationtype = this.regimentaValue
+      //  父级id
+      let parentID = ''
+      if ((this.companyDate).length === 0) {
+        parentID = ''
+      } else {
+        let parentLength = this.companyDate
+        parentID = parentLength[parentLength.length - 1]
+      }
       //   省份
-      let province = this.province
+      let province = this.provinceId
       //  城市
       let conurbation = this.conurbation
       //  县城
       let countytown = this.countytown
-
-      let result = null
-      let organizationCode = '10001'
-      let findData = (data) => {
-        let flag = true
-        data.forEach(val => {
-          if (val.organizationCode === organizationCode) {
-            result = val
-            flag = false
-          } else if (flag && val.subOrgnizations) {
-            findData(val.subOrgnizations)
-          }
-        })
+      //  *单位编码
+      let organizationcode = this.encrypt
+      //  *单位名称
+      let organizationname = this.abbreviation
+      //  详细地址
+      let address = this.address
+      //  专业类别
+      let professionalcategory = ''
+      if (this.businessOptions.length !== 0) {
+        professionalcategory = parseInt(this.businessOptions)
+      } else {
+        professionalcategory = ''
       }
-      findData(this.data)
-      //  获取到 对应的数组
-      console.log(result.subOrgnizations)
+      //  资质等级
+      let level = ''
+      if (this.selectedOptions.length !== 0) {
+        level = parseInt(this.selectedOptions)
+      } else {
+        level = ' '
+      }
+      //  资质编号
+      let qualificationnumber = this.identifier
+      //  联系人
+      let linkman = this.linkman
+      //  联系人手机
+      let tel = this.CellPhone
+      // //  备注
+      // let memo = this.textarea
+      // //  图片
+      // let file = this.Headportrait
+      console.log('0000000000000000')
+      console.log(level)
+      //  url
+      const url = managementAuthority(token, organizationtype, countytown, conurbation, province, organizationcode, organizationname, address, professionalcategory, level, qualificationnumber, linkman, tel)
+      if (organizationcode !== '' && organizationname !== '') {
+        if (parentID !== '') {
+          if (organizationtype === 3) {
+            this.axios.post(url).then((response) => {
+              if (response.data.code === 0) {
+                alert('添加成功')
+                let responseDate = response.data.data
+                let result = null
+                let findData = (data) => {
+                  let flag = true
+                  data.forEach(val => {
+                    if (val.organizationCode === parentID) {
+                      result = val
+                      flag = false
+                    } else if (flag && val.subOrgnizations) {
+                      findData(val.subOrgnizations)
+                    }
+                  })
+                }
+                findData(this.data)
+                //  获取到 对应的数组
+                let obj = {
+                  organizationName: organizationname,
+                  organizationId: responseDate
+                }
+                result.subOrgnizations.push(obj)
+              }
+            })
+          } else {
+            alert('只有处于跟节点的组织机构组织机构类型才能设置为 业主单位或维保机构！')
+          }
+        } else {
+          this.axios.post(url).then((response) => {
+          })
+        }
+      } else {
+        alert('名称和编码都不能为空！')
+      }
     },
     conserve () {
-      console.log(this.abbreviation)
       //   点击保存
       const token = JSON.parse(window.sessionStorage.token)
       console.log(token)
@@ -383,7 +453,7 @@ export default {
       //  城市
       const city = this.conurbationId
       //  省
-      const province  = this.provinceId
+      const province = this.provinceId
       //  单位编码
       const organizationcode = this.encrypt
       //  单位名称
@@ -393,7 +463,7 @@ export default {
       //  详细地址
       const address = this.address
       //  专业类别
-      const professionalcategory  = (this.businessOptions)[0]
+      const professionalcategory = (this.businessOptions)[0]
       //
       //  业务范围 目前没有
       //  组织机构的父节点ID  目前没有
@@ -405,25 +475,42 @@ export default {
       //  联系人
       const linkman = this.linkman
       //  联系电话
-      const tel  = this.CellPhone
+      const tel = this.CellPhone
       //  备注
-      const memo = this.textarea
+      // const memo = this.textarea
       //  父级的id
-      const Parent  = this.companyDate
-      const parentid  = Parent[Parent.length - 1]
-      console.log(parentid)
-      console.log('11333')
+      const parentid = this.parentid
       //  url
-      const url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&organizationid=${organization}&parentid=${parentid}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
+      let url = ``
+      if (parentid === undefined) {
+        url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&organizationid=${organization}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
+      } else {
+        url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&organizationid=${organization}&parentid=${parentid}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
+      }
       this.axios.post(url).then((response) => {
-        console.log('1111')
-        console.log(response)
+        if (response.data.code === 0) {
+          alert('修改成功')
+          let result = null
+          let organizaTIONId = organization
+          let findData = (data) => {
+            let flag = true
+            data.forEach(val => {
+              if (val.organizationId === organizaTIONId) {
+                result = val
+                flag = false
+              } else if (flag && val.subOrgnizations) {
+                findData(val.subOrgnizations)
+              }
+            })
+          }
+          findData(this.data)
+          result.organizationName = organizationname
+        }
       })
     },
     handleChange () {
     },
     onChange (file, fileList) {
-      console.log(file)
       this.Headportrait = file.url
       if (fileList.length > 1) {
         this.fileList = fileList.slice(1, 2)
@@ -431,10 +518,11 @@ export default {
     },
     handleNodeClick (data) {
       this.conserveBoolean = true
+      console.log(data)
       const organization = data.organizationId
       this.organizationId = organization
-      const url = `http://172.16.6.181:8920/organization/getOrganization?organizationid=${organization}`
-      const urltwo = `http://172.16.6.181:8920/organization/getOrganizationInfo?organizationid=${organization}`
+      const url = managementhandleNodeClickOne(organization)
+      const urltwo = managementhandleNodeClickTwo(organization)
       this.axios.post(urltwo).then((response) => {
         // console.log(response.data.data)
         let urlDate = response.data.data
@@ -443,6 +531,7 @@ export default {
         //  目前专业类别对应不上
         // let categoryId = urlDate.professionalcategory
         // console.log(categoryId)  这里目前写成死的 应该是categoryId
+        // this.businessOptions = categoryId
         //  上级主管单位
         this.selectedOptions.push(21)
         //  所在地址
@@ -476,13 +565,14 @@ export default {
         this.organization = urlData.organizationshortname
         //  组织类型
         this.regimentaValue = urlData.organizationtype
-        console.log(this.regimentaValue)
         //  省份
         this.provinceId = urlData.provinceid
         //  省下的市
         this.conurbationId = urlData.cityid
         //  县城
         this.countytownId = urlData.countyid
+        //  父级id
+        this.parentid = urlData.parentid
       })
     },
     power () {
@@ -588,7 +678,7 @@ export default {
     citySpan (event, cityDate) {
       let cout = $(event.currentTarget).parents('.region_li').children('.provinceSpan').text()
       let city = cityDate.cityname
-      let url = `${cout}-${city}`
+      let url = `${cout} ${city}`
       this.regionDate = url
       console.log()
       //  省份id
@@ -599,7 +689,7 @@ export default {
     countytownSpan (coundata) {
       let cout = $(event.currentTarget).parents('.region_li').children('.provinceSpan').text()
       let city = $(event.currentTarget).parents('.regionliul_li').children('.countSpen').text()
-      let url = `${cout}-${city}-${coundata.countyname}`
+      let url = `${cout} ${city} ${coundata.countyname}`
       this.regionDate = url
       console.log($(event.currentTarget).parents('.region_li').attr('id'))
       console.log(coundata.cityid)
@@ -616,19 +706,24 @@ export default {
     let token = JSON.parse(window.sessionStorage.token)
     console.log(token)
     //  左边的树状结构
-    this.axios.post(`http://172.16.6.181:8920/organization/getOrganizationTreeByUser?token=${token}`).then((response) => {
+    this.axios.post(managementCreatedtree(token)).then((response) => {
       if (response.data.code === 0) {
+        console.log('1111')
+        console.log(response)
         this.data.push(response.data.data)
       }
     })
     //  省份
-    this.axios.post('http://172.16.6.181:8920/organization/getAllProvince').then((response) => {
+    const CreatedProvince = managementCreatedProvince()
+    console.log(CreatedProvince)
+    this.axios.post(CreatedProvince).then((response) => {
       if (response.data.code === 0) {
         this.province = response.data.data
       }
     })
     //   专业类别
-    this.axios.post('http://172.16.6.181:8920/organization/getAllLevels').then((response) => {
+    const Createdcategory = managementCreatedcategory()
+    this.axios.post(Createdcategory).then((response) => {
       console.log(response.data.data)
       if (response.data.code === 0) {
         this.category = response.data.data
@@ -636,17 +731,20 @@ export default {
       }
     })
     //  业务类别
-    this.axios.post(`http://172.16.6.181:8920/organization/getAllProfessionalCategory`).then((response) => {
+    const Createdbusiness = managementCreatedbusiness()
+    this.axios.post(Createdbusiness).then((response) => {
       if (response.data.code === 0) {
         this.business = response.data.data
       }
     })
     //  组织类别
-    this.axios.post(`http://172.16.6.181:8920/organization/getOrganizationType?token=${token}`).then((response) => {
+    const Createdorganization = managementCreatedorganization(token)
+    this.axios.post(Createdorganization).then((response) => {
       console.log(response.data.data)
       let regimentaDate = response.data.data
       // regimentaDate
-      this.regimentation = response.data.data
+      this.regimentation = regimentaDate
+      console.log(regimentaDate)
     })
   }
 }
@@ -845,6 +943,9 @@ export default {
     line-height 30px
     border-radius 5px
     background #fff
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
     text-indent 2em
   .region_ul
      position absolute

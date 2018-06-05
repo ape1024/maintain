@@ -42,8 +42,8 @@ export default {
   name: 'maintain-headerRight',
   data () {
     return {
-      portrait: sessionStorage.userInfo?JSON.parse(sessionStorage.userInfo).icon: '',
-      username: sessionStorage.userInfo?JSON.parse(sessionStorage.userInfo).username: '',
+      portrait: sessionStorage.userInfo ? JSON.parse(sessionStorage.userInfo).icon : '',
+      username: sessionStorage.userInfo ? JSON.parse(sessionStorage.userInfo).username : '',
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -67,8 +67,10 @@ export default {
     signout () {
       let signouttoken = sessionStorage.token.token
       let strIng = secede(signouttoken)
+
       this.axios.post(strIng).then((response) => {
       //   用户点击退出 清除sessionStorage
+        console.log(response)
         sessionStorage.clear()
         this.$router.push({path: '/login'})
       })
