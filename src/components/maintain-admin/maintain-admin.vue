@@ -1,151 +1,156 @@
 <template>
-  <div class="subject">
-    <section class="subject_top">
-      <ul class="ul_input">
-        <li class="li_input">
-          <p class="div_p">区 域：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">设备类型：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">执行班组：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">巡查状态：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">审核状态：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-          </div>
-        </li>
-      </ul>
-      <div class="button">
-        <!--查询-->
-        <div class="query">
-          查 询
-        </div>
-        <!--导入-->
-        <div class="introduce">
-          导 入
-        </div>
-        <!--新增-->
-        <div @click.stop="auditing" class="newly">
-          新 增
-        </div>
-      </div>
-    </section>
-    <section class="subject_bottom">
-      <ul class="header_ul">
-        <li class="header_lithree">
-          区域
-        </li>
-        <li class="header_li">
-          设备数量
-        </li>
-        <li class="header_li">
-          待审核设备数量
-        </li>
-        <li class="header_li">
-          正常运行数量
-        </li>
-        <li class="header_li">
-          审核
-        </li>
-      </ul>
-      <ul class="table_ul">
-        <li v-for="(item,$index) in tableData" class="table_li" :key="item.id" :id="item.id" @click="selectStyle (item, $index, tableData)">
-          <ul :id="item.id" class="inline_ul">
-            <li class="header_lithree">{{item.date}}</li>
-            <li class="header_li">{{item.quantum}}</li>
-            <li class="header_li">{{item.await}}</li>
-            <li class="header_li">{{item.normal}}</li>
-            <li class="header_li">
-              <div v-show="item.auditin" @click.stop="examine(item)"  class="examine">审 核</div>
-              <div class="admin_show" v-show="item.admin_show">
-                <div class="admin_selve">
-                    <el-select v-model="item.value" placeholder="">
-                      <el-option
-                        v-for="data in item.child"
-                        :key="data.value"
-                        :label="data.label"
-                        :value="data.label">
-                      </el-option>
-                    </el-select>
-                </div>
-                <div @click.stop="preservation(item)" class="admin_preservation">
-                  保存
-                </div>
-                <div @click.stop="cancel(item)" class="cancel">
-                  取消
-                </div>
+  <el-container>
+    <div class="subject">
+      <el-header>
+        <section class="subject_top">
+          <ul class="ul_input">
+            <li class="li_input">
+              <p class="div_p">区 域：</p>
+              <div class="div_input">
+                <el-cascader
+                  :options="regionDate"
+                  v-model="regionModel"
+                  :props="regionProps"
+                  change-on-select>>
+                </el-cascader>
+              </div>
+            </li>
+            <li class="li_input">
+              <p class="div_p">厂家：</p>
+              <div class="div_input">
+                <el-select @focus="focus" v-model="manufactorModel" placeholder="">
+                  <el-option
+                    v-for="item in manufactor"
+                    :key="item.manufacturerid"
+                    :label="item.name"
+                    :value="item.manufacturerid">
+                  </el-option>
+                </el-select>
+              </div>
+            </li>
+            <li class="li_input">
+              <p class="div_p">设备类型：</p>
+              <div class="div_input">
+                <el-select v-model="equipmentDate" placeholder="">
+                  <el-option
+                    v-for="item in equipment"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option>
+                </el-select>
+              </div>
+            </li>
+            <li class="li_input">
+              <p class="div_p">运行状态：</p>
+              <div class="div_input">
+                <el-select v-model="runningState" placeholder="">
+                  <el-option
+                    v-for="item in runningstateDate"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+            </li>
+            <li class="li_input">
+              <p class="div_p">审核状态：</p>
+              <div class="div_input">
+                <el-select v-model="Auditstatus" placeholder="">
+                  <el-option
+                    v-for="item in AuditstatusDate"
+                    :key="item.value"
+                    :label="item.name"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
               </div>
             </li>
           </ul>
-          <transition enter-active-class="fadeInUp"
-            leave-active-class="fadeOutDown">
-            <div v-show="item.active" class="inline_div">
-              <adminchild></adminchild>
+          <div class="button">
+            <!--查询-->
+            <div class="query">
+              查 询
             </div>
-          </transition>
-        </li>
-      </ul>
+            <!--新增-->
+            <div @click.stop="auditing" class="newly">
+              新 增
+            </div>
+            <!--导入-->
+            <div class="introduce">
+              <el-dropdown size="medium" split-button type="primary">
+                导入选择
+                <el-dropdown-menu slot="dropdown" trigger="click">
+                  <el-dropdown-item>批量导入</el-dropdown-item>
+                  <el-dropdown-item>导入</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
 
-    </section>
-    <section v-if="review_boolean" @click.stop class="review">
-      <increase :msg="review_boolean" @say="onSay"></increase>
-
-    </section>
-
-  </div>
+          </div>
+        </section>
+      </el-header>
+      <el-main>
+        <section class="subject_bottom">
+          <ul class="header_ul">
+            <li class="header_lithree">
+              区域
+            </li>
+            <li class="header_li">
+              设备数量
+            </li>
+            <li class="header_li">
+              待审核设备数量
+            </li>
+            <li class="header_li">
+              正常运行数量
+            </li>
+          </ul>
+          <ul class="table_ul">
+            <li v-for="(item) in tableData" class="table_li" :key="item.areaid" :id="item.areaid" @click="selectStyle (item)">
+              <ul :id="item.id" class="inline_ul">
+                <li class="header_lithree">{{item.areaname}}</li>
+                <li class="header_li">{{item.alldevcount}}</li>
+                <li class="header_li">{{item.approvedevnum}}</li>
+                <li class="header_li">{{item.statedevnum}}</li>
+                <li class="header_li">
+                  <!--<div v-show="item.auditin" @click.stop="examine(item)"  class="examine">审 核</div>-->
+                  <!--<div class="admin_show" v-show="item.admin_show">-->
+                    <!--<div class="admin_selve">-->
+                      <!--<el-select v-model="item.value" placeholder="">-->
+                        <!--<el-option-->
+                          <!--v-for="data in item.child"-->
+                          <!--:key="data.value"-->
+                          <!--:label="data.label"-->
+                          <!--:value="data.label">-->
+                        <!--</el-option>-->
+                      <!--</el-select>-->
+                    <!--</div>-->
+                    <!--<div @click.stop="preservation(item)" class="admin_preservation">-->
+                      <!--保存-->
+                    <!--</div>-->
+                    <!--<div @click.stop="cancel(item)" class="cancel">-->
+                      <!--取消-->
+                    <!--</div>-->
+                  <!--</div>-->
+                </li>
+              </ul>
+              <transition enter-active-class="fadeInUp"
+                          leave-active-class="fadeOutDown">
+                <div v-show="item.flag" class="inline_div">
+                  <adminchild :tabChild="tableChild"></adminchild>
+                </div>
+              </transition>
+            </li>
+          </ul>
+        </section>
+        <section v-if="review_boolean" @click.stop class="review">
+          <increase :msg="review_boolean" @say="onSay"></increase>
+        </section>
+      </el-main>
+    </div>
+  </el-container>
 </template>
 
 <script>
@@ -158,16 +163,14 @@ export default {
     increase
   },
   methods: {
-    selectStyle (item, index, tableData) {
-      // 点击一级出现二级
-      console.log(event)
-      event.cancelBubble = true
-      this.tableData.forEach(function (item) {
-        if (index !== item.index) {
-          item.active = false
+    selectStyle (item) {
+      let itemAreaid = item.areaid
+      this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?areaid=${itemAreaid}`).then((response) => {
+        if (response.data.code === 0) {
+          this.tableChild = response.data.data
         }
       })
-      item.active = !item.active
+      item.flag = !item.flag
     },
     examine (item) {
       // 一级审核
@@ -192,10 +195,49 @@ export default {
     onSay (ev) {
       // 子级组件传递 参数 让新增组件 隐藏
       this.review_boolean = ev
+    },
+    focus (event) {
+      let region = this.regionModel
+      if (region.length === 0) {
+        this.$message({
+          message: '请先选择区域！',
+          type: 'warning'
+        })
+        return false
+      } else {
+        region = region[region.length - 1]
+        this.axios.post(`http://172.16.6.16:8920/dev/findManufactures?baseDeviceId=${region}`).then((response) => {
+          if (response.data.code === 0) {
+            this.manufactor = response.data.data
+          }
+        })
+      }
     }
   },
   data () {
     return {
+      //  区域
+      regionProps: {
+        children: 'areas',
+        label: 'areaname',
+        value: 'areaid'
+      },
+      regionDate: [],
+      regionModel: [],
+      //  厂家
+      manufactorModel: '',
+      manufactor: [],
+      //  设备类型
+      equipment: [],
+      equipmentDate: '',
+      //  运行状态
+      runningstateDate: [],
+      runningState: '',
+      //  审核状态
+      AuditstatusDate: [],
+      Auditstatus: '',
+      //  传给子级值
+      tableChild: '',
       options: [{
         value: '选项1',
         label: '黄金糕'
@@ -216,93 +258,66 @@ export default {
       review_boolean: false,
       // 获取点击的id
       click_id: '',
-      tableData: [{
-        active: false,
-        // 审核按钮 显示 隐藏
-        auditin: true,
-        // 一级列表 审核  显示 隐藏
-        admin_show: false,
-        index: 0,
-        id: '1',
-        date: '1号车间',
-        quantum: '100',
-        await: '30',
-        normal: '1000',
-        child: [{
-          value: '选项1',
-          label: '111'
-        }, {
-          value: '选项2',
-          label: '222'
-        }, {
-          value: '选项3',
-          label: '333'
-        }, {
-          value: '选项4',
-          label: '444'
-        }, {
-          value: '选项5',
-          label: '555'
-        }],
-        value: ''
-      }, {
-        active: false,
-        // 审核按钮 显示 隐藏
-        auditin: true,
-        // 一级列表 审核  显示 隐藏
-        admin_show: false,
-        index: 1,
-        id: '2',
-        date: '2号车间',
-        quantum: '10',
-        await: '303',
-        normal: '1',
-        child: [
-          {
-            value: '选项1',
-            label: '黄金糕'
-          }, {
-            value: '选项2',
-            label: '双皮奶'
-          }, {
-            value: '选项3',
-            label: '蚵仔煎'
-          }, {
-            value: '选项4',
-            label: '龙须面'
-          }, {
-            value: '选项5',
-            label: '北京烤鸭'
-          }
-        ],
-        value: ''
-      }]
+      tableData: []
     }
+  },
+  created () {
+    const token = JSON.parse(window.sessionStorage.token)
+    console.log(token)
+    //  获取区域
+    this.axios.post('http://172.16.6.16:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
+      if (response.data.code === 0) {
+        this.regionDate = response.data.data
+        this.regionModel.push((this.regionDate)[0].areaid)
+        //  获取 列表数据 默认第一页 20个
+        let regionId = (this.regionModel).shift()
+        console.log(regionId)
+        this.axios.post(`http://172.16.6.16:8920/dev/CalcDevCount?areaid=${regionId}&pageIndex=1&pageSize=20`).then((data) => {
+          if (data.data.code === 0) {
+            console.log(data.data.data)
+            this.tableData = data.data.data
+          }
+        })
+      }
+    })
+    //  获取设备类别
+    this.axios.post('http://172.16.6.16:8920/dev/findAllDeviceType').then((response) => {
+      if (response.data.code === 0) {
+        this.equipment = response.data.data
+      }
+    })
+    //  获取运行状态
+    this.axios.post('http://172.16.6.16:8920/dev/FindDevAllstate').then((response) => {
+      if (response.data.code === 0) {
+        this.runningstateDate = response.data.data
+      }
+    })
+    //  审核状态
+    this.axios.post('http://172.16.6.16:8920/dev/FindDevAllApprovalstate').then((response) => {
+      if (response.data.code === 0) {
+        this.AuditstatusDate = response.data.data
+      }
+    })
   }
 }
 </script>
-
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
-    margin 12px
+    width 100%
     overflow hidden
     position relative
     background #141e30
   .subject_top
-    margin 38px 15px 20px 15px
     overflow hidden
     background #111a28
-    padding 38px 0 58px
-    display flex
+    position relative
   .ul_input
     margin-left 30px
-    overflow hidden
     float left
+    overflow hidden
     position relative
-    display flex
   .li_input
-    display flex
     float left
     overflow hidden
     margin-right 20px
@@ -311,17 +326,19 @@ export default {
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height: 40px;
+      line-height 40px
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis
     .div_input
       float left
       width 167px
       margin-top 5px
   .button
     display flex
-    float right
     overflow hidden
     position relative
-    margin-left 60px
+    margin-left 1%
     text-align center
     line-height 36px
     font-size $font-size-medium
@@ -330,8 +347,9 @@ export default {
       width 106px
       height 36px
       border-radius 5px
-      float left
-      margin-right 30px
+      text-align center
+      display inline-block
+      margin-right 6%
       background $color-background-query
       cursor pointer
       transition .2s
@@ -341,23 +359,21 @@ export default {
       width 106px
       height 36px
       border-radius 5px
-      float right
+      text-align center
+      display inline-block
+      margin-right 6%
       background $color-background-newly
       cursor pointer
       transition .2s
       &:hover
         background #4baabe
     .introduce
-      width 106px
       height 36px
       border-radius 5px
-      float left
-      margin-right 30px
+      display inline-block
       background $color-background-introduce
       cursor pointer
       transition .2s
-      &:hover
-        background #4275ba
   .table
     width 100%
     overflow hidden
@@ -375,7 +391,7 @@ export default {
     background #354d76
   .header_li
     float left
-    width 22.5%
+    width 25%
     .admin_show
       overflow hidden
       font-size $font-size-small
@@ -412,7 +428,7 @@ export default {
         background $color-background-introduce
   .header_lithree
     float left
-    width 9%
+    width 24%
     padding-left 1%
   .header_p_one
     color $color-text-tile-state
@@ -471,7 +487,13 @@ export default {
     background rgba(000,000,000,.4)
     z-index 11
     overflow hidden
-
+.el-header
+  padding 38px 20px 58px
+  margin-bottom 20px
+.el-container
+  margin 12px 12px 0
+.el-main
+  padding 10px
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner

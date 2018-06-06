@@ -33,46 +33,46 @@
       </li>
     </ul>
     <ul class="threelevel_list">
-      <li :key="dataset.id" :id="dataset.id"  v-for="(dataset, $index) in content" class="threelevel_list_li">
+      <li :key="dataset.deviceid" :id="dataset.deviceid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
           <li class="threelevel_lithree">
-            {{dataset.encoded}}
+            {{dataset.basedevicecode}}
           </li>
           <li class="threelevel_li">
-            {{dataset.name}}
+            {{dataset.devicename}}
           </li>
           <li class="threelevel_li">
             {{dataset.position}}
           </li>
           <li class="threelevel_li">
-            {{dataset.number}}
+            {{dataset.devicecount}}
           </li>
           <li class="threelevel_li">
-            {{dataset.vender}}
+            {{dataset.manufacturename}}
           </li>
           <li class="threelevel_li">
-            {{dataset.version}}
+            {{dataset.devicemodel}}
           </li>
           <li class="threelevel_li">
             {{dataset.timer}}
           </li>
           <li class="threelevel_li">
-            {{dataset.state}}
+            {{dataset.devicestate}}
           </li>
           <li class="threelevel_li">
-            {{dataset.examine}}
+            {{dataset.approvalstate}}
           </li>
           <li class="threelevel_litwo">
-            <p @click.stop="question" class="header_p_eight threelevel_litwo_p">
-              审核
-            </p>
+            <!--<p @click.stop="question" class="header_p_eight threelevel_litwo_p">-->
+              <!--审核-->
+            <!--</p>-->
             <p @click.stop="examine" class="header_p_ten">查看</p>
             <p @click.stop="modify" class="header_p_twelve">
               修改
             </p>
-            <p @click.stop="equipment" class="header_pe_quipment">
-              更换设备
-            </p>
+            <!--<p @click.stop="equipment" class="header_pe_quipment">-->
+              <!--更换设备-->
+            <!--</p>-->
             <p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>
           </li>
         </ul>
@@ -103,8 +103,10 @@ import childLookover from '../adminChild-operation/adminChild-lookover'
 import childModify from '../adminChild-operation/adminChild-modify'
 import childExamine from '../adminChild-operation/adminChild-examine'
 import childquipment from '../adminChild-operation/adminChild-quipment'
+// import {stateData, examineDate} from '../../common/js/utils'
 export default {
   name: 'admin-child',
+  props: ['tabChild'],
   components: {
     childLookover,
     childModify,
@@ -147,34 +149,16 @@ export default {
   },
   data () {
     return {
-      content: [{
-        id: '1-1',
-        encoded: 'A-001',
-        name: '防火门',
-        position: '地下一层',
-        number: '111',
-        vender: '未知',
-        version: 'NIDS-021',
-        timer: '2018.4',
-        state: '正常',
-        examine: '1'
-      }, {
-        id: '1-2',
-        encoded: 'A-002',
-        name: '防火门',
-        position: '地下二层',
-        number: '1111',
-        vender: '未知',
-        version: 'NIDS-022',
-        timer: '2018.6',
-        state: '正常',
-        examine: '1'
-      }],
+      content: [],
       examineBoolean: false,
       lookoverBoolean: false,
       modifyBoolean: false,
       quipmentBoolean: false
     }
+  },
+  created () {
+    console.log('132')
+    console.log(this.tabChild)
   }
 }
 </script>
@@ -281,21 +265,26 @@ export default {
     .threelevel_list_li
         width 100%
         overflow hidden
+        height 40px
+        line-height 40px
         position relative
         .threelevel_list_ul
           width 100%
           overflow hidden
-          padding: 12px 0;
+          height 40px
           .threelevel_li
             float left
             width 8.5%
+            height 40px
           .threelevel_litwo
             float left
             width 23.5%
+            height 40px
             overflow hidden
           .threelevel_lithree
             float left
             width 7.5%
+            height 40px
             padding-left 1%
           .threelevel_litwo p
             float left

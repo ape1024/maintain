@@ -2,7 +2,7 @@ import axios from 'axios'
 
 //  登录接口
 export const userLogin = (username, password, genre) => {
-  let url = `http://172.16.6.181:8920/auth/login?usercode=${username}&password=${password}&serviceType=${genre}`
+  let url = `http://172.16.6.16:8920/auth/login?usercode=${username}&password=${password}&serviceType=${genre}`
   return url
 }
 //  判断token 是否失效接口
