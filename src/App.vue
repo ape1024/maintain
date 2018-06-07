@@ -96,8 +96,10 @@ export default {
   },
   created () {
     if (window.sessionStorage.length !== 0) {
-      let Judgetoken = window.sessionStorage.token
-      judgeToken(Judgetoken).then(res => {
+      let Judgetoken = JSON.parse(window.sessionStorage.token)
+      let userId = JSON.parse(window.sessionStorage.userInfo).userid
+      console.log(Judgetoken)
+      judgeToken(Judgetoken, userId).then(res => {
         if (res === true) {
           return false
         } else {

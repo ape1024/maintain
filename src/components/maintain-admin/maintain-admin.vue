@@ -16,6 +16,17 @@
               </div>
             </li>
             <li class="li_input">
+              <p class="div_p">设备类型：</p>
+              <div class="div_input">
+                <el-cascader
+                  v-model="equipmentDate"
+                  :options="equipment"
+                  :props="equipmentProps"
+                  change-on-select
+                ></el-cascader>
+              </div>
+            </li>
+            <li class="li_input">
               <p class="div_p">厂家：</p>
               <div class="div_input">
                 <el-select @focus="focus" v-model="manufactorModel" placeholder="">
@@ -24,19 +35,6 @@
                     :key="item.manufacturerid"
                     :label="item.name"
                     :value="item.manufacturerid">
-                  </el-option>
-                </el-select>
-              </div>
-            </li>
-            <li class="li_input">
-              <p class="div_p">设备类型：</p>
-              <div class="div_input">
-                <el-select v-model="equipmentDate" placeholder="">
-                  <el-option
-                    v-for="item in equipment"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id">
                   </el-option>
                 </el-select>
               </div>
@@ -183,7 +181,6 @@ export default {
     },
     preservation (item) {
       // 一级 审核 保存
-      console.log(item.value)
       item.admin_show = !item.admin_show
       item.auditin = !item.auditin
     },
@@ -197,10 +194,10 @@ export default {
       this.review_boolean = ev
     },
     focus (event) {
-      let region = this.regionModel
+      let region = this.equipmentDate
       if (region.length === 0) {
         this.$message({
-          message: '请先选择区域！',
+          message: '设备类型！',
           type: 'warning'
         })
         return false
@@ -224,12 +221,17 @@ export default {
       },
       regionDate: [],
       regionModel: [],
+      //  设备类别
+      equipmentProps: {
+        children: 'children',
+        label: 'name',
+        value: 'id'
+      },
+      equipment: [],
+      equipmentDate: [],
       //  厂家
       manufactorModel: '',
       manufactor: [],
-      //  设备类型
-      equipment: [],
-      equipmentDate: '',
       //  运行状态
       runningstateDate: [],
       runningState: '',
@@ -271,11 +273,9 @@ export default {
         this.regionModel.push((this.regionDate)[0].areaid)
         //  获取 列表数据 默认第一页 20个
         let regionId = (this.regionModel).shift()
-        console.log(regionId)
         this.axios.post(`http://172.16.6.16:8920/dev/CalcDevCount?areaid=${regionId}&pageIndex=1&pageSize=20`).then((data) => {
           if (data.data.code === 0) {
-            console.log(data.data.data)
-            this.tableData = data.data.data
+            this.tableData = data.data.data.datas
           }
         })
       }

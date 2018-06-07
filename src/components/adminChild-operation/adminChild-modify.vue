@@ -14,40 +14,44 @@
             <div class="modify_liDiv">
               <p class="modify_li_p">设施类别：</p>
               <div class="modify_li_div">
-                <el-select v-model="category.value" placeholder="">
-                  <el-option
-                    v-for="item in category.child"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.label">
-                  </el-option>
-                </el-select>
+                  <el-cascader
+                    v-model="categoryDate"
+                    :options="category"
+                    :props="equipmentProps"
+                    change-on-select
+                  ></el-cascader>
               </div>
             </div>
             <div class="modify_liDiv">
               <p class="modify_li_p">生产厂家：</p>
               <div class="modify_li_div">
-                <el-select v-model="manufactor.value" placeholder="">
+                <el-select @focus="focus" @change="manufacturerChange" v-model="manufactorModel" placeholder="">
                   <el-option
-                    v-for="item in manufactor.child"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.label">
+                    v-for="item in manufactor"
+                    :key="item.manufacturerid"
+                    :label="item.name"
+                    :value="item.manufacturerid">
                   </el-option>
                 </el-select>
+              </div>
+              <div class="modify_lidivRight">
+                <el-input v-show="customManufacturer" v-model="customManufacturerDate" placeholder="请输入厂家"></el-input>
               </div>
             </div>
             <div class="modify_liDiv">
               <p class="modify_li_p">规格型号：</p>
               <div class="modify_li_div">
-                <el-select v-model="version.value" placeholder="">
+                <el-select @change="versionChang" v-model="versionValue" placeholder="">
                   <el-option
-                    v-for="item in version.child"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.label">
+                    v-for="item in version"
+                    :key="item.divecemodelid"
+                    :label="item.divecemodelname"
+                    :value="item.divecemodelid">
                   </el-option>
                 </el-select>
+              </div>
+              <div class="modify_lidivRight">
+                <el-input v-show="versionManufacturer" v-model="customManufacturerDate" placeholder="请输入规格型号"></el-input>
               </div>
             </div>
             <div class="modify_liDiv">
@@ -64,16 +68,9 @@
               </div>
             </div>
             <div class="modify_liDiv">
-              <p class="modify_li_p">报警回路：</p>
+              <p class="modify_li_p">具体位置：</p>
               <div class="modify_li_div">
-                <el-select v-model="circuit.value" placeholder="">
-                  <el-option
-                    v-for="item in circuit.child"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.label">
-                  </el-option>
-                </el-select>
+                <el-input v-model="customManufacturerDate" placeholder="请输入规格型号"></el-input>
               </div>
             </div>
           </li>
@@ -146,71 +143,26 @@
 <script>
 export default {
   name: 'adminChild-modify',
-  props: ['msg'],
+  props: ['msg', 'modify'],
   data () {
     return {
       // 显示/隐藏
       modifyBoolean: true,
       // 类别
-      category: {
-        child: [{
-          value: '1',
-          label: '111'
-        }, {
-          value: '2',
-          label: '222'
-        }, {
-          value: '3',
-          label: '333'
-        }, {
-          value: '4',
-          label: '444'
-        }, {
-          value: '5',
-          label: '555'
-        }],
-        value: ''
+      category: [],
+      categoryDate: [],
+      equipmentProps: {
+        children: 'children',
+        label: 'name',
+        value: 'id'
       },
       // 厂家
-      manufactor: {
-        child: [{
-          value: '1',
-          label: '777'
-        }, {
-          value: '2',
-          label: '222'
-        }, {
-          value: '3',
-          label: '888'
-        }, {
-          value: '4',
-          label: '999'
-        }, {
-          value: '5',
-          label: '111'
-        }],
-        value: ''
-      },
+      manufactorModel: '',
+      manufactor: [],
       // 型号
-      version: {
-        child: [{
-          value: '1',
-          label: 'NO.1'
-        }, {
-          value: '2',
-          label: 'NO.2'
-        }, {
-          value: '3',
-          label: 'NO.3'
-        }, {
-          value: '4',
-          label: 'NO.4'
-        }, {
-          value: '5',
-          label: 'NO.5'
-        }],
-        value: ''
-      },
+      version: [],
+      versionValue: '',
+      versionManufacturer: false,
       // 位置
       location: {
         child: [{
@@ -231,26 +183,6 @@ export default {
         }],
         value: ''
       },
-      // 回路
-      circuit: {
-        child: [{
-          value: '1',
-          label: '啦啦啦'
-        }, {
-          value: '2',
-          label: '嘤嘤嘤'
-        }, {
-          value: '3',
-          label: '哈哈哈'
-        }, {
-          value: '4',
-          label: '呵呵呵'
-        }, {
-          value: '5',
-          label: '啊啊啊'
-        }],
-        value: ''
-      },
       // 生产日期
       productionValue1: '',
       // 有效期
@@ -258,7 +190,11 @@ export default {
       // 技术参数
       textarea: '',
       // 备注说明
-      explain: ''
+      explain: '',
+      //  自定义厂家
+      customManufacturer: false,
+      customManufacturerDate: ''
+
     }
   },
   methods: {
@@ -271,7 +207,70 @@ export default {
       this.modifyBoolean = this.msg
       this.modifyBoolean = !this.modifyBoolean
       this.$emit('say', this.modifyBoolean)
+    },
+    focus (event) {
+      let region = this.categoryDate
+      if (region.length === 0) {
+        this.$message({
+          message: '设备类型！',
+          type: 'warning'
+        })
+        return false
+      } else {
+        region = region[region.length - 1]
+        this.axios.post(`http://172.16.6.16:8920/dev/findManufactures?baseDeviceId=${region}`).then((response) => {
+          if (response.data.code === 0) {
+            this.manufactor = response.data.data
+            this.manufactor.push({
+              name: '自定义',
+              manufacturerid: '-9999'
+            })
+          }
+        })
+      }
+    },
+    manufacturerChange () {
+      if (this.manufactorModel === '-9999') {
+        this.versionValue = '自定义'
+        this.version = []
+        this.customManufacturer = true
+        this.versionManufacturer = true
+        return false
+      } else {
+        this.versionValue = ''
+        this.customManufacturer = false
+        this.versionManufacturer = false
+        let region = this.categoryDate
+        region = region[region.length - 1]
+        this.axios.post(`http://172.16.6.16:8920/dev/findDivecemodels?baseDeviceId=${region}&manufacturerId=${this.manufactorModel}`).then((response) => {
+          if (response.data.code === 0) {
+            this.version = response.data.data
+            console.log(response.data.data)
+            this.version.push({
+              divecemodelname: '自定义',
+              divecemodelid: '-9999'
+            })
+          }
+        })
+      }
+    },
+    versionChang () {
+      if (this.versionValue === '-9999') {
+        this.versionManufacturer = true
+        return false
+      } else {
+        this.versionManufacturer = false
+        return false
+      }
     }
+  },
+  created () {
+    // console.log(this.modify)
+    this.axios.post('http://172.16.6.16:8920/dev/findAllDeviceType').then((response) => {
+      if (response.data.code === 0) {
+        this.category = response.data.data
+      }
+    })
   }
 }
 </script>
@@ -315,7 +314,7 @@ export default {
       margin-top 25px
       .modify_li
         float left
-        margin 0 0 0 60px
+        margin 0 0 0 20px
         color $color-header-b-normal
         font-size $font-size-medium
       .modify_liDiv
@@ -327,7 +326,7 @@ export default {
         line-height 30px
       .modify_li_div
         float left
-        width 267px
+        width 217px
       .modify_li_divtwo
         float left
         width 267px
@@ -346,4 +345,8 @@ export default {
       margin-right 110px
     .closedown
       closedown()
+  .modify_lidivRight
+     width 202px
+     margin-left 20px
+     float left
 </style>

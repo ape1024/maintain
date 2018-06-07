@@ -6,11 +6,11 @@ export const userLogin = (username, password, genre) => {
   return url
 }
 //  判断token 是否失效接口
-export const judgeToken = (Judgetoken) => {
+export const judgeToken = (Judgetoken, userid) => {
   if (Judgetoken === undefined) {
     return Promise.resolve(false)
   } else {
-    let url = `http://172.16.6.181:8920/auth/tokenCheck?token=${Judgetoken}`
+    let url = `http://172.16.6.16:8920/auth/cleanTokenCache?token=${Judgetoken}&userid=${userid}`
     return axios.post(url).then((response) => {
       if (response.data.code === 0) {
         return true

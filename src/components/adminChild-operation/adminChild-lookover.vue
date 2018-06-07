@@ -8,63 +8,63 @@
         <ul class="lookover_ul">
           <li class="lookover_litwo">
             <p class="lookover_p">设施名称：</p>
-            <div class="lookover_div">123</div>
+            <div class="lookover_div">{{information.devicename}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">设备编码：</p>
-            <div class="lookover_div">321</div>
+            <div class="lookover_div">{{information.devicecode}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">业主单位：</p>
-            <div class="lookover_div">123</div>
+            <div class="lookover_div">{{Organization}}</div>
           </li>
         </ul>
         <ul class="information">
           <li class="lookover_litwo">
             <p class="lookover_p">生产厂家：</p>
-            <div></div>
+            <div>{{information.name}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">生产日期：</p>
-            <div></div>
+            <div>{{fmtDate(information.madedate)}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">技术参数：</p>
-            <div></div>
+            <div>{{information.parameters}}</div>
           </li>
 
           <li class="lookover_litwo">
             <p class="lookover_p">规格型号：</p>
-            <div></div>
+            <div>{{information.devicemodel}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">有效日期：</p>
-            <div></div>
+            <div>{{fmtDate(information.effectivedate)}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">创建人员：</p>
-            <div></div>
+            <div>{{information.creatername}}</div>
           </li>
 
           <li class="lookover_litwo">
             <p class="lookover_p">设备位置：</p>
-            <div></div>
+            <div>{{information.position}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">设备数量：</p>
-            <div></div>
+            <div>{{information.devicecount}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">编辑人员：</p>
-            <div></div>
+            <div>{{information.creatername}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">备注说明：</p>
-            <div></div>
+            <div>{{information.memo}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">审核人员：</p>
-            <div></div>
+            <div>{{information.approvername}}</div>
           </li>
           <li class="lookover_lithree">
             <p class="lithree_p">现场照片：</p>
@@ -82,19 +82,15 @@
           <ul class="situation_ul">
             <li class="situation_li">
               <p class="situation_p">最近巡检时间：</p>
-              <div class="situation_div">123142141</div>
+              <div class="situation_div">{{fmtDate(inspection.inspectionTime)}}</div>
             </li>
             <li class="situation_li">
               <p class="situation_p">巡 检 人 员：</p>
-              <div class="situation_div">123142141</div>
+              <div class="situation_div">{{inspection.inspectionPersonName}}</div>
             </li>
             <li class="situation_li">
-              <p class="situation_p">巡 检 人 员：</p>
-              <div class="situation_div">123142141</div>
-            </li>
-            <li class="situation_li">
-              <p class="situation_p">月度计划进展：</p>
-              <div class="situation_div">123142141</div>
+              <p class="situation_p">巡检总结：</p>
+              <div class="situation_div">{{inspection.inspectionConclusion}}</div>
             </li>
           </ul>
         </div>
@@ -105,27 +101,23 @@
           <ul class="situation_ul">
             <li class="situation_li">
               <p class="situation_p">最近维保时间：</p>
-              <div class="situation_div">123142141</div>
+              <div class="situation_div">{{fmtDate(inspection.maintenanceTime)}}</div>
             </li>
             <li class="situation_li">
               <p class="situation_p">维 保 人 员：</p>
-              <div class="situation_div">123142141</div>
+              <div class="situation_div">{{inspection.maintenancePersonName}}</div>
             </li>
             <li class="situation_li">
               <p class="situation_p">维保工作总结：</p>
-              <div class="situation_div">123142141</div>
-            </li>
-            <li class="situation_li">
-              <p class="situation_p">年度计划进展：</p>
-              <div class="situation_div">123142141</div>
+              <div class="situation_div">{{inspection.maintenanceConclusion}}</div>
             </li>
           </ul>
         </div>
       </div>
       <div class="fastener">
-        <div @click.stop="conserve" class="conserve">
-          保存
-        </div>
+        <!--<div @click.stop="conserve" class="conserve">-->
+          <!--保存-->
+        <!--</div>-->
         <div @click.stop="closedown" class="closedown">
           取消
         </div>
@@ -137,11 +129,12 @@
 <script>
 export default {
   name: 'adminChild-lookover',
-  props: ['msg'],
+  props: ['msg', 'inspection', 'information'],
   data () {
     return {
       // 组件 显示/隐藏
-      lookoverBoolean: true
+      lookoverBoolean: true,
+      Organization: ''
     }
   },
   methods: {
@@ -156,7 +149,21 @@ export default {
       this.lookoverBoolean = this.msg
       this.lookoverBoolean = !this.lookoverBoolean
       this.$emit('look', this.lookoverBoolean)
+    },
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = `0` + (date.getMonth() + 1)
+      let d = `0` + date.getDate()
+      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     }
+  },
+  created () {
+    this.axios.post(`http://172.16.6.16:8920/organization/getProprietorOrganization`).then((response) => {
+      console.log('2222222222222')
+      console.log(response.data.data)
+      this.Organization = (response.data.data)[0].organizationname
+    })
   }
 }
 </script>

@@ -4,28 +4,28 @@
       <li class="threelevel_lithree">
         设施编码
       </li>
-      <li class="threelevel_li">
+      <li class="threelevel_lithree">
         设备名称
       </li>
-      <li class="threelevel_li">
+      <li class="threelevel_lithree">
         设备位置
       </li>
-      <li class="threelevel_li">
+      <li class="threelevel_lithree">
         数量
       </li>
-      <li class="threelevel_li">
-        生成厂家
+      <li class="threelevel_lithree">
+        生产厂家
       </li>
-      <li class="threelevel_li">
+      <li class="threelevel_lithree">
         规格型号
       </li>
-      <li class="threelevel_li">
+      <li class="threelevel_lithree">
         生产时间
       </li>
-      <li class="threelevel_li">
+      <li class="threelevel_lithree">
         运行状态
       </li>
-      <li class="threelevel_li">
+      <li class="threelevel_lithree">
         审核状态
       </li>
       <li class="threelevel_litwo">
@@ -33,41 +33,44 @@
       </li>
     </ul>
     <ul class="threelevel_list">
-      <li :key="dataset.deviceid" :id="dataset.deviceid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
+      <li :key="dataset.deviceid" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
           <li class="threelevel_lithree">
             {{dataset.basedevicecode}}
           </li>
-          <li class="threelevel_li">
+          <li class="threelevel_lithree">
             {{dataset.devicename}}
           </li>
-          <li class="threelevel_li">
+          <li class="threelevel_lithree">
             {{dataset.position}}
           </li>
-          <li class="threelevel_li">
+          <li class="threelevel_lithree">
             {{dataset.devicecount}}
           </li>
-          <li class="threelevel_li">
+          <li class="threelevel_lithree">
             {{dataset.manufacturename}}
           </li>
-          <li class="threelevel_li">
+          <li class="threelevel_lithree">
             {{dataset.devicemodel}}
           </li>
-          <li class="threelevel_li">
-            {{dataset.timer}}
+          <li class="threelevel_lithree">
+            {{dataset.madedate}}
           </li>
-          <li class="threelevel_li">
-            {{dataset.devicestate}}
+          <li class="threelevel_lithree">
+            <p :style="{color: devicestatecodeColor(dataset.devicestatecode)}">{{devicestateCode(dataset.devicestatecode)}}</p>
           </li>
-          <li class="threelevel_li">
-            {{dataset.approvalstate}}
+          <li class="threelevel_lithree">
+            <p :style="{color: examineCodeColor(dataset.approvalstatecode)}">
+              {{examineCode(dataset.approvalstatecode)}}
+            </p>
+            <!--{{dataset.approvalstatecode}}-->
           </li>
           <li class="threelevel_litwo">
             <!--<p @click.stop="question" class="header_p_eight threelevel_litwo_p">-->
               <!--审核-->
             <!--</p>-->
-            <p @click.stop="examine" class="header_p_ten">查看</p>
-            <p @click.stop="modify" class="header_p_twelve">
+            <p @click.stop="examine(dataset.deviceid)" class="header_p_ten">查看</p>
+            <p @click.stop="modify(dataset)" class="header_p_twelve">
               修改
             </p>
             <!--<p @click.stop="equipment" class="header_pe_quipment">-->
@@ -84,11 +87,11 @@
     </section>
     <section v-show="lookoverBoolean" @click.stop class="review">
       <!--查看-->
-      <childLookover :msg="lookoverBoolean" @look="Onlook"></childLookover>
+      <childLookover :inspection="examineInspection" :information="examineInformation" :msg="lookoverBoolean" @look="Onlook"></childLookover>
     </section>
     <section v-show="modifyBoolean" @click.stop class="review">
       <!--修改-->
-      <childModify :msg="modifyBoolean" @say="Modify"></childModify>
+      <childModify :msg="modifyBoolean" :modify="modifyDate" @say="Modify"></childModify>
     </section>
     <section v-show="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
@@ -103,7 +106,7 @@ import childLookover from '../adminChild-operation/adminChild-lookover'
 import childModify from '../adminChild-operation/adminChild-modify'
 import childExamine from '../adminChild-operation/adminChild-examine'
 import childquipment from '../adminChild-operation/adminChild-quipment'
-// import {stateData, examineDate} from '../../common/js/utils'
+import {stateData, examineDate} from '../../common/js/utils'
 export default {
   name: 'admin-child',
   props: ['tabChild'],
@@ -118,13 +121,25 @@ export default {
       // 删除
       content.splice([$index], 1)
     },
-    examine () {
+    examine (deviceid) {
       // 点击查看
       this.lookoverBoolean = true
+      this.axios.post(`http://172.16.6.16:8920/dev/findDeviceDetail?devid=${deviceid}`).then((response) => {
+        if (response.data.code === 0) {
+          this.examineInformation = response.data.data
+        }
+      })
+      this.axios.post(`http://172.16.6.16:8920/dev/FindInspectionMaintenance?devid=${deviceid}`).then((response) => {
+        if (response.data.code === 0) {
+          this.examineInspection = response.data.data
+        }
+      })
     },
-    modify () {
+    modify (data) {
       // 点击修改
       this.modifyBoolean = true
+      this.modifyDate = data
+      console.log(data)
     },
     question () {
       // 点击审核
@@ -145,6 +160,26 @@ export default {
     },
     Quipment (ev) {
       this.quipmentBoolean = ev
+    },
+    devicestateCode (data) {
+      return stateData[data].name
+    },
+    devicestatecodeColor (data) {
+      return stateData[data].color
+    },
+    examineCode (data) {
+      if (data === '') {
+        return ''
+      } else {
+        return examineDate[data].name
+      }
+    },
+    examineCodeColor (data) {
+      if (data === '') {
+        return '#fff'
+      } else {
+        return examineDate[data].color
+      }
     }
   },
   data () {
@@ -153,12 +188,13 @@ export default {
       examineBoolean: false,
       lookoverBoolean: false,
       modifyBoolean: false,
-      quipmentBoolean: false
+      quipmentBoolean: false,
+      examineInformation: '',
+      examineInspection: '',
+      modifyDate: ''
     }
   },
   created () {
-    console.log('132')
-    console.log(this.tabChild)
   }
 }
 </script>
@@ -276,16 +312,24 @@ export default {
             float left
             width 8.5%
             height 40px
+            overflow hidden
+            text-overflow ellipsis
+            white-space nowrap
           .threelevel_litwo
             float left
             width 23.5%
             height 40px
             overflow hidden
+            text-overflow ellipsis
+            white-space nowrap
           .threelevel_lithree
             float left
             width 7.5%
             height 40px
             padding-left 1%
+            overflow hidden
+            text-overflow ellipsis
+            white-space nowrap
           .threelevel_litwo p
             float left
             margin-right 35px
