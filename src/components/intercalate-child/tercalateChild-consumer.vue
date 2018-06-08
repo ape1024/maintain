@@ -166,7 +166,7 @@
 </template>
 
 <script>
-import { judgeToken, iConsumerexamine } from '../../api/user'
+import { iConsumerexamine } from '../../api/user'
 import increase from '../intercalateChild-operation/consumerChild-augment'
 import examine from '../intercalateChild-operation/consumerChild-seeinfo'
 import edit from '../intercalateChild-operation/consumerChild-steganogram'
@@ -281,13 +281,13 @@ export default {
     this.postData()
   },
   created () {
-    //  判断当前页 是否有token
-    let Judgetoken = window.sessionStorage.token
-    judgeToken(Judgetoken)
-    if (this.tokenStatus === false) {
-      this.$router.push('/login')
-      return false
-    }
+    // //  判断当前页 是否有token
+    // let Judgetoken = window.sessionStorage.token
+    // judgeToken(Judgetoken)
+    // if (this.tokenStatus === false) {
+    //   this.$router.push('/login')
+    //   return false
+    // }
   },
   beforeMount () {
     let url = `http://172.16.6.16:8920/users/findAllBy?pageIndex=1&pageSize=30`

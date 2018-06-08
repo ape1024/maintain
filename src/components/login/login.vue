@@ -27,7 +27,7 @@
 
 <script>
 import $ from 'jquery'
-import { judgeToken, userLogin } from '../../api/user'
+import { userLogin } from '../../api/user'
 export default {
   name: 'login',
   components: {},
@@ -100,7 +100,9 @@ export default {
                   window.sessionStorage.setItem('token', token)
                   let dom = e.target
                   $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
-                  this.$router.go(0)
+                  console.log(response)
+                  alert('000')
+                  // this.$router.go(0)
                   this.$router.push('/loginBlank')
                 } else {
                   alert('登录失败')
@@ -139,19 +141,19 @@ export default {
     })
   },
   created () {
-    if (window.sessionStorage.length !== 0) {
-      console.log(window.sessionStorage.length)
-      let Judgetoken = window.sessionStorage.token
-      // let token = judgeToken(Judgetoken)
-      judgeToken(Judgetoken).then((res) => {
-        if (res === true) {
-          this.$router.push('/home')
-          return false
-        }
-      })
-    } else {
-      this.$router.push('/login')
-    }
+    // if (window.sessionStorage.length !== 0) {
+    //   console.log(window.sessionStorage.length)
+    //   let Judgetoken = window.sessionStorage.token
+    //   // let token = judgeToken(Judgetoken)
+    //   judgeToken(Judgetoken).then((res) => {
+    //     if (res === true) {
+    //       this.$router.push('/home')
+    //       return false
+    //     }
+    //   })
+    // } else {
+    //   this.$router.push('/login')
+    // }
   }
 }
 </script>

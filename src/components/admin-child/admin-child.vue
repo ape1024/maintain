@@ -70,7 +70,7 @@
               <!--审核-->
             <!--</p>-->
             <p @click.stop="examine(dataset.deviceid)" class="header_p_ten">查看</p>
-            <p @click.stop="modify(dataset)" class="header_p_twelve">
+            <p @click.stop="modify(dataset, dataset.deviceid)" class="header_p_twelve">
               修改
             </p>
             <!--<p @click.stop="equipment" class="header_pe_quipment">-->
@@ -85,20 +85,19 @@
       <!--审核-->
       <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
     </section>
-    <section v-show="lookoverBoolean" @click.stop class="review">
+    <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
       <childLookover :inspection="examineInspection" :information="examineInformation" :msg="lookoverBoolean" @look="Onlook"></childLookover>
     </section>
-    <section v-show="modifyBoolean" @click.stop class="review">
+    <section v-if="modifyBoolean" @click.stop class="review">
       <!--修改-->
-      <childModify :msg="modifyBoolean" :modify="modifyDate" @say="Modify"></childModify>
+      <childModify :msg="modifyBoolean" :Examinedataset="examineDataset" :modify="modifyDate" @say="Modify"></childModify>
     </section>
     <section v-show="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
       <childquipment :msg="quipmentBoolean" @quipment="Quipment"></childquipment>
     </section>
   </div>
-
 </template>
 
 <script>
@@ -135,11 +134,17 @@ export default {
         }
       })
     },
-    modify (data) {
+    modify (dataset, deviceId) {
       // 点击修改
       this.modifyBoolean = true
-      this.modifyDate = data
-      console.log(data)
+      this.axios.post(`http://172.16.6.16:8920/dev/findDeviceDetail?devid=12677`).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response)
+          this.modifyDate = response.data.data
+          this.examineDataset = [3, 9]
+          console.log(this.examineDataset)
+        }
+      })
     },
     question () {
       // 点击审核
@@ -191,7 +196,8 @@ export default {
       quipmentBoolean: false,
       examineInformation: '',
       examineInspection: '',
-      modifyDate: ''
+      modifyDate: '',
+      examineDataset: ''
     }
   },
   created () {

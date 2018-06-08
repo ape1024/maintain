@@ -26,7 +26,7 @@
           </li>
           <li class="lookover_li">
             <p class="lookover_p">生产日期：</p>
-            <div>{{fmtDate(information.madedate)}}</div>
+            <div>{{tiemerIf(this.inspection.madedate)}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">技术参数：</p>
@@ -39,7 +39,7 @@
           </li>
           <li class="lookover_li">
             <p class="lookover_p">有效日期：</p>
-            <div>{{fmtDate(information.effectivedate)}}</div>
+            <div>{{tiemerIf(this.inspection.effectivedate)}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">创建人员：</p>
@@ -82,7 +82,7 @@
           <ul class="situation_ul">
             <li class="situation_li">
               <p class="situation_p">最近巡检时间：</p>
-              <div class="situation_div">{{fmtDate(inspection.inspectionTime)}}</div>
+              <div class="situation_div">{{tiemerIf(this.inspection.inspectionTime)}}</div>
             </li>
             <li class="situation_li">
               <p class="situation_p">巡 检 人 员：</p>
@@ -101,7 +101,7 @@
           <ul class="situation_ul">
             <li class="situation_li">
               <p class="situation_p">最近维保时间：</p>
-              <div class="situation_div">{{fmtDate(inspection.maintenanceTime)}}</div>
+              <div class="situation_div">{{tiemerIf(this.inspection.maintenanceTime)}}</div>
             </li>
             <li class="situation_li">
               <p class="situation_p">维 保 人 员：</p>
@@ -127,6 +127,7 @@
 </template>
 
 <script>
+import { fmtDate } from '../../common/js/utils'
 export default {
   name: 'adminChild-lookover',
   props: ['msg', 'inspection', 'information'],
@@ -134,15 +135,20 @@ export default {
     return {
       // 组件 显示/隐藏
       lookoverBoolean: true,
-      Organization: ''
+      Organization: '',
+      fmtDateOne: '',
+      fmtDateTwo: '',
+      fmtDateThree: '',
+      fmtDateFour: ''
     }
   },
   methods: {
     conserve () {
       // 保存
-      this.lookoverBoolean = this.msg
-      this.lookoverBoolean = !this.lookoverBoolean
-      this.$emit('look', this.lookoverBoolean)
+      // this.lookoverBoolean = this.msg
+      // this.lookoverBoolean = !this.lookoverBoolean
+      // this.$emit('look', this.lookoverBoolean)
+
     },
     closedown () {
       // 取消
@@ -150,19 +156,21 @@ export default {
       this.lookoverBoolean = !this.lookoverBoolean
       this.$emit('look', this.lookoverBoolean)
     },
-    fmtDate (obj) {
-      let date = new Date(obj)
-      let y = 1900 + date.getYear()
-      let m = `0` + (date.getMonth() + 1)
-      let d = `0` + date.getDate()
-      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    tiemerIf (timer) {
+      if (timer !== undefined && timer !== null) {
+        return fmtDate(timer)
+      } else {
+        return ' '
+      }
     }
   },
   created () {
     this.axios.post(`http://172.16.6.16:8920/organization/getProprietorOrganization`).then((response) => {
-      console.log('2222222222222')
-      console.log(response.data.data)
-      this.Organization = (response.data.data)[0].organizationname
+      if (response.data.code === 0) {
+        this.Organization = (response.data.data)[0].organizationname
+      } else {
+        return false
+      }
     })
   }
 }

@@ -1,4 +1,4 @@
-import axios from 'axios'
+// import axios from 'axios'
 
 //  登录接口
 export const userLogin = (username, password, genre) => {
@@ -6,20 +6,20 @@ export const userLogin = (username, password, genre) => {
   return url
 }
 //  判断token 是否失效接口
-export const judgeToken = (Judgetoken, userid) => {
-  if (Judgetoken === undefined) {
-    return Promise.resolve(false)
-  } else {
-    let url = `http://172.16.6.16:8920/auth/cleanTokenCache?token=${Judgetoken}&userid=${userid}`
-    return axios.post(url).then((response) => {
-      if (response.data.code === 0) {
-        return true
-      } else {
-        return false
-      }
-    })
-  }
-}
+//  export const judgeToken = (Judgetoken, userid) => {
+//   if (Judgetoken === undefined) {
+//     return Promise.resolve(false)
+//   } else {
+//     let url = `http://172.16.6.16:8920/auth/cleanTokenCache?token=${Judgetoken}&userid=${userid}`
+//     return axios.post(url).then((response) => {
+//       if (response.data.code === 0) {
+//         return true
+//       } else {
+//         return false
+//       }
+//     })
+//   }
+// }
 //  退出登录
 export const secede = (toKen) => {
   const url = `http://172.16.6.16:8920/auth/logout?token=${toKen}`

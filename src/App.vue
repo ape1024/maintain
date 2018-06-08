@@ -75,7 +75,7 @@
 <script>
 import login from 'components/login/login'
 import MaintainheaderRight from 'components/maintain-headerRight/maintain-headerRight'
-import { judgeToken } from 'api/user'
+// import { judgeToken } from 'api/user'
 
 export default {
   name: 'App',
@@ -96,16 +96,16 @@ export default {
   },
   created () {
     if (window.sessionStorage.length !== 0) {
-      let Judgetoken = JSON.parse(window.sessionStorage.token)
-      let userId = JSON.parse(window.sessionStorage.userInfo).userid
-      console.log(Judgetoken)
-      judgeToken(Judgetoken, userId).then(res => {
-        if (res === true) {
-          return false
-        } else {
-          this.$router.push('/login')
-        }
-      })
+      // let Judgetoken = JSON.parse(window.sessionStorage.token)
+      // let userId = JSON.parse(window.sessionStorage.userInfo).userid
+      // console.log(Judgetoken)
+      // judgeToken(Judgetoken, userId).then(res => {
+      //   if (res === true) {
+      //     return false
+      //   } else {
+      //     this.$router.push('/login')
+      //   }
+      // })
     } else {
       this.$router.push('/login')
     }

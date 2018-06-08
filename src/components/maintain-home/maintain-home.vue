@@ -116,6 +116,7 @@
 <script>
 import stacked from '../homeChild-stacked/homeChild-stacked'
 import implement from '../homeChild-stacked/homeChild-implement'
+// import { judgeToken } from 'api/user'
 export default {
   name: 'maintain-home',
   components: {
@@ -123,7 +124,20 @@ export default {
     implement
   },
   created () {
-    // this.$router.go(0)
+    // if (window.sessionStorage.length !== 0) {
+    //   let Judgetoken = JSON.parse(window.sessionStorage.token)
+    //   let userId = JSON.parse(window.sessionStorage.userInfo).userid
+    //   console.log(Judgetoken)
+    //   judgeToken(Judgetoken, userId).then(res => {
+    //     if (res === true) {
+    //       return false
+    //     } else {
+    //       this.$router.push('/login')
+    //     }
+    //   })
+    // } else {
+    //   this.$router.push('/login')
+    // }
   }
 }
 </script>
