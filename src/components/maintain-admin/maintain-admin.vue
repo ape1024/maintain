@@ -164,6 +164,7 @@ export default {
     selectStyle (item) {
       let itemAreaid = item.areaid
       this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?areaid=${itemAreaid}`).then((response) => {
+        console.log(response.data.data)
         if (response.data.code === 0) {
           this.tableChild = response.data.data
         }

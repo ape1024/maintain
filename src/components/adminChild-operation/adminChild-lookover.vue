@@ -69,7 +69,7 @@
           <li class="lookover_lithree">
             <p class="lithree_p">现场照片：</p>
             <div class="lookover_lithree_div">
-
+              <img class="lookoverImg" :key="$index" v-for="(item, $index) in information.photoArray" :src="item" alt="">
             </div>
           </li>
         </ul>
@@ -165,6 +165,7 @@ export default {
     }
   },
   created () {
+    console.log(this.information)
     this.axios.post(`http://172.16.6.16:8920/organization/getProprietorOrganization`).then((response) => {
       if (response.data.code === 0) {
         this.Organization = (response.data.data)[0].organizationname
@@ -303,4 +304,9 @@ export default {
     .lookover_div
        float left
        color $color-text
+  .lookoverImg
+    display inline-block
+    margin-right 20px
+    width  50px
+    height 50px
 </style>

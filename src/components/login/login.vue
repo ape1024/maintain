@@ -83,6 +83,7 @@ export default {
         let pstDate = userLogin(account, password, 2)
         this.axios.post(pstDate).then((response) => {
           let data = response.data
+          console.log(response)
           if (data.code === 0) {
             if (data.data.code === -1) {
               alert('账号错误，请重新登录！')
@@ -101,8 +102,7 @@ export default {
                   let dom = e.target
                   $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
                   console.log(response)
-                  alert('000')
-                  // this.$router.go(0)
+                  this.$router.go(0)
                   this.$router.push('/loginBlank')
                 } else {
                   alert('登录失败')

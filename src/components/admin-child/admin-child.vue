@@ -76,7 +76,10 @@
             <!--<p @click.stop="equipment" class="header_pe_quipment">-->
               <!--更换设备-->
             <!--</p>-->
-            <p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>
+            <!--<p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>-->
+            <p class="header_p_eleven" @click.stop="">
+              <el-button type="text" @click="amputate($index, tabChild, dataset.deviceid)">删除</el-button>
+            </p>
           </li>
         </ul>
       </li>
@@ -91,7 +94,7 @@
     </section>
     <section v-if="modifyBoolean" @click.stop class="review">
       <!--修改-->
-      <childModify :msg="modifyBoolean" :Examinedataset="examineDataset" :modify="modifyDate" @say="Modify"></childModify>
+      <childModify :msg="modifyBoolean" :modify="modifyDate" @say="Modify"></childModify>
     </section>
     <section v-show="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
@@ -116,9 +119,37 @@ export default {
     childquipment
   },
   methods: {
-    amputate ($index, content) {
+    amputate ($index, content, deviceid) {
       // 删除
-      content.splice([$index], 1)
+      console.log($index)
+      console.log(content)
+      console.log(deviceid)
+      this.$confirm('此操作将删除该内容, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        callback: action => {
+          console.log(action)
+          if (action === 'confirm') {
+            content.splice([$index], 1)
+            this.axios.post(`http://172.16.6.16:8920/dev/delDevice?devid=${deviceid}`).then((response) => {
+              if (response.data.code === 0) {
+
+              }
+            })
+          }
+        },
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     examine (deviceid) {
       // 点击查看
@@ -139,10 +170,7 @@ export default {
       this.modifyBoolean = true
       this.axios.post(`http://172.16.6.16:8920/dev/findDeviceDetail?devid=12677`).then((response) => {
         if (response.data.code === 0) {
-          console.log(response)
           this.modifyDate = response.data.data
-          this.examineDataset = [3, 9]
-          console.log(this.examineDataset)
         }
       })
     },
@@ -167,10 +195,18 @@ export default {
       this.quipmentBoolean = ev
     },
     devicestateCode (data) {
-      return stateData[data].name
+      if (data === '') {
+        return ''
+      } else {
+        return stateData[data].name
+      }
     },
     devicestatecodeColor (data) {
-      return stateData[data].color
+      if (data === '') {
+        return '#fff'
+      } else {
+        return stateData[data].color
+      }
     },
     examineCode (data) {
       if (data === '') {
