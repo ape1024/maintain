@@ -14,18 +14,18 @@
         <section class="modify">
           <ul class="modify_ul">
             <li class="modify_li">
-              <div class="modify_liDiv">
+              <div class="modify_liDivthree">
                 <p class="modify_li_p">设施类别：</p>
                 <div class="modify_li_div">
                   <el-cascader
                     :options="category"
                     :props="equipmentProps"
                     v-model="categoryDate"
-                    change-on-select
+                    @change="categoryChange"
                   ></el-cascader>
                 </div>
               </div>
-              <div class="modify_liDiv">
+              <div class="modify_liDivthree">
                 <p class="modify_li_p">生产厂家：</p>
                 <div class="modify_li_div">
                   <el-select @focus="focus" @change="manufacturerChange" v-model="manufactorModel" placeholder="">
@@ -41,7 +41,7 @@
                   <el-input v-show="customManufacturer" v-model="customManufacturerDate" placeholder="请输入厂家"></el-input>
                 </div>
               </div>
-              <div class="modify_liDiv">
+              <div class="modify_liDivthree">
                 <p class="modify_li_p">规格型号：</p>
                 <div class="modify_li_div">
                   <el-select @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
@@ -57,35 +57,18 @@
                   <el-input v-show="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
                 </div>
               </div>
-              <div class="modify_liDivtwo">
-                <p class="modify_li_p">设施位置：</p>
-                <div class="modify_li_div">
-                  <div class="content">
-                    <div @click.stop="accessarea" class="region">
-                      {{regionDate}}
-                    </div>
-                    <ul v-show="regionUl" class="region_ul">
-                      <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
-                        <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
-                        <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">
-                          <i @click.stop="count($event, data.cityid)" class="el-icon-circle-plus-outline region_itwo"></i>
-                          <span class="countSpen" @click="citySpan($event, data)">{{data.cityname}}</span>
-                          <ul class="countUl">
-                            <li @click="countytownSpan(coundata)" :key="coundata.countyid" :id="coundata.countyid" v-for="coundata in countytown" class="countLi">
-                              {{coundata.countyname}}
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="modify_liDiv">
-                <p class="modify_li_p">具体位置：</p>
-                <div class="modify_li_div">
-                  <el-input v-model="Specificposition" placeholder=""></el-input>
+              <div class="modify_liDivthree">
+                <p class="modify_li_p">
+                  技术参数：
+                </p>
+                <div class="modify_li_divthree">
+                  <el-input
+                    type="textarea"
+                    :rows="2"
+                    resize="none"
+                    placeholder=""
+                    v-model="technicalParameter">
+                  </el-input>
                 </div>
               </div>
             </li>
@@ -97,7 +80,6 @@
                     v-model="productionValue1"
                     type="date"
                     value-format="yyyy-MM-dd"
-                    @change="logTimeChange"
                     placeholder="选择日期">
                   </el-date-picker>
                 </div>
@@ -113,20 +95,6 @@
                     type="date"
                     placeholder="选择日期">
                   </el-date-picker>
-                </div>
-              </div>
-              <div class="modify_liDiv">
-                <p class="modify_li_p">
-                  技术参数：
-                </p>
-                <div class="modify_li_divthree">
-                  <el-input
-                    type="textarea"
-                    :rows="2"
-                    resize="none"
-                    placeholder=""
-                    v-model="technicalParameter">
-                  </el-input>
                 </div>
               </div>
               <div class="modify_liDiv">
@@ -149,17 +117,19 @@
                 现场照片：
               </p>
               <div class="modify_rightDiv">
-                <el-upload
-                  action=""
-                  list-type="picture-card"
-                  :on-preview="handlePictureCardPreview"
-                  :on-remove="handleRemove">
-                  <i class="el-icon-plus"></i>
-                </el-upload>
-                <el-dialog :visible.sync="dialogVisible">
-                  <img width="100%" :src="dialogImageUrl" alt="">
-                </el-dialog>
+                <div class="upload">
+                  上传图片
+                  <input id="file" type="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change='changeFile()'>
+                </div>
               </div>
+              <ul class="myFileUl">
+                <li  class="myFileLi" :key="$index" v-for="(item, $index) in myfileImg">
+                  <img class="myFileLiimg" :src="item" alt="">
+                  <div @click="myFileLidelete($index)" class="myFileDiv">
+                    <i class="el-icon-delete"></i>
+                  </div>
+                </li>
+              </ul>
             </li>
           </ul>
         </section>
@@ -173,17 +143,31 @@
         </div>
         <ul class="bottom_ul">
           <li class="bottom_left">
-            <div class="left_list">
-              <p class="left_list_p"><span class="left_list_span">*</span>设施位置:</p>
-              <div class="left_list_select">
-                <el-select v-model="location.value" placeholder="请选择">
-                  <el-option
-                    v-for="item in location.child"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.label">
-                  </el-option>
-                </el-select>
+            <div class="left_listTwo">
+              <div class="modify_liDivtwo">
+                <p class="left_list_p">设施位置:</p>
+                <div class="modify_li_div">
+                  <div class="content">
+                    <div @click.stop="accessarea" class="region">
+                      {{regionDate}}
+                    </div>
+                    <ul v-show="regionUl" class="region_ul">
+                      <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
+                        <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
+                        <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">
+                          <i @click.stop="count($event, data.cityid)" class="el-icon-circle-plus-outline region_itwo"></i>
+                          <span class="countSpen" @click="citySpan($event, data)">{{data.cityname}}</span>
+                          <ul class="countUl">
+                            <li @click="countytownSpan(coundata)" :key="coundata.countyid" :id="coundata.countyid" v-for="coundata in countytown" class="countLi">
+                              {{coundata.countyname}}
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
               <div class="specific">
                 <el-input v-model="specific" placeholder="请输入详细地址"></el-input>
@@ -212,12 +196,6 @@
               </p>
               <div class="left_list_div">
                 <el-input-number :disabled="!checked" v-model="num" controls-position="right" :min="1" size="mini"></el-input-number>
-              </div>
-            </div>
-            <div class="left_list">
-              <p class="left_list_p">报警回路:</p>
-              <div class="left_list_div">
-                <el-input v-model="syntony" placeholder=""></el-input>
               </div>
             </div>
           </li>
@@ -331,7 +309,8 @@ export default {
       equipmentProps: {
         children: 'children',
         label: 'name',
-        value: 'id'
+        value: 'id',
+        code: 'code'
       },
       //   类别初始值
       categoryinitialValue: true,
@@ -372,19 +351,25 @@ export default {
       technicalParameter: '',
       //  具体位置
       Specificposition: '',
-      categoryDateOne: []
+      categoryDateOne: [],
+      myfileImg: [],
+      myfileImgTwo: [],
+      basedevicecode: ''
     }
   },
   methods: {
-    handleRemove (file, fileList) {
-      console.log(file, fileList)
+    myFileLidelete (index) {
+      this.myfileImg.splice(index, 1)
     },
-    handlePictureCardPreview (file) {
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
-    },
-    logTimeChange (val) {
-      this.productionValue1 = val
+    changeFile () {
+      let pic = document.getElementById('file').files[0]
+      let reader = new FileReader()
+      reader.readAsDataURL(pic)
+      reader.onload = () => {
+        let src = reader.result
+        this.myfileImg.push(src)
+        console.log(this.myfileImg)
+      }
     },
     versionChang (data) {
       if (this.versionValue === '-9999') {
@@ -436,7 +421,7 @@ export default {
       }
     },
     addincrease () {
-      let obtainCode = this.location.value + this.specific
+      let obtainCode = this.regionDate + this.specific
       let devicecoding = this.devicecoding
       let quantum = this.quantum
       let encoded = this.encoded
@@ -467,11 +452,95 @@ export default {
       this.lyaddedShow = !this.lyaddedShow
       this.$emit('say', this.lyaddedShow)
     },
+    categoryChange () {
+      let organizationId = this.categoryDate[this.categoryDate.length - 1]
+      console.log(organizationId)
+      let result = null
+      let findData = (data) => {
+        let flag = true
+        data.forEach(val => {
+          if (val.id === organizationId) {
+            result = val.code
+            flag = false
+          } else if (flag && val.children) {
+            findData(val.children)
+          }
+        })
+      }
+      findData(this.category)
+      console.log(result)
+      this.basedevicecode = result
+    },
     preser () {
+      console.log(this.productionValue1)
+      console.log(this.validity)
       // 保存
-      this.lyaddedShow = this.msg
-      this.lyaddedShow = !this.lyaddedShow
-      this.$emit('say', this.lyaddedShow)
+      // this.lyaddedShow = this.msg
+      // this.lyaddedShow = !this.lyaddedShow
+      // this.$emit('say', this.lyaddedShow)
+      //  批量编码 个数
+      let rowcount = this.num ? this.num : 1
+      console.log(rowcount + '编码个数')
+      //  token
+      let token = JSON.parse(window.sessionStorage.token)
+      console.log(token + 'token')
+      //  厂家id
+      let manufacturerid = ''
+      //  型号
+      let devicemodel = ''
+      if (this.versionManufacturer) {
+        devicemodel = this.versionCustom ? this.versionCustom : ' '
+      } else {
+        devicemodel = this.versionValue ? this.versionValue : ' '
+      }
+      //  位置
+      let position = this.regionDate ? `${this.regionDate} ${this.specific}` : ' '
+      console.log(position + '位置')
+      //  数量
+      let devicecount = this.quantum ? this.quantum : ' '
+      console.log(devicecount + '数量')
+      //  设备参数
+      let parameters = this.technicalParameter ? this.technicalParameter : ' '
+      console.log(parameters + '参数')
+      // 备注
+      let memo = this.textarea ? this.textarea : ' '
+      console.log(memo + '备注')
+      //  生产日期
+      let madedate = this.productionValue1 ? this.productionValue1 : ' '
+      console.log(madedate + '生产日期')
+      //  有效日期
+      let effectivedate = this.validity ? this.validity : ' '
+      console.log(effectivedate + '有效日期s')
+      //  地址编码
+      let mac = this.encoded ? this.encoded : ' '
+      //  图片
+      let files = (this.myfileImg).length !== 0 ? this.myfileImg : ' '
+      console.log(files + '图片')
+      if (this.categoryDate.length !== 0) {
+        //  设备id
+        console.log('1')
+        let devicetypeid = this.categoryDate[this.categoryDate.length - 1]
+        if (this.customManufacturer === true) {
+          console.log('2')
+          this.axios.post(`http://172.16.6.16:8920/dev/AddManufacture?name=${this.customManufacturerDate}&basedeviceid=${devicetypeid}`).then((response) => {
+            console.log(response)
+            if (response.data.code === 0) {
+              // 厂家id
+              console.log(files)
+              manufacturerid = response.data.data.manufacturerid
+              this.axios.post(`http://172.16.6.16:8920/dev/AddDevice?rowcount=${rowcount}&token=${token}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${this.basedevicecode}&devicemodel=${devicemodel}&position=${position}&devicecount=${devicecount}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&mac=${mac}&files=${files}`).then((response) => {
+                console.log('4')
+                console.log(response)
+              })
+            }
+          })
+        } else {
+          //  厂家 id
+          manufacturerid = this.manufactorModel
+        }
+      } else {
+        alert('请先选择设备类型！')
+      }
     },
     accessarea () {
       this.regionUl = !this.regionUl
@@ -692,7 +761,7 @@ export default {
              overflow hidden
              border-radius 5px
     .bottom_ul
-      overflow hidden
+      display inline-block
       position relative
       margin-left 50px
       font-size 16px
@@ -701,7 +770,6 @@ export default {
       .bottom_left
         margin-right: 30px;
         float left
-        overflow hidden
         .left_list
           overflow hidden
           margin-bottom 14px
@@ -726,8 +794,8 @@ export default {
             .left_list_span
               color $color-border-b-alarm
           .specific
-            float left
-            width 167px
+            float right
+            width 130px
             overflow hidden
         .encrypt
           float left
@@ -930,6 +998,9 @@ export default {
     width 202px
     margin-left 20px
     float left
+  .content
+    width 210px
+    position relative
   .region
     width 100%
     cursor pointer
@@ -940,7 +1011,7 @@ export default {
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
-    text-indent 2em
+    text-indent 1em
   .region_ul
     position absolute
     top 30px
@@ -975,6 +1046,91 @@ export default {
             .countLi
               padding 10px 0
               text-indent 5em
+  .myFileUl
+     overflow hidden
+     position relative
+     padding-top 10px
+     padding-left 110px
+     min-height 52px
+  .myFileLi
+    float left
+    width 50px
+    height 50px
+    overflow hidden
+    position relative
+    margin-right 20px
+    .myFileLiimg
+       display inline-block
+       width 50px
+       height 50px
+  .myFileDiv
+     position absolute
+     top 0
+     left 0
+     opacity 0
+     font-size 18px
+     line-height 50px
+     color $color-border-b-alarm
+     text-align center
+     width 100%
+     height 100%
+     cursor pointer
+     background rgba(000,000,000,.4)
+     transition .4s
+  .myFileLi:hover .myFileDiv
+    opacity 1
+  .modify_liDivtwo
+    display inline-block
+    position relative
+  .left_listTwo
+     display inline-block
+     position relative
+     margin-bottom 14px
+    .left_list_p
+      width 100px
+      text-align right
+      letter-spacing 2px
+      float left
+      line-height 27px
+      margin-right 10px
+    .modify_li_div
+      float left
+      position relative
+  .specific
+    float right
+    width 130px
+    margin-left 10px
+  .modify_liDivthree
+    width 100%
+    overflow hidden
+    position relative
+    margin-bottom 17px
+  .el-cascader
+     line-height 30px
+  .upload
+    display inline-block
+    width 100px
+    height 30px
+    line-height 30px
+    font-size 14px
+    color $color-text-title
+    border-radius 10px
+    background $color-background-introduce
+    position relative
+    text-align center
+    transition .4s
+    cursor pointer
+  .upload > input
+    position: absolute;
+    top 0
+    left 0
+    width 100%
+    height 100%
+    opacity 0
+    cursor pointer
+  .upload:hover
+     cursor pointer
+     background $color-background-query
 </style>
 <style>
   .el-input__icon{

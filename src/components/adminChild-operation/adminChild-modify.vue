@@ -142,7 +142,13 @@
             </div>
           </li>
           <li class="modify_right">
-
+            <p class="modify_li_p">现场照片：</p>
+            <div :key="$index" v-for="(item, $index) in modify.photoArray" class="modify_rightDiv">
+              <img class="modify_rightDivImg" :src="item" alt="">
+              <div @click="myFileLidelete($index)" class="myFileDiv">
+                <i class="el-icon-delete"></i>
+              </div>
+            </div>
           </li>
         </ul>
       </section>
@@ -223,9 +229,11 @@ export default {
     }
   },
   beforeMount () {
-    // console.log('111')
   },
   methods: {
+    myFileLidelete (index) {
+      this.modify.photoArray.splice(index, 1)
+    },
     logTimeChange (val) {
       this.productionValue1 = val
     },
@@ -235,13 +243,12 @@ export default {
       //   设备 id
       let Deviceid = (this.modify).deviceid
       //  设施类别
-      console.log(this.categoryDate)
       let devicetypeid = ''
       if (this.categoryDate[0] === null) {
         devicetypeid = ''
       } else {
         devicetypeid = this.categoryDate
-        devicetypeid = devicetypeid[devicetypeid.length - 1]
+        devicetypeid = devicetypeid.shift()
       }
       //  生产厂家
       let manufacturerid = ''
@@ -253,38 +260,30 @@ export default {
       } else {
         devicemodel = this.versionValue ? this.versionValue : ' '
       }
-      console.log(devicemodel)
       //  设施位置
       let position = `${this.regionDate ? this.regionDate : ' '} ${this.Specificposition ? this.Specificposition : ' '}`
-      console.log(position)
       //  技术参数
       let parameters = this.technicalParameter ? this.technicalParameter : ' '
-      console.log(parameters)
       //  备注说明
       let memo = this.textarea ? this.textarea : ' '
       //  生产日期
       let madedate = this.productionValue1
-      console.log(this.productionValue1)
       //  有效日期
       let effectivedate = this.validity
-      console.log(this.validity)
+      //  图片
+      let files = this.modify.photoArray
       if (this.customManufacturer === true) {
         // manufacturerid = this.customManufacturerDate
-        console.log('1')
         if (devicetypeid.length !== 0) {
           if (this.customManufacturer === true) {
-            console.log('2')
             this.axios.post(`http://172.16.6.16:8920/dev/AddManufacture?name=${this.customManufacturerDate}&basedeviceid=${devicetypeid}`).then((response) => {
               if (response.data.code === 0) {
-                console.log('3')
                 manufacturerid = response.data.data.manufacturerid
                 if (this.versionManufacturer === true) {
-                  console.log('4')
                   this.axios.post(`http://172.16.6.16:8920/dev/AddDivecemodels?manufactureId=${manufacturerid}&baseDeviceId=${Deviceid}&modelName=${this.versionCustom}&para=${this.technicalParameter}`).then((response) => {
                     if (response.data.code === 0) {
-                      console.log('5')
                       devicemodel = response.data.data.divecemodelid
-                      this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`).then((response) => {
+                      this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
                         if (response.data.code === 0) {
                           alert('修改成功')
                           this.modifyBoolean = this.msg
@@ -300,7 +299,7 @@ export default {
               }
             })
           } else {
-            this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`).then((response) => {
+            this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
               if (response.data.code === 0) {
                 alert('修改成功')
                 this.modifyBoolean = this.msg
@@ -317,10 +316,8 @@ export default {
         if (this.versionManufacturer === true) {
           this.axios.post(`http://172.16.6.16:8920/dev/AddDivecemodels?manufactureId=${manufacturerid}&baseDeviceId=${Deviceid}&modelName=${this.versionCustom}&para=${this.technicalParameter}`).then((response) => {
             if (response.data.code === 0) {
-              console.log('5')
-              console.log(response.data.data)
               devicemodel = response.data.data.divecemodelid
-              this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`).then((response) => {
+              this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
                 if (response.data.code === 0) {
                   alert('修改成功')
                   this.modifyBoolean = this.msg
@@ -331,8 +328,13 @@ export default {
             }
           })
         } else {
-          this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`).then((response) => {
-            console.log(response)
+          this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
+            if (response.data.code === 0) {
+              alert('修改成功')
+              this.modifyBoolean = this.msg
+              this.modifyBoolean = !this.modifyBoolean
+              this.$emit('say', this.modifyBoolean)
+            }
           })
         }
       }
@@ -344,7 +346,6 @@ export default {
     },
     focus (event) {
       let region = this.categoryDate
-      console.log(region)
       if (region.length === 0) {
         this.$message({
           message: '设备类型！',
@@ -352,10 +353,7 @@ export default {
         })
         return false
       } else if (region[0] === null) {
-        console.log(this.manufactor)
         let result = this.manufactor.find(val => val.manufacturerid === '-9999')
-        console.log('212')
-        console.log(result)
         if (result === undefined) {
           this.manufactor.push({
             name: '自定义',
@@ -369,7 +367,6 @@ export default {
         this.axios.post(`http://172.16.6.16:8920/dev/findManufactures?baseDeviceId=${region}`).then((response) => {
           if (response.data.code === 0) {
             this.manufactor = response.data.data
-            console.log(this.manufactor)
             this.manufactor.push({
               name: '自定义',
               manufacturerid: '-9999'
@@ -393,9 +390,7 @@ export default {
         region = region[region.length - 1]
         this.axios.post(`http://172.16.6.16:8920/dev/findDivecemodels?baseDeviceId=${region}&manufacturerId=${this.manufactorModel}`).then((response) => {
           if (response.data.code === 0) {
-            console.log(response)
             this.version = response.data.data
-            console.log(response.data.data)
             this.version.push({
               divecemodelname: '自定义',
               divecemodelid: '-9999'
@@ -410,9 +405,7 @@ export default {
         return false
       } else {
         this.versionManufacturer = false
-        console.log(data)
         let result = this.version.find(val => val.divecemodelid === data)
-        console.log(result.parameters)
         this.technicalParameter = result.parameters
         return false
       }
@@ -447,7 +440,6 @@ export default {
         this.axios.post(url).then((response) => {
           if (response.data.code === 0) {
             this.conurbation = response.data.data
-            console.log(response.data.data)
           }
         })
       }
@@ -487,7 +479,6 @@ export default {
       let city = cityDate.cityname
       let url = `${cout} ${city}`
       this.regionDate = url
-      console.log()
       //  省份id
       this.conurbationId = cityDate.cityid
       //  城市ID
@@ -498,9 +489,6 @@ export default {
       let city = $(event.currentTarget).parents('.regionliul_li').children('.countSpen').text()
       let url = `${cout} ${city} ${coundata.countyname}`
       this.regionDate = url
-      console.log($(event.currentTarget).parents('.region_li').attr('id'))
-      console.log(coundata.cityid)
-      console.log(coundata.countyid)
       //  省份ID
       this.provinceId = $(event.currentTarget).parents('.region_li').attr('id')
       //  城市ID
@@ -514,7 +502,6 @@ export default {
       if (response.data.code === 0) {
         this.category = response.data.data
         this.categoryDate = (this.modify).devicetypeArray
-        console.dir(this.categoryDate)
         this.manufactorModel = (this.modify).manufacturerid
         this.versionValue = (this.modify).devicemodel
         this.regionDate = (this.modify).position
@@ -544,7 +531,7 @@ export default {
     width 1245px
     margin 0 auto
     position relative
-    padding-top 45px
+    padding 45px 0
     .increase_h4
       font-size $font-size-medium-x
       color $color-text-title
@@ -567,7 +554,7 @@ export default {
     position relative
     width 100%
     display inline-block
-    margin-bottom 120px
+    margin-bottom 50px
     .modify_ul
       position relative
       display inline-block
@@ -603,9 +590,24 @@ export default {
         width 280px
         position relative
       .modify_right
-        float right
+        width 100%
+        min-height 50px
+        float left
         color $color-header-b-normal
         font-size $font-size-medium
+        .modify_li_p
+          float left
+          margin-left 20px
+        .modify_rightDiv
+           float left
+           width 50px
+           height 50px
+           overflow hidden
+           position relative
+           .modify_rightDivImg
+              display inline-block
+              width 100%
+              height 100%
   .modify_bottom
     init()
     text-align center
@@ -664,4 +666,20 @@ export default {
             .countLi
               padding 10px 0
               text-indent 5em
+  .myFileDiv
+    position absolute
+    top 0
+    left 0
+    opacity 0
+    font-size 18px
+    line-height 50px
+    color $color-border-b-alarm
+    text-align center
+    width 100%
+    height 100%
+    cursor pointer
+    background rgba(000,000,000,.4)
+    transition .4s
+  .modify_rightDiv:hover .myFileDiv
+     opacity 1
 </style>
