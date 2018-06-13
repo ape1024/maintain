@@ -354,7 +354,9 @@ export default {
       categoryDateOne: [],
       myfileImg: [],
       myfileImgTwo: [],
-      basedevicecode: ''
+      basedevicecode: '',
+      //  图片dome
+      picName: []
     }
   },
   methods: {
@@ -363,13 +365,19 @@ export default {
     },
     changeFile () {
       let pic = document.getElementById('file').files[0]
+      // console.log(pic.name)
+      // this.picName.push(pic.name)
       let reader = new FileReader()
       reader.readAsDataURL(pic)
       reader.onload = () => {
         let src = reader.result
         this.myfileImg.push(src)
-        console.log(this.myfileImg)
       }
+      let file = document.getElementById('file').files
+      console.log(file)
+      let formDate = new FormData()
+      formDate.append(file[0].name, file[0])
+      this.picName.push(formDate)
     },
     versionChang (data) {
       if (this.versionValue === '-9999') {
@@ -514,8 +522,19 @@ export default {
       //  地址编码
       let mac = this.encoded ? this.encoded : ' '
       //  图片
-      let files = (this.myfileImg).length !== 0 ? this.myfileImg : ' '
-      console.log(files + '图片')
+      // let files = (this.myfileImg).length !== 0 ? this.myfileImg : ' '
+      // let files = this.picName
+      // let file = document.getElementById('file').files
+      // console.log(file)
+      // let list = []
+      // for (let i=0;i<file.length;i++) {
+      //   let formDate = new FormData()
+      //   formDate.append('file', file[i])
+      //   list.push(formDate)
+      // }
+      // console.log(list)
+      // console.log(files + '图片')
+      console.log(this.picName)
       if (this.categoryDate.length !== 0) {
         //  设备id
         console.log('1')
@@ -526,9 +545,8 @@ export default {
             console.log(response)
             if (response.data.code === 0) {
               // 厂家id
-              console.log(files)
               manufacturerid = response.data.data.manufacturerid
-              this.axios.post(`http://172.16.6.16:8920/dev/AddDevice?rowcount=${rowcount}&token=${token}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${this.basedevicecode}&devicemodel=${devicemodel}&position=${position}&devicecount=${devicecount}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&mac=${mac}&files=${files}`).then((response) => {
+              this.axios.post(`http://172.16.6.16:8920/dev/AddDevice?rowcount=${rowcount}&token=${token}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${this.basedevicecode}&devicemodel=${devicemodel}&position=${position}&devicecount=${devicecount}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&mac=${mac}&files=${this.picName}`).then((response) => {
                 console.log('4')
                 console.log(response)
               })

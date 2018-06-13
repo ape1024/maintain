@@ -197,7 +197,8 @@ export default {
   },
   methods: {
     onChange (file, fileList) {
-      this.Headportrait = file.url
+      this.Headportrait = file.raw
+      console.log(this.Headportrait)
       if (fileList.length > 1) {
         this.fileList = fileList.slice(1, 2)
       }
@@ -223,9 +224,10 @@ export default {
       let job = this.businesspostCode
       //  获取备注
       let memo = this.textarea
-
+      var fd = new FormData()
+      fd.append('file', this.Headportrait)
       let url = modifytheUser(userid, organizationid, usercode, username, email, tel, userstate, job, memo)
-      this.axios.post(url).then((response) => {
+      this.axios.post(url, fd).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
           this.communication.usercode = usercode

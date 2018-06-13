@@ -238,6 +238,7 @@ export default {
       this.productionValue1 = val
     },
     conserve () {
+      console.log(this.versionValue)
       // token
       let token = JSON.parse(window.sessionStorage.token)
       //   设备 id
@@ -283,6 +284,7 @@ export default {
                   this.axios.post(`http://172.16.6.16:8920/dev/AddDivecemodels?manufactureId=${manufacturerid}&baseDeviceId=${Deviceid}&modelName=${this.versionCustom}&para=${this.technicalParameter}`).then((response) => {
                     if (response.data.code === 0) {
                       devicemodel = response.data.data.divecemodelid
+                      console.log(devicemodel)
                       this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
                         if (response.data.code === 0) {
                           alert('修改成功')
@@ -503,6 +505,29 @@ export default {
         this.category = response.data.data
         this.categoryDate = (this.modify).devicetypeArray
         this.manufactorModel = (this.modify).manufacturerid
+        let region = this.categoryDate[this.categoryDate.length - 1]
+        this.axios.post(`http://172.16.6.16:8920/dev/findManufactures?baseDeviceId=${region}`).then((data) => {
+          if (data.data.code === 0) {
+            let arr = data.data.data
+            console.log('1')
+            console.log(region)
+            arr.forEach(val => {
+              console.log(val.manufacturerid)
+              if (val.manufacturerid === (this.modify).manufacturerid) {
+                this.manufactorModel = val.name
+              }
+            })
+          }
+        })
+        this.axios.post(`http://172.16.6.16:8920/dev/findDivecemodels?baseDeviceId=${region}&manufacturerId=${(this.modify).manufacturerid}`).then((response) => {
+          if (response.data.code === 0) {
+            this.version = response.data.data
+            this.version.push({
+              divecemodelname: '自定义',
+              divecemodelid: '-9999'
+            })
+          }
+        })
         this.versionValue = (this.modify).devicemodel
         this.regionDate = (this.modify).position
         this.productionValue1 = fmtDate((this.modify).madedate)

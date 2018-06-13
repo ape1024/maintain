@@ -68,7 +68,7 @@
           </ul>
           <div class="button">
             <!--查询-->
-            <div class="query">
+            <div class="query" @click="query">
               查 询
             </div>
             <!--新增-->
@@ -106,7 +106,7 @@
             </li>
           </ul>
           <ul class="table_ul">
-            <li v-for="(item) in tableData" class="table_li" :key="item.areaid" :id="item.areaid" @click="selectStyle (item)">
+            <li v-for="(item) in tableData" class="table_li" :key="item.deviceid" :id="item.areaid" @click="selectStyle (item)">
               <ul :id="item.id" class="inline_ul">
                 <li class="header_lithree">{{item.areaname}}</li>
                 <li class="header_li">{{item.alldevcount}}</li>
@@ -161,6 +161,34 @@ export default {
     increase
   },
   methods: {
+    //  查询
+    query () {
+      //  区域id
+      let areaid = this.regionModel[this.regionModel.length - 1]
+      if (areaid === undefined) {
+        alert('请先选择区域！')
+        return false
+      } else {
+        //  设备类型 code  basedevicecode
+        if (this.equipmentDate[0] !== undefined && this.equipmentDate.length !== 0) {
+          let basedevicecode = this.equipmentDate[this.equipmentDate.length - 1]
+          this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?basedevicecode=${basedevicecode}&areaid=${areaid}`).then((response) => {
+            if (response.data.code === 0) {
+              console.log(response)
+              this.tableData = response.data.data
+            }
+          })
+        } else {
+          console.log('2222222222222')
+          this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?areaid=${areaid}`).then((response) => {
+            if (response.data.code === 0) {
+              console.log(response.data.data)
+              this.tableData = response.data.data
+            }
+          })
+        }
+      }
+    },
     selectStyle (item) {
       let itemAreaid = item.areaid
       this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?areaid=${itemAreaid}`).then((response) => {
@@ -226,7 +254,7 @@ export default {
       equipmentProps: {
         children: 'children',
         label: 'name',
-        value: 'id'
+        value: 'code'
       },
       equipment: [],
       equipmentDate: [],
@@ -449,6 +477,7 @@ export default {
     color #333333
   .table_ul
     width 100%
+    min-height 660px
     overflow hidden
     position relative
     color $color-text

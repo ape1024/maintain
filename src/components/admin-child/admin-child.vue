@@ -237,6 +237,7 @@ export default {
     }
   },
   created () {
+    console.log(this.tabChild)
   }
 }
 </script>
