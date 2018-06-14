@@ -118,6 +118,20 @@ export default {
     childExamine,
     childquipment
   },
+  data () {
+    return {
+      datasetAreaid: '',
+      content: [],
+      examineBoolean: false,
+      lookoverBoolean: false,
+      modifyBoolean: false,
+      quipmentBoolean: false,
+      examineInformation: '',
+      examineInspection: '',
+      modifyDate: '',
+      examineDataset: ''
+    }
+  },
   methods: {
     amputate ($index, content, deviceid) {
       // 删除
@@ -167,8 +181,10 @@ export default {
     },
     modify (dataset, deviceId) {
       // 点击修改
+      console.log(dataset.areaid)
+      this.datasetAreaid = dataset.areaid
       this.modifyBoolean = true
-      this.axios.post(`http://172.16.6.16:8920/dev/findDeviceDetail?devid=12677`).then((response) => {
+      this.axios.post(`http://172.16.6.16:8920/dev/findDeviceDetail?devid=${deviceId}`).then((response) => {
         if (response.data.code === 0) {
           this.modifyDate = response.data.data
         }
@@ -187,6 +203,12 @@ export default {
     },
     Modify (ev) {
       this.modifyBoolean = ev
+      this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?areaid=${this.datasetAreaid}`).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response.data.data)
+          this.tabChild = response.data.data
+        }
+      })
     },
     equipment () {
       this.quipmentBoolean = true
@@ -221,19 +243,6 @@ export default {
       } else {
         return examineDate[data].color
       }
-    }
-  },
-  data () {
-    return {
-      content: [],
-      examineBoolean: false,
-      lookoverBoolean: false,
-      modifyBoolean: false,
-      quipmentBoolean: false,
-      examineInformation: '',
-      examineInspection: '',
-      modifyDate: '',
-      examineDataset: ''
     }
   },
   created () {

@@ -1,8 +1,10 @@
 // import axios from 'axios'
 
+//  沈哥    http://172.16.6.181
+//  刘哥    http://172.16.6.16
 //  登录接口
 export const userLogin = (username, password, genre) => {
-  let url = `http://172.16.6.16:8920/auth/login?usercode=${username}&password=${password}&serviceType=${genre}`
+  let url = `http://172.16.6.181:8920/auth/login?usercode=${username}&password=${password}&serviceType=${genre}`
   return url
 }
 //  判断token 是否失效接口
@@ -22,7 +24,7 @@ export const userLogin = (username, password, genre) => {
 // }
 //  退出登录
 export const secede = (toKen) => {
-  const url = `http://172.16.6.16:8920/auth/logout?token=${toKen}`
+  const url = `http://172.16.6.181:8920/auth/logout?token=${toKen}`
   return url
 }
 //  系统设置->用户设置->查看用户信息

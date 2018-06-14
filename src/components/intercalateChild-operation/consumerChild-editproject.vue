@@ -175,12 +175,6 @@
           </el-upload>
         </div>
       </div>
-      <div class="personnel">
-        <p class="personnelP">项目人员配备：</p>
-        <div class="personnelDiv">
-          <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
-        </div>
-      </div>
       <div class="fastener">
         <div @click="conserve" class="conserve">保存</div>
         <div class="closedown">关闭</div>
@@ -209,7 +203,7 @@ export default {
       //  项目结束时间
       endDate: this.project.enddate,
       //  服务机构
-      proprietorName: this.project.proprietorname,
+      proprietorName: this.project.vindicatorname,
       //  项目类别
       projectType: this.project.projecttype,
       //  创建人员
@@ -225,7 +219,8 @@ export default {
       //  维保要求
       requirement: this.project.requirement,
       //  备注信息
-      comment: this.project.comment
+      comment: this.project.comment,
+      exaMineDate: ''
     }
   },
   methods: {
@@ -238,11 +233,9 @@ export default {
       this.$emit('editt', this.Thispage)
     },
     closedown () {
-      console.log(this.project.projecttype)
     }
   },
   created () {
-    console.log(this.project)
   }
 }
 </script>

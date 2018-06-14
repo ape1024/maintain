@@ -8,80 +8,80 @@
         <ul class="informationUl">
           <li class="informationLi">
             <div class="informationDiv">
-              <div class="examine">
-                12313
-              </div>
               <p class="informationP">
                 项目名称：
               </p>
+              <div class="examine">
+                {{projectsinfosviewdetail.projectname}}
+              </div>
             </div>
             <div class="informationDiv">
-              <div class="examine">
-                12313
-              </div>
               <p class="informationP">
                 项目开始：
               </p>
+              <div class="examine">
+                {{fmtDate(projectsinfosviewdetail.startdate)}}
+              </div>
             </div>
             <div class="informationDiv">
-              <div class="examine">
-                12313
-              </div>
               <p class="informationP">
                 业主单位：
               </p>
+              <div class="examine">
+                {{projectsinfosviewdetail.proprietorname}}
+              </div>
             </div>
           </li>
           <li class="informationLitwo">
             <div class="informationDiv">
-              <div class="examine">
-                12313
-              </div>
               <p class="informationP">
                 项目编号：
               </p>
+              <div class="examine">
+                {{projectsinfosviewdetail.projectcode}}
+              </div>
             </div>
             <div class="informationDiv">
-              <div class="examine">
-                12313
-              </div>
               <p class="informationP">
                 项目结束：
               </p>
+              <div class="examine">
+                {{fmtDate(projectsinfosviewdetail.enddate)}}
+              </div>
             </div>
             <div class="informationDiv">
-              <div class="examine">
-                12313
-              </div>
               <p class="informationP">
                 服务机构：
               </p>
+              <div class="examine">
+                {{projectsinfosviewdetail.vindicatorname}}
+              </div>
             </div>
           </li>
           <li class="informationLitwo">
             <div class="informationDiv">
-              <div class="examine">
-                12313
-              </div>
               <p class="informationP">
                 项目类别：
               </p>
+              <div class="examine">
+                {{projectsinfosviewdetail.projecttypename}}
+              </div>
             </div>
             <div class="informationDiv">
-              <div class="examine">
-                12313
-              </div>
               <p class="informationP">
                 创建人员：
               </p>
+              <div class="examine">
+                {{projectsinfosviewdetail.creatername}}
+              </div>
             </div>
             <div class="informationDiv">
-              <div class="examine">
-                12313
-              </div>
               <p class="informationP">
                 项目地址：
               </p>
+              <div class="examine">
+                {{projectsinfosviewdetail.address}}
+              </div>
             </div>
           </li>
         </ul>
@@ -94,7 +94,7 @@
         <div class="purviewDiv">
           <div class="substance">
             <div class="substanceDiv">
-              <el-input :disabled="true" v-model="input1" placeholder=""></el-input>
+              <el-input v-model="input" :disabled="true" placeholder=""></el-input>
             </div>
             <p class="substanceP">
               建筑范围：
@@ -102,7 +102,14 @@
           </div>
           <div class="substance">
             <div class="substanceDiv">
-              <el-input v-model="input" :disabled="true" placeholder=""></el-input>
+              <table class="substancedivTable">
+                <tr class="substancedivTr" :key="item.id" v-for="item in devtypes">
+                  <td class="substancedivSpantwo">{{item.name}}</td>
+                  <td class="substancedivtableTb">
+                    <span class="substancedivSpanone" :key="data.id" v-for="data in item.children">{{data.name}}</span>
+                    </td>
+                </tr>
+              </table>
             </div>
             <p class="substanceP">
               消防设备：
@@ -122,7 +129,7 @@
             :rows="3"
             resize="none"
             placeholder="请输入内容"
-            v-model="textarea">
+            v-model="content">
           </el-input>
         </div>
       </div>
@@ -138,7 +145,7 @@
             :disabled="true"
             resize="none"
             placeholder="请输入内容"
-            v-model="textarea">
+            v-model="requirement">
           </el-input>
         </div>
       </div>
@@ -154,7 +161,7 @@
             :disabled="true"
             resize="none"
             placeholder="请输入内容"
-            v-model="textarea">
+            v-model="comment">
           </el-input>
         </div>
       </div>
@@ -164,12 +171,12 @@
 
         </div>
       </div>
-      <div class="personnel">
-        <p class="personnelP">项目人员配备：</p>
-        <div class="personnelDiv">
-          <el-input v-model="input" :disabled="true" placeholder=""  clearable>></el-input>
-        </div>
-      </div>
+      <!--<div class="personnel">-->
+        <!--<p class="personnelP">项目人员配备：</p>-->
+        <!--<div class="personnelDiv">-->
+          <!--<el-input v-model="input" :disabled="true" placeholder=""  clearable>></el-input>-->
+        <!--</div>-->
+      <!--</div>-->
       <div class="fastener">
         <div @click="closedown" class="closedown">关闭</div>
       </div>
@@ -180,7 +187,7 @@
 <script>
 export default {
   name: 'consumerChild-examine',
-  props: ['examine'],
+  props: ['examine', 'exaDate'],
   data () {
     return {
       // 本页面的显示隐藏
@@ -189,7 +196,12 @@ export default {
       input1: '喔喔喔',
       value1: '',
       value2: '',
-      textarea: ''
+      textarea: '',
+      projectsinfosviewdetail: '',
+      devtypes: '',
+      content: '',
+      requirement: '',
+      comment: ''
     }
   },
   methods: {
@@ -197,11 +209,26 @@ export default {
       this.Thispage = this.examine
       this.Thispage = !this.Thispage
       this.$emit('mine', this.Thispage)
+    },
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = '0' + (date.getMonth() + 1)
+      let d = '0' + date.getDate()
+      return y + '-' + m.substring(m.length - 2, m.length) + '-' + d.substring(d.length - 2, d.length)
     }
+  },
+  created () {
+    this.projectsinfosviewdetail = this.exaDate.projectsinfosviewdetail
+    console.log(this.exaDate.projectsinfosviewdetail.content)
+    this.devtypes = this.exaDate.devtypes
+    console.log(this.devtypes)
+    this.content = this.exaDate.projectsinfosviewdetail.content
+    this.requirement = this.exaDate.projectsinfosviewdetail.requirement
+    this.comment = this.exaDate.projectsinfosviewdetail.comment
   }
 }
 </script>
-
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
@@ -212,7 +239,8 @@ export default {
     .section
       width 1245px
       margin 0 auto
-      overflow hidden
+      overflow-y scroll
+      height 800px
       position relative
     .subjectH
       margin-bottom 35px
@@ -241,8 +269,9 @@ export default {
         color $color-border-b-fault
         font-size $font-size-medium
         line-height 40px
+        margin-left 24px
         margin-right 10px
-        float right
+        float left
       .content
         width 267px
         float right
@@ -259,7 +288,7 @@ export default {
         width 1149px
         height 1px
         background #444d5b
-        margin-top 7px
+        margin-top -8px
         float right
     .purviewDivtwo
       width 1066px
@@ -277,10 +306,11 @@ export default {
           float right
           color $color-border-b-fault
           margin-right 25px
-          line-height 40px
+          line-height 30px
           font-size $font-size-medium
         .substanceDiv
-          width 1066px
+          width 1065px
+          margin-right 1px
           float right
     .upload
       init()
@@ -314,6 +344,28 @@ export default {
         margin-right 110px
       .closedown
         closedown()
+  .substancedivTable
+    overflow hidden
+    background #0a111b
+    width 100%
+    margin-right -1px
+    border 1px solid #444d5b
+    line-height 26px
+    .substancedivTr
+      border-bottom 1px solid #444d5b
+    .substancedivSpantwo
+      width 250px
+      margin-left 6px
+      padding 2px 0px
+      color $color-text-desc
+      font-weight bold
+    .substancedivSpanone
+      color $color-border-b-fault
+      width 200px
+      margin-right 10px
+    .substancedivtableTb
+      border-left 1px solid #444d5b
+      padding-left 6px
   .examine
     width: 267px;
     float: right;
