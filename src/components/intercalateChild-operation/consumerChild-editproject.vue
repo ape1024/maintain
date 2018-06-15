@@ -1,5 +1,5 @@
 <template>
-  <div class="subject">
+  <div class="subject" @click="subjectClick">
     <section class="section">
       <h4 class="subjectH">
         修改项目信息
@@ -102,7 +102,24 @@
         <div class="purviewDiv">
           <div class="substance">
             <div class="substanceDiv">
-              <el-input v-model="projectRange" placeholder="请输入内容"></el-input>
+              <!--<el-input v-model="projectRange" placeholder="请输入内容"></el-input>-->
+              <div class="firecontrol">
+
+              </div>
+              <div class="firecontrolDiv">
+                <ul class="purviewUl">
+                  <li :key="item.areaid" v-for="item in purview" class="purviewli">
+                    <i class="el-icon-circle-plus purviewI"></i>
+                    <el-checkbox @change="purviewCheckbox(item)" v-model="item.ischecked"></el-checkbox>
+                    {{item.areaname}}
+                    <ul>
+                      <li>
+
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
             </div>
             <p class="substanceP">
               建筑范围：
@@ -110,7 +127,25 @@
           </div>
           <div class="substance">
             <div class="substanceDiv">
-              <el-input v-model="input" placeholder="请输入内容"></el-input>
+              <div class="firecontrol" @click.stop="fireconboolean">
+              </div>
+              <div v-if="firecontrolBoolean" class="firecontrolDiv">
+                <transition  enter-active-class="fadeInUp" leave-active-class="fadeOutDown">
+                  <ul @click.stop>
+                    <li class="firecontrolBooleanLi" :key="item.id" v-for="item in firecontrol">
+                      <i class="el-icon-circle-plus firecontrolII" @click="firecontrolI($event)"></i>
+                      <el-checkbox @change="firecontrolCheckbox(item)" v-model="item.ischeck"></el-checkbox>
+                      {{item.name}}
+                      <ul class="firecontrolUL">
+                        <li class="firecontrolLi" :key="data.id" v-for="data in item.children">
+                          <el-checkbox @change="firecontrolCheck(item,data)" v-model="data.ischeck"></el-checkbox>
+                          {{data.name}}
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </transition>
+              </div>
             </div>
             <p class="substanceP">
               消防设备：
@@ -166,13 +201,16 @@
       <div class="upload">
         <p class="uploadP">附属文件：</p>
         <div class="uploadDiv">
-          <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-change="handleChange"
-            :file-list="fileList3">
-            <el-button size="small" type="primary">点击上传</el-button>
-          </el-upload>
+          <div class="uploadInput">
+            上传文件
+            <input id="file" type="file" accept="*" @change='changeFile()'>
+          </div>
+          <ul class="myFileUl">
+            <li  class="myFileLi" :key="$index" v-for="(item, $index) in myfileImg">
+              <span class="myFileLiSPan">{{item}} </span>
+              <span @click="myfileliSpan($index)" class="myFileLiSPanTwo"><i class="el-icon-delete myFileLiI"></i></span>
+            </li>
+          </ul>
         </div>
       </div>
       <div class="fastener">
@@ -184,6 +222,7 @@
 </template>
 
 <script>
+import $ from 'jquery'
 export default {
   name: 'consumerChild-editproject',
   props: ['edit', 'project'],
@@ -220,22 +259,122 @@ export default {
       requirement: this.project.requirement,
       //  备注信息
       comment: this.project.comment,
-      exaMineDate: ''
+      exaMineDate: '',
+      firecontrol: [],
+      firecontrolBoolean: false,
+      myfileImg: [],
+      picName: [],
+      purview: [],
+      purviewModel: [],
+      purviewProps: {
+        children: 'areas',
+        label: 'areaname',
+        value: 'areaid'
+      }
     }
   },
   methods: {
+    purviewCheckbox (item) {
+      console.log(item)
+      if (item.areas.length !== 0) {
+
+      } else {
+        return false
+      }
+    },
+    myfileliSpan (index) {
+      this.myfileImg.splice(index, 1)
+      this.picName.splice(index, 1)
+    },
+    changeFile () {
+      let pic = document.getElementById('file').files[0]
+      let reader = new FileReader()
+      reader.readAsDataURL(pic)
+      this.myfileImg.push(pic.name)
+      // let formDate = new FormData()
+      // formDate.append(pic.name, pic)
+      this.picName.push(pic)
+      // console.log(pic)
+    },
+    subjectClick () {
+      this.firecontrolBoolean = false
+    },
+    fireconboolean () {
+      this.firecontrolBoolean = !this.firecontrolBoolean
+    },
+    firecontrolI (event) {
+      if ($(event.currentTarget).hasClass('el-icon-circle-plus')) {
+        console.log('1')
+        $(['.firecontrolII']).each(function (index, item) {
+          if ($(item).hasClass('el-icon-remove')) {
+            $(item).removeClass('el-icon-remove').addClass('el-icon-circle-plus')
+          }
+        })
+        $(event.currentTarget).removeClass('el-icon-circle-plus').addClass('el-icon-remove')
+        $(['.firecontrolUL']).each(function (index, item) {
+          $(item).css('display', 'none')
+        })
+        $(event.currentTarget).parent().children('.firecontrolUL').slideDown()
+      } else {
+        $(event.currentTarget).removeClass('el-icon-remove').addClass('el-icon-circle-plus')
+        $(['.firecontrolUL']).each(function (index, item) {
+          $(item).css('display', 'none')
+        })
+      }
+    },
+    firecontrolCheckbox (item) {
+      if (item.ischeck === true) {
+        item.children.forEach((val) => {
+          val.ischeck = true
+        })
+      } else {
+        item.children.forEach((val) => {
+          val.ischeck = false
+        })
+      }
+    },
+    firecontrolCheck (item, data) {
+      let arr = []
+      if (data.ischeck === true) {
+        item.ischeck = true
+      } else {
+        item.children.forEach((val) => {
+          if (val.ischeck === true) {
+            arr.push(val)
+          } else {
+          }
+        })
+        if (arr.length >= 1) {
+          item.ischeck = true
+        } else {
+          item.ischeck = false
+        }
+      }
+    },
     handleChange (file, fileList) {
       this.fileList3 = fileList.slice(-3)
     },
     conserve () {
-      this.Thispage = this.edit
-      this.Thispage = !this.Thispage
-      this.$emit('editt', this.Thispage)
+      console.log(this.firecontrol)
+      // this.Thispage = this.edit
+      // this.Thispage = !this.Thispage
+      // this.$emit('editt', this.Thispage)
     },
     closedown () {
     }
   },
   created () {
+    this.axios.post(`http://172.16.6.181:8920/projects/findAllDevType`).then((response) => {
+      this.firecontrol = response.data
+      console.log(this.firecontrol)
+    })
+    this.axios.post(`http://172.16.6.16:8920/areas/findAllAreaTrees`).then((response) => {
+      console.log(response)
+      if (response.data.code === 0) {
+        this.purview = response.data.data[0]
+        console.log(this.purview)
+      }
+    })
   }
 }
 </script>
@@ -285,7 +424,9 @@ export default {
         width 267px
         float right
     .purview
-      init()
+      width 100%
+      display inline-block
+      position relative
     .contentHeader
       init()
       .headerP
@@ -306,16 +447,18 @@ export default {
       margin 10px 0
     .purviewDiv
       margin-left 30px
-      overflow hidden
+      display inline-block
       margin-top 10px
       .substance
-        init()
+        width 100%
+        position relative
+        display inline-block
         margin-bottom 10px
         .substanceP
-          float right
+          float left
           color $color-border-b-fault
-          margin-right 25px
-          line-height 40px
+          margin-left  66px
+          line-height 30px
           font-size $font-size-medium
         .substanceDiv
           width 1066px
@@ -352,6 +495,107 @@ export default {
         margin-right 110px
       .closedown
         closedown()
+  .firecontrol
+    position relative
+    float left
+    cursor pointer
+    width 1066px
+    height 30px
+    background #fff
+    text-indent 1em
+    white-space nowrap
+    white-space nowrap
+    text-overflow ellipsis
+    line-height 30px
+    color $color-border-b-fault
+    border-radius 5px
+  .firecontrolDiv
+      position absolute
+      top 30px
+      right  0
+      color #999
+      background #eee
+      border-radius 5px
+      overflow-y scroll
+      width 1066px
+      height 250px
+      z-index 11
+    .firecontrolBooleanLi
+       padding 4px 0 4px 20px
+  .firecontrolLi
+    text-indent 1.2em
+  .firecontrolII
+     cursor pointer
+  .el-checkbox, .el-checkbox__input
+    display inline
+  .firecontrolUL
+    display none
+  .uploadInput
+    display inline-block
+    width 100px
+    height 30px
+    line-height 30px
+    font-size 14px
+    color #eee
+    border-radius 10px
+    background #3263a6
+    position relative
+    text-align center
+    -webkit-transition 0.4s
+    transition 0.2s
+    cursor pointer
+    input
+      position: absolute;
+      top 0
+      left 0
+      width 100%
+      height 100%
+      opacity 0
+      cursor pointer
+  .uploadInput:hover
+     background #3f72b7
+  .myFileUl
+    overflow hidden
+    position relative
+    padding-top 10px
+    min-height 52px
+  .myFileLi
+    float left
+    padding 6px 0
+    margin-right 6px
+    overflow hidden
+  .myFileLi:hover .myFileLiSPanTwo
+     opacity 1
+  .myFileLi:hover .myFileLiSPan
+     background #999
+  .myFileLiSPan
+    cursor pointer
+    padding  6px 10px
+    background #555
+    border-radius 10px
+    height 20px
+    font-size 16px
+    color #fff
+    overflow hidden
+    position relative
+  .myFileLiSPanTwo
+     opacity 0
+     font-size 16px
+     cursor pointer
+     margin-left 6px
+     transition .2s
+     color red
+    .myFileLiimg
+      display inline-block
+      width 50px
+      height 50px
   .el-date-editor.el-input, .el-date-editor.el-input__inner
     width 100%!important
+  .purviewUl
+    overflow hidden
+    position relative
+    .purviewli
+      padding 4px 0 4px 20px
+      .purviewI
+        cursor pointer
 </style>

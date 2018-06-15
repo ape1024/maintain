@@ -313,6 +313,7 @@ export default {
     this.axios.post('http://172.16.6.16:8920/dev/findAllDeviceType').then((response) => {
       if (response.data.code === 0) {
         this.equipment = response.data.data
+        console.log(response.data.data)
       }
     })
     //  获取运行状态

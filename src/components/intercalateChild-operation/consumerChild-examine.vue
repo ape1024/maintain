@@ -94,7 +94,7 @@
         <div class="purviewDiv">
           <div class="substance">
             <div class="substanceDiv">
-              <el-input v-model="input" :disabled="true" placeholder=""></el-input>
+              <el-input v-model="areas" :disabled="true" placeholder=""></el-input>
             </div>
             <p class="substanceP">
               建筑范围：
@@ -168,7 +168,14 @@
       <div class="upload">
         <p class="uploadP">附属文件：</p>
         <div class="uploadDiv">
+          <div class="uploaddivIdiv">
+            <p class="uploaddivIdivP" @click="fullopen($index)" :key="$index" v-for="(item, $index) in exaDate.filenames">
+              {{item}}
+            </p>
+            <span >
 
+            </span>
+          </div>
         </div>
       </div>
       <!--<div class="personnel">-->
@@ -192,7 +199,7 @@ export default {
     return {
       // 本页面的显示隐藏
       Thispage: false,
-      input: '嘤嘤嘤',
+      areas: '嘤嘤嘤',
       input1: '喔喔喔',
       value1: '',
       value2: '',
@@ -205,6 +212,10 @@ export default {
     }
   },
   methods: {
+    fullopen ($index) {
+      console.log((this.exaDate.fullnames)[$index])
+      // window.open((this.exaDate.fullnames)[$index])
+    },
     closedown () {
       this.Thispage = this.examine
       this.Thispage = !this.Thispage
@@ -220,12 +231,13 @@ export default {
   },
   created () {
     this.projectsinfosviewdetail = this.exaDate.projectsinfosviewdetail
-    console.log(this.exaDate.projectsinfosviewdetail.content)
+
     this.devtypes = this.exaDate.devtypes
-    console.log(this.devtypes)
     this.content = this.exaDate.projectsinfosviewdetail.content
     this.requirement = this.exaDate.projectsinfosviewdetail.requirement
     this.comment = this.exaDate.projectsinfosviewdetail.comment
+    console.log(this.exaDate)
+    this.areas = this.exaDate.projectsinfosviewdetail.areas
   }
 }
 </script>
@@ -303,7 +315,7 @@ export default {
         init()
         margin-bottom 10px
         .substanceP
-          float right
+          float left
           color $color-border-b-fault
           margin-right 25px
           line-height 30px
@@ -371,6 +383,15 @@ export default {
     float: right;
     color $color-text-title
     line-height 40px
+  .uploaddivIdiv
+    position relative
+    overflow hidden
+    .uploaddivIdivP
+      float left
+      font-size 16px
+      color #fff
+      cursor pointer
+      margin-left 20px
   .el-date-editor.el-input, .el-date-editor.el-input__inner
     width 100%!important
 </style>

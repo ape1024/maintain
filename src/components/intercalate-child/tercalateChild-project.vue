@@ -180,7 +180,7 @@ export default {
     },
     amputate (index, content, projectId) {
       console.log(projectId)
-      const url = `http://172.16.6.16:8920/projects/removeProjectById?projectId=${projectId}`
+      const url = `http://172.16.6.181:8920/projects/removeProjectById?projectId=${projectId}`
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {
           content.splice([index], 1)
@@ -190,13 +190,13 @@ export default {
     }
   },
   created () {
-    this.axios.post(`http://172.16.6.16:8920/projects/findAllProjects`).then((response) => {
+    this.axios.post(`http://172.16.6.181:8920/projects/findAllProjects`).then((response) => {
       if (response.data.code === 0) {
         this.contentliDate = response.data.data
         console.log(response)
       }
     })
-    this.axios.post('http://172.16.6.16:8920/dev/FindDevAllstate').then((response) => {
+    this.axios.post('http://172.16.6.181:8920/dev/FindDevAllstate').then((response) => {
       if (response.data.code === 0) {
         this.runningstateDate = response.data.data
       }
