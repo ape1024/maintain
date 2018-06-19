@@ -378,7 +378,6 @@ export default {
       let formDate = new FormData()
       console.log(file[0])
       formDate.append(file[0].name, file[0])
-
       this.picName.push(file[0])
     },
     versionChang (data) {

@@ -85,7 +85,24 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="address" placeholder="请输入内容"  clearable>></el-input>
+                <div @click.stop="accessarea" class="region">
+                  {{regionDate}}
+                </div>
+                <ul v-show="regionUl" class="region_ul">
+                  <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
+                    <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
+                    <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">
+                      <i @click.stop="count($event, data.cityid)" class="el-icon-circle-plus-outline region_itwo"></i>
+                      <span class="countSpen" @click="citySpan($event, data)">{{data.cityname}}</span>
+                      <ul class="countUl">
+                        <li @click="countytownSpan(coundata)" :key="coundata.countyid" :id="coundata.countyid" v-for="coundata in countytown" class="countLi">
+                          {{coundata.countyname}}
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                  </li>
+                </ul>
               </div>
               <p class="informationP">
                 项目地址：
@@ -103,22 +120,17 @@
           <div class="substance">
             <div class="substanceDiv">
               <!--<el-input v-model="projectRange" placeholder="请输入内容"></el-input>-->
-              <div class="firecontrol">
-
+              <div @click.stop="firecontrolClick" class="firecontrol">
+                {{buildscope}}
               </div>
-              <div class="firecontrolDiv">
-                <ul class="purviewUl">
-                  <li :key="item.areaid" v-for="item in purview" class="purviewli">
-                    <i class="el-icon-circle-plus purviewI"></i>
-                    <el-checkbox @change="purviewCheckbox(item)" v-model="item.ischecked"></el-checkbox>
-                    {{item.areaname}}
-                    <ul>
-                      <li>
-
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
+              <div v-if="buildscopeBoolean" class="firecontrolDiv">
+                <el-tree
+                  :data="purview"
+                  :props="purviewProps"
+                  node-key="areaid"
+                  show-checkbox
+                  @check="purviewCheck">
+                </el-tree>
               </div>
             </div>
             <p class="substanceP">
@@ -128,23 +140,16 @@
           <div class="substance">
             <div class="substanceDiv">
               <div class="firecontrol" @click.stop="fireconboolean">
+                {{firecontrolda}}
               </div>
               <div v-if="firecontrolBoolean" class="firecontrolDiv">
-                <transition  enter-active-class="fadeInUp" leave-active-class="fadeOutDown">
-                  <ul @click.stop>
-                    <li class="firecontrolBooleanLi" :key="item.id" v-for="item in firecontrol">
-                      <i class="el-icon-circle-plus firecontrolII" @click="firecontrolI($event)"></i>
-                      <el-checkbox @change="firecontrolCheckbox(item)" v-model="item.ischeck"></el-checkbox>
-                      {{item.name}}
-                      <ul class="firecontrolUL">
-                        <li class="firecontrolLi" :key="data.id" v-for="data in item.children">
-                          <el-checkbox @change="firecontrolCheck(item,data)" v-model="data.ischeck"></el-checkbox>
-                          {{data.name}}
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </transition>
+                <el-tree
+                  :data="firecontrol"
+                  :props="firecontrolProps"
+                  node-key="id"
+                  show-checkbox
+                  @check="firecontrolCheck">
+                </el-tree>
               </div>
             </div>
             <p class="substanceP">
@@ -222,12 +227,19 @@
 </template>
 
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 export default {
   name: 'consumerChild-editproject',
   props: ['edit', 'project'],
   data () {
     return {
+      //  范围 传给后台
+      buildscopeDate: [],
+      buildscope: '',
+      buildscopeBoolean: false,
+      //  消防设备
+      firecontrolda: '',
+      firecontrolDate: [],
       // 本页面的显示隐藏
       Thispage: false,
       fileList3: [],
@@ -250,9 +262,7 @@ export default {
       //  项目地址
       address: this.project.address,
       //  建筑范围
-      projectRange: this.project.projectrange,
-      //  消防设备 目前没有
-      input: '',
+      projectrange: [],
       //  维保内容
       conTent: this.project.content,
       //  维保要求
@@ -270,10 +280,17 @@ export default {
         children: 'areas',
         label: 'areaname',
         value: 'areaid'
+      },
+      firecontrolProps: {
+        children: 'children',
+        label: 'name'
       }
     }
   },
   methods: {
+    firecontrolClick () {
+      this.buildscopeBoolean = !this.buildscopeBoolean
+    },
     purviewCheckbox (item) {
       console.log(item)
       if (item.areas.length !== 0) {
@@ -296,69 +313,35 @@ export default {
       this.picName.push(pic)
       // console.log(pic)
     },
+    purviewCheck (checkedNodes, checkedKeys) {
+      console.log('101')
+      console.log(checkedKeys.checkedNodes)
+      let data = ''
+      this.buildscopeDate = checkedKeys.checkedKeys
+      for (let i = 0; i < checkedKeys.checkedNodes.length; i++) {
+        data += checkedKeys.checkedNodes[i].areaname + ' '
+        console.log(this.buildscope)
+      }
+      this.buildscope = data
+    },
+    firecontrolCheck (checkedNodes, checkedKeys) {
+      let data = ''
+      this.firecontrolDate = checkedKeys.checkedKeys
+      for (let i = 0; i < checkedKeys.checkedNodes.length; i++) {
+        data += checkedKeys.checkedNodes[i].name + ' '
+      }
+      this.firecontrolda = data
+    },
     subjectClick () {
       this.firecontrolBoolean = false
+      this.buildscopeBoolean = false
     },
     fireconboolean () {
       this.firecontrolBoolean = !this.firecontrolBoolean
     },
-    firecontrolI (event) {
-      if ($(event.currentTarget).hasClass('el-icon-circle-plus')) {
-        console.log('1')
-        $(['.firecontrolII']).each(function (index, item) {
-          if ($(item).hasClass('el-icon-remove')) {
-            $(item).removeClass('el-icon-remove').addClass('el-icon-circle-plus')
-          }
-        })
-        $(event.currentTarget).removeClass('el-icon-circle-plus').addClass('el-icon-remove')
-        $(['.firecontrolUL']).each(function (index, item) {
-          $(item).css('display', 'none')
-        })
-        $(event.currentTarget).parent().children('.firecontrolUL').slideDown()
-      } else {
-        $(event.currentTarget).removeClass('el-icon-remove').addClass('el-icon-circle-plus')
-        $(['.firecontrolUL']).each(function (index, item) {
-          $(item).css('display', 'none')
-        })
-      }
-    },
-    firecontrolCheckbox (item) {
-      if (item.ischeck === true) {
-        item.children.forEach((val) => {
-          val.ischeck = true
-        })
-      } else {
-        item.children.forEach((val) => {
-          val.ischeck = false
-        })
-      }
-    },
-    firecontrolCheck (item, data) {
-      let arr = []
-      if (data.ischeck === true) {
-        item.ischeck = true
-      } else {
-        item.children.forEach((val) => {
-          if (val.ischeck === true) {
-            arr.push(val)
-          } else {
-          }
-        })
-        if (arr.length >= 1) {
-          item.ischeck = true
-        } else {
-          item.ischeck = false
-        }
-      }
-    },
-    handleChange (file, fileList) {
-      this.fileList3 = fileList.slice(-3)
-    },
     conserve () {
-      console.log(this.firecontrol)
-      // this.Thispage = this.edit
-      // this.Thispage = !this.Thispage
-      // this.$emit('editt', this.Thispage)
+      this.$emit('editt', this.Thispage)
+      console.log(this.edit)
     },
     closedown () {
     }
@@ -511,14 +494,15 @@ export default {
     border-radius 5px
   .firecontrolDiv
       position absolute
-      top 30px
+      top 40px
       right  0
       color #999
-      background #eee
+      background #fff
       border-radius 5px
       overflow-y scroll
       width 1066px
-      height 250px
+      min-height 250px
+      max-height 250px
       z-index 11
     .firecontrolBooleanLi
        padding 4px 0 4px 20px
