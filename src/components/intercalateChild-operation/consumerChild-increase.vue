@@ -20,6 +20,7 @@
                 <el-date-picker
                   v-model="startdate"
                   type="date"
+                  value-format="yyyy-MM-dd"
                   placeholder="选择日期">
                 </el-date-picker>
               </div>
@@ -29,7 +30,6 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-
                 <el-select v-model="proprieTor" placeholder="请选择">
                   <el-option
                     v-for="item in proprieTorDate"
@@ -59,6 +59,7 @@
                 <el-date-picker
                   v-model="endDate"
                   type="date"
+                  value-format="yyyy-MM-dd"
                   placeholder="选择日期">
                 </el-date-picker>
               </div>
@@ -301,7 +302,7 @@ export default {
       //  维保要求
       requirement: '',
       //  备注信息
-      comment: '',
+      comment: ' ',
       exaMineDate: '',
       firecontrol: [],
       firecontrolBoolean: false,
@@ -326,7 +327,7 @@ export default {
   },
   methods: {
     handlesuccess (response, file, fileList) {
-      console.log('0-0-0-0-0-0-0-0-0-0-')
+      console.log('0-0-0-0-0-0-0-0-0-0')
       console.log(file.name)
       console.log(response.data)
       this.documentPapers.push({
@@ -351,13 +352,6 @@ export default {
 
     firecontrolClick () {
       this.buildscopeBoolean = !this.buildscopeBoolean
-    },
-    purviewCheckbox (item) {
-      if (item.areas.length !== 0) {
-
-      } else {
-        return false
-      }
     },
     purviewCheck (checkedNodes, checkedKeys) {
       let data = ''
@@ -384,32 +378,58 @@ export default {
       this.firecontrolBoolean = !this.firecontrolBoolean
     },
     conserve () {
-      console.log()
-      let token = window.JSON.parse(window.sessionStorage.token)
-      let project = {
-        'proprietor': `${this.proprieTor}`,
-        'vindicator': `${this.proprietornameDate}`,
-        'projecttype': `${this.projectDate}`,
-        'startdate': `${this.startdate}`,
-        'enddate': `${this.endDate}`
+      if (this.projectName === '' || this.startdate === '' || this.proprieTor === '' || this.projectCode === '' || this.endDate === '' || this.proprietornameDate === '' || this.projectDate.length === 0 || this.buildscope === '' || this.firecontrolda === '') {
+        alert('您的信息没有填写完整')
+        return false
+      } else {
+        let token = window.JSON.parse(window.sessionStorage.token)
+        let areas = []
+        for (let i = 0; i < this.buildscopeDate.length; i++) {
+          let areasObj = {
+            'areaid': this.buildscopeDate[i]
+          }
+          areas.push(areasObj)
+        }
+        let baseDevices = []
+        for (let i = 0; i < this.firecontrolDate.length; i++) {
+          let base = {
+            'basedeviceid': this.firecontrolDate[i]
+          }
+          baseDevices.push(base)
+        }
+        let worktypes = []
+        for (let i = 0; i < this.projectDate.length; i++) {
+          let work = {
+            'worktypeid': this.projectDate[i]
+          }
+          worktypes.push(work)
+        }
+        let pr = {
+          'areas': areas,
+          'baseDevices': baseDevices,
+          'files': this.documentPapers,
+          'project': {
+            'enddate': `${this.endDate}`,
+            'proprietor': `${this.proprieTor}`,
+            'startdate': `${this.startdate}`,
+            'vindicator': `${this.proprietornameDate}`
+          },
+          'projectInfo': {
+            'address': `${this.regionDate}`,
+            'comment': `${this.comment}`,
+            'content': `${this.conTent}`,
+            'projectrange': `${this.firecontrolda}`,
+            'requirement': `${this.requirement}`
+          },
+          'worktypes': worktypes
+        }
+        this.axios.post(`http://172.16.6.181:8920/projects/createOrUpdateProject?token=${token}`, pr).then((response) => {
+          if (response.data.code === 0) {
+            alert('创建成功！')
+            this.$emit('incr', this.Thispage)
+          }
+        })
       }
-      let projectInfo = {
-        'address': `${this.regionDate}`,
-        'content': `${this.conTent}`,
-        'requirement': `${this.requirement}`,
-        'comment': `${this.comment}`,
-        'projectrange': `${this.firecontrolda}`
-      }
-      console.log(token)
-      // let baseDevices = {
-      //   'basedevicecode': this.projectCode
-      // }
-      console.log(project)
-      console.log(projectInfo)
-      this.axios.post(`http://172.16.6.16:8920/projects/createOrUpdateProject?token=${token}`, project, projectInfo).then((response) => {
-        console.log(response)
-      })
-      // this.$emit('incr', this.Thispage)
     },
     closedown () {
       this.$emit('incr', this.Thispage)
@@ -581,7 +601,7 @@ export default {
       .informationP
         color $color-border-b-fault
         font-size $font-size-medium
-        line-height 40px
+        line-height 30px
         margin-right 10px
         float right
       .content

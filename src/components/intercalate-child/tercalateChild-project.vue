@@ -1,25 +1,6 @@
 <template>
   <div class="subject">
     <div class="subjectDiv">
-      <div class="subjectLeft">
-      <p class="subjectP">项目名称：</p>
-      <div class="subjectRight">
-        <el-input v-model="input" placeholder="请输入内容"></el-input>
-      </div>
-     </div>
-      <div class="subjectLeft">
-        <p class="subjectP">项目名称：</p>
-        <div class="subjectRight">
-          <el-select v-model="value" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-      </div>
       <div @click="conserve" class="conserve">
         增 加
       </div>
@@ -68,13 +49,6 @@
         </li>
       </ul>
     </div>
-    <div class="subject_bottom">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="100">
-      </el-pagination>
-    </div>
     <!--添加-->
     <section v-if="adhibitBoolean" class="adhibit">
       <increase :increaseBoolean="adhibitBoolean" @incr="Incr"></increase>
@@ -110,22 +84,6 @@ export default {
       modifyBoolean: false,
       adhibitBoolean: false,
       contentliDate: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
       value: '',
       //  修改信息
       projectDate: '',
@@ -225,6 +183,8 @@ export default {
           float left
           font-size $font-size-medium
       .conserve
+        float right
+        margin-right 20px
         conserve()
         margin-top -3px
       .subjectRight

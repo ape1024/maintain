@@ -112,25 +112,6 @@
                 </div>
               </div>
             </li>
-            <li class="modify_right">
-              <p class="modify_li_p">
-                现场照片：
-              </p>
-              <div class="modify_rightDiv">
-                <div class="upload">
-                  上传图片
-                  <input id="file" type="file" accept="image/png, image/jpeg, image/gif, image/jpg" @change='changeFile()'>
-                </div>
-              </div>
-              <ul class="myFileUl">
-                <li  class="myFileLi" :key="$index" v-for="(item, $index) in myfileImg">
-                  <img class="myFileLiimg" :src="item" alt="">
-                  <div @click="myFileLidelete($index)" class="myFileDiv">
-                    <i class="el-icon-delete"></i>
-                  </div>
-                </li>
-              </ul>
-            </li>
           </ul>
         </section>
       </div>
@@ -286,19 +267,6 @@ export default {
       // 点击添加
       tabulationtitle: [],
       regionUl: false,
-      location: {
-        value: '',
-        child: [{
-          value: '1',
-          label: '丰台区'
-        }, {
-          value: '2',
-          label: '朝阳区'
-        }, {
-          value: '3',
-          label: '海淀区'
-        }]
-      },
       dialogImageUrl: '',
       dialogVisible: false,
       // 显示/隐藏
@@ -360,26 +328,6 @@ export default {
     }
   },
   methods: {
-    myFileLidelete (index) {
-      this.myfileImg.splice(index, 1)
-    },
-    changeFile () {
-      let pic = document.getElementById('file').files[0]
-      // console.log(pic.name)
-      // this.picName.push(pic.name)
-      let reader = new FileReader()
-      reader.readAsDataURL(pic)
-      reader.onload = () => {
-        let src = reader.result
-        this.myfileImg.push(src)
-      }
-      let file = document.getElementById('file').files
-      console.log(file)
-      let formDate = new FormData()
-      console.log(file[0])
-      formDate.append(file[0].name, file[0])
-      this.picName.push(file[0])
-    },
     versionChang (data) {
       if (this.versionValue === '-9999') {
         this.versionManufacturer = true
@@ -522,20 +470,6 @@ export default {
       console.log(effectivedate + '有效日期s')
       //  地址编码
       let mac = this.encoded ? this.encoded : ' '
-      //  图片
-      // let files = (this.myfileImg).length !== 0 ? this.myfileImg : ' '
-      // let files = this.picName
-      // let file = document.getElementById('file').files
-      // console.log(file)
-      // let list = []
-      // for (let i=0;i<file.length;i++) {
-      //   let formDate = new FormData()
-      //   formDate.append('file', file[i])
-      //   list.push(formDate)
-      // }
-      // console.log(list)
-      // console.log(files + '图片')
-      console.log(this.picName)
       if (this.categoryDate.length !== 0) {
         //  设备id
         console.log('1')
@@ -547,15 +481,27 @@ export default {
             if (response.data.code === 0) {
               // 厂家id
               manufacturerid = response.data.data.manufacturerid
-              this.axios.post(`http://172.16.6.16:8920/dev/AddDevice?rowcount=${rowcount}&token=${token}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${this.basedevicecode}&devicemodel=${devicemodel}&position=${position}&devicecount=${devicecount}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&mac=${mac}&files=${this.picName}`).then((response) => {
-                console.log('4')
-                console.log(response)
+              this.axios.post(`http://172.16.6.16:8920/dev/AddDevice?rowcount=${rowcount}&token=${token}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${this.basedevicecode}&devicemodel=${devicemodel}&position=${position}&devicecount=${devicecount}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&mac=${mac}`).then((response) => {
+                if (response.data.code === 0) {
+                  alert('创建成功！')
+                  this.lyaddedShow = this.msg
+                  this.lyaddedShow = !this.lyaddedShow
+                  this.$emit('say', this.lyaddedShow)
+                }
               })
             }
           })
         } else {
           //  厂家 id
           manufacturerid = this.manufactorModel
+          this.axios.post(`http://172.16.6.16:8920/dev/AddDevice?rowcount=${rowcount}&token=${token}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${this.basedevicecode}&devicemodel=${devicemodel}&position=${position}&devicecount=${devicecount}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&mac=${mac}`).then((response) => {
+            if (response.data.code === 0) {
+              alert('创建成功！')
+              this.lyaddedShow = this.msg
+              this.lyaddedShow = !this.lyaddedShow
+              this.$emit('say', this.lyaddedShow)
+            }
+          })
         }
       } else {
         alert('请先选择设备类型！')
