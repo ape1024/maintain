@@ -305,6 +305,7 @@ export default {
         this.axios.post(`http://172.16.6.16:8920/dev/CalcDevCount?areaid=${regionId}&pageIndex=1&pageSize=20`).then((data) => {
           if (data.data.code === 0) {
             this.tableData = data.data.data.datas
+            console.log(this.tableData)
           }
         })
       }

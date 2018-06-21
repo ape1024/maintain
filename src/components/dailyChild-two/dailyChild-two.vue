@@ -21,34 +21,35 @@
       </li>
     </ul>
     <ul class="inline_list">
-      <li :key="item.id" :id="item.id" v-for="(item,$index) in content" class="inline_list_li" @click="selectStyle (item, $index, content, $event)">
-        <ul :id="item.id" class="list_data">
+      <li :key="item.id" :id="item.id" v-for="(item,$index) in dailyData" class="inline_list_li" @click.stop="selectStyle (item, $index, content, $event)">
+        <ul :id="item.id" :class="[item.error + item.problem > 0?'list_dataUl':'list_data']">
           <li class="list_data_litwo">
-            {{item.name}}
+            {{item.deviceName}}
           </li>
           <li class="list_data_li">
-            {{item.inspecting}}
+            {{item.sum - item.finish}}
           </li>
           <li class="list_data_li">
-            {{item.haveinspecting}}
+            {{item.finish}}
           </li>
           <li class="list_data_li">
-            {{item.problems}}
+            {{item.error + item.problem}}
           </li>
           <li class="list_data_li">
-            {{item.distribution}}
+            {{item.assign}}
           </li>
           <li class="list_data_li">
             <p @click.stop="examine" class="list_data_li_p">审核</p>
             <p @click.stop="distriBoolean" class="list_data_li_ptwo">快速分配</p>
           </li>
         </ul>
-        <transition enter-active-class="fadeInUp"
-          leave-active-class="fadeOutDown">
-        <div v-show="item.active" class="threelevel">
-          <dailythree></dailythree>
-        </div>
-        </transition>
+        <!--第三级，目前不需要了-->
+        <!--<transition enter-active-class="fadeInUp"-->
+          <!--leave-active-class="fadeOutDown">-->
+        <!--<div v-show="item.active" class="threelevel">-->
+          <!--<dailythree></dailythree>-->
+        <!--</div>-->
+        <!--</transition>-->
       </li>
       <section v-if="examineBoolean" @click.stop class="review">
         <!--审核-->
@@ -68,37 +69,11 @@ import childExamine from '../dailyChild-operation/dailyChild-examine'
 import childDistribution from '../dailyChild-operation/dailyChild-distribution'
 export default {
   name: 'dailyChild-two',
+  props: ['dailyData'],
   components: {
     dailythree,
     childExamine,
     childDistribution
-  },
-  methods: {
-    selectStyle (item, index, content, $event) {
-      $event.cancelBubble = true
-      this.content.forEach(function (item) {
-        if (index !== item.index) {
-          item.active = false
-        }
-      })
-      item.active = !item.active
-    },
-    // 开启审核
-    examine () {
-      this.examineBoolean = true
-    },
-    // 快速分配
-    distriBoolean () {
-      this.distributionBoolean = true
-    },
-    // 审核
-    Mine (ev) {
-      this.examineBoolean = ev
-    },
-    // 快速分配
-    Dist (ev) {
-      this.distributionBoolean = ev
-    }
   },
   data () {
     return {
@@ -126,6 +101,37 @@ export default {
         distribution: '2'
       }]
     }
+  },
+  methods: {
+    selectStyle (item, index, content, $event) {
+      // $event.cancelBubble = true
+      // this.content.forEach(function (item) {
+      //   if (index !== item.index) {
+      //     item.active = false
+      //   }
+      // })
+      // item.active = !item.active
+    },
+    // 开启审核
+    examine () {
+      this.examineBoolean = true
+    },
+    // 快速分配
+    distriBoolean () {
+      this.distributionBoolean = true
+    },
+    // 审核
+    Mine (ev) {
+      this.examineBoolean = ev
+    },
+    // 快速分配
+    Dist (ev) {
+      this.distributionBoolean = ev
+    }
+  },
+  created () {
+    console.log('1111111111111111111')
+    console.log(this.dailyData)
   }
 }
 </script>
@@ -302,7 +308,7 @@ export default {
       overflow hidden
       position relative
       .list_heder
-        margin 4px
+        margin 4px 0
         overflow hidden
         position relative
         background #354d76
@@ -326,30 +332,35 @@ export default {
         position relative
         font-size $font-size-medium
         color $color-text-title
+      .list_dataUl
+        width 100%
+        padding 12px 0
+        overflow hidden
+        background #4a1c06
       .list_data
         width 100%
         padding 12px 0
         overflow hidden
-        .list_data_li
-          float left
-          overflow hidden
-          width 16%
-        .list_data_litwo
-          float: left;
-          width: 14%;
-          overflow: hidden;
-          padding-left: 2%;
-        .list_data_li_p
-          float left
-          color #3279A6
-          margin-right 37px
-          cursor pointer
-          text-decoration underline
-        .list_data_li_ptwo
-          float left
-          color $color-text-tile-project
-          cursor pointer
-          text-decoration underline
+      .list_data_li
+        float left
+        overflow hidden
+        width 16%
+      .list_data_litwo
+        float left
+        width 14%
+        overflow hidden
+        padding-left 2%
+      .list_data_li_p
+        float left
+        color #3279A6
+        margin-right 37px
+        cursor pointer
+        text-decoration underline
+      .list_data_li_ptwo
+        float left
+        color $color-text-tile-project
+        cursor pointer
+        text-decoration underline
   .threelevel
     margin 0 10px
     overflow hidden

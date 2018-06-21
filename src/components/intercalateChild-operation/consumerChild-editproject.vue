@@ -143,6 +143,7 @@
                   :data="purview"
                   :props="purviewProps"
                   node-key="areaid"
+                  :default-checked-keys=this.buildscopeDate
                   show-checkbox
                   @check="purviewCheck">
                 </el-tree>
@@ -162,6 +163,7 @@
                   :data="firecontrol"
                   :props="firecontrolProps"
                   node-key="id"
+                  :default-checked-keys=this.firecontrolDate
                   show-checkbox
                   @check="firecontrolCheck">
                 </el-tree>
@@ -324,7 +326,6 @@ export default {
   },
   methods: {
     handlesuccess (response, file, fileList) {
-      console.log('0-0-0-0-0-0-0-0-0-0-')
       console.log(file.name)
       console.log(response.data)
       this.documentPapers.push({
@@ -367,6 +368,8 @@ export default {
     firecontrolCheck (checkedNodes, checkedKeys) {
       let data = ''
       this.firecontrolDate = checkedKeys.checkedKeys
+      console.log('110')
+      console.log(this.firecontrolDate)
       for (let i = 0; i < checkedKeys.checkedNodes.length; i++) {
         data += checkedKeys.checkedNodes[i].name + ' '
       }
@@ -531,6 +534,27 @@ export default {
     }
   },
   created () {
+    //  获取项目设备
+    this.axios.post(`http://172.16.6.181:8920/projects/getProjectDevices?projectid=${this.project.projectid}`).then((response) => {
+      if (response.data.code === 0) {
+        let data = response.data.data
+        data.forEach((val) => {
+          this.firecontrolDate.push(val.basedeviceid)
+        })
+      }
+    })
+    //  获取范围 默认值
+    this.axios.post(`http://172.16.6.181:8920/projects/getProjectAreas?projectid=${this.project.projectid}`).then((response) => {
+      if (response.data.code === 0) {
+        let data = response.data.data
+        console.log('00000000000000000')
+        console.log(data)
+        data.forEach((val) => {
+          this.buildscopeDate.push(val.areaid)
+        })
+      }
+    })
+
     this.axios.post(`http://172.16.6.181:8920/projects/findAllDevType`).then((response) => {
       this.firecontrol = response.data
     })
