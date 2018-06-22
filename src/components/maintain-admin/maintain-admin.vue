@@ -190,6 +190,9 @@ export default {
       }
     },
     selectStyle (item) {
+      this.tableData.forEach((val) => {
+        val.flag = false
+      })
       let itemAreaid = item.areaid
       this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?areaid=${itemAreaid}`).then((response) => {
         console.log(response.data.data)

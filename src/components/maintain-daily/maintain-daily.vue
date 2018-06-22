@@ -83,8 +83,8 @@
         </li>
       </ul>
       <ul class="table_ul">
-        <li v-for="(item,$index) in tableDatataskStat" class="table_li" :key="item.id" :id="item.id" @click="selectStyle (item, $index, tableDatataskStat, $event)">
-          <ul :id="item.id" class="inline_ul">
+        <li v-for="(item,$index) in tableDatataskStat" class="table_li" :key="item.id" @click="selectStyle (item, $index, tableDatataskStat, $event)">
+          <ul class="inline_ul">
             <li class="header_lithree">{{item.taskName}}</li>
             <li class="header_li">{{fmtDate(item.startTime)}}</li>
             <li class="header_li">{{fmtDate(item.endTime)}}</li>
@@ -96,7 +96,7 @@
           <transition enter-active-class="fadeInUp"
             leave-active-class="fadeOutDown">
           <div v-if="item.flag" class="inline_div">
-              <dailytwo :dailyData="dailyChild"></dailytwo>
+              <dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild"></dailytwo>
           </div>
           </transition>
         </li>
@@ -134,14 +134,21 @@ export default {
       }
     },
     selectStyle (item, index, tableData, $event) {
-      console.log(item.taskID)
-      $event.cancelBubble = true
-      item.flag = !item.flag
-      this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${item.taskID}`).then((response) => {
-        if (response.data.code === 0) {
-          this.dailyChild = response.data.data
-        }
-      })
+      if (item.flag === false) {
+        this.tableDatataskStat.forEach((val) => {
+          val.flag = false
+        })
+        let itemAreaid = item.taskID
+        this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${itemAreaid}`).then((response) => {
+          if (response.data.code === 0) {
+            console.log(this.dailyChild)
+            this.dailyChild = response.data.data
+            item.flag = !item.flag
+          }
+        })
+      } else {
+        item.flag = !item.flag
+      }
     },
     fmtDate (obj) {
       let date = new Date(obj)
@@ -212,7 +219,7 @@ export default {
     this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=2&projectid=1`).then((response) => {
       if (response.data.code === 0) {
         this.tableDatataskStat = response.data.data
-        console.log('11111111111111111111')
+        console.log('22222222222')
         console.log(this.tableDatataskStat)
       }
     })

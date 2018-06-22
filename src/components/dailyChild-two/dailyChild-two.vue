@@ -21,7 +21,7 @@
       </li>
     </ul>
     <ul class="inline_list">
-      <li :key="item.id" :id="item.id" v-for="(item,$index) in dailyData" class="inline_list_li" @click.stop="selectStyle (item, $index, content, $event)">
+      <li :key="index" v-for="(item,index) in dailyData" class="inline_list_li" @click.stop="">
         <ul :id="item.id" :class="[item.error + item.problem > 0?'list_dataUl':'list_data']">
           <li class="list_data_litwo">
             {{item.deviceName}}
@@ -39,7 +39,7 @@
             {{item.assign}}
           </li>
           <li class="list_data_li">
-            <p @click.stop="examine" class="list_data_li_p">审核</p>
+            <p @click.stop="examine(item.deviceID)" class="list_data_li_p">审核</p>
             <p @click.stop="distriBoolean" class="list_data_li_ptwo">快速分配</p>
           </li>
         </ul>
@@ -53,7 +53,7 @@
       </li>
       <section v-if="examineBoolean" @click.stop class="review">
         <!--审核-->
-        <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
+        <childExamine :examine="examineBoolean" :childDate="examineDate" :examineName="taskName" @mine="Mine" @examineMine="examineDistribution"></childExamine>
       </section>
       <!--快速分配-->
       <section v-if="distributionBoolean" @click.stop class="distribution">
@@ -69,7 +69,7 @@ import childExamine from '../dailyChild-operation/dailyChild-examine'
 import childDistribution from '../dailyChild-operation/dailyChild-distribution'
 export default {
   name: 'dailyChild-two',
-  props: ['dailyData'],
+  props: ['dailyData', 'taskid', 'taskName'],
   components: {
     dailythree,
     childExamine,
@@ -99,26 +99,41 @@ export default {
         haveinspecting: '3',
         problems: '4',
         distribution: '2'
-      }]
+      }],
+      examineDate: ''
     }
   },
   methods: {
-    selectStyle (item, index, content, $event) {
-      // $event.cancelBubble = true
-      // this.content.forEach(function (item) {
-      //   if (index !== item.index) {
-      //     item.active = false
-      //   }
-      // })
-      // item.active = !item.active
-    },
+    // selectStyle (item, index, content, $event) {
+    //   $event.cancelBubble = true
+    //   this.content.forEach(function (item) {
+    //     if (index !== item.index) {
+    //       item.active = false
+    //     }
+    //   })
+    //   item.active = !item.active
+    // },
     // 开启审核
-    examine () {
-      this.examineBoolean = true
+    examine (deviceID) {
+      console.log(this.taskid)
+      console.log(deviceID)
+      this.axios.post(`http://172.16.6.181:8920/task/getDetailsByDeviceId?taskId=${this.taskid}&deviceId=${deviceID}`).then((response) => {
+        console.log(response)
+        if (response.data.code === 0) {
+          this.examineDate = response.data.data
+          console.log(response.data.data)
+          this.examineBoolean = true
+        }
+      })
+    },
+    examineDistribution (ev) {
+      console.log(ev)
+      this.examineBoolean = ev
+      this.distributionBoolean = true
     },
     // 快速分配
     distriBoolean () {
-      this.distributionBoolean = true
+
     },
     // 审核
     Mine (ev) {
@@ -130,8 +145,9 @@ export default {
     }
   },
   created () {
-    console.log('1111111111111111111')
+    console.log('3333333333333333333333333')
     console.log(this.dailyData)
+    console.log(this.taskName)
   }
 }
 </script>

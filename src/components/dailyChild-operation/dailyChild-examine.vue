@@ -8,82 +8,83 @@
         <header class="examine_header">
           <div class="header_left">
             <p class="examine_p">计划名称：</p>
-            <div class="header_div">111</div>
-          </div>
-          <div class="header_right">
-            <p class="examine_p">执行部门：</p>
-            <div class="header_div">222</div>
+            <div class="header_div">{{examineName}}</div>
           </div>
         </header>
           <div class="examine_div">
             <ul class="examine_div_ul">
               <li class="examine_div_li">
                 <p>设施名称：</p>
-                <div>123</div>
+                <div>{{childDate.devicename}}</div>
               </li>
               <li class="examine_div_li">
                 <p>设备编码：</p>
-                <div>321</div>
+                <div>{{childDate.devicecode}}</div>
               </li>
               <li class="examine_div_li">
                 <p>设备位置：</p>
-                <div>123</div>
+                <div>{{childDate.position}}</div>
               </li>
               <li class="examine_div_li">
                 <p>设施数量：</p>
-                <div>321</div>
+                <div>{{childDate.devicecount}}</div>
               </li>
             </ul>
           </div>
         <div class="proceeding">
           <div class="matters">
-            <header class="matters_header">
-              <ul class="matters_ul">
-                <li class="matters_lithree">
-                  工作事项
-                </li>
-                <li class="matters_li">
-                  巡检人员
-                </li>
-                <li class="matters_li">
-                  巡检时间
-                </li>
-                <li class="matters_litwo">
-                  工作记录
-                </li>
-                <li class="matters_litwo">
-                  工作结论
-                </li>
-                <li class="matters_li">
-                  处理状态
-                </li>
-                <li class="matters_litwo">
-                  现场照片
-                </li>
-              </ul>
-            </header>
+            <div class="mattersHeaderdiv">
+              <header class="matters_header">
+                <ul class="matters_ul">
+                  <li class="matters_lithree">
+                    <el-checkbox @change="checkedChang" v-model="checked"></el-checkbox>
+                    工作事项
+                  </li>
+                  <li class="matters_li">
+                    巡检人员
+                  </li>
+                  <li class="matters_li">
+                    巡检时间
+                  </li>
+                  <li class="matters_litwo">
+                    工作记录
+                  </li>
+                  <li class="matters_litwo">
+                    工作结论
+                  </li>
+                  <li class="matters_li">
+                    处理状态
+                  </li>
+                  <li class="matters_litwo">
+                    现场照片
+                  </li>
+                </ul>
+              </header>
+            </div>
             <div class="content">
-              <ul class="content_ul">
+              <ul class="content_ul" v-for="(item, index) in childDate.details" :key="index" @click.stop="determine($event, item.checktaskdetailid)">
                 <li class="matters_lithree">
-                  工作事项
+                  <el-checkbox v-model="item.fuleco"></el-checkbox>
+                  {{item.workitem}}
                 </li>
                 <li class="matters_li">
-                  巡检人员
+                  {{item.checkperson}}
+                  {{item.others}}
                 </li>
                 <li class="matters_li">
-                  巡检时间
+                  {{fmtDate(item.checktime)}}
                 </li>
                 <li class="matters_litwo">
-                  工作记录
+                  {{item.workrecord}}
                 </li>
                 <li class="matters_litwo">
-                  工作结论
+                  {{item.conclusionname}}
                 </li>
                 <li class="matters_li">
-                  处理状态
+                  {{item.approvalstate}}
                 </li>
                 <li class="matters_litwo">
-                  现场照片
+                  <img class="photosImg" :key="index" v-for="(item, index) in item.photos" :src="item.path + item" alt="">
                 </li>
               </ul>
             </div>
@@ -95,28 +96,30 @@
                 <p class="left_hederPtwo"></p>
               </div>
               <div class="opinion_title">
-                <ul class="opinion_ul">
-                  <li class="opinion_li">
-                    技术要求
-                  </li>
-                  <li class="opinion_litwo">
-                    缺陷类型
-                  </li>
-                  <li class="opinion_litwo">
-                    工作结论
-                  </li>
-                </ul>
+                <div class="opinion_ulDiv">
+                  <ul class="opinion_ul">
+                    <li class="opinion_li">
+                      技术要求
+                    </li>
+                    <li class="opinion_litwo">
+                      缺陷类型
+                    </li>
+                    <li class="opinion_litwo">
+                      工作结论
+                    </li>
+                  </ul>
+                </div>
                 <ul class="title_ul">
-                  <li class="title_li">
+                  <li class="title_li" v-for="(item ,index) in determinant" :key="index">
                     <ul class="title_li_ul">
                       <li class="opinion_li">
-                        1
+                        {{item.requirement}}
                       </li>
                       <li class="opinion_litwo">
-                        2
+                        {{item.faulttype}}
                       </li>
                       <li class="opinion_litwo">
-                        3
+                        {{item.conclusion}}
                       </li>
                     </ul>
                   </li>
@@ -175,21 +178,57 @@
 </template>
 
 <script>
+import $ from 'jquery'
 export default {
   name: 'dailyChild-examine',
-  props: ['examine'],
+  props: ['examine', 'childDate', 'examineName'],
   data () {
     return {
+      checked: false,
       radio: 0,
       textarea: '',
-      examine_Boolean: false
+      examine_Boolean: false,
+      determinant: ''
     }
   },
   methods: {
+    checkedChang () {
+      if (this.checked === true) {
+        this.childDate.details.forEach((val) => {
+          val.fuleco = true
+        })
+      } else {
+        this.childDate.details.forEach((val) => {
+          val.fuleco = false
+        })
+      }
+    },
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = `0` + (date.getMonth() + 1)
+      let d = `0` + date.getDate()
+      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    },
     assignment () {
-      this.examine_Boolean = this.examine
-      this.examine_Boolean = !this.examine_Boolean
-      this.$emit('mine', this.examine_Boolean)
+      // this.examine_Boolean = this.examine
+      // this.examine_Boolean = !this.examine_Boolean
+      let arrData = []
+      let isok = this.childDate.details.forEach((val) => {
+        if (val.fuleco === false) {
+          return false
+        } else {
+          console.log(val)
+          let data = {
+            matters: val.workitem,
+            conclusion: val.conclusionname
+          }
+          arrData.push(data)
+        }
+      })
+      console.log(isok)
+      console.log(arrData)
+      // this.$emit('examineMine', this.examine_Boolean)
     },
     preservation () {
       this.examine_Boolean = this.examine
@@ -200,7 +239,25 @@ export default {
       this.examine_Boolean = this.examine
       this.examine_Boolean = !this.examine_Boolean
       this.$emit('mine', this.examine_Boolean)
+    },
+    determine (event, checktaskdetailid) {
+      let el = event.currentTarget
+      $('.content_ul').each(function (index, item) {
+        $(item).removeClass('content_ulBack')
+      })
+      $(el).addClass('content_ulBack')
+      this.axios.post(`http://172.16.6.181:8920/task/getEquirementjudgments?checkdetailid=${checktaskdetailid}`).then((response) => {
+        if (response.data.code === 0) {
+          this.determinant = response.data.data
+        }
+      })
     }
+  },
+  created () {
+    console.log(this.childDate)
+    this.childDate.details.forEach((val) => {
+      val.fuleco = false
+    })
   }
 }
 </script>
@@ -208,7 +265,7 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .newlyadded
-    margin 180px 0 0
+    margin 90px 0 0
     width 100%
     overflow hidden
     background #111a28
@@ -286,44 +343,71 @@ export default {
         overflow hidden
         position relative
         margin-bottom 20px
-        .matters_header
+        .mattersHeaderdiv
           width 100%
+          background #202f49
+          overflow hidden
+        .matters_header
+          width calc(100% - 20px)
           overflow hidden
           background #202f49
           color $color-text-title
           font-size $font-size-small
         .content
           width 100%
-          overflow hidden
+          max-height 120px
+          min-height 120px
+          overflow-y scroll
           background #0c121b
           color $color-header-b-normal
           font-size $font-size-small
         .matters_ul
           overflow hidden
-          padding 7px 0
+          padding 13px 0
           .matters_li
             float left
             width 10%
           .matters_litwo
             float left
-            width 20%
+            width 18%
+            padding 0 1%
           .matters_lithree
             float left
             padding-left 2%
             width 8%
         .content_ul
+          cursor pointer
           overflow hidden
-          padding 30px 0
+          padding 12px 0
+          transition .2s
+          height 14px
           .matters_li
             float left
             width 10%
+            height 14px
+            overflow hidden
+            text-overflow ellipsis
+            white-space nowrap
           .matters_litwo
             float left
-            width 20%
+            width 18%
+            padding 0 1%
+            height 14px
+            overflow hidden
+            text-overflow ellipsis
+            white-space nowrap
           .matters_lithree
             float left
             padding-left 2%
+            height 14px
             width 8%
+            overflow hidden
+            text-overflow ellipsis
+            white-space nowrap
+        .content_ulBack
+          background #263652
+        .content_ul:hover
+          background #1c273a
       .opinion
          width 100%
          overflow hidden
@@ -354,8 +438,12 @@ export default {
             width 100%
             background #0e1520
             overflow hidden
+            .opinion_ulDiv
+              width 100%
+              overflow hidden
+              background #202f49
             .opinion_ul
-               width 100%
+               width calc(100% - 20px)
                background #202f49
                overflow hidden
                padding 5px 0
@@ -364,16 +452,20 @@ export default {
               padding-left 5%
               width 55%
               overflow hidden
+              text-overflow ellipsis
+              white-space nowrap
             .opinion_litwo
               float left
               width 20%
             .title_ul
-               width 100%
-               overflow hidden
-               color $color-header-b-normal
+              width 100%
+              max-height 120px
+              min-height 120px
+              overflow-y scroll
+              color $color-header-b-normal
            .title_li
                width 100%
-               padding 18px 0
+               padding 13px 0
                overflow hidden
             .title_li_ul
                overflow hidden
@@ -429,4 +521,10 @@ export default {
         .closeup
           closedown()
           prohibit()
+  .photosImg
+    display inline-block
+    margin-right 10px
+    cursor pointer
+    width 14px
+    height 14px
 </style>
