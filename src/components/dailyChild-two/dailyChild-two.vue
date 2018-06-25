@@ -53,11 +53,11 @@
       </li>
       <section v-if="examineBoolean" @click.stop class="review">
         <!--审核-->
-        <childExamine :examine="examineBoolean" :childDate="examineDate" :examineName="taskName" @mine="Mine" @examineMine="examineDistribution"></childExamine>
+        <childExamine :examine="examineBoolean" :childDate="examineDate" :examineName="taskName" @examineMine="examineDistribution"></childExamine>
       </section>
       <!--快速分配-->
       <section v-if="distributionBoolean" @click.stop class="distribution">
-        <childDistribution :distriBoolean="distributionBoolean" @dist="Dist"></childDistribution>
+        <childDistribution :getrepairDate="getrepair" :instruction="instructionData" :distriBoolean="distributionBoolean" :equipment="equipmentID"  @dist="Dist"></childDistribution>
       </section>
     </ul>
   </div>
@@ -100,7 +100,11 @@ export default {
         problems: '4',
         distribution: '2'
       }],
-      examineDate: ''
+      examineDate: '',
+      getrepair: '',
+      instructionData: '',
+      // 点击哪个设备的id
+      equipmentID: ''
     }
   },
   methods: {
@@ -115,8 +119,10 @@ export default {
     // },
     // 开启审核
     examine (deviceID) {
-      console.log(this.taskid)
       console.log(deviceID)
+      this.equipmentID = deviceID
+      console.log('aaaaaaaaaaaaaaa')
+      console.log(this.equipmentID)
       this.axios.post(`http://172.16.6.181:8920/task/getDetailsByDeviceId?taskId=${this.taskid}&deviceId=${deviceID}`).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
@@ -127,9 +133,17 @@ export default {
       })
     },
     examineDistribution (ev) {
+      console.log('dddddddddddddddddddd')
       console.log(ev)
-      this.examineBoolean = ev
+      this.instructionData = ev
+      this.examineBoolean = false
       this.distributionBoolean = true
+      this.axios.post(`http://172.16.6.181:8920/task/getRepairTypes`).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response.data.data)
+          this.getrepair = response.data.data
+        }
+      })
     },
     // 快速分配
     distriBoolean () {

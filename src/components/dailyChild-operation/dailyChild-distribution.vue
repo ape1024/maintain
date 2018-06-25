@@ -13,9 +13,7 @@
         </div>
         <div class="distriButionOption">
           <el-radio-group v-model="radio2">
-            <el-radio :label="1">项目一</el-radio>
-            <el-radio :label="2">项目二</el-radio>
-            <el-radio :label="3">项目三</el-radio>
+            <el-radio :key="index" v-for="(item, index) in getrepairDate" :label="item.value">{{item.name}}</el-radio>
           </el-radio-group>
         </div>
       </div>
@@ -29,22 +27,71 @@
         <div class="distributionExplain">
           <el-input
             type="textarea"
-            :rows="8"
+            :rows="4"
+            resize="none"
             placeholder="请输入内容"
-            v-model="textarea">
+            v-model="instrucTion">
           </el-input>
         </div>
-        <div class="personCharge">
-          <p class="personChargeP">负责人：</p>
-          <div class="personChargeDiv">
-            <el-select v-model="value" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+        <div class="distriButionDiv_div">
+          <p class="distriButionDiv_p">
+            处理意见
+          </p>
+          <p class="distriButionDiv_line"></p>
+        </div>
+        <div class="distributionExplain">
+          <el-input
+            type="textarea"
+            :rows="4"
+            resize="none"
+            placeholder="请输入内容"
+            v-model="objection">
+          </el-input>
+        </div>
+        <div class="personnel">
+          <div class="personCharge">
+            <p class="personChargeP">维保单位：</p>
+            <div class="personChargeDiv">
+              <el-checkbox-group v-model="maintenanceList">
+                <el-tree
+                  class="tree"
+                  :data="maintenance"
+                  node-key="id"
+                  :props="proprietorProps">
+                  <div class="custom-tree-node" slot-scope="{ node, data }">
+                    <div>{{ node.label }}</div>
+                    <div class="tree-checkbox">
+                      <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
+                        <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
+                      </div>
+                    </div>
+                  </div>
+                </el-tree>
+              </el-checkbox-group>
+            </div>
+          </div>
+          <div class="maintenance">
+            <p class="personChargeP">
+              业主单位：
+            </p>
+            <div class="tree-wrapper">
+              <el-checkbox-group v-model="repairCheckList">
+                <el-tree
+                  class="tree"
+                  :data="proprietor"
+                  node-key="id"
+                  :props="ownerProps">
+                  <div class="custom-tree-node" slot-scope="{ node, data }">
+                    <div>{{ node.label }}</div>
+                    <div class="tree-checkbox">
+                      <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
+                        <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
+                      </div>
+                    </div>
+                  </div>
+                </el-tree>
+              </el-checkbox-group>
+            </div>
           </div>
         </div>
         <div class="explainBottom">
@@ -63,41 +110,81 @@
 <script>
 export default {
   name: 'dailyChild-distribution',
-  props: ['distriBoolean'],
+  props: ['distriBoolean', 'getrepairDate', 'instruction', 'equipment'],
   data () {
     return {
-      radio2: 0,
+      radio2: '',
       // 快速分配 显示/隐藏
       distrBoolean: false,
       textarea: '',
-      value: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }]
+      instrucTion: '',
+      objection: '',
+      proprietor: [],
+      proprietorProps: {
+        children: 'subOrgnizations',
+        label: 'organizationName',
+        value: 'organizationId'
+      },
+      maintenance: [],
+      repairCheckList: [],
+      ownerProps: {
+        children: 'subOrgnizations',
+        label: 'organizationName'
+      },
+      proprietorCheckList: [],
+      maintenanceList: []
     }
   },
   methods: {
     conserve () {
-      this.distrBoolean = this.distriBoolean
-      this.distrBoolean = !this.distrBoolean
-      this.$emit('dist', this.distrBoolean)
+      // this.distrBoolean = this.distriBoolean
+      // this.distrBoolean = !this.distrBoolean
+      // this.$emit('dist', this.distrBoolean)
+      console.log(this.maintenanceList)
+      console.log(this.repairCheckList)
+      // http://172.16.6.181:8920/task/assignedTask?detailIDs=12690&deviceId=4566&token=35786474-b372-44d4-ba0e-e7a7867170d9&desc=131&disposeopinion=13131&faultTypeId=4
+      let string = ``
+      // let desc = this.instrucTion
+      // let disposeopinion = this.objection
+      // let faultTypeId = this.radio2
+      // let users = this.maintenanceList.concat(this.repairCheckList)
+
+      this.instruction.forEach((val) => {
+        string += `${val.checktaskdetailid},`
+      })
+      console.log(string)
+      // let token = JSON.parse(window.sessionStorage.token)
+
+      // this.axios.post(``).then((response) => {
+      //   console.log(response)
+      //   if (response.data.code ===0 ){
+      //
+      //   }
+      // })
     },
     closedown () {
 
     }
+  },
+  created () {
+    console.log(this.instruction)
+    this.instruction.forEach((val, index) => {
+      let data = `${index},工作事项: ${val.matters} 工作结论: ${val.conclusion === null ? ' ' : val.conclusion}\n`
+      this.instrucTion += data
+    })
+    //  业主单位
+    this.axios.post(`http://172.16.6.181:8920/organization/getProprietorOrgTree`).then((response) => {
+      if (response.data.code === 0) {
+        this.proprietor = response.data.data
+      }
+    })
+    //  维保单位 this.equipment
+    this.axios.post(`http://172.16.6.181:8920/organization/getRepairOrgTreeByDeviceId?deviceid=${12690}`).then((response) => {
+      if (response.data.code === 0) {
+        this.maintenance = response.data.data
+        console.log(this.maintenance)
+      }
+    })
   }
 }
 </script>
@@ -107,7 +194,7 @@ export default {
   .distriBution
     margin 117px auto 0
     width 894px
-    height 635px
+    height 680px
     background #111a28
     border 1px solid #444d5b
     .distriBution_div
@@ -122,7 +209,7 @@ export default {
         color $color-border-b-fault
         font-size $font-size-small
         margin-top 16px
-        min-height 100px
+        min-height 60px
       .distriButionDiv_div
          init()
         .distriButionDiv_p
@@ -140,23 +227,27 @@ export default {
         init()
         .distributionExplain
           overflow hidden
-          margin-top 30px
+          margin 10px 0
           position relative
         .personCharge
-           init()
-           margin-top 22px
+          width 50%
+          float left
+          overflow hidden
+          position relative
           .personChargeP
             float left
             font-size $font-size-small
             color $color-border-b-fault
-            line-height 30px
+            line-height 20px
             margin-right 6px
           .personChargeDiv
             float left
             width 228px
+            overflow-y scroll
+            height 130px
         .explainBottom
            init()
-           margin-top 70px
+           margin-top 50px
            overflow hidden
            text-align center
            .conserve
@@ -164,4 +255,89 @@ export default {
              margin-right 110px
            .closedown
              closedown()
+  .data
+    width 100%
+    display flex
+    .type-group
+      display flex
+      justify-content left
+      .type
+        display block
+    .owner
+      width 45%
+      height 185px
+      box-sizing border-box
+      overflow auto
+      &::-webkit-scrollbar
+        display none
+    .maintenance
+      width 55%
+      box-sizing border-box
+      .desc
+        padding 8px 0 15px
+        font-size $font-size-small
+        color #999
+        line-height 20px
+
+  .arrange
+    padding 15px
+    display flex
+    .item
+      display flex
+      font-size $font-size-medium
+      margin-right 50px
+      .desc
+        margin-right 8px
+        color #999
+  .func
+    margin 10px auto
+    width 60%
+    display flex
+    justify-content space-around
+    padding 10px 0
+    .button
+      width 100px
+      line-height 30px
+      text-align center
+      background $color-background-button
+      border-bottom 2px solid #1895ff
+      cursor pointer
+  .tree
+    background transparent
+    color $color-text-desc
+    .custom-tree-node
+      padding-top 7px
+      font-size $font-size-small
+      .tree-checkbox
+        padding 10px 0 0 10px
+        .tree-checkbox-item
+          padding 5px 0
+    .el-tree-node__children .custom-tree-node
+      background none
+    .el-tree-node__content
+      height auto
+      align-items flex-start
+  .maintenance
+    width 50%
+    float right
+    overflow-y scroll
+    overflow-x hidden
+    max-height 150px
+  .tree-wrapper
+    float left
+    box-sizing border-box
+    height 130px
+    overflow auto
+    &::-webkit-scrollbar
+      display none
+  .personnel
+    width 100%
+    overflow hidden
+    position relative
+    .personChargeP
+      float left
+      font-size $font-size-small
+      color $color-border-b-fault
+      line-height 20px
+      margin-right 6px
 </style>

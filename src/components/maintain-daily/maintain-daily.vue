@@ -135,6 +135,7 @@ export default {
     },
     selectStyle (item, index, tableData, $event) {
       if (item.flag === false) {
+        console.log(item)
         this.tableDatataskStat.forEach((val) => {
           val.flag = false
         })
@@ -219,8 +220,6 @@ export default {
     this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=2&projectid=1`).then((response) => {
       if (response.data.code === 0) {
         this.tableDatataskStat = response.data.data
-        console.log('22222222222')
-        console.log(this.tableDatataskStat)
       }
     })
   }
@@ -323,6 +322,7 @@ export default {
        float left
        width 15%
        line-height 32px
+       text-align center
        height 32px
      .header_lithree
        float left
@@ -341,12 +341,14 @@ export default {
        width 15%
        line-height 32px
        height 32px
+       text-align center
        color  $color-text-tile-complete
      .header_li_six
        float left
        width 15%
        line-height 32px
        height 32px
+       text-align center
        color  $color-text-tile-fault
     .header_p_one
       color $color-text-tile-state

@@ -106,7 +106,6 @@ export default {
     .headerRight_right
       float right
       position relative
-      overflow hidden
       margin 18px 20px 0 75px
       .portrait
          float left
@@ -115,21 +114,21 @@ export default {
          border-radius 50%
          margin-right 14px
          border 5px solid #202f49
+         -moz-box-shadow 0px 3px 2px #000
+         -webkit-box-shadow: 0px 3px 2px #000;
+         box-shadow: 0px 3px 2px #000;
          .portraitImg
            width 55px
            height 55px
            display inline-block
            border-radius 50%
-           -moz-box-shadow 0px 3px 2px #000
-           -webkit-box-shadow 0px 3px 2px #000
-           box-shadow 0px 3px 2px #000
       .userOperation
          margin-left 12px
          overflow hidden
          .userOperationP
-            font-size $font-size-small-s
+            font-size 14px
             color $color-text
-            margin-top 18px
+            margin-top 25px
             overflow hidden
          .userBottom
             font-size $font-size-small-s

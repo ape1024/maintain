@@ -214,21 +214,26 @@ export default {
       // this.examine_Boolean = this.examine
       // this.examine_Boolean = !this.examine_Boolean
       let arrData = []
-      let isok = this.childDate.details.forEach((val) => {
+      console.log(this.childDate.details)
+      this.childDate.details.forEach((val) => {
         if (val.fuleco === false) {
           return false
         } else {
           console.log(val)
           let data = {
             matters: val.workitem,
-            conclusion: val.conclusionname
+            conclusion: val.conclusionname,
+            checktaskdetailid: val.checktaskdetailid
           }
           arrData.push(data)
         }
       })
-      console.log(isok)
-      console.log(arrData)
-      // this.$emit('examineMine', this.examine_Boolean)
+      if (arrData.length === 0) {
+        alert('请选择设备!')
+        return false
+      } else {
+        this.$emit('examineMine', arrData)
+      }
     },
     preservation () {
       this.examine_Boolean = this.examine
