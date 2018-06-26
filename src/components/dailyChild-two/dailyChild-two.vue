@@ -40,7 +40,7 @@
           </li>
           <li class="list_data_li">
             <p @click.stop="examine(item.deviceID)" class="list_data_li_p">审核</p>
-            <p @click.stop="distriBoolean" class="list_data_li_ptwo">快速分配</p>
+            <!--<p @click.stop="distriBoolean" class="list_data_li_ptwo">快速分配</p>-->
           </li>
         </ul>
         <!--第三级，目前不需要了-->
@@ -53,7 +53,7 @@
       </li>
       <section v-if="examineBoolean" @click.stop class="review">
         <!--审核-->
-        <childExamine :examine="examineBoolean" :childDate="examineDate" :examineName="taskName" @examineMine="examineDistribution"></childExamine>
+        <childExamine :examine="examineBoolean" :childDate="examineDate" :examineName="taskName" @examineMine="examineDistribution" @mine="mineSwitch"></childExamine>
       </section>
       <!--快速分配-->
       <section v-if="distributionBoolean" @click.stop class="distribution">
@@ -81,25 +81,7 @@ export default {
       examineBoolean: false,
       // 快速分配
       distributionBoolean: false,
-      content: [{
-        active: false,
-        index: 0,
-        id: '1-1',
-        name: '防火门',
-        inspecting: '1',
-        haveinspecting: '2',
-        problems: '2',
-        distribution: '1'
-      }, {
-        active: false,
-        index: 1,
-        id: '1-2',
-        name: '防火门',
-        inspecting: '2',
-        haveinspecting: '3',
-        problems: '4',
-        distribution: '2'
-      }],
+      content: [],
       examineDate: '',
       getrepair: '',
       instructionData: '',
@@ -117,30 +99,25 @@ export default {
     //   })
     //   item.active = !item.active
     // },
+    mineSwitch (ev) {
+      this.examineBoolean = ev
+    },
     // 开启审核
     examine (deviceID) {
-      console.log(deviceID)
       this.equipmentID = deviceID
-      console.log('aaaaaaaaaaaaaaa')
-      console.log(this.equipmentID)
       this.axios.post(`http://172.16.6.181:8920/task/getDetailsByDeviceId?taskId=${this.taskid}&deviceId=${deviceID}`).then((response) => {
-        console.log(response)
         if (response.data.code === 0) {
           this.examineDate = response.data.data
-          console.log(response.data.data)
           this.examineBoolean = true
         }
       })
     },
     examineDistribution (ev) {
-      console.log('dddddddddddddddddddd')
-      console.log(ev)
       this.instructionData = ev
       this.examineBoolean = false
       this.distributionBoolean = true
       this.axios.post(`http://172.16.6.181:8920/task/getRepairTypes`).then((response) => {
         if (response.data.code === 0) {
-          console.log(response.data.data)
           this.getrepair = response.data.data
         }
       })
@@ -159,9 +136,6 @@ export default {
     }
   },
   created () {
-    console.log('3333333333333333333333333')
-    console.log(this.dailyData)
-    console.log(this.taskName)
   }
 }
 </script>
@@ -267,7 +241,7 @@ export default {
   .header_li_six
     float left
     width 7.2%
-    color  $color-text-tile-fault
+    color $color-text-tile-fault
   .header_p_one
     color $color-text-tile-state
   .header_p_two
@@ -345,11 +319,13 @@ export default {
         padding 12px 0
         .list_heder_li
           float left
+          text-align center
           width 16%
           overflow hidden
         .list_heder_litwo
           float left
           width 14%
+          text-align center
           overflow hidden
           padding-left 2%
       .inline_list
@@ -373,17 +349,18 @@ export default {
         overflow hidden
       .list_data_li
         float left
+        text-align center
         overflow hidden
         width 16%
       .list_data_litwo
         float left
+        text-align center
         width 14%
         overflow hidden
         padding-left 2%
       .list_data_li_p
-        float left
+        margin 0 auto
         color #3279A6
-        margin-right 37px
         cursor pointer
         text-decoration underline
       .list_data_li_ptwo

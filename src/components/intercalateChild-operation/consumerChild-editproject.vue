@@ -326,15 +326,12 @@ export default {
   },
   methods: {
     handlesuccess (response, file, fileList) {
-      console.log(file.name)
-      console.log(response.data)
       this.documentPapers.push({
         'name': `${file.name}`,
         'url': `${response.data}`
       })
     },
     handleRemove (file) {
-      console.log(file.name)
       this.documentPapers.forEach((val, index) => {
         if (val.name === file.name) {
           this.documentPapers.splice(index, 1)
@@ -368,8 +365,6 @@ export default {
     firecontrolCheck (checkedNodes, checkedKeys) {
       let data = ''
       this.firecontrolDate = checkedKeys.checkedKeys
-      console.log('110')
-      console.log(this.firecontrolDate)
       for (let i = 0; i < checkedKeys.checkedNodes.length; i++) {
         data += checkedKeys.checkedNodes[i].name + ' '
       }
@@ -384,7 +379,6 @@ export default {
       this.firecontrolBoolean = !this.firecontrolBoolean
     },
     conserve () {
-      console.log(this.project)
       if (this.projectName === '' || this.startdate === '' || this.proprieTor === '' || this.projectCode === '' || this.endDate === '' || this.proprietornameDate === '' || this.projectDate.length === 0 || this.buildscope === '' || this.firecontrolda === '') {
         alert('您的信息没有填写完整')
         return false
@@ -431,7 +425,6 @@ export default {
           },
           'worktypes': worktypes
         }
-        console.log(pr)
         this.axios.post(`http://172.16.6.181:8920/projects/createOrUpdateProject?token=${token}`, pr).then((response) => {
           if (response.data.code === 0) {
             alert('修改成功！')
@@ -467,7 +460,6 @@ export default {
         this.axios.post(url).then((response) => {
           if (response.data.code === 0) {
             this.conurbation = response.data.data
-            console.log(response.data.data)
           }
         })
       }
@@ -518,9 +510,6 @@ export default {
       let city = $(event.currentTarget).parents('.regionliul_li').children('.countSpen').text()
       let url = `${cout} ${city} ${coundata.countyname}`
       this.regionDate = url
-      console.log($(event.currentTarget).parents('.region_li').attr('id'))
-      console.log(coundata.cityid)
-      console.log(coundata.countyid)
       //  省份ID
       this.provinceId = $(event.currentTarget).parents('.region_li').attr('id')
       //  城市ID
@@ -547,8 +536,6 @@ export default {
     this.axios.post(`http://172.16.6.181:8920/projects/getProjectAreas?projectid=${this.project.projectid}`).then((response) => {
       if (response.data.code === 0) {
         let data = response.data.data
-        console.log('00000000000000000')
-        console.log(data)
         data.forEach((val) => {
           this.buildscopeDate.push(val.areaid)
         })
@@ -564,24 +551,20 @@ export default {
       }
     })
     this.axios.post(`http://172.16.6.16:8920/projects/getWorkTypes`).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         this.projectType = response.data.data
       }
     })
     //  服务机构
     this.axios.post(`http://172.16.6.16:8920/organization/getRootOrganizationsNotProprietor`).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         this.proprietorName = response.data.data
       }
     })
     //  获取业主单位
     this.axios.post(`http://172.16.6.16:8920/organization/getProprietorOrganization`).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         this.proprieTorDate = response.data.data
-        console.log(this.proprieTorDate)
       }
     })
     this.axios.post(`http://172.16.6.16:8920/organization/getAllProvince`).then((response) => {

@@ -137,37 +137,48 @@ export default {
   },
   methods: {
     conserve () {
-      // this.distrBoolean = this.distriBoolean
-      // this.distrBoolean = !this.distrBoolean
-      // this.$emit('dist', this.distrBoolean)
-      console.log(this.maintenanceList)
-      console.log(this.repairCheckList)
-      // http://172.16.6.181:8920/task/assignedTask?detailIDs=12690&deviceId=4566&token=35786474-b372-44d4-ba0e-e7a7867170d9&desc=131&disposeopinion=13131&faultTypeId=4
-      let string = ``
-      // let desc = this.instrucTion
-      // let disposeopinion = this.objection
-      // let faultTypeId = this.radio2
-      // let users = this.maintenanceList.concat(this.repairCheckList)
-
-      this.instruction.forEach((val) => {
-        string += `${val.checktaskdetailid},`
-      })
-      console.log(string)
-      // let token = JSON.parse(window.sessionStorage.token)
-
-      // this.axios.post(``).then((response) => {
-      //   console.log(response)
-      //   if (response.data.code ===0 ){
-      //
-      //   }
-      // })
+      if (this.radio2 === '') {
+        alert('请选择检查项目!')
+        return false
+      } else {
+        let string = ``
+        let desc = this.instrucTion
+        let disposeopinion = this.objection
+        let faultTypeId = this.radio2
+        let usersNumber = this.maintenanceList.concat(this.repairCheckList)
+        let users = []
+        this.instruction.forEach((val) => {
+          string += `${val.checktaskdetailid},`
+        })
+        string = string.substring(0, string.length - 1)
+        if (usersNumber.length !== 0) {
+          usersNumber.forEach((val) => {
+            let obj = {
+              userid: val
+            }
+            users.push(obj)
+          })
+        } else {
+          alert('请选择维保单位或业主单位')
+          return false
+        }
+        let token = JSON.parse(window.sessionStorage.token)
+        this.axios.post(`http://172.16.6.181:8920/task/assignedTask?token=${token}&detailIDs=${string}&desc=${desc}&disposeopinion=${disposeopinion}&faultTypeId=${faultTypeId}`, users).then((response) => {
+          if (response.data.code === 0) {
+            this.distrBoolean = this.distriBoolean
+            this.distrBoolean = !this.distrBoolean
+            this.$emit('dist', this.distrBoolean)
+          }
+        })
+      }
     },
     closedown () {
-
+      this.distrBoolean = this.distriBoolean
+      this.distrBoolean = !this.distrBoolean
+      this.$emit('dist', this.distrBoolean)
     }
   },
   created () {
-    console.log(this.instruction)
     this.instruction.forEach((val, index) => {
       let data = `${index},工作事项: ${val.matters} 工作结论: ${val.conclusion === null ? ' ' : val.conclusion}\n`
       this.instrucTion += data
@@ -179,10 +190,9 @@ export default {
       }
     })
     //  维保单位 this.equipment
-    this.axios.post(`http://172.16.6.181:8920/organization/getRepairOrgTreeByDeviceId?deviceid=${12690}`).then((response) => {
+    this.axios.post(`http://172.16.6.181:8920/organization/getRepairOrgTreeByDeviceId?deviceid=${this.equipment}`).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
-        console.log(this.maintenance)
       }
     })
   }

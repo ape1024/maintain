@@ -137,10 +137,7 @@
                 </p>
                 <div class="choicesDiv">
                   <el-radio-group v-model="radio">
-                    <el-radio :label="1">归档</el-radio>
-                    <el-radio :label="2">修改</el-radio>
-                    <el-radio :label="3">返工</el-radio>
-                    <el-radio :label="4">留存</el-radio>
+                    <el-radio :key="index" v-for="(item, index) in approvaloptions" :label="item.value">{{item.name}}</el-radio>
                   </el-radio-group>
                 </div>
               </div>
@@ -166,10 +163,10 @@
             安排任务
           </div>
           <div @click="preservation" class="preservation">
-            保 存
+            审 核
           </div>
           <div @click="closeup" class="closeup">
-            关闭
+            关 闭
           </div>
         </div>
       </section>
@@ -188,7 +185,8 @@ export default {
       radio: 0,
       textarea: '',
       examine_Boolean: false,
-      determinant: ''
+      determinant: '',
+      approvaloptions: ''
     }
   },
   methods: {
@@ -214,12 +212,10 @@ export default {
       // this.examine_Boolean = this.examine
       // this.examine_Boolean = !this.examine_Boolean
       let arrData = []
-      console.log(this.childDate.details)
       this.childDate.details.forEach((val) => {
         if (val.fuleco === false) {
           return false
         } else {
-          console.log(val)
           let data = {
             matters: val.workitem,
             conclusion: val.conclusionname,
@@ -236,9 +232,37 @@ export default {
       }
     },
     preservation () {
-      this.examine_Boolean = this.examine
-      this.examine_Boolean = !this.examine_Boolean
-      this.$emit('mine', this.examine_Boolean)
+      let token = JSON.parse(window.sessionStorage.token)
+      let radio = this.radio
+      let taskDetailArr = []
+      let textarea = this.textarea
+      this.childDate.details.forEach((val) => {
+        if (val.fuleco === false) {
+          return false
+        } else {
+          taskDetailArr.push(val.checktaskdetailid)
+        }
+      })
+      if (taskDetailArr.length === 0) {
+        alert('请选择工作事项')
+        return false
+      } else {
+        if (textarea === '') {
+          alert('请输入审核意见!')
+          return false
+        } else {
+          taskDetailArr.forEach((val) => {
+            this.axios.post(`http://172.16.6.181:8920/task/approvalTaskDetail?token=${token}&taskDetailId=${val}&approvalOpinion=${textarea}&approvalState=${radio}`).then((response) => {
+              if (response.data.code === 0) {
+                this.examine_Boolean = this.examine
+                this.examine_Boolean = !this.examine_Boolean
+                this.$emit('mine', this.examine_Boolean)
+                return false
+              }
+            })
+          })
+        }
+      }
     },
     closeup () {
       this.examine_Boolean = this.examine
@@ -259,9 +283,14 @@ export default {
     }
   },
   created () {
-    console.log(this.childDate)
     this.childDate.details.forEach((val) => {
       val.fuleco = false
+    })
+    //  任务审批选项
+    this.axios.post(`http://172.16.6.181:8920/task/getTaskApprovalItems`).then((response) => {
+      if (response.data.code === 0) {
+        this.approvaloptions = response.data.data
+      }
     })
   }
 }

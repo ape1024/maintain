@@ -5,40 +5,23 @@
         <li class="li_input">
           <p class="div_p">区 域：</p>
           <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+            <el-cascader
+              :options="regionDate"
+              v-model="regionModel"
+              :props="regionProps"
+              change-on-select>>
+            </el-cascader>
           </div>
         </li>
         <li class="li_input">
           <p class="div_p">设备类型</p>
           <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">执行班组：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+            <el-cascader
+              v-model="equipmentDate"
+              :options="equipment"
+              :props="equipmentProps"
+              change-on-select
+            ></el-cascader>
           </div>
         </li>
         <li class="li_input">
@@ -57,11 +40,11 @@
         <li class="li_input">
           <p class="div_p">审核状态：</p>
           <div class="div_input">
-            <el-select v-model="value" placeholder="">
+            <el-select v-model="Auditstatus" placeholder="">
               <el-option
-                v-for="item in options"
+                v-for="item in AuditstatusDate"
                 :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value">
               </el-option>
             </el-select>
@@ -70,184 +53,181 @@
       </ul>
       <div class="button">
         <!--查询-->
-        <div class="query">
+        <div @click.stop="query" class="query">
           查 询
-        </div>
-        <!--新增-->
-        <div class="newly">
-          新 增
         </div>
       </div>
     </section>
     <section class="subject_bottom">
       <ul class="header_ul">
         <li class="header_lithree">
-          日期
-        </li>
-        <li class="header_li">
           任务名称
         </li>
         <li class="header_li">
-          执行班组
-        </li>
-        <li class="header_li">
-          执行内容
-        </li>
-        <li class="header_litwo">
           开始时间
         </li>
-        <li class="header_litwo">
+        <li class="header_li">
           结束时间
         </li>
-        <li class="header_li">
-          巡查项
+        <li class="header_litwo">
+          设备总数
         </li>
-        <li class="header_li">
+        <li class="header_litwo">
           已完成项
         </li>
-        <li class="header_li">
+        <li class="header_litwo">
           故障问题
         </li>
-        <li class="header_li">
-          巡查状态
-        </li>
-        <li class="header_li">
-          处理状态
-        </li>
-        <li class="header_li">
+        <li class="header_litwo">
           已分配任务项
-        </li>
-        <li class="header_li">
-          操作
         </li>
       </ul>
       <ul class="table_ul">
-        <li v-for="(item,$index) in tableData" class="table_li" :key="item.id" :id="item.id" @click="selectStyle (item, $index, tableData, $event)">
-          <ul :id="item.id" class="inline_ul">
-            <li class="header_lithree">{{item.date}}</li>
-            <li class="header_li">{{item.name}}</li>
-            <li class="header_li">{{item.implement}}</li>
-            <li class="header_li">{{item.content}}</li>
-            <li class="header_litwo">{{item.starttime}}</li>
-            <li class="header_litwo">{{item.endtime}}</li>
-            <li class="header_li_four">{{item.project}}</li>
-            <li class="header_li_five">{{item.complete}}</li>
-            <li class="header_li_six">{{item.fault}}</li>
-            <li class="header_li">
-              <p class="header_p_one" v-if="item.state =='1'">未开始</p>
-              <p class="header_p_two" v-if="item.state =='2'">已开始</p>
-              <p class="header_p_three" v-if="item.state =='3'">已完成</p>
-            </li>
-            <li class="header_li">
-              <p class="header_p_four" v-if="item.handle == '1'">
-                未处理
-              </p>
-              <p class="header_p_six" v-if="item.handle == '2'">
-                已处理
-              </p>
-            </li>
-            <li class="header_li">{{item.distribution}}</li>
-            <li class="header_li">
-              <div v-on:click="amend($event)" class="modify" v-if="item.operation == 'true'">修 改</div>
-              <div class="examine" v-if="item.operation == 'false'">审 核</div>
-            </li>
+        <li v-for="(item,$index) in tableDatataskStat" class="table_li" :key="item.id" @click="selectStyle (item, $index, tableDatataskStat, $event)">
+          <ul class="inline_ul">
+            <li class="header_lithree">{{item.taskName}}</li>
+            <li class="header_li">{{fmtDate(item.startTime)}}</li>
+            <li class="header_li">{{fmtDate(item.endTime)}}</li>
+            <li class="header_litwo">{{item.sum}}</li>
+            <li class="header_li_five">{{item.finish}}</li>
+            <li class="header_li_six">{{item.error}}</li>
+            <li class="header_litwo">{{item.assign}}</li>
           </ul>
           <transition enter-active-class="fadeInUp"
-            leave-active-class="fadeOutDown">
-            <div v-show="item.active" class="inline_div">
-              <dailytwo></dailytwo>
+                      leave-active-class="fadeOutDown">
+            <div v-if="item.flag" class="inline_div">
+              <dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild"></dailytwo>
             </div>
           </transition>
         </li>
       </ul>
+    </section>
+    <section v-show="modifyBoolean" class="review">
+      <modify :sag="modifyBoolean" @say="Say"></modify>
     </section>
   </div>
 </template>
 
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
+// 修改
+import modify from '../dailyChild-operation/dailyChild-modify'
 export default {
   name: 'maintain-inspect',
   components: {
-    dailytwo
+    dailytwo,
+    modify
   },
   methods: {
+    query () {
+      if (this.regionModel.length === 0) {
+        alert('请选择区域！')
+        return false
+      } else {
+        let areaid = this.regionModel[this.regionModel.length - 1]
+        this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=1&projectid=1&areaid=${areaid}`).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            this.tableDatataskStat = response.data.data
+          }
+        })
+      }
+    },
     selectStyle (item, index, tableData, $event) {
-      console.log(item.id)
-      $event.cancelBubble = true
-      this.tableData.forEach(function (item) {
-        if (index !== item.index) {
-          item.active = false
-        }
-      })
-      item.active = !item.active
+      if (item.flag === false) {
+        console.log(item)
+        this.tableDatataskStat.forEach((val) => {
+          val.flag = false
+        })
+        let itemAreaid = item.taskID
+        this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${itemAreaid}`).then((response) => {
+          if (response.data.code === 0) {
+            console.log(this.dailyChild)
+            this.dailyChild = response.data.data
+            item.flag = !item.flag
+          }
+        })
+      } else {
+        item.flag = !item.flag
+      }
+    },
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = `0` + (date.getMonth() + 1)
+      let d = `0` + date.getDate()
+      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     },
     // 修改逻辑
     amend ($event) {
-      $event.cancelBubble = true
+      // $event.cancelBubble = true
+      this.modifyBoolean = true
+    },
+    Say (ev) {
+      this.modifyBoolean = ev
     }
   },
   data () {
     return {
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      //  区域
+      regionProps: {
+        children: 'areas',
+        label: 'areaname',
+        value: 'areaid'
+      },
+      regionDate: [],
+      regionModel: [],
+      //  设备类别
+      equipmentProps: {
+        children: 'children',
+        label: 'name',
+        value: 'code'
+      },
+      //  审核状态
+      AuditstatusDate: [],
+      Auditstatus: '',
+      equipment: [],
+      equipmentDate: [],
+      modifyBoolean: false,
+      options: [],
       value: '',
       // 获取点击的id
       click_id: '',
-      tableData: [{
-        active: false,
-        index: 0,
-        id: '1',
-        date: '2016-05-03',
-        name: '王小虎',
-        implement: '一班',
-        content: '普陀区',
-        starttime: '2018-07-07',
-        endtime: '2018-07-07',
-        project: '90',
-        complete: '90',
-        fault: '10',
-        state: '1',
-        handle: '1',
-        distribution: '123',
-        operation: 'true'
-      }, {
-        active: false,
-        index: 1,
-        id: '2',
-        date: '2016-05-03',
-        name: '王小虎',
-        implement: '一班',
-        content: '普陀区',
-        starttime: '2018-07-07',
-        endtime: '2018-07-07',
-        project: '90',
-        complete: '90',
-        fault: '10',
-        state: '2',
-        handle: '2',
-        distribution: '456',
-        operation: 'false'
-      }]
+      tableDatataskStat: [],
+      dailyChild: ''
     }
+  },
+  created () {
+    //  获取区域
+    this.axios.post('http://172.16.6.16:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
+      if (response.data.code === 0) {
+        this.regionDate = response.data.data
+      }
+    })
+    //  获取设备类别
+    this.axios.post('http://172.16.6.16:8920/dev/findAllDeviceType').then((response) => {
+      if (response.data.code === 0) {
+        this.equipment = response.data.data
+      }
+    })
+    //  审核状态
+    this.axios.post('http://172.16.6.16:8920/dev/FindDevAllApprovalstate').then((response) => {
+      if (response.data.code === 0) {
+        this.AuditstatusDate = response.data.data
+      }
+    })
+    //  展示任务，目前projectid参数默认的是1
+    let projectid = window.sessionStorage.pattern
+    console.log(projectid)
+    this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=3&projectid=${projectid}`).then((response) => {
+      if (response.data.code === 0) {
+        this.tableDatataskStat = response.data.data
+        console.log(response)
+      }
+    })
   }
 }
 </script>
-
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
@@ -331,29 +311,46 @@ export default {
     position relative
     color $color-header-b-normal
     font-size $font-size-medium
-    padding 12px 0
+    line-height 32px
+    height 32px
+    padding 4px 0
     background #354d76
   .header_li
     float left
-    width 7.2%
+    width 10%
+    line-height 32px
+    height 32px
   .header_litwo
     float left
-    width 10.3%
+    width 15%
+    line-height 32px
+    text-align center
+    height 32px
   .header_lithree
     float left
-    width 6.4%
+    width 18%
+    line-height 32px
+    height 32px
     padding-left 1%
-  .header_li_four
-    float left
-    width 7.2%
-    color $color-text-tile-project
+    padding-right 1%
+    overflow hidden
+    text-overflow ellipsis
+    display -webkit-box
+    -webkit-box-orient vertical
+    -webkit-line-clamp 2
   .header_li_five
     float left
-    width 7.2%
+    width 15%
+    line-height 32px
+    height 32px
+    text-align center
     color  $color-text-tile-complete
   .header_li_six
     float left
-    width 7.2%
+    width 15%
+    line-height 32px
+    height 32px
+    text-align center
     color  $color-text-tile-fault
   .header_p_one
     color $color-text-tile-state
@@ -524,5 +521,13 @@ export default {
     margin-right 35px
     text-decoration underline
     cursor pointer
-
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background rgba(000,000,000,.4)
+    z-index 11
+    overflow hidden
 </style>

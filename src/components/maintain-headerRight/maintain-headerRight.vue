@@ -7,12 +7,12 @@
         <div class="headerRight_bottom">
           <img class="project" src="../../../static/img/project.png" alt="">
           <div class="headerRight">
-            <el-select v-model="value" placeholder="">
+            <el-select v-model="value" placeholder=""  @change="patternSwitch">
               <el-option
                 v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.projectid"
+                :label="item.proprietorname"
+                :value="item.projectid">
               </el-option>
             </el-select>
           </div>
@@ -44,31 +44,19 @@ export default {
     return {
       portrait: sessionStorage.userInfo ? JSON.parse(sessionStorage.userInfo).icon : '',
       username: sessionStorage.userInfo ? JSON.parse(sessionStorage.userInfo).username : '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [],
       value: ''
     }
   },
   methods: {
+    patternSwitch (ev) {
+      window.sessionStorage.pattern = ev
+      console.log(window.sessionStorage.pattern)
+    },
     signout () {
-      let signouttoken = sessionStorage.token.token
-      let strIng = secede(signouttoken)
-
-      this.axios.post(strIng).then((response) => {
+      console.log(window.sessionStorage.token)
+      let signouttoken = JSON.parse(window.sessionStorage.token)
+      this.axios.post(secede(signouttoken)).then((response) => {
       //   用户点击退出 清除sessionStorage
         console.log(response)
         sessionStorage.clear()
@@ -81,6 +69,12 @@ export default {
       this.portrait = JSON.parse(sessionStorage.userInfo).icon
       this.username = JSON.parse(sessionStorage.userInfo).username
     }
+    this.axios.post(`http://172.16.6.181:8920/projects/findAllProjects`).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response)
+        this.options = response.data.data
+      }
+    })
   }
 }
 </script>

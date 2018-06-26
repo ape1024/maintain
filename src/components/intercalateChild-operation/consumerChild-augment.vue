@@ -235,7 +235,7 @@ export default {
       //  获取备注
       let memo = this.textarea
       //  获取头像
-      let headportrait = this.Headportrait
+      // let headportrait = this.Headportrait
       //  获取当前密码
       let Userpwd = this.Userpwd
       console.log(headportrait)
@@ -244,7 +244,6 @@ export default {
         if (response.data.code === 0) {
           this.thisPage = this.increaseBoolean
           this.thisPage = !this.thisPage
-          console.log(response)
           this.$emit('incr', this.thisPage)
         }
       })
@@ -256,7 +255,6 @@ export default {
     },
     handleChange (value) {
       let Value = value[value.length - 1]
-      console.log(Value)
       this.organizationid = Value
     }
   },
