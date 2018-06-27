@@ -5,63 +5,46 @@
         <li class="li_input">
           <p class="div_p">区 域：</p>
           <div class="div_input">
-            <el-select v-model="value" placeholder="">
+            <el-cascader
+              :options="regionDate"
+              v-model="regionModel"
+              :props="regionProps"
+              change-on-select>>
+            </el-cascader>
+          </div>
+        </li>
+        <li class="li_input">
+          <p class="div_p">设备类型</p>
+          <div class="div_input">
+            <el-cascader
+              v-model="equipmentDate"
+              :options="equipment"
+              :props="equipmentProps"
+              change-on-select
+            ></el-cascader>
+          </div>
+        </li>
+        <li class="li_input">
+          <p class="div_p">处理状态</p>
+          <div class="div_input">
+            <el-select v-model="dispose" placeholder="请选择">
               <el-option
-                v-for="item in options"
+                v-for="item in disposeData"
                 :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value">
               </el-option>
             </el-select>
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">设备类型：</p>
+          <p class="div_p">确认状态</p>
           <div class="div_input">
-            <el-select v-model="value" placeholder="">
+            <el-select v-model="identification" placeholder="请选择">
               <el-option
-                v-for="item in options"
+                v-for="item in identificationData"
                 :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">执行班组：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">巡查状态：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">审核状态：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value">
               </el-option>
             </el-select>
@@ -70,109 +53,111 @@
       </ul>
       <div class="button">
         <!--查询-->
-        <div class="query">
+        <div class="query" @click="query">
           查 询
-        </div>
-        <!--导入-->
-        <div class="introduce">
-          导 入
-        </div>
-        <!--新增-->
-        <div @click.stop="auditing" class="newly">
-          新 增
         </div>
       </div>
     </section>
     <section class="subject_bottom">
       <ul class="header_ul">
         <li class="header_lithree">
-          区域
+          设施名称
+        </li>
+        <li class="header_litwo">
+          设施位置
         </li>
         <li class="header_li">
           设备数量
         </li>
-        <li class="header_li">
-          待审核设备数量
+        <li class="header_litwo">
+          异常情况
+        </li>
+        <li class="header_litwo">
+          反馈部门
         </li>
         <li class="header_li">
-          正常运行数量
+          反馈人员
         </li>
         <li class="header_li">
-          审核
+          反馈时间
+        </li>
+        <li class="header_li">
+          处理状态
+        </li>
+        <li class="header_li">
+          确认状态
+        </li>
+        <li class="header_litwo">
+          操作
         </li>
       </ul>
       <ul class="table_ul">
-        <li v-for="(item,$index) in tableData" class="table_li" :key="item.id" :id="item.id" @click="selectStyle (item, $index, tableData)">
-          <ul :id="item.id" class="inline_ul">
-            <li class="header_lithree">{{item.date}}</li>
-            <li class="header_li">{{item.quantum}}</li>
-            <li class="header_li">{{item.await}}</li>
-            <li class="header_li">{{item.normal}}</li>
-            <li class="header_li">
-              <div v-show="item.auditin" @click.stop="examine(item)"  class="examine">审 核</div>
-              <div class="admin_show" v-show="item.admin_show">
-                <div class="admin_selve">
-                  <el-select v-model="item.value" placeholder="">
-                    <el-option
-                      v-for="data in item.child"
-                      :key="data.value"
-                      :label="data.label"
-                      :value="data.label">
-                    </el-option>
-                  </el-select>
-                </div>
-                <div @click.stop="preservation(item)" class="admin_preservation">
-                  保存
-                </div>
-                <div @click.stop="cancel(item)" class="cancel">
-                  取消
-                </div>
-              </div>
+        <li v-for="(item,index) in exhibition" class="table_li" :key="index">
+          <ul class="inline_ul">
+            <li class="header_lithree">{{item.devicename}}</li>
+            <li class="header_litwo">{{item.areaname}}{{item.position}}</li>
+            <li class="header_li">{{item.devicecount}}</li>
+            <li class="header_litwo">{{item.feedbackinfo}}</li>
+            <li class="header_litwo">{{item.feedbackorgname}}</li>
+            <li class="header_li"></li>
+            <li class="header_li">{{item.createtime}}</li>
+            <li class="header_li">{{item.feedbackstatename}}</li>
+            <li class="header_li">{{item.comfirmstatename}}</li>
+            <li class="header_litwo">
+              <p @click.stop="examine(item.ID)" class="header_p_ten">查看</p>
+              <p @click.stop="modify" class="header_p_twelve">
+                确认
+              </p>
+              <p @click.stop="question" class="header_p_eight threelevel_litwo_p">
+                安排
+              </p>
+              <p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>
             </li>
           </ul>
-          <transition enter-active-class="fadeInUp"
-            leave-active-class="fadeOutDown">
-            <div v-show="item.active" class="inline_div">
-              <reportchild></reportchild>
-            </div>
-          </transition>
+          <!--<transition enter-active-class="fadeInUp"-->
+            <!--leave-active-class="fadeOutDown">-->
+            <!--<div v-show="true" class="inline_div">-->
+              <!--<reportchild></reportchild>-->
+            <!--</div>-->
+          <!--</transition>-->
         </li>
       </ul>
-
     </section>
-    <section v-if="review_boolean" @click.stop class="review">
-      <increase :msg="review_boolean" @say="onSay"></increase>
+    <!--新增-->
+    <!--<section v-if="review_boolean" @click.stop class="review">-->
+      <!--<increase :msg="review_boolean" @say="onSay"></increase>-->
+    <!--</section>-->
+    <section v-if="examineBoolean" @click.stop class="review">
+      <!--审核-->
+      <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
     </section>
-
+    <section v-if="lookoverBoolean" @click.stop class="review">
+      <!--查看-->
+      <childLookover :msg="examineData" @look="Onlook"></childLookover>
+    </section>
+    <section v-if="modifyBoolean" @click.stop class="review">
+      <!--修改-->
+      <childModify :msg="modifyBoolean" @say="Modify"></childModify>
+    </section>
   </div>
 </template>
 
 <script>
 import reportchild from '../report-child/report-child'
 import increase from '../admin-child/adminChild-review'
+import childLookover from '../reportChild-operation/reportChild-lookover'
+import childModify from '../reportChild-operation/reportChild-modify'
+import childExamine from '../reportChild-operation/reportChild-examine'
 export default {
   name: 'maintain-admin',
   components: {
     reportchild,
-    increase
+    increase,
+    childLookover,
+    childModify,
+    childExamine
   },
   methods: {
-    selectStyle (item, index, tableData) {
-      // 点击一级出现二级
-      console.log(event)
-      event.cancelBubble = true
-      this.tableData.forEach(function (item) {
-        if (index !== item.index) {
-          item.active = false
-        }
-      })
-      item.active = !item.active
-    },
-    examine (item) {
-      // 一级审核
-      item.auditin = !item.auditin
-      item.admin_show = !item.admin_show
-    },
     auditing () {
       // 点击新增 出现 新增组件
       this.review_boolean = true
@@ -191,27 +176,62 @@ export default {
     onSay (ev) {
       // 子级组件传递 参数 让新增组件 隐藏
       this.review_boolean = ev
-    }
+    },
+    examine (ID) {
+      // 点击查看
+      console.log(ID)
+      this.axios.post(`http://172.16.6.181:8920/feedback/findFeedbacksByFeedbackid?feedbackid=${ID}`).then((response) => {
+        if (response.data.code === 0) {
+          this.examineData = response.data.data
+          console.log(response.data.data)
+        }
+      })
+      this.lookoverBoolean = true
+    },
+    modify () {
+      // 点击修改
+      this.modifyBoolean = true
+    },
+    question () {
+      // 点击审核
+      this.examineBoolean = true
+    },
+    Mine (ev) {
+      // 审核 传递的参数
+      this.examineBoolean = ev
+    },
+    Onlook (ev) {
+      this.lookoverBoolean = ev
+    },
+    Modify (ev) {
+      this.modifyBoolean = ev
+    },
+    query () {
+      if (this.regionModel.length !== 0) {
+        if (this.equipmentDate.length !== 0){
+          let projectid = window.localStorage.pattern
+          let areaid = this.regionModel[this.regionModel.length -1]
+          let basedevicecode = this.equipmentDate[this.equipmentDate.length - 1]
+          console.log(basedevicecode)
+          this.axios.post(`http://172.16.6.181:8920/feedback/findFeedback?projectid=${projectid}&areaid=${areaid}&basedevicecode=${basedevicecode}&feedbackState=${this.dispose}&confirmState=${this.identification}`).then((response) => {
+            if (response.data.code === 0) {
+              console.log(response.data.data)
+              this.exhibition = response.data.data
+            }
+          })
+        } else {
+          alert('请选择设备类型')
+        }
+      } else {
+        alert('请选择区域')
+      }
+    },
   },
   data () {
     return {
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [],
       value: '',
+      examineData: '',
       review_boolean: false,
       // 获取点击的id
       click_id: '',
@@ -227,22 +247,7 @@ export default {
         quantum: '100',
         await: '30',
         normal: '1000',
-        child: [{
-          value: '选项1',
-          label: '111'
-        }, {
-          value: '选项2',
-          label: '222'
-        }, {
-          value: '选项3',
-          label: '333'
-        }, {
-          value: '选项4',
-          label: '444'
-        }, {
-          value: '选项5',
-          label: '555'
-        }],
+        child: [],
         value: ''
       }, {
         active: false,
@@ -256,27 +261,67 @@ export default {
         quantum: '10',
         await: '303',
         normal: '1',
-        child: [
-          {
-            value: '选项1',
-            label: '黄金糕'
-          }, {
-            value: '选项2',
-            label: '双皮奶'
-          }, {
-            value: '选项3',
-            label: '蚵仔煎'
-          }, {
-            value: '选项4',
-            label: '龙须面'
-          }, {
-            value: '选项5',
-            label: '北京烤鸭'
-          }
-        ],
+        child: [],
         value: ''
-      }]
+      }],
+      examineBoolean: false,
+      lookoverBoolean: false,
+      modifyBoolean: false,
+      exhibition: '',
+      regionDate: [],
+      regionModel: [],
+      //  设备类别
+      equipmentProps: {
+        children: 'children',
+        label: 'name',
+        value: 'code'
+      },
+      equipment: [],
+      equipmentDate: [],
+      //  区域
+      regionProps: {
+        children: 'areas',
+        label: 'areaname',
+        value: 'areaid'
+      },
+      dispose: '',
+      disposeData: [],
+      identification: '',
+      identificationData: []
     }
+  },
+  created () {
+    let projectid = window.localStorage.pattern
+    console.log(projectid)
+    this.axios.post(`http://172.16.6.181:8920/feedback/findFeedback?projectid=10007`).then((response) => {
+      console.log('111111111111')
+      console.log(response)
+      if (response.data.code === 0) {
+        this.exhibition = response.data.data
+        console.log(this.exhibition)
+      }
+    })
+    //  获取区域
+    this.axios.post('http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
+      if (response.data.code === 0) {
+        this.regionDate = response.data.data
+      }
+    })
+    //  获取设备类别
+    this.axios.post('http://172.16.6.181:8920/dev/findAllDeviceType').then((response) => {
+      if (response.data.code === 0) {
+        this.equipment = response.data.data
+      }
+    })
+    //  获取处理状态
+    this.axios.post(`http://172.16.6.181:8920/feedback/getFeedbackstateStates`).then((response) => {
+      console.log('123')
+      this.disposeData = response.data
+    })
+    //  获取确认状态
+    this.axios.post(`http://172.16.6.181:8920/feedback/getConfrimStates`).then((response) => {
+      this.identificationData = response.data
+    })
   }
 }
 </script>
@@ -314,7 +359,6 @@ export default {
     .div_input
       float left
       width 167px
-      margin-top 5px
   .button
     display flex
     float right
@@ -370,11 +414,15 @@ export default {
     position relative
     color $color-header-b-normal
     font-size $font-size-medium
-    padding 12px 0
+    height 32px
+    line-height 32px
     background #354d76
   .header_li
     float left
-    width 22.5%
+    width 4%
+    height 32px
+    text-align center
+    padding 0  .5%
     .admin_show
       overflow hidden
       font-size $font-size-small
@@ -411,8 +459,15 @@ export default {
         background $color-background-introduce
   .header_lithree
     float left
-    width 9%
+    width 14%
+    height 32px
+    line-height 32px
     padding-left 1%
+  .header_litwo
+    float left
+    height 32px
+    line-height 32px
+    width 15%
   .header_p_one
     color $color-text-tile-state
   .header_p_two
@@ -440,11 +495,12 @@ export default {
     overflow hidden
     position relative
     .inline_ul
-      width: 100%;
-      overflow: hidden;
-      position: relative;
-      padding: 4px 0;
-      line-height: 32px;
+      width 100%
+      overflow hidden
+      position relative
+      padding 4px 0
+      line-height 32px
+      height 32px
   .table_ul .table_li:nth-child(odd)
     background #1c273a
   .table_ul .table_li:nth-child(even)
@@ -470,10 +526,49 @@ export default {
     background rgba(000,000,000,.4)
     z-index 11
     overflow hidden
-
+  .header_p_one
+    color $color-text-tile-state
+  .header_p_two
+    color $color-text-tile-state-two
+  .header_p_three
+    color $color-text-tile-complete
+  .header_p_four
+    color $color-text-tile-handle
+  .header_p_six
+    color $color-text-tile-complete
+  .header_p_seven
+    color $color-text
+  .header_p_eight
+    float left
+    cursor pointer
+    margin-right 20px
+    color $color-background-query
+  .header_p_nine
+    color #333333
+  .header_p_ten
+    float left
+    cursor pointer
+    margin-right 20px
+    color $color-background-newly
+  .header_p_eleven
+    float left
+    color #83292b
+    cursor pointer
+  .header_p_twelve
+    float left
+    cursor pointer
+    margin-right 20px
+    color $color-background-introduce
+  .header_li p
+    cursor pointer
+  .photograph
+    display inline-block
+    margin-right 20px
+    width 40px
+    height 40px
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
-    height 30px
-    line-height 30px
+  .div_input .el-select
+    height 40px
+    line-height 40px
 </style>

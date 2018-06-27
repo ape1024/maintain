@@ -50,11 +50,11 @@ export default {
   },
   methods: {
     patternSwitch (ev) {
-      window.sessionStorage.pattern = ev
-      console.log(window.sessionStorage.pattern)
+      window.localStorage.pattern = ev
+      console.log(window.localStorage.pattern)
     },
     signout () {
-      console.log(window.sessionStorage.token)
+      console.log(window.localStorage.token)
       let signouttoken = JSON.parse(window.sessionStorage.token)
       this.axios.post(secede(signouttoken)).then((response) => {
       //   用户点击退出 清除sessionStorage

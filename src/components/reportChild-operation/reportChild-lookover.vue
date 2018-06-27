@@ -7,17 +7,21 @@
       <div class="lookover">
         <div class="seat">
           <p class="seatP">设施位置：</p>
-          <p class="seatPtwo">1111111</p>
+          <p class="seatPtwo">{{msg.areaname}}{{msg.position}}</p>
         </div>
         <div class="state">
           <div class="stateTop">
             <div class="stateLeft">
               <p class="seatP">上报人员：</p>
-              <p class="seatPtwo">11111</p>
+              <p class="seatPtwo">{{msg.creatername}}</p>
             </div>
             <div class="stateLeft">
-              <p class="seatP">审核状态：</p>
-              <p class="seatPtwo">11111</p>
+              <p class="seatP">处理状态：</p>
+              <p class="seatPtwo">{{disposeExhibition}}</p>
+            </div>
+            <div class="stateLeft">
+              <p class="seatP">确认状态：</p>
+              <p class="seatPtwo">{{confirmExhibition}}</p>
             </div>
           </div>
           <div class="stateText">
@@ -28,20 +32,19 @@
                 :rows="6"
                 resize="none"
                 placeholder=""
+                :disabled="true"
                 v-model="textarea">
               </el-input>
             </div>
           </div>
           <div class="stateText">
             <p class="seatP">现场照片：</p>
+            <img class="photograph" src="" alt="">
           </div>
         </div>
       </div>
-      <div class="generate">
-        <el-checkbox v-model="checked">是否生成任务</el-checkbox>
-      </div>
       <div class="lookoverBottom">
-        <div @click.stop="conserve" class="conserve">审核</div>
+        <!--<div @click.stop="conserve" class="conserve">审核</div>-->
         <div @click.stop="closedown" class="closedown">关闭</div>
       </div>
     </section>
@@ -57,20 +60,52 @@ export default {
       // 显示/隐藏 查看组件
       lookoverBoolean: false,
       textarea: '',
-      checked: false
+      checked: false,
+      //  确认状态
+      confirmExhibition: '',
+      //  处理状态
+      disposeExhibition: '',
+      //  照片
+      photograph: []
     }
   },
   methods: {
     conserve () {
-      this.lookoverBoolean = this.msg
-      this.lookoverBoolean = !this.lookoverBoolean
+      console.log(this.msg)
       this.$emit('look', this.lookoverBoolean)
     },
     closedown () {
-      this.lookoverBoolean = this.msg
-      this.lookoverBoolean = !this.lookoverBoolean
+
       this.$emit('look', this.lookoverBoolean)
     }
+  },
+  created () {
+    //  确认状态
+    let confirm = []
+    let confirmName = this.msg.comfirmstate
+    this.axios.post(`http://172.16.6.181:8920/feedback/getConfrimStates`).then((response) => {
+      confirm = response.data
+      confirm.forEach((val) => {
+        if (val.value === confirmName) {
+          this.confirmExhibition = val.name
+          console.log(val)
+        }
+      })
+    })
+
+    //  处理状态
+    let dispose = []
+    let disposeName = this.msg.feedbackstate
+    this.axios.post(`http://172.16.6.181:8920/feedback/getFeedbackstateStates`).then((response) => {
+      dispose = response.data
+      console.log(dispose)
+      dispose.forEach((val) => {
+        if (val.value === disposeName) {
+          this.disposeExhibition = val.name
+        }
+      })
+    })
+    this.textarea = this.msg.feedbackinfo
   }
 }
 </script>
@@ -110,7 +145,8 @@ export default {
         color $color-text
       .state
          init()
-         min-height 400px
+         min-height 300px
+         margin-bottom 30px
          padding 15px 0
          border-top 1px solid #444d5b
          border-bottom 1px solid #444d5b

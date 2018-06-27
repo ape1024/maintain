@@ -124,8 +124,9 @@ export default {
         alert('请选择区域！')
         return false
       } else {
+        let projectid = window.localStorage.pattern
         let areaid = this.regionModel[this.regionModel.length - 1]
-        this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=1&projectid=1&areaid=${areaid}`).then((response) => {
+        this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=1&projectid=${projectid}&areaid=${areaid}`).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
             this.tableDatataskStat = response.data.data
