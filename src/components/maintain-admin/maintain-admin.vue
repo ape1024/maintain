@@ -172,7 +172,7 @@ export default {
         //  设备类型 code  basedevicecode
         if (this.equipmentDate[0] !== undefined && this.equipmentDate.length !== 0) {
           let basedevicecode = this.equipmentDate[this.equipmentDate.length - 1]
-          this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?basedevicecode=${basedevicecode}&areaid=${areaid}`).then((response) => {
+          this.axios.post(`http://172.16.6.181:8920/dev/getDevListDetailProjects?basedevicecode=${basedevicecode}&areaid=${areaid}`).then((response) => {
             if (response.data.code === 0) {
               console.log(response)
               this.tableData = response.data.data
@@ -180,7 +180,7 @@ export default {
           })
         } else {
           console.log('2222222222222')
-          this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?areaid=${areaid}`).then((response) => {
+          this.axios.post(`http://172.16.6.181:8920/dev/getDevListDetailProjects?areaid=${areaid}`).then((response) => {
             if (response.data.code === 0) {
               console.log(response.data.data)
               this.tableData = response.data.data
@@ -194,7 +194,7 @@ export default {
         val.flag = false
       })
       let itemAreaid = item.areaid
-      this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?areaid=${itemAreaid}`).then((response) => {
+      this.axios.post(`http://172.16.6.181:8920/dev/getDevListDetailProjects?areaid=${itemAreaid}`).then((response) => {
         console.log(response.data.data)
         if (response.data.code === 0) {
           this.tableChild = response.data.data
@@ -235,7 +235,7 @@ export default {
         return false
       } else {
         region = region[region.length - 1]
-        this.axios.post(`http://172.16.6.16:8920/dev/findManufactures?baseDeviceId=${region}`).then((response) => {
+        this.axios.post(`http://172.16.6.181:8920/dev/findManufactures?baseDeviceId=${region}`).then((response) => {
           if (response.data.code === 0) {
             this.manufactor = response.data.data
           }
@@ -272,22 +272,7 @@ export default {
       Auditstatus: '',
       //  传给子级值
       tableChild: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [],
       value: '',
       review_boolean: false,
       // 获取点击的id
@@ -299,13 +284,13 @@ export default {
     const token = JSON.parse(window.sessionStorage.token)
     console.log(token)
     //  获取区域
-    this.axios.post('http://172.16.6.16:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
+    this.axios.post('http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
         this.regionModel.push((this.regionDate)[0].areaid)
         //  获取 列表数据 默认第一页 20个
         let regionId = (this.regionModel).shift()
-        this.axios.post(`http://172.16.6.16:8920/dev/CalcDevCount?areaid=${regionId}&pageIndex=1&pageSize=20`).then((data) => {
+        this.axios.post(`http://172.16.6.181:8920/dev/CalcDevCount?areaid=${regionId}&pageIndex=1&pageSize=20`).then((data) => {
           if (data.data.code === 0) {
             this.tableData = data.data.data.datas
             console.log(this.tableData)
@@ -314,20 +299,20 @@ export default {
       }
     })
     //  获取设备类别
-    this.axios.post('http://172.16.6.16:8920/dev/findAllDeviceType').then((response) => {
+    this.axios.post('http://172.16.6.181:8920/dev/findAllDeviceType').then((response) => {
       if (response.data.code === 0) {
         this.equipment = response.data.data
         console.log(response.data.data)
       }
     })
     //  获取运行状态
-    this.axios.post('http://172.16.6.16:8920/dev/FindDevAllstate').then((response) => {
+    this.axios.post('http://172.16.6.181:8920/dev/FindDevAllstate').then((response) => {
       if (response.data.code === 0) {
         this.runningstateDate = response.data.data
       }
     })
     //  审核状态
-    this.axios.post('http://172.16.6.16:8920/dev/FindDevAllApprovalstate').then((response) => {
+    this.axios.post('http://172.16.6.181:8920/dev/FindDevAllApprovalstate').then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
       }

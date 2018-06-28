@@ -238,7 +238,6 @@ export default {
       // let headportrait = this.Headportrait
       //  获取当前密码
       let Userpwd = this.Userpwd
-      console.log(headportrait)
       let url = appUser(urltoken, organizationid, usercode, username, Userpwd, email, tel, job, memo, userstate)
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {

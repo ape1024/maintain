@@ -219,6 +219,7 @@ export default {
     })
     //  展示任务，目前projectid参数默认的是1
     let projectid = window.localStorage.pattern
+    console.log('1111111111111111111111')
     console.log(projectid)
     this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=2&projectid=${projectid}`).then((response) => {
       if (response.data.code === 0) {

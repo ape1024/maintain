@@ -39,7 +39,7 @@
           </div>
           <div class="stateText">
             <p class="seatP">现场照片：</p>
-            <img class="photograph" src="" alt="">
+            <img :key="index" v-for="(item, index) in photograph" class="photograph" :src="item" alt="">
           </div>
         </div>
       </div>
@@ -71,15 +71,16 @@ export default {
   },
   methods: {
     conserve () {
-      console.log(this.msg)
       this.$emit('look', this.lookoverBoolean)
     },
     closedown () {
-
       this.$emit('look', this.lookoverBoolean)
     }
   },
   created () {
+    this.photograph = this.msg.photos.split(',')
+    console.log('1111')
+    console.log(this.photograph)
     //  确认状态
     let confirm = []
     let confirmName = this.msg.comfirmstate
@@ -92,7 +93,6 @@ export default {
         }
       })
     })
-
     //  处理状态
     let dispose = []
     let disposeName = this.msg.feedbackstate
@@ -165,6 +165,11 @@ export default {
               float left
               width 1075px
               color $color-text
+           .photograph
+             display inline-block
+             margin-right 20px
+             width 40px
+             height 40px
     .lookoverBottom
       init()
       margin-bottom 20px

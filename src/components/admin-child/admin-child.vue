@@ -145,7 +145,7 @@ export default {
           console.log(action)
           if (action === 'confirm') {
             content.splice([$index], 1)
-            this.axios.post(`http://172.16.6.16:8920/dev/delDevice?devid=${deviceid}`).then((response) => {
+            this.axios.post(`http://172.16.6.181:8920/dev/delDevice?devid=${deviceid}`).then((response) => {
               if (response.data.code === 0) {
 
               }
@@ -168,12 +168,12 @@ export default {
     examine (deviceid) {
       // 点击查看
       this.lookoverBoolean = true
-      this.axios.post(`http://172.16.6.16:8920/dev/findDeviceDetail?devid=${deviceid}`).then((response) => {
+      this.axios.post(`http://172.16.6.181:8920/dev/findDeviceDetail?devid=${deviceid}`).then((response) => {
         if (response.data.code === 0) {
           this.examineInformation = response.data.data
         }
       })
-      this.axios.post(`http://172.16.6.16:8920/dev/FindInspectionMaintenance?devid=${deviceid}`).then((response) => {
+      this.axios.post(`http://172.16.6.181:8920/dev/FindInspectionMaintenance?devid=${deviceid}`).then((response) => {
         if (response.data.code === 0) {
           this.examineInspection = response.data.data
         }
@@ -184,7 +184,7 @@ export default {
       console.log(dataset.areaid)
       this.datasetAreaid = dataset.areaid
       this.modifyBoolean = true
-      this.axios.post(`http://172.16.6.16:8920/dev/findDeviceDetail?devid=${deviceId}`).then((response) => {
+      this.axios.post(`http://172.16.6.181:8920/dev/findDeviceDetail?devid=${deviceId}`).then((response) => {
         if (response.data.code === 0) {
           this.modifyDate = response.data.data
         }
@@ -203,7 +203,7 @@ export default {
     },
     Modify (ev) {
       this.modifyBoolean = ev
-      this.axios.post(`http://172.16.6.16:8920/dev/getDevListDetailProjects?areaid=${this.datasetAreaid}`).then((response) => {
+      this.axios.post(`http://172.16.6.181:8920/dev/getDevListDetailProjects?areaid=${this.datasetAreaid}`).then((response) => {
         if (response.data.code === 0) {
           console.log(response.data.data)
           this.tabChild = response.data.data

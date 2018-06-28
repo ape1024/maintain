@@ -105,13 +105,13 @@
             <li class="header_li">{{item.comfirmstatename}}</li>
             <li class="header_litwo">
               <p @click.stop="examine(item.ID)" class="header_p_ten">查看</p>
-              <p @click.stop="modify" class="header_p_twelve">
+              <p @click.stop="modify(item.ID)" class="header_p_twelve">
                 确认
               </p>
-              <p @click.stop="question" class="header_p_eight threelevel_litwo_p">
+              <p @click.stop="question(item.ID)" class="header_p_eight threelevel_litwo_p">
                 安排
               </p>
-              <p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>
+              <p class="header_p_eleven" @click.stop="amputate(item.ID, index, exhibition)">删除</p>
             </li>
           </ul>
           <!--<transition enter-active-class="fadeInUp"-->
@@ -128,16 +128,16 @@
       <!--<increase :msg="review_boolean" @say="onSay"></increase>-->
     <!--</section>-->
     <section v-if="examineBoolean" @click.stop class="review">
-      <!--审核-->
-      <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
+      <!--安排-->
+      <childExamine :examine="arrangeData" @mine="Mine"></childExamine>
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
       <childLookover :msg="examineData" @look="Onlook"></childLookover>
     </section>
     <section v-if="modifyBoolean" @click.stop class="review">
-      <!--修改-->
-      <childModify :msg="modifyBoolean" @say="Modify"></childModify>
+      <!--确认-->
+      <childModify :examine="arrangeData" @say="Modify"></childModify>
     </section>
   </div>
 </template>
@@ -158,10 +158,18 @@ export default {
     childExamine
   },
   methods: {
-    auditing () {
-      // 点击新增 出现 新增组件
-      this.review_boolean = true
+    amputate (ID, index, data) {
+      this.axios.post(`http://172.16.6.181:8920/feedback/removeFeedbacks?feedbackid=${ID}`).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response.data)
+          data.splice(index, 1)
+        }
+      })
     },
+    // auditing () {
+    //   // 点击新增 出现 新增组件
+    //   this.review_boolean = true
+    // },
     preservation (item) {
       // 一级 审核 保存
       console.log(item.value)
@@ -188,13 +196,24 @@ export default {
       })
       this.lookoverBoolean = true
     },
-    modify () {
+    modify (Id) {
       // 点击修改
-      this.modifyBoolean = true
+      this.axios.post(`http://172.16.6.181:8920/feedback/findFeedbacksByFeedbackid?feedbackid=${Id}`).then((response) => {
+        if (response.data.code === 0) {
+          this.arrangeData = response.data.data
+          console.log(response.data.data)
+          this.modifyBoolean = true
+        }
+      })
     },
-    question () {
-      // 点击审核
-      this.examineBoolean = true
+    question (Id) {
+      // 点击安排
+      this.axios.post(`http://172.16.6.181:8920/feedback/findFeedbacksByFeedbackid?feedbackid=${Id}`).then((response) => {
+        if (response.data.code === 0) {
+          this.arrangeData = response.data.data
+          this.examineBoolean = true
+        }
+      })
     },
     Mine (ev) {
       // 审核 传递的参数
@@ -208,9 +227,9 @@ export default {
     },
     query () {
       if (this.regionModel.length !== 0) {
-        if (this.equipmentDate.length !== 0){
+        if (this.equipmentDate.length !== 0) {
           let projectid = window.localStorage.pattern
-          let areaid = this.regionModel[this.regionModel.length -1]
+          let areaid = this.regionModel[this.regionModel.length - 1]
           let basedevicecode = this.equipmentDate[this.equipmentDate.length - 1]
           console.log(basedevicecode)
           this.axios.post(`http://172.16.6.181:8920/feedback/findFeedback?projectid=${projectid}&areaid=${areaid}&basedevicecode=${basedevicecode}&feedbackState=${this.dispose}&confirmState=${this.identification}`).then((response) => {
@@ -225,7 +244,7 @@ export default {
       } else {
         alert('请选择区域')
       }
-    },
+    }
   },
   data () {
     return {
@@ -287,15 +306,14 @@ export default {
       dispose: '',
       disposeData: [],
       identification: '',
-      identificationData: []
+      identificationData: [],
+      arrangeData: ''
     }
   },
   created () {
     let projectid = window.localStorage.pattern
     console.log(projectid)
     this.axios.post(`http://172.16.6.181:8920/feedback/findFeedback?projectid=10007`).then((response) => {
-      console.log('111111111111')
-      console.log(response)
       if (response.data.code === 0) {
         this.exhibition = response.data.data
         console.log(this.exhibition)
@@ -561,11 +579,6 @@ export default {
     color $color-background-introduce
   .header_li p
     cursor pointer
-  .photograph
-    display inline-block
-    margin-right 20px
-    width 40px
-    height 40px
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .div_input .el-select

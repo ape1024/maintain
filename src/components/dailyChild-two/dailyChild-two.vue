@@ -55,7 +55,7 @@
         <!--审核-->
         <childExamine :examine="examineBoolean" :childDate="examineDate" :examineName="taskName" @examineMine="examineDistribution" @mine="mineSwitch"></childExamine>
       </section>
-      <!--快速分配-->
+      <!--安排任务-->
       <section v-if="distributionBoolean" @click.stop class="distribution">
         <childDistribution :getrepairDate="getrepair" :instruction="instructionData" :distriBoolean="distributionBoolean" :equipment="equipmentID"  @dist="Dist"></childDistribution>
       </section>

@@ -2,29 +2,37 @@
   <div class="subject">
     <section class="content">
       <h4 class="contentH">
-        故障维修审核
+        现场反馈信息安排
       </h4>
       <div class="information">
         <div class="informationTop">
           <ul class="informationTopUl">
             <li class="informationTopLitwo">
               <span>设施名称：</span>
-              <span class="informationTopSpan">111</span>
+              <span class="informationTopSpan">{{examine.devicename}}</span>
             </li>
             <li class="informationTopLi">
               <span>设备编码：</span>
-              <span class="informationTopSpan">111</span>
+              <span class="informationTopSpan">{{examine.devicecode}}</span>
             </li>
             <li class="informationTopLi">
               <span>设施位置：</span>
-              <span class="informationTopSpan">111</span>
+              <span class="informationTopSpan">{{examine.areaname}}{{examine.position}}</span>
             </li>
           </ul>
         </div>
         <ul class="informationTopUl">
           <li class="informationTopLitwo">
-            <span>设施数量：</span>
-            <span class="informationTopSpan">111</span>
+            <span>维保单位：</span>
+            <span class="informationTopSpan">{{examine.vindicatorname}}</span>
+          </li>
+          <li class="informationTopLitwo">
+            <span>项目负责人：</span>
+            <span class="informationTopSpan">{{examine.leader}}</span>
+          </li>
+          <li class="informationTopLitwo">
+            <span>联系电话：</span>
+            <span class="informationTopSpan">{{examine.leadertel}}</span>
           </li>
         </ul>
         <div class="tabulation">
@@ -32,57 +40,32 @@
             <div class="tleftTop">
               <div class="tlefttopHeader">
                 <p class="tlefttopHeaderP">
-                  <span class="tlefttopHeaderSpan">检查时间：</span>
-                  <span>2018.09.11</span>
+                  <span class="tlefttopHeaderSpan">反馈时间：</span>
+                  <span class="tlefttopli_Span">{{examine.createtime}}</span>
                 </p>
                 <p class="tlefttopHeaderP">
-                  <span class="tlefttopHeaderSpan">检查人员：</span>
-                  <span>张三李四</span>
+                  <span class="tlefttopHeaderSpan">反馈人员：</span>
+                  <span class="tlefttopli_Span">{{examine.creatername}}</span>
                 </p>
               </div>
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
                   <p class="tlefttopHeaderP">
-                    <span class="tlefttopHeaderSpan">检查项目：</span>
-                    <span>111</span>
+                    <span class="tlefttopHeaderSpan">反馈情况：</span>
+                    <span class="tlefttopli_Span">{{examine.feedbackinfo}}</span>
                   </p>
                 </li>
                 <li class="tlefttopli">
                   <p class="tlefttopHeaderP">
-                    <span class="tlefttopHeaderSpan">检查记录：</span>
-                    <span>111</span>
+                    <span class="tlefttopHeaderSpan">处理意见：</span>
+                    <span class="tlefttopli_Span">{{examine.disposeopinion}}</span>
                   </p>
                 </li>
-                <li class="tlefttopli">
+                <li class="tlefttoplitwo">
                   <p class="tlefttopHeaderP">
-                    <span class="tlefttopHeaderSpan">现场照片：</span>
-                    <span>111</span>
+                    <span class="tlefttopHeaderSpantwo">现场照片：</span>
+                    <img class="tlefttopli_img" :key="index" v-for="(item, index) in photograph" :src="item" alt="">
                   </p>
-                </li>
-              </ul>
-            </div>
-            <div class="tleftBottom">
-              <p class="tlefttopLeft">
-                安排情况
-              </p>
-              <ul class="tlefttopRight">
-                <li class="tlefttoprightLi">
-                  <p class="tlefttoprightliP">
-                    <span class="tlefttoprightliSpan">安排人员：</span>
-                    <span>123</span>
-                  </p>
-                  <p class="tlefttoprightliP">
-                    <span class="tlefttoprightliSpan">安排时间：</span>
-                    <span>123</span>
-                  </p>
-                </li>
-                <li class="tlefttoprightLi">
-                  <span class="tlefttoprightliSpan">处理意见：</span>
-                  <span>123</span>
-                </li>
-                <li class="tlefttoprightLi">
-                  <span class="tlefttoprightliSpan">异常情况：</span>
-                  <span>123</span>
                 </li>
               </ul>
             </div>
@@ -92,56 +75,53 @@
               <div class="tlefttopHeader">
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">处理时间：</span>
-                  <span>2018.09.11</span>
+                  <span class="tlefttopli_Span">{{examine.repairtime}}</span>
                 </p>
                 <p class="tlefttopHeaderP">
-                  <span class="tlefttopHeaderSpan">检查人员：</span>
-                  <span>张三李四</span>
+                  <span class="tlefttopHeaderSpan">处理人员：</span>
+                  <span class="tlefttopli_Span">{{examine.repairpersonname}}</span>
                 </p>
               </div>
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
-                  <span class="tlefttopHeaderSpan">问题原因：</span>
-                  <span>111</span>
-                </li>
-                <li class="tlefttopli">
-                  <span class="tlefttopHeaderSpan">处理情况：</span>
-                  <span>111</span>
+                  <p class="tlefttopHeaderP">
+                    <span class="tlefttopHeaderSpan">处理状态：</span>
+                  </p>
+                  <div>
+                    <el-select v-model="processingsdisplay" placeholder="请选择">
+                      <el-option
+                        v-for="item in processingstate"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </div>
                 </li>
                 <li class="tlefttopli">
                   <p class="tlefttopHeaderP">
-                    <span class="tlefttopHeaderSpan">处理结果：</span>
-                    <span>111</span>
+                    <span class="tlefttopHeaderSpan">确认状态：</span>
+                  </p>
+                  <div>
+                    <el-select v-model="Confirmationsdisplay" placeholder="请选择">
+                      <el-option
+                        v-for="item in Confirmationstate"
+                        :key="item.value"
+                        :label="item.name"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </div>
+                </li>
+                <li class="tlefttopli">
+                  <p class="tlefttopHeaderP">
+                    <span class="tlefttopHeaderSpan">确认时间：</span>
+                    <span class="tlefttopli_Span">{{examine.confirmpertime}}</span>
                   </p>
                   <p class="tlefttopHeaderP">
-                    <span class="tlefttopHeaderSpan">现场照片：</span>
-                    <span>111</span>
+                    <span class="tlefttopHeaderSpan">确认人员：</span>
+                    <span class="tlefttopli_Span">{{examine.confirmpersonname}}</span>
                   </p>
-                </li>
-              </ul>
-            </div>
-            <div class="tleftBottom">
-              <p class="tlefttopLeft">
-                审查情况
-              </p>
-              <ul class="tlefttopRight">
-                <li class="tlefttoprightLi">
-                  <p class="tlefttoprightliP">
-                    <span class="tlefttoprightliSpan">审核人员：</span>
-                    <span>123</span>
-                  </p>
-                  <p class="tlefttoprightliP">
-                    <span class="tlefttoprightliSpan">审核时间：</span>
-                    <span>123</span>
-                  </p>
-                </li>
-                <li class="tlefttoprightLi">
-                  <span class="tlefttoprightliSpan">审核结论：</span>
-                  <span>123</span>
-                </li>
-                <li class="tlefttoprightLi">
-                  <span class="tlefttoprightliSpan">审核意见：</span>
-                  <span>123</span>
                 </li>
               </ul>
             </div>
@@ -156,85 +136,94 @@
         <div class="assortment">
           <ul class="assortmentUl">
             <li class="assortmentLi">
-              <p class="assortmentliP">
-                故障现象：
-              </p>
-              <div class="assortmentliDiv">
-                <el-select v-model="value" placeholder="请选择">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
+              <div class="assortmentLi_div">
+                <p class="assortmentliP">
+                  异常情况：
+                </p>
+                <div class="assortmentliDiv">
+                  <el-input
+                    type="textarea"
+                    autosize
+                    resize="none"
+                    placeholder="请输入内容"
+                    v-model="circumstances">
+                  </el-input>
+                </div>
+              </div>
+              <div class="assortmentLi_div">
+                <p class="assortmentliP">
+                  处理意见：
+                </p>
+                <div class="assortmentliDiv">
+                  <el-input
+                    type="textarea"
+                    autosize
+                    resize="none"
+                    placeholder="请输入内容"
+                    v-model="objection">
+                  </el-input>
+                </div>
               </div>
             </li>
-            <li class="assortmentLi">
-              <p class="assortmentliP">
-                故障范围：
-              </p>
-              <div class="assortmentliDiv">
-                <el-select v-model="value" placeholder="请选择">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </div>
-            </li>
-            <li class="assortmentLi">
-              <p class="assortmentliP">
-                故障类型：
-              </p>
-              <div class="assortmentliDiv">
-                <el-select v-model="value" placeholder="请选择">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </div>
-            </li>
-            <li class="assortmentLi">
-              <p class="assortmentliP">
-                故障原因：
-              </p>
-              <div class="assortmentliDiv">
-                <el-select v-model="value" placeholder="请选择">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </div>
-            </li>
-            <li class="assortmentLi">
-              <p class="assortmentliP">
-                处理方法：
-              </p>
-              <div class="assortmentliDiv">
-                <el-select v-model="value" placeholder="请选择">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
+            <li class="assortmentLitwo">
+              <div class="assortmentLi_div">
+                <p class="assortmentLi_divP">请选择处理异常情况的方式：</p>
+                <el-radio-group v-model="choice">
+                  <el-radio :key="index" v-for="(item, index) in choiceData" :label="item.value">{{item.name}}</el-radio>
+                </el-radio-group>
               </div>
             </li>
           </ul>
+          <div class="personnel">
+            <div class="assortmentLi_divtwo">
+              <p class="assortmentliP">
+                维保执行人员:
+              </p>
+              <div class="personChargeDiv">
+                <el-checkbox-group v-model="maintenanceList">
+                  <el-tree
+                    class="tree"
+                    :data="maintenance"
+                    node-key="id"
+                    :props="proprietorProps">
+                    <div class="custom-tree-node" slot-scope="{ node, data }">
+                      <div>{{ node.label }}</div>
+                      <div class="tree-checkbox">
+                        <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
+                          <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
+                        </div>
+                      </div>
+                    </div>
+                  </el-tree>
+                </el-checkbox-group>
+              </div>
+            </div>
+            <div class="assortmentLi_div">
+              <p class="assortmentliP">业主执行人员</p>
+              <div class="tree-wrapper">
+                <el-checkbox-group v-model="repairCheckList">
+                  <el-tree
+                    class="tree"
+                    :data="proprietor"
+                    node-key="id"
+                    :props="ownerProps">
+                    <div class="custom-tree-node" slot-scope="{ node, data }">
+                      <div>{{ node.label }}</div>
+                      <div class="tree-checkbox">
+                        <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
+                          <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
+                        </div>
+                      </div>
+                    </div>
+                  </el-tree>
+                </el-checkbox-group>
+              </div>
+            </div>
+          </div>
           <div class="fastener">
-            <div class="examine">重新安排</div>
+            <!--<div class="examine">重新安排</div>-->
             <div @click="conserve" class="conserve">保存</div>
-            <div class="closedown">关闭</div>
+            <div class="closedown" @click="closedown">关闭</div>
           </div>
         </div>
       </section>
@@ -250,20 +239,117 @@ export default {
     return {
       options: [],
       thisPage: false,
-      value: ''
+      examineBoolean: false,
+      value: '',
+      maintenance: [],
+      repairCheckList: [],
+      proprietorCheckList: [],
+      maintenanceList: [],
+      proprietor: [],
+      proprietorProps: {
+        children: 'subOrgnizations',
+        label: 'organizationName',
+        value: 'organizationId'
+      },
+      ownerProps: {
+        children: 'subOrgnizations',
+        label: 'organizationName'
+      },
+      choice: '',
+      choiceData: '',
+      objection: '',
+      circumstances: '',
+      photograph: [],
+      Confirmationstate: '',
+      Confirmationsdisplay: '',
+      processingsdisplay: '',
+      processingstate: ''
     }
   },
   methods: {
     conserve () {
-      this.examineBoolean = this.examine
-      this.examineBoolean = !this.examineBoolean
-      this.$emit('mine', this.examineBoolean)
+      // this.$emit('mine', this.examineBoolean)
+      let token = JSON.parse(window.sessionStorage.token)
+      //  执行人员
+      let usersNumber = this.maintenanceList.concat(this.repairCheckList)
+      let users = []
+      if (usersNumber.length !== 0) {
+        usersNumber.forEach((val) => {
+          let obj = {
+            userid: val
+          }
+          users.push(obj)
+        })
+      } else {
+        alert('请选择执行人员!')
+        return false
+      }
+      //  问题描述
+      let desc = this.circumstances
+      if (desc === '') {
+        alert('异常情况不能为空!')
+        return false
+      }
+      //  处理意见
+      let disposeopinion = this.objection
+      if (disposeopinion === '') {
+        alert('处理意见不能为空!')
+        return false
+      }
+      //  故障/问题 类型
+      let faultTypeId = this.choice
+      if (this.choice === '') {
+        alert('请选择故障/问题 类型!')
+        return false
+      }
+      console.log(token)
+      console.log(users)
+      this.axios.post(`http://172.16.6.181:8920/feedback/assignedTask?token=${token}&desc=${desc}&disposeopinion=${disposeopinion}&feedbackid=${this.examine.deviceid}&faultTypeId=${faultTypeId}`, users).then((response) => {
+        console.log(response)
+        if (response.data.code === 0) {
+          this.$emit('mine', this.examineBoolean)
+        }
+      })
     },
     closedown () {
-      this.examineBoolean = this.examine
-      this.examineBoolean = !this.examineBoolean
       this.$emit('mine', this.examineBoolean)
     }
+  },
+  created () {
+    this.axios.post(`http://172.16.6.181:8920/feedback/getConfrimStates`).then((response) => {
+      this.Confirmationstate = response.data
+      this.Confirmationsdisplay = this.examine.feedbackstate
+    })
+    this.axios.post(`http://172.16.6.181:8920/feedback/getFeedbackstateStates`).then((response) => {
+      console.log(response)
+      this.processingstate = response.data
+      this.processingsdisplay = this.examine.comfirmstate
+    })
+    this.examine.photos.split(',').forEach((val) => {
+      this.photograph.push(val)
+    })
+    this.circumstances = this.examine.feedbackinfo
+    //  业主单位
+    this.axios.post(`http://172.16.6.181:8920/organization/getProprietorOrgTree`).then((response) => {
+      if (response.data.code === 0) {
+        this.proprietor = response.data.data
+      }
+    })
+    //  维保单位 this.equipment
+    let deviceid = this.examine.deviceid
+    console.log(deviceid)
+    this.axios.post(`http://172.16.6.181:8920/organization/getRepairOrgTreeByDeviceId?deviceid=${deviceid}`).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response)
+        this.maintenance = response.data.data
+      }
+    })
+    this.axios.post(`http://172.16.6.181:8920/task/getRepairTypes`).then((response) => {
+      if (response.data.code === 0) {
+        this.choiceData = response.data.data
+        console.log(this.choiceData)
+      }
+    })
   }
 }
 </script>
@@ -300,7 +386,6 @@ export default {
         init()
         .informationTopLitwo
           width 33%
-          margin-left 1%
           font-size $font-size-medium
           color $color-border-b-fault
           float left
@@ -345,7 +430,9 @@ export default {
           font-size $font-size-medium
         .tlefttopHeaderP
           width 50%
+          overflow hidden
           float left
+          line-height 30px
         .tlefttopHeaderSpan
           margin 0 12px
           color $color-border-b-fault
@@ -404,21 +491,26 @@ export default {
         margin-left 40px
         .assortmentUl
           init()
-          margin-bottom 30px
+          margin-bottom 10px
           .assortmentLi
             float left
-            width 33%
+            width 60%
             margin-top 20px
             color $color-border-b-fault
             font-size $font-size-medium
             overflow hidden
+            .assortmentLi_div
+              width 100%
+              overflow hidden
+              margin-bottom 10px
+              position relative
             .assortmentliP
               float left
               line-height 30px
             .assortmentliDiv
               float left
               overflow hidden
-              width 217px
+              width 490px
       .fastener
         init()
         text-align center
@@ -433,4 +525,68 @@ export default {
         .closedown
           closedown()
           display inline-block
+  .tree
+    background transparent
+    color $color-text-desc
+    .custom-tree-node
+      padding-top 7px
+      font-size $font-size-small
+      .tree-checkbox
+        padding 10px 0 0 10px
+        .tree-checkbox-item
+          padding 5px 0
+    .el-tree-node__children .custom-tree-node
+      background none
+    .el-tree-node__content
+      height auto
+      align-items flex-start
+  .personChargeDiv
+    overflow hidden
+    max-height 300px
+  .personnel
+    init()
+    margin-bottom 20px
+    .assortmentliP
+      float left
+      color $color-border-b-fault
+      line-height 30px
+    .assortmentLi_div
+      width 50%
+      max-height 150px
+      min-height 150px
+      overflow-y scroll
+  .assortmentLi_divtwo
+    float left
+    width 44%
+    margin-right 6%
+    margin-bottom 10px
+    overflow hidden
+  .tree-wrapper
+    overflow hidden
+  .assortmentLitwo
+     width 40%
+     float left
+     margin-top 20px
+     .assortmentLi_div
+       init()
+       .assortmentLi_divP
+         color $color-border-b-fault
+         margin-bottom 20px
+  .tlefttopli_Span
+     color #fff
+  .tlefttopli_img
+    display inline-block
+    margin-right 20px
+    width 40px
+    height 40px
+    margin-top 0px
+  .tlefttopHeaderSpantwo
+    margin 0 12px
+    display inline-block
+    color #999
+  .tlefttoplitwo
+    overflow hidden
+    position relative
+    border-bottom 1px solid #444d5b
+    padding 6px 0 23px
 </style>
