@@ -5,73 +5,38 @@
         <li class="li_input">
           <p class="div_p">区 域：</p>
           <div class="div_input">
-            <el-select v-model="value" placeholder="">
+            <el-cascader
+              :options="regionDate"
+              v-model="regionModel"
+              :props="regionProps"
+              change-on-select>>
+            </el-cascader>
+          </div>
+        </li>
+        <li class="li_input">
+          <p class="div_p">维修状态：</p>
+          <div class="div_input">
+            <!--<el-select v-model="value" placeholder="">-->
+              <!--<el-option-->
+                <!--v-for="item in options"-->
+                <!--:key="item.value"-->
+                <!--:label="item.label"-->
+                <!--:value="item.value">-->
+              <!--</el-option>-->
+            <!--</el-select>-->
+          </div>
+        </li>
+        <li class="li_input">
+          <p class="div_p">审批状态：</p>
+          <div class="div_input">
+            <el-select v-model="Auditstatus" placeholder="">
               <el-option
-                v-for="item in options"
+                v-for="item in AuditstatusDate"
                 :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value">
               </el-option>
             </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">设备类型：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">维修组：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">审核状态：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">开始时间：</p>
-          <div class="div_input">
-            <el-date-picker
-              v-model="value1"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
-          </div>
-        </li>
-        <li class="li_input">
-          <p class="div_p">结束时间：</p>
-          <div class="div_input">
-            <el-date-picker
-              v-model="value1"
-              type="date"
-              placeholder="选择日期">
-            </el-date-picker>
           </div>
         </li>
       </ul>
@@ -82,39 +47,89 @@
         </div>
       </div>
     </section>
-    <section class="subject_bottom">
+    <section class="subject_bottomDIv">
       <ul class="header_ul">
         <li class="repair_li">
-          区域
+          设施名称
         </li>
-        <li class="repair_li">
-          故障/问题数量
+        <li class="repair_litwo">
+         设备位置
         </li>
-        <li class="repair_li">
-          已完成项
+        <li class="repair_lithree">
+          数量
         </li>
-        <li class="repair_li">
-          待审核项
+        <li class="repair_lithree">
+          任务类型
         </li>
-        <li class="repair_li">
-          已审核项
+        <li class="repair_lifour">
+          异常情况
+        </li>
+        <li class="repair_lithree">
+          安排人员
+        </li>
+        <li class="repair_lithree">
+          安排时间
+        </li>
+        <li class="repair_lithree">
+          处理人员
+        </li>
+        <li class="repair_lithree">
+          处理结果
+        </li>
+        <li class="repair_lithree">
+          审核状态
+        </li>
+        <li class="repair_litwo">
+          操作
         </li>
       </ul>
       <ul class="table_ul">
-        <li v-for="(item,$index) in tableData" class="table_li" :key="item.id" :id="item.id" @click="selectStyle (item, $index, tableData)">
-          <ul :id="item.id" class="inline_ul">
-            <li class="repair_li">{{item.date}}</li>
-            <li class="repair_li">{{item.quantum}}</li>
-            <li class="repair_li">{{item.await}}</li>
-            <li class="repair_li">{{item.normal}}</li>
-            <li class="repair_li">{{item.normal}}</li>
+        <li :key="index" v-for="(item, index) in tabulationData" class="table_li">
+          <ul class="inline_ul">
+            <li class="repair_li">
+              {{item.devicename}}
+            </li>
+            <li class="repair_litwo">
+              {{item.areaname}}{{item.position}}
+            </li>
+            <li class="repair_lithree">
+              {{item.devicecount}}
+            </li>
+            <li class="repair_lithree">
+              {{item.repairtype}}
+            </li>
+            <li class="repair_lifour">
+              {{item.exception}}
+            </li>
+            <li class="repair_lithree">
+              {{item.creatername}}
+            </li>
+            <li class="repair_lithree">
+              {{item.createtime}}
+            </li>
+            <li class="repair_lithree">
+              {{item.repairperson}}{{item.others}}
+            </li>
+            <li class="repair_lithree">
+              9
+            </li>
+            <li class="repair_lithree">
+              10
+            </li>
+            <li class="repair_lifive">
+              <p @click.stop="question" class="header_p_eight threelevel_litwo_p">
+                审核
+              </p>
+              <p @click.stop="examine(item.ID)" class="header_p_ten">查看</p>
+              <p @click.stop="modify" class="header_p_twelve">
+                安排
+              </p>
+              <p @click.stop="equipment" class="header_pe_quipment">
+                重新安排
+              </p>
+              <p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>
+            </li>
           </ul>
-          <transition enter-active-class="fadeInUp"
-            leave-active-class="fadeOutDown">
-            <div v-show="item.active" class="inline_div">
-              <repairchild></repairchild>
-            </div>
-          </transition>
         </li>
       </ul>
 
@@ -122,18 +137,41 @@
     <section v-if="review_boolean" @click.stop class="review">
       <increase :msg="review_boolean" @say="onSay"></increase>
     </section>
-
+    <section v-show="examineBoolean" @click.stop class="review">
+      <!--审核-->
+      <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
+    </section>
+    <section v-if="lookoverBoolean" @click.stop class="review">
+      <!--查看-->
+      <childLookover :examine="examineData" @look="Onlook"></childLookover>
+    </section>
+    <section v-show="modifyBoolean" @click.stop class="review">
+      <!--安排-->
+      <childModify :msg="modifyBoolean" @say="Modify"></childModify>
+    </section>
+    <section v-show="quipmentBoolean" class="review" @click.stop>
+      <!--更换设备-->
+      <childquipment :msg="quipmentBoolean" @quipment="Quipment"></childquipment>
+    </section>
   </div>
 </template>
 
 <script>
 import repairchild from '../repair-child/repair-child'
 import increase from '../admin-child/adminChild-review'
+import childLookover from '../repair-operation/repair-lookover'
+import childModify from '../repair-operation/repair-arrange'
+import childExamine from '../repair-operation/repair-examine'
+import childquipment from '../repair-operation/repair-rescheduling'
 export default {
   name: 'maintain-repair',
   components: {
     repairchild,
-    increase
+    increase,
+    childLookover,
+    childModify,
+    childExamine,
+    childquipment
   },
   methods: {
     selectStyle (item, index, tableData) {
@@ -147,18 +185,12 @@ export default {
       })
       item.active = !item.active
     },
-    examine (item) {
-      // 一级审核
-      item.auditin = !item.auditin
-      item.admin_show = !item.admin_show
-    },
     auditing () {
       // 点击新增 出现 新增组件
       this.review_boolean = true
     },
     preservation (item) {
       // 一级 审核 保存
-      console.log(item.value)
       item.admin_show = !item.admin_show
       item.auditin = !item.auditin
     },
@@ -170,93 +202,100 @@ export default {
     onSay (ev) {
       // 子级组件传递 参数 让新增组件 隐藏
       this.review_boolean = ev
+    },
+    amputate ($index, content) {
+      // 删除
+      content.splice([$index], 1)
+    },
+    examine (id) {
+      // 点击查看
+      this.axios.post(`http://172.16.6.181:8920/repairtasks/findTaskByTaskid?repairtaskid=${id}`).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response.data.data)
+          this.examineData = response.data.data
+        }
+      })
+      this.lookoverBoolean = true
+    },
+    modify () {
+      // 点击修改
+      this.modifyBoolean = true
+    },
+    question () {
+      // 点击审核
+      this.examineBoolean = true
+    },
+    Mine (ev) {
+      alert('111')
+      // 审核 传递的参数
+      this.examineBoolean = ev
+    },
+    Onlook (ev) {
+      this.lookoverBoolean = ev
+    },
+    Modify (ev) {
+      this.modifyBoolean = ev
+    },
+    equipment () {
+      this.quipmentBoolean = true
+    },
+    Quipment (ev) {
+      this.quipmentBoolean = ev
     }
   },
   data () {
     return {
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      tabulationData: '',
+      options: [],
       value: '',
       review_boolean: false,
       // 获取点击的id
       click_id: '',
-      value1: '',
-      tableData: [{
-        active: false,
-        // 审核按钮 显示 隐藏
-        auditin: true,
-        // 一级列表 审核  显示 隐藏
-        admin_show: false,
-        index: 0,
-        id: '1',
-        date: '1号车间',
-        quantum: '100',
-        await: '30',
-        normal: '1000',
-        child: [{
-          value: '选项1',
-          label: '111'
-        }, {
-          value: '选项2',
-          label: '222'
-        }, {
-          value: '选项3',
-          label: '333'
-        }, {
-          value: '选项4',
-          label: '444'
-        }, {
-          value: '选项5',
-          label: '555'
-        }],
-        value: ''
-      }, {
-        active: false,
-        // 审核按钮 显示 隐藏
-        auditin: true,
-        // 一级列表 审核  显示 隐藏
-        admin_show: false,
-        index: 1,
-        id: '2',
-        date: '2号车间',
-        quantum: '10',
-        await: '303',
-        normal: '1',
-        child: [
-          {
-            value: '选项1',
-            label: '黄金糕'
-          }, {
-            value: '选项2',
-            label: '双皮奶'
-          }, {
-            value: '选项3',
-            label: '蚵仔煎'
-          }, {
-            value: '选项4',
-            label: '龙须面'
-          }, {
-            value: '选项5',
-            label: '北京烤鸭'
-          }
-        ],
-        value: ''
-      }]
+      regionProps: {
+        children: 'areas',
+        label: 'areaname',
+        value: 'areaid'
+      },
+      regionDate: [],
+      regionModel: [],
+      tableData: [],
+      AuditstatusDate: [],
+      Auditstatus: '',
+      examineBoolean: false,
+      lookoverBoolean: false,
+      modifyBoolean: false,
+      quipmentBoolean: false,
+      examineData: ''
     }
+  },
+  created () {
+    //  获取区域
+    this.axios.post('http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
+      if (response.data.code === 0) {
+        this.regionDate = response.data.data
+      }
+    })
+    //  审核状态
+    this.axios.post('http://172.16.6.181:8920/task/getTaskQueryApprovalItems').then((response) => {
+      if (response.data.code === 0) {
+        this.AuditstatusDate = response.data.data
+        response.data.data.forEach((val) => {
+          if (val.isdefault === 1) {
+            this.Auditstatus.push(val.value)
+          }
+        })
+      }
+    })
+    //  获取列表
+    console.log(window.localStorage)
+    let projectid = window.localStorage.pattern
+    this.axios.post(`http://172.16.6.181:8920/repairtasks/findRepairTasks?projectid=${projectid}`).then((response) => {
+      console.log(response)
+      if (response.data.code === 0) {
+        this.tabulationData = response.data.data
+        console.log(response.data.data)
+      }
+    })
   }
 }
 </script>
@@ -350,7 +389,8 @@ export default {
     position relative
     color $color-header-b-normal
     font-size $font-size-medium
-    padding 12px 0
+    padding 4px 0
+    line-height 32px
     background #354d76
   .header_li
     float left
@@ -392,11 +432,34 @@ export default {
   .header_lithree
     float left
     width 9%
+    height 32px
     padding-left 1%
   .repair_li
-    width 20%
+    width 11%
+    padding-left 1%
+    height 32px
+    float left
+    text-align left
+  .repair_litwo
+    width 14%
+    height 32px
     float left
     text-align center
+  .repair_lithree
+    width 6%
+    height 32px
+    float left
+    text-align center
+  .repair_lifour
+    width 16%
+    float left
+    height 32px
+    text-align center
+  .repair_lifive
+    width 16%
+    float left
+    height 32px
+    overflow hidden
   .header_p_one
     color $color-text-tile-state
   .header_p_two
@@ -454,7 +517,30 @@ export default {
     background rgba(000,000,000,.4)
     z-index 11
     overflow hidden
-
+  .header_p_eight
+    float left
+    margin-right 20px
+    color $color-background-query
+  .header_p_ten
+    float left
+    margin-right 20px
+    color $color-background-newly
+  .header_p_twelve
+    float left
+    margin-right 20px
+    color $color-background-introduce
+  .header_pe_quipment
+    float left
+    margin-right 20px
+    color #32a697
+  .header_p_eleven
+    float left
+    margin-right 20px
+    color #83292b
+  .subject_bottomDIv
+    margin 15px
+    position relative
+    overflow hidden
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner

@@ -78,22 +78,6 @@
         </ul>
       </li>
     </ul>
-    <section v-show="examineBoolean" @click.stop class="review">
-      <!--审核-->
-      <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
-    </section>
-    <section v-show="lookoverBoolean" @click.stop class="review">
-      <!--查看-->
-      <childLookover :msg="lookoverBoolean" @look="Onlook"></childLookover>
-    </section>
-    <section v-show="modifyBoolean" @click.stop class="review">
-      <!--安排-->
-      <childModify :msg="modifyBoolean" @say="Modify"></childModify>
-    </section>
-    <section v-show="quipmentBoolean" class="review" @click.stop>
-      <!--更换设备-->
-      <childquipment :msg="quipmentBoolean" @quipment="Quipment"></childquipment>
-    </section>
   </div>
 
 </template>
@@ -308,15 +292,15 @@ export default {
         margin-right 35px
         text-decoration underline
         cursor pointer
-  .review
-    position fixed
-    top 0
-    left 0
-    width 100%
-    height 100%
-    background rgba(000,000,000,.4)
-    z-index 11
-    overflow hidden
+   .review
+     position fixed
+     top 0
+     left 0
+     width 100%
+     height 100%
+     background rgba(000,000,000,.4)
+     z-index 11
+     overflow hidden
 </style>
 <style>
   .el-date-editor.el-input, .el-date-editor.el-input__inner{

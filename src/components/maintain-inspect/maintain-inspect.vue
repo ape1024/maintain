@@ -120,7 +120,59 @@ export default {
   },
   methods: {
     query () {
-      if (this.click_id === '') {
+      let flag = null
+      this.tableDatataskStat.forEach((val) => {
+        if (val.flag === true) {
+          flag = true
+          return false
+        } else {
+          return false
+        }
+      })
+      if (this.tableDatataskStat.length !== 0) {
+        if (flag === true) {
+          if (this.Auditstatus.length !== 0) {
+            if (this.Auditstatus.length === this.AuditstatusDate.length) {
+              this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${this.click_id}`).then((response) => {
+                if (response.data.code === 0) {
+                  console.log(response.data.data)
+                  this.dailyChild = response.data.data
+                }
+              })
+            } else {
+              let approvalstates = this.Auditstatus.join(',')
+              this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${this.click_id}&approvalstates=${approvalstates}`).then((response) => {
+                if (response.data.code === 0) {
+                  console.log(response.data.data)
+                  this.dailyChild = response.data.data
+                }
+              })
+            }
+          } else {
+            this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${this.click_id}`).then((response) => {
+              if (response.data.code === 0) {
+                console.log(response.data.data)
+                this.dailyChild = response.data.data
+              }
+            })
+          }
+        } else {
+          if (this.regionModel.length === 0) {
+            alert('请选择区域！')
+            return false
+          } else {
+            let projectid = window.localStorage.pattern
+            let areaid = this.regionModel[this.regionModel.length - 1]
+            console.log(areaid)
+            this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=3&projectid=${projectid}&areaid=${areaid}`).then((response) => {
+              console.log(response)
+              if (response.data.code === 0) {
+                this.tableDatataskStat = response.data.data
+              }
+            })
+          }
+        }
+      } else {
         if (this.regionModel.length === 0) {
           alert('请选择区域！')
           return false
@@ -132,17 +184,6 @@ export default {
             console.log(response)
             if (response.data.code === 0) {
               this.tableDatataskStat = response.data.data
-            }
-          })
-        }
-      } else {
-        if (this.Auditstatus.length !== 0) {
-          let approvalstates = this.Auditstatus.join(',')
-          console.log(approvalstates)
-          this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${this.click_id}&approvalstates=${approvalstates}`).then((response) => {
-            if (response.data.code === 0) {
-              console.log(response.data.data)
-              this.dailyChild = response.data.data
             }
           })
         }

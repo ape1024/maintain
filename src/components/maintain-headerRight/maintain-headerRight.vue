@@ -45,7 +45,7 @@ export default {
       portrait: sessionStorage.userInfo ? JSON.parse(sessionStorage.userInfo).icon : '',
       username: sessionStorage.userInfo ? JSON.parse(sessionStorage.userInfo).username : '',
       options: [],
-      value: ''
+      value: []
     }
   },
   methods: {
@@ -68,6 +68,9 @@ export default {
     if (window.sessionStorage.length !== 0) {
       this.portrait = JSON.parse(sessionStorage.userInfo).icon
       this.username = JSON.parse(sessionStorage.userInfo).username
+    }
+    if (window.localStorage.pattern !== undefined) {
+      this.value = JSON.parse(window.localStorage.pattern)
     }
     this.axios.post(`http://172.16.6.181:8920/projects/findAllProjects`).then((response) => {
       if (response.data.code === 0) {

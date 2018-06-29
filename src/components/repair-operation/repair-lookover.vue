@@ -2,29 +2,29 @@
   <div class="subject">
     <section class="content">
       <h4 class="contentH">
-        故障维修审核
+        故障维修查看
       </h4>
       <div class="information">
         <div class="informationTop">
           <ul class="informationTopUl">
             <li class="informationTopLitwo">
               <span>设施名称：</span>
-              <span class="informationTopSpan">111</span>
+              <span class="informationTopSpan">{{examine.devicename}}</span>
             </li>
             <li class="informationTopLi">
               <span>设备编码：</span>
-              <span class="informationTopSpan">111</span>
+              <span class="informationTopSpan">{{examine.devicecode}}</span>
             </li>
             <li class="informationTopLi">
               <span>设施位置：</span>
-              <span class="informationTopSpan">111</span>
+              <span class="informationTopSpan">{{examine.areaname}}{{examine.position}}</span>
             </li>
           </ul>
         </div>
         <ul class="informationTopUl">
           <li class="informationTopLitwo">
             <span>设施数量：</span>
-            <span class="informationTopSpan">111</span>
+            <span class="informationTopSpan">{{examine.devicecount}}</span>
           </li>
         </ul>
         <div class="tabulation">
@@ -149,7 +149,7 @@
 <script>
 export default {
   name: 'repair-lookover',
-  props: ['msg'],
+  props: ['examine'],
   data () {
     return {
       options: [{
@@ -174,13 +174,14 @@ export default {
   },
   methods: {
     conserve () {
-      this.thisPage = this.msg
-      this.thisPage = !this.thisPage
       this.$emit('look', this.thisPage)
     },
     closedown () {
-
+      this.$emit('look', this.thisPage)
     }
+  },
+  created () {
+    console.log(this.examine)
   }
 }
 </script>
