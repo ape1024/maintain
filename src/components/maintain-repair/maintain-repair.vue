@@ -117,7 +117,7 @@
               10
             </li>
             <li class="repair_lifive">
-              <p @click.stop="question" class="header_p_eight threelevel_litwo_p">
+              <p @click.stop="question(item.ID)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
               <p @click.stop="examine(item.ID)" class="header_p_ten">查看</p>
@@ -135,11 +135,11 @@
 
     </section>
     <section v-if="review_boolean" @click.stop class="review">
-      <increase :msg="review_boolean" @say="onSay"></increase>
+      <increase v-if="review_boolean" :msg="review_boolean" @say="onSay"></increase>
     </section>
-    <section v-show="examineBoolean" @click.stop class="review">
+    <section v-if="examineBoolean" @click.stop class="review">
       <!--审核-->
-      <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
+      <childExamine v-if="examineBoolean" :examine="examineData" :rework="reworkData" :examina="examination" @mine="Mine"></childExamine>
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
@@ -221,12 +221,29 @@ export default {
       // 点击修改
       this.modifyBoolean = true
     },
-    question () {
+    question (ID) {
       // 点击审核
-      this.examineBoolean = true
+      console.log(ID)
+      this.axios.post(`http://172.16.6.181:8920/repairtasks/findTaskByTaskid?repairtaskid=${ID}`).then((response) => {
+        if (response.data.code === 0) {
+          this.examineData = response.data.data
+          this.axios.post(`http://172.16.6.181:8920/reworks/findReworksByTaskid?repairtaskid=${ID}`).then((response) => {
+            console.log(response)
+            console.log(this.reworkData)
+            if (response.data.code === 0) {
+              this.reworkData = response.data.data
+              this.axios.post(`http://172.16.6.181:8920/repairtasks/getApprovalInfos?repairtaskid=${ID}`).then((response) => {
+                if (response.data.code === 0) {
+                  this.examination = response.data.data
+                  this.examineBoolean = true
+                }
+              })
+            }
+          })
+        }
+      })
     },
     Mine (ev) {
-      alert('111')
       // 审核 传递的参数
       this.examineBoolean = ev
     },
@@ -265,7 +282,9 @@ export default {
       lookoverBoolean: false,
       modifyBoolean: false,
       quipmentBoolean: false,
-      examineData: ''
+      examineData: '',
+      reworkData: '',
+      examination: ''
     }
   },
   created () {
@@ -541,6 +560,7 @@ export default {
     margin 15px
     position relative
     overflow hidden
+
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner

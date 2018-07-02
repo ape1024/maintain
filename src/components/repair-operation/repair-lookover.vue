@@ -213,7 +213,7 @@ export default {
         position relative
         padding-bottom 14px
         margin-bottom 14px
-        border-bottom 1px solid #444d5b
+        border-bottom 1px solid $color-border-list
       .informationTopUl
         init()
         .informationTopLitwo
@@ -244,21 +244,21 @@ export default {
           background #0b111a
           overflow hidden
           margin-bottom 14px
-          border 1px solid #444d5b
+          border 1px solid $color-border-list
         .tleftBottom
           width 543px
           background #0b111a
           overflow hidden
           margin-bottom 14px
           font-size $font-size-small
-          border 1px solid #444d5b
+          border 1px solid $color-border-list
           justify-content center
           align-items center
           display -webkit-flex
         .tlefttopHeader
           init()
           padding 10px 0
-          border-bottom 1px solid #444d5b
+          border-bottom 1px solid $color-border-list
           color $color-text
           font-size $font-size-medium
         .tlefttopHeaderP
@@ -272,7 +272,7 @@ export default {
         .tlefttopli
           overflow hidden
           position relative
-          border-bottom 1px solid #444d5b
+          border-bottom 1px solid $color-border-list
           padding 28px 0
         .tlefttopUl .tlefttopli:last-child
           border none
@@ -284,12 +284,11 @@ export default {
           vertical-align middle
         .tlefttopRight
           init()
-          border-left 1px solid #444d5b
         .tlefttopRight .tlefttoprightLi:last-child
           border none
         .tlefttoprightLi
           init()
-          border-bottom 1px solid #444d5b
+          border-bottom 1px solid $color-border-list
           padding 10px 0
         .tlefttoprightliP
           float left
@@ -314,7 +313,7 @@ export default {
           height 1px
           width 100%
           margin-top 5px
-          background #444d5b
+          background $color-border-list
       .assortment
         overflow hidden
         position relative
