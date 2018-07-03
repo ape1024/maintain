@@ -44,15 +44,15 @@
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">安排时间：</span>
-                    <span>{{examine.createtime}}</span>
+                    <span>{{fmtDate(examine.createtime)}}</span>
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">审核人员：</span>
-                    <span>111</span>
+                    <span>{{examina.approvername}}</span>
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">审核时间：</span>
-                    <span></span>
+                    <span>{{fmtDate(examina.approvaltime)}}</span>
                   </p>
                 </div>
                 <ul class="tlefttopUl">
@@ -63,7 +63,7 @@
                     </div>
                     <div class="tlefttopli__Div">
                       <span class="tlefttopli_Span">审核结论：</span>
-                      <span class="tlefttopli_Spantwo">131231</span>
+                      <span class="tlefttopli_Spantwo">{{approvalStatus(examina.approvalstate)}}</span>
                     </div>
                   </li>
                   <li class="tlefttopli">
@@ -73,7 +73,9 @@
                     </div>
                     <div class="tlefttopli__Div">
                       <span class="tlefttopli_Span">审核意见：</span>
-                      <span class="tlefttopli_Spantwo">131231</span>
+                      <span class="tlefttopli_Spantwo">
+                        {{examina.approvalopinion}}
+                      </span>
                     </div>
                   </li>
                   <li class="tlefttopli">
@@ -86,74 +88,165 @@
           </div>
         </div>
         <section class="classification">
-          <header class="ficationHeader">
-            <p class="ficationHeaderP">故障维修验证</p>
-            <p class="ficationHeaderX"></p>
-          </header>
-          <div class="verification">
-            <ul class="verificationUl">
-              <li class="verificationLi">
-                验证意见
-              </li>
-              <li class="verificationLitwo">
-                <div class="verificationLitwoDiv">
-                 <p class="verificationLiP">
-                   <el-radio v-model="radio" label="1">经确认，故障问题已处理</el-radio>
-                 </p>
-                 <p class="verificationLiP">
-                   <el-radio v-model="radio" label="2">
-                     其他意见
-                     <div class="inputDiv">
-                       <el-input v-model="input" placeholder="请输入内容"></el-input>
-                     </div>
-                   </el-radio>
-                 </p>
-                </div>
-              </li>
-              <li class="verificationLithree">
-                <div class="verificationLithreeDiv">
-                  <p>
-                    <span>验证人员：</span>
-                    <span class="verificationLithreeDivSpan">{{examine.checktime}}</span>
-                  </p>
-                </div>
-                <div class="verificationLithreeDivtwo">
-                  <p>
-                    <span>验证时间：</span>
-                    <span class="verificationLithreeDivSpan">
+          <div class="classificationDiv">
+            <div class="classificationLeft">
+              <header class="ficationHeader">
+                <p class="ficationHeaderP">故障维修审核</p>
+                <p class="ficationHeaderX"></p>
+              </header>
+              <ul class="verificationUl">
+                <li class="verificationLifour">
+                  <div class="verificationLithreeDiv">
+                    <span>审核结论：</span>
+                    <el-radio-group v-model="approvalradio">
+                      <el-radio :key="index" v-for="(item, index) in approvaloptions" :label="item.value">{{item.name}}</el-radio>
+                    </el-radio-group>
+                  </div>
+                  <div class="verificationLithreeDivtwo">
+                    <span>审核意见：</span>
+                    <span class="differingOpinion"><el-input v-model="input" placeholder="请输入内容"></el-input></span>
+                  </div>
+                  <div class="verificationLithreeDiv">
+                    <span class="verificationLithreeDiv_Spantwo">返工时间:</span>
+                    <span class="verificationLithreeDiv_Span">
+                      <el-date-picker
+                        v-model="waatitime"
+                        type="date"
+                        placeholder="选择日期">
+                    </el-date-picker>
+                    </span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="classificationRight">
+              <header class="ficationHeader">
+                <p class="ficationHeaderP">故障维修验证</p>
+                <p class="ficationHeaderX"></p>
+              </header>
+              <ul class="verificationUl">
+                <li class="verificationLithree">
+                  <div class="verificationLithreeDiv">
+                    <p class="verificationLithreeDivPP">
+                      <span>验证人员：</span>
+                      <span class="verificationLithreeDivSpan">{{examine.checktime}}</span>
+                    </p>
+                    <p class="verificationLithreeDivPPtwo">
+                      <span>验证时间：</span>
+                      <span class="verificationLithreeDivSpan">
                       {{examine.checkpersonname}}
                     </span>
-                  </p>
-                </div>
-              </li>
-              <li class="verificationLifour">
-                <div class="verificationLithreeDiv">
-                  <span>审核结论：</span>
-                  <el-radio-group v-model="approvalradio">
-                    <el-radio :key="index" v-for="(item, index) in approvaloptions" :label="item.value">{{item.name}}</el-radio>
-                  </el-radio-group>
-                </div>
-                <div class="verificationLithreeDivtwo">
-                  审核意见：
-                  <span class="differingOpinion"><el-input v-model="input" placeholder="请输入内容"></el-input></span>
-                </div>
-              </li>
-            </ul>
+                    </p>
+                  </div>
+                  <div class="verificationLitwoDiv">
+                    <p class="verificationLiP">
+                      <el-radio v-model="radio" label="1">经确认，故障问题已处理</el-radio>
+                    </p>
+                    <p class="verificationLiP">
+                      <el-radio v-model="radio" label="2">
+                        其他意见
+                        <div class="inputDiv">
+                          <el-input v-model="input" placeholder="请输入内容"></el-input>
+                        </div>
+                      </el-radio>
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
+          <!--<div class="verification">-->
+          <!--</div>-->
         </section>
         <section class="classification">
           <header class="ficationHeader">
             <p class="ficationHeaderP">维修记录</p>
           </header>
           <ul class="ficationUl">
-            <li class="ficationLi">
-              <div @click="ficationClick" class="ficationLiDiv">
+            <li :key="index" v-for="(item ,index) in reworkData" class="ficationLi">
+              <div @click.stop="ficationClick(item, reworkData)" class="ficationLiDiv">
                 <p class="ficationLiDivP">
                     <span class="ficationLiDivSpan">
-                 {{examine.repairtime}}
+                 {{fmtDate(item.repairtime)}}
                 </span>
                   <span class="ficationLiDivSpantwo">
-                  {{examine.repairstate}}
+                  {{obtainState(item.repairstate)}}
+                </span>
+                </p>
+                <p class="ficationLiDivPtwo">
+                  <i v-show="item.flag" class="el-icon-arrow-down
+"></i>
+                  <i v-show="!item.flag" class="el-icon-arrow-up"></i>
+                </p>
+                <p class="ficationLiDivPthree">
+                  返工
+                </p>
+              </div>
+              <div v-show="item.flag" class="ficationEnsconce">
+                <ul class="ficationEnsconceUl">
+                  <li class="ficationEnsconceLi">
+                    <p class="ficationEnsconceLiP">
+                      <span class="ficationEnsconceLiSpan">
+                        处理时间:
+                      </span>
+                      <span class="ficationEnsconceLiSpantwo">
+                        {{fmtDate(item.repairtime)}}
+                      </span>
+                    </p>
+                    <p class="ficationEnsconceLiPtwo">
+                      <span class="ficationEnsconceLiSpan">
+                        处理人员:
+                      </span>
+                      <span class="ficationEnsconceLiSpantwo">
+                        {{item.repairpersonname}}
+                      </span>
+                    </p>
+                    <p class="ficationEnsconceLiPtwo">
+  <span class="ficationEnsconceLiSpan">
+                        处理结果:
+                      </span>
+                      <span class="ficationEnsconceLiSpantwo">
+                        {{obtainState(item.repairstate)}}
+                      </span>
+                    </p>
+                  </li>
+                  <li class="ficationEnsconceLitwo">
+                    <div class="ficationEnsconceLitwoDiv">
+                      <span class="ficationEnsconceLitwoSpan">
+                        问题原因:
+                      </span>
+                      <span class="ficationEnsconceLitwoSpantwo">
+                        {{item.reason}}
+                      </span>
+                    </div>
+                    <div class="ficationEnsconceLitwoDiv">
+                      <span class="ficationEnsconceLitwoSpan">
+                        处理情况:
+                      </span>
+                      <span class="ficationEnsconceLitwoSpantwo">
+                        {{item.treatment}}
+                      </span>
+                    </div>
+                  </li>
+                  <li class="ficationEnsconceLitwo">
+                      <span class="ficationEnsconceLitwoSpan">
+                        现场照片:
+                      </span>
+                    <span class="ficationEnsconceLitwoSpanThree">
+                      <img class="ficationEnsconceLitwoSpanThreeImg" :key="index" v-for="(data ,index) in fieldphoto(item.afterphotos)" :src="data" alt="">
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="ficationLi">
+              <div @click="approvalClick" class="ficationLiDiv">
+                <p class="ficationLiDivP">
+                    <span class="ficationLiDivSpan">
+                 {{fmtDate(examine.repairtime)}}
+                </span>
+                  <span class="ficationLiDivSpantwo">
+                  {{obtainState(examine.repairstate)}}
                 </span>
                 </p>
                 <p class="ficationLiDivPtwo">
@@ -170,7 +263,7 @@
                         处理时间:
                       </span>
                       <span class="ficationEnsconceLiSpantwo">
-                        {{examine.repairtime}}
+                        {{fmtDate(examine.repairtime)}}
                       </span>
                     </p>
                     <p class="ficationEnsconceLiPtwo">
@@ -186,7 +279,7 @@
                         处理结果:
                       </span>
                       <span class="ficationEnsconceLiSpantwo">
-                        {{examine.repairstate}}
+                        {{obtainState(examine.repairstate)}}
                       </span>
                     </p>
                   </li>
@@ -196,7 +289,7 @@
                         问题原因:
                       </span>
                       <span class="ficationEnsconceLitwoSpantwo">
-1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
+                        {{examine.reason}}
                       </span>
                     </div>
                     <div class="ficationEnsconceLitwoDiv">
@@ -204,7 +297,7 @@
                         处理情况:
                       </span>
                       <span class="ficationEnsconceLitwoSpantwo">
-1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
+                        {{examine.treatment}}
                       </span>
                     </div>
                   </li>
@@ -213,7 +306,7 @@
                         现场照片:
                       </span>
                     <span class="ficationEnsconceLitwoSpanThree">
-1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
+                      <img class="ficationEnsconceLitwoSpanThreeImg" v-for="(data ,index) in fieldphoto(examine.afterphotos)" :key="index" :src="data" alt="">
                       </span>
                   </li>
                 </ul>
@@ -223,7 +316,7 @@
           <div class="assortment">
             <div class="fastener">
               <div class="examine">重新安排</div>
-              <div @click="conserve" class="conserve">保存</div>
+              <div @click="conserve" class="conserve">审核</div>
               <div class="closedown">关闭</div>
             </div>
           </div>
@@ -235,7 +328,7 @@
 <script>
 export default {
   name: 'repair-examine',
-  props: ['examine', 'rework', 'examina'],
+  props: ['examine', 'rework', 'examina', 'state', 'approval'],
   data () {
     return {
       options: [],
@@ -243,22 +336,74 @@ export default {
       value: '',
       radio: '',
       input: '',
-      ficationBoolean: true,
+      ficationBoolean: false,
       srcData: [],
       approvaloptions: '',
-      approvalradio: ''
+      approvalradio: '',
+      taskState: [],
+      reworkData: '',
+      waatitime: ''
     }
   },
   methods: {
+
     conserve () {
       this.$emit('mine', this.thisPage)
-      console.log('222222222')
     },
     closedown () {
 
     },
-    ficationClick () {
+    approvalClick () {
       this.ficationBoolean = !this.ficationBoolean
+    },
+    //  现场照片
+    fieldphoto (src) {
+      let arr = []
+      if (src === '' || src === null) {
+        return arr
+      } else {
+        src.split(',').forEach((val) => {
+          arr.push(val)
+        })
+        return arr
+      }
+    },
+    ficationClick (item, data) {
+      item.flag = !item.flag
+    },
+    //  获取任务状态
+    obtainState (number) {
+      let arr = ''
+      this.state.forEach((val) => {
+        if (val.value === number) {
+          arr = val.name
+        }
+      })
+      if (arr === '') {
+        return number
+      }
+      return arr
+    },
+    //  获取审批状态
+    approvalStatus (status) {
+      let arr = ''
+      this.approval.forEach((val) => {
+        if (val.value === status) {
+          arr = val.name
+        }
+      })
+      if (arr === '') {
+        return status
+      }
+      return arr
+    },
+    // 时间戳改格式
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = `0` + (date.getMonth() + 1)
+      let d = `0` + date.getDate()
+      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     }
   },
   created () {
@@ -269,20 +414,30 @@ export default {
       let src = this.examine.beforephotos.split(',')
       this.srcData = src
     }
-    //  维修记录
-    console.log(this.rework)
-    //  审批
-    console.log(this.examina)
-    //  审批状态
-    this.axios.post(`http://172.16.6.181:8920/task/getTaskApprovalItems`).then((response) => {
+    console.log('321123')
+    //  任务审批选项
+    this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepariTaskApprovalItem`).then((response) => {
       if (response.data.code === 0) {
+        console.log(response)
         this.approvaloptions = response.data.data
+      }
+    })
+    this.axios.post(`http://172.16.6.181:8920/reworks/findReworksByTaskid?repairtaskid=${this.examine.repairtaskid}`).then((response) => {
+      if (response.data.code === 0) {
+        if (response.data.data.length !== 0) {
+          response.data.data.forEach((val) => {
+            val.flag = false
+          })
+          response.data.data[0].flag = true
+          this.reworkData = response.data.data
+        } else {
+          this.ficationBoolean = true
+        }
       }
     })
   }
 }
 </script>
-
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
@@ -508,19 +663,14 @@ export default {
     margin-left 6px
     width 200px
   .verificationLithree
-    width calc(20% - 1px)
-    height 97px
+    width 100%
     float left
     overflow hidden
     position relative
-    border-right 1px solid $color-border-list
   .verificationLithreeDiv
-    width 496px
     height 48px
     line-height 48px
     color #999
-    text-indent 1em
-    border-bottom 1px solid $color-border-list
   .verificationLithreeDivSpan
      color #fff
   .verificationLithreeDivtwo
@@ -528,7 +678,6 @@ export default {
     height 48px
     line-height 48px
     color #999
-    text-indent 1em
   .ficationUl
     overflow hidden
     position relative
@@ -639,4 +788,37 @@ export default {
   .differingOpinion
     width 350px
     display inline-block
+  .ficationEnsconceLitwoSpanThreeImg
+    display inline-block
+    margin-right 20px
+    width 40px
+    height 40px
+  .ficationLiDivPthree
+    float right
+    margin-right 20px
+    color #cf763a
+  .classificationLeft
+    float left
+    overflow hidden
+    position relative
+    margin-right 2%
+    width 49%
+  .classificationRight
+    float right
+    overflow hidden
+    position relative
+    width 49%
+  .classificationDiv
+    margin-left 40px
+    overflow hidden
+    position relative
+  .verificationLithreeDivPP
+    width 50%
+    overflow hidden
+    float left
+  .verificationLithreeDivPPtwo
+     width 50%
+     float right
+  .verificationLithreeDiv_Spantwo
+     margin-right 12px
 </style>

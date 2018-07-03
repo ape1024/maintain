@@ -13,9 +13,9 @@
             </el-cascader>
           </div>
         </li>
-        <li class="li_input">
-          <p class="div_p">维修状态：</p>
-          <div class="div_input">
+        <!--<li class="li_input">-->
+          <!--<p class="div_p">维修状态：</p>-->
+          <!--<div class="div_input">-->
             <!--<el-select v-model="value" placeholder="">-->
               <!--<el-option-->
                 <!--v-for="item in options"-->
@@ -24,8 +24,8 @@
                 <!--:value="item.value">-->
               <!--</el-option>-->
             <!--</el-select>-->
-          </div>
-        </li>
+          <!--</div>-->
+        <!--</li>-->
         <li class="li_input">
           <p class="div_p">审批状态：</p>
           <div class="div_input">
@@ -117,10 +117,10 @@
               10
             </li>
             <li class="repair_lifive">
-              <p @click.stop="question(item.ID)" class="header_p_eight threelevel_litwo_p">
+              <p @click.stop="question(item.repairtaskid, item)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
-              <p @click.stop="examine(item.ID)" class="header_p_ten">查看</p>
+              <p @click.stop="examine(item.repairtaskid)" class="header_p_ten">查看</p>
               <p @click.stop="modify" class="header_p_twelve">
                 安排
               </p>
@@ -139,7 +139,7 @@
     </section>
     <section v-if="examineBoolean" @click.stop class="review">
       <!--审核-->
-      <childExamine v-if="examineBoolean" :examine="examineData" :rework="reworkData" :examina="examination" @mine="Mine"></childExamine>
+      <childExamine v-if="examineBoolean" :examine="examineData" :rework="reworkData" :examina="examination"  :approval="approvalStatus" :state="taskState" @mine="Mine"></childExamine>
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
@@ -221,21 +221,32 @@ export default {
       // 点击修改
       this.modifyBoolean = true
     },
-    question (ID) {
+    question (ID, data) {
       // 点击审核
-      console.log(ID)
+      console.log(data)
+
       this.axios.post(`http://172.16.6.181:8920/repairtasks/findTaskByTaskid?repairtaskid=${ID}`).then((response) => {
         if (response.data.code === 0) {
           this.examineData = response.data.data
           this.axios.post(`http://172.16.6.181:8920/reworks/findReworksByTaskid?repairtaskid=${ID}`).then((response) => {
-            console.log(response)
-            console.log(this.reworkData)
             if (response.data.code === 0) {
               this.reworkData = response.data.data
               this.axios.post(`http://172.16.6.181:8920/repairtasks/getApprovalInfos?repairtaskid=${ID}`).then((response) => {
                 if (response.data.code === 0) {
-                  this.examination = response.data.data
-                  this.examineBoolean = true
+                  // 审批记录  目前 只要第一条,待定
+                  this.examination = response.data.data[0]
+                  //  获取维修任务状态
+                  this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepairStates`).then((response) => {
+                    if (response.data.code === 0) {
+                      this.taskState = response.data.data
+                      this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepariTaskApprovalItem`).then((response) => {
+                        if (response.data.code === 0) {
+                          this.approvalStatus = response.data.data
+                          this.examineBoolean = true
+                        }
+                      })
+                    }
+                  })
                 }
               })
             }
@@ -263,8 +274,6 @@ export default {
   data () {
     return {
       tabulationData: '',
-      options: [],
-      value: '',
       review_boolean: false,
       // 获取点击的id
       click_id: '',
@@ -277,14 +286,16 @@ export default {
       regionModel: [],
       tableData: [],
       AuditstatusDate: [],
-      Auditstatus: '',
+      Auditstatus: [],
       examineBoolean: false,
       lookoverBoolean: false,
       modifyBoolean: false,
       quipmentBoolean: false,
       examineData: '',
       reworkData: '',
-      examination: ''
+      examination: '',
+      taskState: [],
+      approvalStatus: []
     }
   },
   created () {
@@ -298,11 +309,6 @@ export default {
     this.axios.post('http://172.16.6.181:8920/task/getTaskQueryApprovalItems').then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
-        response.data.data.forEach((val) => {
-          if (val.isdefault === 1) {
-            this.Auditstatus.push(val.value)
-          }
-        })
       }
     })
     //  获取列表

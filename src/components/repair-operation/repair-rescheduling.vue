@@ -92,7 +92,9 @@ export default {
     return {
       thispage: false,
       checked: true,
-      textarea: ''
+      textarea: '',
+      options: [],
+      value: ''
     }
   },
   methods: {
