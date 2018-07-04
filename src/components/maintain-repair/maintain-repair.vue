@@ -121,37 +121,36 @@
                 审核
               </p>
               <p @click.stop="examine(item.repairtaskid)" class="header_p_ten">查看</p>
-              <p @click.stop="modify" class="header_p_twelve">
-                安排
-              </p>
-              <p @click.stop="equipment" class="header_pe_quipment">
+              <p @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
                 重新安排
               </p>
+              <!--<p @click.stop="modify" class="header_pe_quipment">-->
+                <!--安排-->
+              <!--</p>-->
               <p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>
             </li>
           </ul>
         </li>
       </ul>
-
     </section>
     <section v-if="review_boolean" @click.stop class="review">
       <increase v-if="review_boolean" :msg="review_boolean" @say="onSay"></increase>
     </section>
     <section v-if="examineBoolean" @click.stop class="review">
       <!--审核-->
-      <childExamine v-if="examineBoolean" :examine="examineData" :rework="reworkData" :examina="examination"  :approval="approvalStatus" :state="taskState" @mine="Mine"></childExamine>
+      <childExamine v-if="examineBoolean" :examine="examineData" :rework="reworkData" :examina="examination"  :approval="approvalStatus" :state="taskState" @mine="Mine" @newly="Newly"></childExamine>
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
       <childLookover :examine="examineData" @look="Onlook"></childLookover>
     </section>
-    <section v-show="modifyBoolean" @click.stop class="review">
+    <section v-if="modifyBoolean" @click.stop class="review">
       <!--安排-->
-      <childModify :msg="modifyBoolean" @say="Modify"></childModify>
+      <childModify v-if="modifyBoolean" :msg="modifyBoolean" @say="Modify"></childModify>
     </section>
-    <section v-show="quipmentBoolean" class="review" @click.stop>
+    <section v-if="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
-      <childquipment :msg="quipmentBoolean" @quipment="Quipment"></childquipment>
+      <childquipment v-if="quipmentBoolean" :msg="quipmentData" @quipment="Quipment"></childquipment>
     </section>
   </div>
 </template>
@@ -174,6 +173,17 @@ export default {
     childquipment
   },
   methods: {
+    Newly (ev) {
+      console.log('dadadad123')
+      console.log(ev)
+      this.examineBoolean = false
+      this.axios.post(`http://172.16.6.181:8920/repairtasks/findTaskByTaskid?repairtaskid=${ev.repairtaskid}`).then((response) => {
+        if (response.data.code === 0) {
+          this.quipmentData = response.data.data
+          this.quipmentBoolean = true
+        }
+      })
+    },
     selectStyle (item, index, tableData) {
       // 点击一级出现二级
       console.log(event)
@@ -224,23 +234,29 @@ export default {
     question (ID, data) {
       // 点击审核
       console.log(data)
-
       this.axios.post(`http://172.16.6.181:8920/repairtasks/findTaskByTaskid?repairtaskid=${ID}`).then((response) => {
         if (response.data.code === 0) {
+          console.log('1')
           this.examineData = response.data.data
           this.axios.post(`http://172.16.6.181:8920/reworks/findReworksByTaskid?repairtaskid=${ID}`).then((response) => {
             if (response.data.code === 0) {
+              console.log('2')
               this.reworkData = response.data.data
               this.axios.post(`http://172.16.6.181:8920/repairtasks/getApprovalInfos?repairtaskid=${ID}`).then((response) => {
                 if (response.data.code === 0) {
+                  console.log(response)
+                  console.log('3')
                   // 审批记录  目前 只要第一条,待定
                   this.examination = response.data.data[0]
+                  console.log(this.examination)
                   //  获取维修任务状态
                   this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepairStates`).then((response) => {
                     if (response.data.code === 0) {
+                      console.log('4')
                       this.taskState = response.data.data
                       this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepariTaskApprovalItem`).then((response) => {
                         if (response.data.code === 0) {
+                          console.log('5')
                           this.approvalStatus = response.data.data
                           this.examineBoolean = true
                         }
@@ -264,8 +280,13 @@ export default {
     Modify (ev) {
       this.modifyBoolean = ev
     },
-    equipment () {
-      this.quipmentBoolean = true
+    equipment (ID) {
+      this.axios.post(`http://172.16.6.181:8920/repairtasks/findTaskByTaskid?repairtaskid=${ID}`).then((response) => {
+        if (response.data.code === 0) {
+          this.quipmentData = response.data.data
+          this.quipmentBoolean = true
+        }
+      })
     },
     Quipment (ev) {
       this.quipmentBoolean = ev
@@ -295,7 +316,8 @@ export default {
       reworkData: '',
       examination: '',
       taskState: [],
-      approvalStatus: []
+      approvalStatus: [],
+      quipmentData: ''
     }
   },
   created () {

@@ -104,13 +104,14 @@
                   </div>
                   <div class="verificationLithreeDivtwo">
                     <span>审核意见：</span>
-                    <span class="differingOpinion"><el-input v-model="input" placeholder="请输入内容"></el-input></span>
+                    <span class="differingOpinion"><el-input v-model="approvalOpinionInput" placeholder="请输入内容"></el-input></span>
                   </div>
                   <div class="verificationLithreeDiv">
                     <span class="verificationLithreeDiv_Spantwo">返工时间:</span>
                     <span class="verificationLithreeDiv_Span">
                       <el-date-picker
                         v-model="waatitime"
+                        value-format="yyyy-MM-dd"
                         type="date"
                         placeholder="选择日期">
                     </el-date-picker>
@@ -146,7 +147,7 @@
                       <el-radio v-model="radio" label="2">
                         其他意见
                         <div class="inputDiv">
-                          <el-input v-model="input" placeholder="请输入内容"></el-input>
+                          <el-input v-model="Otheropinions" placeholder="请输入内容"></el-input>
                         </div>
                       </el-radio>
                     </p>
@@ -315,12 +316,79 @@
           </ul>
           <div class="assortment">
             <div class="fastener">
-              <div class="examine">重新安排</div>
+              <div class="examine" @click="rescheduling">重新安排</div>
               <div @click="conserve" class="conserve">审核</div>
-              <div class="closedown">关闭</div>
+              <div class="verificationdiv" @click="verificationdiv">验证</div>
+              <div @click="closedown" class="closedown">关闭</div>
             </div>
           </div>
         </section>
+        <transition enter-active-class="fadeInUp"
+                    leave-active-class="fadeOutDown">
+        <div v-if="classificationBoolean" class="classificationDDiv">
+          <h4 class="classificationDDivH4">故障信息分类</h4>
+          <ul class="classificationDDivUl">
+            <li class="classificationDDivUlLi">
+              <span class="classificationDDivUlLiSpan">故障现象：</span>
+              <el-select v-model="faultphenomenonData" placeholder="请选择">
+                <el-option
+                  v-for="item in faultphenomenon"
+                  :key="item.faulttypeid"
+                  :label="item.faulttypename"
+                  :value="item.faulttypeid">
+                </el-option>
+              </el-select>
+            </li>
+            <li class="classificationDDivUlLi">
+              <span class="classificationDDivUlLiSpan">故障范围：</span>
+              <el-select v-model="faultrangeData" placeholder="请选择">
+                <el-option
+                  v-for="item in faultrange"
+                  :key="item.faulttypeid"
+                  :label="item.faulttypename"
+                  :value="item.faulttypeid">
+                </el-option>
+              </el-select>
+            </li>
+            <li class="classificationDDivUlLi">
+              <span class="classificationDDivUlLiSpan">故障类型：</span>
+              <el-select v-model="faulttypeData" placeholder="请选择">
+                <el-option
+                  v-for="item in faulttype"
+                  :key="item.faulttypeid"
+                  :label="item.faulttypename"
+                  :value="item.faulttypeid">
+                </el-option>
+              </el-select>
+            </li>
+            <li class="classificationDDivUlLi">
+              <span class="classificationDDivUlLiSpan">故障原因：</span>
+              <el-select v-model="faultreasonData" placeholder="请选择">
+                <el-option
+                  v-for="item in faultreason"
+                  :key="item.faulttypeid"
+                  :label="item.faulttypename"
+                  :value="item.faulttypeid">
+                </el-option>
+              </el-select>
+            </li>
+            <li class="classificationDDivUlLi">
+              <span class="classificationDDivUlLiSpan">处理办法：</span>
+              <el-select v-model="faulttreatmentData" placeholder="请选择">
+                <el-option
+                  v-for="item in faulttreatment"
+                  :key="item.faulttypeid"
+                  :label="item.faulttypename"
+                  :value="item.faulttypeid">
+                </el-option>
+              </el-select>
+            </li>
+          </ul>
+          <div class="classificationDDivUlLiexamine" @click="classificationDDivUlLiexamine">
+            审核
+          </div>
+        </div>
+        </transition>
       </section>
     </div>
 </template>
@@ -342,16 +410,151 @@ export default {
       approvalradio: '',
       taskState: [],
       reworkData: '',
-      waatitime: ''
+      waatitime: '',
+      approvalOpinionInput: '',
+      Otheropinions: '',
+      classificationBoolean: false,
+      //  处理办法
+      faulttreatment: '',
+      faulttreatmentData: '',
+      //  故障原因
+      faultreason: '',
+      faultreasonData: '',
+      //  故障范围
+      faultrange: '',
+      faultrangeData: '',
+      //  故障类型
+      faulttype: '',
+      faulttypeData: '',
+      // 故障现象
+      faultphenomenon: '',
+      faultphenomenonData: ''
+
     }
   },
   methods: {
-
+    classificationDDivUlLiexamine () {
+      let token = JSON.parse(window.sessionStorage.token)
+      let repairtaskid = this.examine.repairtaskid
+      let approvalOpinion = this.approvalOpinionInput
+      let approvalState = this.approvalradio
+      let assignmenttime = this.waatitime
+      if (approvalState === 30) {
+        this.axios.post(`http://172.16.6.181:8920/repairtasks/approvalTask?token=${token}&repairtaskid=${repairtaskid}&approvalOpinion=${approvalOpinion}&approvalState=${approvalState}&assignmenttime=${assignmenttime}&faulttypeid=${this.faulttypeData}&faultreasonid=${this.faultreasonData}&faultrangeid=${this.faultrangeData}&faultphenomenonid=${this.faultphenomenonData}&faulttreamentid=${this.faulttreatmentData}`).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            this.$message({
+              message: '审批成功',
+              type: 'success'
+            })
+            this.$emit('mine', this.thisPage)
+          }
+        })
+      } else {
+        this.axios.post(`http://172.16.6.181:8920/repairtasks/approvalTask?token=${token}&repairtaskid=${repairtaskid}&approvalOpinion=${approvalOpinion}&approvalState=${approvalState}&&faulttypeid=${this.faulttypeData}&faultreasonid=${this.faultreasonData}&faultrangeid=${this.faultrangeData}&faultphenomenonid=${this.faultphenomenonData}&faulttreamentid=${this.faulttreatmentData}`).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              message: '审批成功',
+              type: 'success'
+            })
+            this.$emit('mine', this.thisPage)
+          }
+        })
+      }
+    },
+    rescheduling () {
+      this.$emit('newly', this.examine)
+    },
+    verificationdiv () {
+      let token = JSON.parse(window.sessionStorage.token)
+      let repairtaskid = this.examine.repairtaskid
+      let confirmopinion = ``
+      console.log()
+      if (parseInt(this.radio) === 1) {
+        confirmopinion += '经确认，故障问题已处理'
+      } else {
+        confirmopinion = this.Otheropinions
+      }
+      if (confirmopinion !== '') {
+        this.axios.post(`http://172.16.6.181:8920/repairtasks/checkTask?token=${token}&taskID=${repairtaskid}&confirmopinion=${confirmopinion}`).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              message: '验证成功',
+              type: 'success'
+            })
+            this.$emit('mine', this.thisPage)
+          }
+        })
+      } else {
+        this.$message({
+          message: '验证意见不能为空!',
+          type: 'warning'
+        })
+      }
+      console.log(this.radio)
+      console.log(confirmopinion)
+    },
     conserve () {
-      this.$emit('mine', this.thisPage)
+      let token = JSON.parse(window.sessionStorage.token)
+      let repairtaskid = this.examine.repairtaskid
+      let approvalOpinion = this.approvalOpinionInput
+      let approvalState = this.approvalradio
+      let assignmenttime = this.waatitime
+      console.log(token)
+      console.log(repairtaskid)
+      console.log(approvalOpinion)
+      console.log(approvalState)
+      console.log(assignmenttime)
+      if (approvalOpinion !== '') {
+        if (approvalState !== '') {
+          if (approvalState === 30) {
+            if (assignmenttime !== '' && assignmenttime !== null) {
+              this.axios.post(`http://172.16.6.181:8920/repairtasks/getFaultSelectItems`).then((response) => {
+                if (response.data.code === 0) {
+                  this.faulttreatment = response.data.data.faulttreatment
+                  this.faultreason = response.data.data.faultreason
+                  this.faultrange = response.data.data.faultrange
+                  this.faulttype = response.data.data.faulttype
+                  this.faultphenomenon = response.data.data.faultphenomenon
+                  this.classificationBoolean = true
+                }
+              })
+            } else {
+              this.$message({
+                message: '返工时间不能为空!',
+                type: 'warning'
+              })
+              return false
+            }
+          } else {
+            this.axios.post(`http://172.16.6.181:8920/repairtasks/getFaultSelectItems`).then((response) => {
+              if (response.data.code === 0) {
+                this.classificationBoolean = true
+                this.faulttreatment = response.data.data.faulttreatment
+                this.faultreason = response.data.data.faultreason
+                this.faultrange = response.data.data.faultrange
+                this.faulttype = response.data.data.faulttype
+                this.faultphenomenon = response.data.data.faultphenomenon
+              }
+            })
+          }
+        } else {
+          this.$message({
+            message: '审核结论不能为空!',
+            type: 'warning'
+          })
+          return false
+        }
+      } else {
+        this.$message({
+          message: '审核意见不能为空!',
+          type: 'warning'
+        })
+        return false
+      }
     },
     closedown () {
-
+      this.$emit('mine', this.thisPage)
     },
     approvalClick () {
       this.ficationBoolean = !this.ficationBoolean
@@ -617,6 +820,7 @@ export default {
          text-align center
          .examine
            examine()
+           color #fff
            margin-right 30px
            display inline-block
          .conserve
@@ -821,4 +1025,50 @@ export default {
      float right
   .verificationLithreeDiv_Spantwo
      margin-right 12px
+  .verificationdiv
+    width 107px
+    border-radius 5px
+    height 36px
+    text-align center
+    line-height 36px
+    background #3292a6
+    -webkit-transition 0.2s
+    transition 0.2s
+    cursor pointer
+    color #fff
+    margin-right 30px
+    display inline-block
+  .verificationdiv:hover
+     background #44a7bb
+  .classificationDDiv
+    position fixed
+    top 200px
+    left 50%
+    margin-left -450px
+    background #111a28
+    text-align center
+    padding 20px 40px 40px
+    border 1px solid #444d5b
+    width 820px
+  .classificationDDivH4
+    font-size 20px
+    margin-bottom 40px
+    text-align left
+    color #eee
+  .classificationDDivUl
+    margin-bottom 20px
+    init()
+  .classificationDDivUlLi
+    width 50%
+    overflow hidden
+    position relative
+    margin-bottom 20px
+    float left
+  .classificationDDivUlLiSpan
+    line-height 48px
+    margin-right 10px
+    color #999
+  .classificationDDivUlLiexamine
+    color #fff
+    examine()
 </style>
