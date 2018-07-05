@@ -52,6 +52,12 @@
                上报问题管理
              </li>
            </router-link>
+           <router-link to="/plan">
+             <li>
+               <i class="headerArranged"></i>
+               任务计划管理
+             </li>
+           </router-link>
            <router-link to="/intercalate">
              <li>
                <i class="headerIntercalate"></i>
@@ -194,6 +200,8 @@ export default {
      headerRouter("../static/img/report.png")
    .headerIntercalate
      headerRouter("../static/img/intercalate.png")
+   .headerArranged
+     headerRouter("../static/img/headerArrangedtwo.png")
   .router-link-active li
     background rgba(255,255,255,.1)
     color $color-text
@@ -225,5 +233,7 @@ export default {
  .router-link-active .headerIntercalate
    background url("../static/img/intercalate_select.png") no-repeat
    background-size cover
-
+ .router-link-active .headerArranged
+   background url("../static/img/headerArranged.png") no-repeat
+   background-size cover
 </style>

@@ -20,6 +20,8 @@ import repair from '../components/maintain-repair/maintain-repair'
 import archives from '../components/maintain-archives/maintain-archives'
 // 上报问题
 import report from '../components/maintain-report/maintain-report'
+//  计划
+import plan from '../components/maintain-arranged/maintain-arranged'
 // 系统设置
 import intercalate from '../components/maintain-intercalate/maintain-intercalate'
 // 系统设置-维保部门管理
@@ -74,6 +76,11 @@ const routes = [
     // 故障维修
     path: '/repair',
     component: repair
+  },
+  {
+    //  计划
+    path: '/plan',
+    component: plan
   },
   {
     // 档案

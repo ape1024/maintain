@@ -137,8 +137,8 @@
       <section class="classification">
         <div class="assortment">
           <div class="fastener">
-            <div @click="conserve" class="conserve">确认</div>
-            <div class="closedown">关闭</div>
+            <!--<div @click="conserve" class="conserve">确认</div>-->
+            <div @click="conserve" class="closedown">关闭</div>
           </div>
         </div>
       </section>

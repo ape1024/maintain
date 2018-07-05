@@ -13,19 +13,19 @@
             </el-cascader>
           </div>
         </li>
-        <!--<li class="li_input">-->
-          <!--<p class="div_p">维修状态：</p>-->
-          <!--<div class="div_input">-->
-            <!--<el-select v-model="value" placeholder="">-->
-              <!--<el-option-->
-                <!--v-for="item in options"-->
-                <!--:key="item.value"-->
-                <!--:label="item.label"-->
-                <!--:value="item.value">-->
-              <!--</el-option>-->
-            <!--</el-select>-->
-          <!--</div>-->
-        <!--</li>-->
+        <li class="li_input">
+          <p class="div_p">维修状态：</p>
+          <div class="div_input">
+            <el-select v-model="maintenanceData" placeholder="">
+              <el-option
+                v-for="item in maintenance"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </li>
         <li class="li_input">
           <p class="div_p">审批状态：</p>
           <div class="div_input">
@@ -42,7 +42,7 @@
       </ul>
       <div class="button">
         <!--查询-->
-        <div class="query">
+        <div @click="query" class="query">
           查 询
         </div>
       </div>
@@ -111,10 +111,10 @@
               {{item.repairperson}}{{item.others}}
             </li>
             <li class="repair_lithree">
-              9
+              {{item.creater}}
             </li>
             <li class="repair_lithree">
-              10
+              {{approvalStatusfn(item.approvalstate)}}
             </li>
             <li class="repair_lifive">
               <p @click.stop="question(item.repairtaskid, item)" class="header_p_eight threelevel_litwo_p">
@@ -144,10 +144,10 @@
       <!--查看-->
       <childLookover :examine="examineData" @look="Onlook"></childLookover>
     </section>
-    <section v-if="modifyBoolean" @click.stop class="review">
-      <!--安排-->
-      <childModify v-if="modifyBoolean" :msg="modifyBoolean" @say="Modify"></childModify>
-    </section>
+    <!--<section v-if="modifyBoolean" @click.stop class="review">-->
+      <!--&lt;!&ndash;安排&ndash;&gt;-->
+      <!--<childModify v-if="modifyBoolean" :msg="modifyBoolean" @say="Modify"></childModify>-->
+    <!--</section>-->
     <section v-if="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
       <childquipment v-if="quipmentBoolean" :msg="quipmentData" @quipment="Quipment"></childquipment>
@@ -173,6 +173,39 @@ export default {
     childquipment
   },
   methods: {
+    approvalStatusfn (status) {
+      let arr = ''
+      this.approvalStatus.forEach((val) => {
+        if (val.value === status) {
+          arr = val.name
+        }
+      })
+      if (arr === '') {
+        return status
+      }
+      return arr
+    },
+    query () {
+      let regionModel = ''
+      let projectid = window.localStorage.pattern
+      console.log(this.regionModel)
+      console.log(this.maintenanceData)
+      console.log(this.Auditstatus)
+      if (this.regionModel.length !== 0) {
+        regionModel = this.regionModel[this.regionModel.length - 1]
+      } else {
+        this.$message({
+          showClose: true,
+          message: '请选择区域!',
+          type: 'warning'
+        })
+      }
+      this.axios.post(`http://172.16.6.181:8920/repairtasks/findRepairTasks?projectid=${projectid}&areaid=${regionModel}&repairStates=${this.maintenanceData}&approvalStates=${this.Auditstatus}`).then((response) => {
+        if (response.data.code === 0) {
+          this.tabulationData = response.data.data
+        }
+      })
+    },
     Newly (ev) {
       console.log('dadadad123')
       console.log(ev)
@@ -254,13 +287,7 @@ export default {
                     if (response.data.code === 0) {
                       console.log('4')
                       this.taskState = response.data.data
-                      this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepariTaskApprovalItem`).then((response) => {
-                        if (response.data.code === 0) {
-                          console.log('5')
-                          this.approvalStatus = response.data.data
-                          this.examineBoolean = true
-                        }
-                      })
+                      this.examineBoolean = true
                     }
                   })
                 }
@@ -317,7 +344,9 @@ export default {
       examination: '',
       taskState: [],
       approvalStatus: [],
-      quipmentData: ''
+      quipmentData: '',
+      maintenance: '',
+      maintenanceData: ''
     }
   },
   created () {
@@ -331,6 +360,8 @@ export default {
     this.axios.post('http://172.16.6.181:8920/task/getTaskQueryApprovalItems').then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
+        console.log('1111')
+        console.log(this.AuditstatusDate)
       }
     })
     //  获取列表
@@ -340,7 +371,18 @@ export default {
       console.log(response)
       if (response.data.code === 0) {
         this.tabulationData = response.data.data
+      }
+    })
+    //  获取维修状态
+    this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepairStates`).then((response) => {
+      if (response.data.code === 0) {
+        this.maintenance = response.data.data
         console.log(response.data.data)
+      }
+    })
+    this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepariTaskApprovalItem`).then((response) => {
+      if (response.data.code === 0) {
+        this.approvalStatus = response.data.data
       }
     })
   }
@@ -491,6 +533,9 @@ export default {
     width 14%
     height 32px
     float left
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
     text-align center
   .repair_lithree
     width 6%
@@ -500,6 +545,9 @@ export default {
   .repair_lifour
     width 16%
     float left
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
     height 32px
     text-align center
   .repair_lifive

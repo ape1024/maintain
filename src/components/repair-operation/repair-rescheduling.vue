@@ -162,30 +162,56 @@ export default {
           users.push(obj)
         })
       } else {
-        alert('请选择维保单位或业主单位')
+        this.$message({
+          showClose: true,
+          message: '请选择维保单位或业主单位!',
+          type: 'warning'
+        })
         return false
       }
       if (desc === '') {
-        alert('异常情况不能为空!')
+        this.$message({
+          showClose: true,
+          message: '异常情况不能为空!',
+          type: 'warning'
+        })
         return
       } else if (disposeopinion === '') {
-        alert('处理意见不能为空!')
+        this.$message({
+          showClose: true,
+          message: '处理意见不能为空!',
+          type: 'warning'
+        })
         return
       } else if (usersNumber.length === 0) {
-        alert('请选择维保单位或者业主单位人员!')
+        this.$message({
+          showClose: true,
+          message: '请选择维保单位或者业主单位人员!',
+          type: 'warning'
+        })
         return
+      } else if (this.getrepairRadio === '') {
+        this.$message({
+          showClose: true,
+          message: '请选择任务类型!',
+          type: 'warning'
+        })
+        return false
       }
       this.axios.post(`http://172.16.6.181:8920/repairtasks/reAssignedTask?token=${token}&repairid=${repairid}&desc=${desc}&disposeopinion=${disposeopinion}&faultTypeId=${faultTypeId}`, users).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
-
+          this.$message({
+            showClose: true,
+            message: '安排成功',
+            type: 'success'
+          })
+          this.$emit('quipment', this.thispage)
         }
       })
-      console.log(users)
-      // this.$emit('quipment', this.thispage)
     },
     closedown () {
-
+      this.$emit('quipment', this.thispage)
     },
     // 时间戳改格式
     fmtDate (obj) {
