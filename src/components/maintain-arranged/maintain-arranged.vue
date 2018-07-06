@@ -55,7 +55,7 @@
               {{item.plandesc}}
             </li>
             <li class="repair_lithree">
-              <p @click.stop="question()" class="header_p_eight threelevel_litwo_p">
+              <p @click.stop="question(item.checkplanid)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
               <p @click.stop="examine()" class="header_p_ten">查看</p>
@@ -71,6 +71,12 @@
     <section v-if="review_boolean" @click.stop class="review">
       <lookup v-if="review_boolean"></lookup>
     </section>
+    <section v-if="examinaBoolean" class="review">
+      <examination :Checkplaniddata="itemCheckplanid" v-if="examinaBoolean" @closeup="Closeup"></examination>
+    </section>
+    <section v-if="newlybuildBoolean" class="review">
+      <newlybuild></newlybuild>
+    </section>
     <div @click="superinduce" class="superinduce">
       新 增
     </div>
@@ -79,14 +85,18 @@
 
 <script>
 import lookup from '../arrangedChild-operation/arrangedChild-lookup'
+import examination from '../arrangedChild-operation/arrangedChild-examination'
+import newlybuild from '../arrangedChild-operation/arrangedChild-newlybuild'
 export default {
   name: 'maintain-arranged',
   components: {
-    lookup
+    lookup,
+    examination,
+    newlybuild
   },
   methods: {
     superinduce () {
-      this.review_boolean = true
+      this.newlybuildBoolean = true
     },
     approvalStatusfn (status) {
       let arr = ''
@@ -103,6 +113,16 @@ export default {
     amputate ($index, content) {
       // 删除
       content.splice([$index], 1)
+    },
+    question (checkplanid) {
+      this.itemCheckplanid = checkplanid
+      this.examinaBoolean = true
+    },
+    Closeup (ev) {
+      this.examinaBoolean = ev
+    },
+    examine () {
+
     }
   },
   data () {
@@ -138,7 +158,10 @@ export default {
       },
       proprietorCheckList: [],
       maintenanceList: [],
-      arrangedData: ''
+      arrangedData: '',
+      examinaBoolean: false,
+      itemCheckplanid: '',
+      newlybuildBoolean: false
     }
   },
   created () {
@@ -147,6 +170,7 @@ export default {
       console.log(response)
       if (response.data.code === 0) {
         this.arrangedData = response.data.data
+        console.log(this.arrangedData)
       }
     })
   }
