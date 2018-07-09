@@ -9,19 +9,37 @@
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">计划名称:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input v-model="input" placeholder="请输入内容"></el-input>
+                  <el-input v-model="planName" placeholder="请输入内容"></el-input>
                 </span>
               </li>
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">计划编号:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input v-model="input" placeholder="请输入内容"></el-input>
+                  <el-input v-model="planCode" placeholder="请输入内容"></el-input>
                 </span>
               </li>
-              <li class="sectionToplitwo">
-                <span class="sectionTopliSpan">计划状态:</span>
+            </ul>
+            <ul class="sectionTopul">
+              <li class="sectionTopli">
+                <span class="sectionTopliSpan">开始时间:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input v-model="input" placeholder="请输入内容"></el-input>
+                <el-date-picker
+                  v-model="startTime"
+                  type="date"
+                  value-format="yyyy-MM-dd"
+                  placeholder="选择日期">
+    </el-date-picker>
+                </span>
+              </li>
+              <li class="sectionTopli">
+                <span class="sectionTopliSpan">结束时间:</span>
+                <span class="sectionTopliSpantwo">
+                   <el-date-picker
+                     v-model="endTime"
+                     type="date"
+                     value-format="yyyy-MM-dd"
+                     placeholder="选择日期">
+                   </el-date-picker>
                 </span>
               </li>
             </ul>
@@ -38,7 +56,7 @@
                      :rows="2"
                      resize="none"
                      placeholder="请输入内容"
-                     v-model="textarea">
+                     v-model="planDescription">
                    </el-input>
                 </span>
               </div>
@@ -76,7 +94,7 @@
                         node-key="id"
                         :props="proprietorProps">
                         <div class="custom-tree-node" slot-scope="{ node, data }">
-                          <div>{{ node.label }}</div>
+                          <div class="nodeLabel">{{ node.label }}</div>
                           <div class="tree-checkbox">
                             <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
                               <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
@@ -100,6 +118,7 @@
                       :data="purview"
                       show-checkbox
                       accordion
+                      @check="lookupchooseChange"
                       node-key="id"
                       :props="defaultProps">
                     </el-tree>
@@ -131,14 +150,15 @@
                 <p class="lookupChooseLiTop_p">选择巡检频次</p>
               </div>
               <div class="frequency">
-                <el-radio-group v-model="radio2">
+
+                <el-radio-group v-if="groupBoolean" v-model="frequencyradio">
                   <ul class="frequencyUl">
-                    <li class="frequencyLi" :key="index" v-for="(item,index) in frequency">
+                    <li class="frequencyLi" @change="frequencyChange(item)" :key="index" v-for="(item,index) in frequency">
                       <el-radio :label="item.value">{{item.desc}}</el-radio>
                     </li>
                     <li class="frequencyLi">
                       <span>每天</span>
-                      <el-input-number size="mini" v-model="num8" controls-position="right" @change="handleChange" :min="1"></el-input-number>
+                      <el-input-number :disabled="dayShift" size="mini" v-model="manyClasses" controls-position="right" @change="handleChange" :min="1"></el-input-number>
                       <span>班</span>
                     </li>
                     <li class="frequencyLi">
@@ -148,6 +168,11 @@
                     </li>
                   </ul>
                 </el-radio-group>
+                  <ul v-if="!groupBoolean"  class="frequencyUl">
+                    <li class="frequencyLi">
+                      <el-radio v-model="groupradio" label="3">巡检频次-按月</el-radio>
+                    </li>
+                  </ul>
               </div>
               <div class="lookupChooseLiTop">
                 <p class="lookupChooseLiTop_p">选择工作类型</p>
@@ -158,13 +183,12 @@
                     <el-checkbox v-model="item.flag">{{item.workmodename}}</el-checkbox>
                   </li>
                 </ul>
-
               </div>
             </li>
           </ul>
         </div>
         <div class="fastener">
-          <div class="conserve">
+          <div @click="conserve" class="conserve">
             保存
           </div>
           <div @click="closedown" class="closedown">
@@ -207,15 +231,130 @@ export default {
         value: 'id'
       },
       schedule: [],
-      scheduleData: '',
-      num8: '',
-      radio2: '',
+
+      manyClasses: '',
+      frequencyradio: '',
       frequency: '',
-      classesGrades: '',
-      Worktype: ''
+      classesGrades: '24',
+      Worktype: '',
+      handleCheckData: [],
+      groupBoolean: true,
+      dayShift: true,
+      //  计划名称
+      planName: '',
+      //  计划编号
+      planCode: '',
+      //  开始时间
+      startTime: '',
+      //  结束时间
+      endTime: '',
+      //  技术说明
+      planDescription: '',
+      //  任务类型
+      scheduleData: '',
+      //  工作类型
+      checkList: [],
+      groupradio: '3',
+      //  巡检范围
+      lookupchooseData: []
     }
   },
   methods: {
+    conserve () {
+      // let token = JSON.parse(window.sessionStorage.token)
+      // let worktypeid =this.scheduleData
+      // let planName = this.planName
+      // let planCode = this.planCode
+      // let planDesc = this.planDescription
+      // let startDate = this.startTime
+      // let endDate = this.endTime
+      console.log(this.maintenanceList)
+      console.log(this.maintenance)
+      //  选择消防设施
+      let newArr = []
+      console.log('11111111111111111')
+      console.log(this.handleCheckData)
+      this.handleCheckData.forEach((val) => {
+        if (val.hierarchy === 2) {
+          let obj = {
+            code: val.code,
+            id: val.id,
+            name: val.name
+          }
+          newArr.push(obj)
+        } else {
+          return false
+        }
+      })
+      console.log(newArr)
+      // newArr = this.handleCheckData.filter((val) => wipeOff.indexOf(val) === -1)
+      //  工作类型
+      let Worktype = []
+      console.log(this.Worktype)
+      if (this.Worktype.length !== 0) {
+        this.Worktype.forEach((val) => {
+          console.log(val)
+          if (val.flag === true) {
+            let data = {
+              id: val.workmodeid
+            }
+            Worktype.push(data)
+          }
+        })
+      } else {
+      //   没有选工作类型
+      }
+      //  执行人
+      let users = []
+      console.log('1111111111111111111110000000')
+      console.log(this.maintenanceList)
+      if (this.maintenanceList.length !== 0) {
+        this.maintenanceList.forEach((val) => {
+          console.log(val)
+          let data = {
+            userid: val
+          }
+          users.push(data)
+        })
+      }
+      //   巡检范围
+      let scopeInspection = []
+      if (this.lookupchooseData.length !== 0) {
+        this.lookupchooseData.forEach((val) => {
+          let data = {
+            id: val.areaid,
+            code: val.areacode,
+            name: val.areaname
+          }
+          scopeInspection.push(data)
+        })
+      } else {
+      //  没有选 巡检范围
+      }
+      //  频次
+      //   let checkFrequency = this.frequencyradio
+      //  间隔时间
+      let interval = ''
+      if (this.groupBoolean) {
+        console.log(this.frequencyradio)
+        if (this.frequencyradio === 1) {
+          interval = 't0:00'
+        } else if (this.frequencyradio === 2) {
+          interval = 'w1'
+        } else if (this.frequencyradio === 3) {
+          interval = 'd1'
+        } else if (this.frequencyradio === 5) {
+          interval = `b${this.manyClasses}`
+          console.log(interval)
+        }
+      } else {
+      //  判断 是否按月,如果按月  如果再写上,每月的 几号开始, 1 - 31
+      }
+    },
+    lookupchooseChange (data, checked, indeterminate) {
+      console.log(checked.checkedNodes)
+      this.lookupchooseData = checked.checkedNodes
+    },
     scheduleChange (value) {
       console.log(value)
       this.axios.post(`http://172.16.6.181:8920/plan/getWorkModesByWorkType?workType=${value}`).then((response) => {
@@ -226,12 +365,26 @@ export default {
           this.Worktype = response.data.data
         }
       })
+      if (value === 2) {
+        this.groupBoolean = true
+      } else {
+        this.groupBoolean = false
+      }
     },
     closedown () {
       console.log(this.Worktype)
     },
     handleCheckChange (data, checked, indeterminate) {
       console.log(data, checked, indeterminate)
+      this.handleCheckData = checked.checkedNodes
+    },
+    frequencyChange (data) {
+      console.log(data)
+      if (data.value === 5) {
+        this.dayShift = false
+      } else {
+        this.dayShift = true
+      }
     },
     handleChange (value) {
       console.log(value)
@@ -258,22 +411,39 @@ export default {
     //  获取消防设施
     this.axios.post(`http://172.16.6.181:8920/dev/findAllDeviceType`).then((response) => {
       if (response.data.code === 0) {
-        this.facilities = response.data.data
-        console.log(this.facilities)
+        console.log('122333')
+        response.data.data.splice(0, 1)
+        let recursion = (data) => {
+          data.forEach((val) => {
+            val.hierarchy = 1
+            if (val.children !== null) {
+              val.children.forEach((record) => {
+                record.hierarchy = 2
+              })
+            }
+          })
+        }
+        recursion(response.data.data)
+        let arr = [{
+          'id': 0,
+          'name': '全部',
+          'code': null,
+          'unit': null,
+          'ischeck': false,
+          'children': response.data.data
+        }]
+        this.facilities = arr
       }
     })
     //  获取计划类型
     this.axios.post(`http://172.16.6.181:8920/plan/getAllPlanTypes`).then((response) => {
       if (response.data.code === 0) {
         this.schedule = response.data.data
-        console.log(this.schedule)
       }
     })
     this.axios.post(`http://172.16.6.181:8920/plan/getAllCheckFrequency`).then((response) => {
       if (response.data.code === 0) {
         this.frequency = response.data.data
-        console.log('1111111111111111111111')
-        console.log(this.frequency)
       }
     })
   }
@@ -283,7 +453,7 @@ export default {
   @import "~common/stylus/variable"
   .subject
     init()
-    margin-top 70px
+    margin-top 60px
     background #111a28
     .section
       overflow hidden
@@ -309,10 +479,11 @@ export default {
           font-size 18px
           color #d5d5d5
           border-bottom 1px solid #263652
-          padding-bottom 20px
+          padding-bottom 10px
           width 100%
           .sectionTopul
             position relative
+            margin-bottom 10px
             overflow hidden
             .sectionTopli
               float left
@@ -330,7 +501,7 @@ export default {
             width 780px
             .sectionbottomLefttop
               overflow hidden
-              margin 20px 0
+              margin 10px 0
               position relative
               .sectionbottomLefttopone
                 overflow hidden
@@ -342,11 +513,11 @@ export default {
               position relative
           .sectionbottomRight
             float right
-            margin-top 50px
+            margin-top 40px
             position relative
             overflow hidden
             .sectionbottomRightDiv
-              margin-bottom 20px
+              margin-bottom 10px
               overflow hidden
       .lookupChoose
         margin 30px 0 0  23px
@@ -420,12 +591,12 @@ export default {
   .frequency
     width 100%
     background #0b111a
-    height 165px
+    height 240px
     margin-bottom 5px
   .frequencytwo
     width 100%
     background #0b111a
-    height 250px
+    height 151px
   .fastener
     init()
     text-align center
@@ -455,5 +626,8 @@ export default {
     .frequencyLi
       font-size 12px
       color #eee
-      margin-bottom 6px
+      margin-bottom 18px
+  .nodeLabel
+    color #666
+    font-size 14px
 </style>
