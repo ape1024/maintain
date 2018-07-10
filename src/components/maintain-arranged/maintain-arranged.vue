@@ -1,8 +1,5 @@
 <template>
   <div class="subject">
-    <!--<section class="subject_top">-->
-      <!--&lt;!&ndash;新 增&ndash;&gt;-->
-    <!--</section>-->
     <section class="subject_bottomDIv">
       <ul class="header_ul">
         <li class="repair_li">
@@ -75,7 +72,7 @@
       <examination :Checkplaniddata="itemCheckplanid" v-if="examinaBoolean" @closeup="Closeup"></examination>
     </section>
     <section v-if="newlybuildBoolean" class="review">
-      <newlybuild></newlybuild>
+      <newlybuild v-if="newlybuildBoolean" @build="Build"></newlybuild>
     </section>
     <div @click="superinduce" class="superinduce">
       新 增
@@ -120,6 +117,9 @@ export default {
     },
     Closeup (ev) {
       this.examinaBoolean = ev
+    },
+    Build (ev) {
+      this.newlybuildBoolean = false
     },
     examine () {
 

@@ -150,27 +150,43 @@
                 <p class="lookupChooseLiTop_p">选择巡检频次</p>
               </div>
               <div class="frequency">
-
                 <el-radio-group v-if="groupBoolean" v-model="frequencyradio">
                   <ul class="frequencyUl">
                     <li class="frequencyLi" @change="frequencyChange(item)" :key="index" v-for="(item,index) in frequency">
                       <el-radio :label="item.value">{{item.desc}}</el-radio>
                     </li>
-                    <li class="frequencyLi">
-                      <span>每天</span>
-                      <el-input-number :disabled="dayShift" size="mini" v-model="manyClasses" controls-position="right" @change="handleChange" :min="1"></el-input-number>
-                      <span>班</span>
+                    <li v-show="monthsNumber" class="frequencyLi">
+                     <p class="frequencyLi_P">
+                       <span>每天</span>
+                       <el-input-number :disabled="dayShift" size="mini" v-model="manyClasses" controls-position="right" @change="handleChange" :min="1"></el-input-number>
+                       <span>班</span>
+                     </p>
+                      <p>
+                        每班
+                        <el-input-number size="mini" v-model="classesGrades" controls-position="right" :disabled="true" ></el-input-number>
+                        小时
+                      </p>
                     </li>
-                    <li class="frequencyLi">
-                      每班
-                      <el-input-number size="mini" v-model="classesGrades" controls-position="right" :disabled="true" ></el-input-number>
-                      小时
+                    <li v-show="!monthsNumber" class="frequencyLi">
+                      <p class="frequencyLi_P">
+                       <span>
+                        每月
+                        <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="31"></el-input-number> 号巡检
+                       </span>
+                      </p>
                     </li>
                   </ul>
                 </el-radio-group>
-                  <ul v-if="!groupBoolean"  class="frequencyUl">
+                <ul v-if="!groupBoolean"  class="frequencyUl">
                     <li class="frequencyLi">
                       <el-radio v-model="groupradio" label="3">巡检频次-按月</el-radio>
+                     <p class="frequencyLi_P">
+                        <span>
+                        每月
+                        <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="31"></el-input-number>
+                          号巡检
+                      </span>
+                     </p>
                     </li>
                   </ul>
               </div>
@@ -236,7 +252,7 @@ export default {
       frequencyradio: '',
       frequency: '',
       classesGrades: '24',
-      Worktype: '',
+      Worktype: [],
       handleCheckData: [],
       groupBoolean: true,
       dayShift: true,
@@ -256,58 +272,131 @@ export default {
       checkList: [],
       groupradio: '3',
       //  巡检范围
-      lookupchooseData: []
+      lookupchooseData: [],
+      numbers: '1',
+      monthsNumber: true
     }
   },
   methods: {
     conserve () {
-      // let token = JSON.parse(window.sessionStorage.token)
-      // let worktypeid =this.scheduleData
-      // let planName = this.planName
-      // let planCode = this.planCode
-      // let planDesc = this.planDescription
-      // let startDate = this.startTime
-      // let endDate = this.endTime
+      console.log(this.frequencyradio)
+      let token = JSON.parse(window.sessionStorage.token)
+      let worktypeid = this.scheduleData
+      let projectid = JSON.parse(window.localStorage.pattern)
+      let planName = this.planName
+      let planCode = this.planCode
+      let planDesc = this.planDescription
+      let startDate = this.startTime
+      let endDate = this.endTime
+      if (planName === '') {
+        this.$message({
+          message: '请填写计划名称!',
+          type: 'warning'
+        })
+        return false
+      }
+      if (planCode === '') {
+        this.$message({
+          message: '请填写计划编号!',
+          type: 'warning'
+        })
+        return false
+      }
+      if (planDesc === '') {
+        this.$message({
+          message: '请填写计划说明!',
+          type: 'warning'
+        })
+        return false
+      }
+      if (startDate === '') {
+        this.$message({
+          message: '请填写开始时间!',
+          type: 'warning'
+        })
+        return false
+      }
+      if (endDate === '') {
+        this.$message({
+          message: '请填写结束时间!',
+          type: 'warning'
+        })
+        return false
+      }
+      console.log(token)
+      console.log(worktypeid)
+      console.log(planName)
+      console.log(planCode)
+      console.log(planDesc)
+      console.log(startDate)
+      console.log(endDate)
       console.log(this.maintenanceList)
       console.log(this.maintenance)
+      //   workmodes  工作类型
+      console.log(this.Worktype)
+      let worktype = []
+      let worktypeData = []
+      if (this.Worktype.length !== 0) {
+        this.Worktype.forEach((val) => {
+          if (val.flag) {
+            worktype.push(val.workmodeid)
+          } else {
+            return false
+          }
+        })
+      } else {
+      //   没有工作类型 ,意味着没有选择任务类型
+        this.$message({
+          message: '没有选择任务类型!',
+          type: 'warning'
+        })
+        return false
+      }
+      if (worktype.length !== 0) {
+        worktype.forEach((val) => {
+          let data = {
+            'workmodeid': val.workmodeid
+          }
+          worktypeData.push(data)
+        })
+      } else {
+      //  没有选择工作类型
+        this.$message({
+          message: '没有选择工作类型!',
+          type: 'warning'
+        })
+        return false
+      }
       //  选择消防设施
       let newArr = []
       console.log('11111111111111111')
       console.log(this.handleCheckData)
-      this.handleCheckData.forEach((val) => {
-        if (val.hierarchy === 2) {
-          let obj = {
-            code: val.code,
-            id: val.id,
-            name: val.name
-          }
-          newArr.push(obj)
-        } else {
-          return false
-        }
-      })
-      console.log(newArr)
-      // newArr = this.handleCheckData.filter((val) => wipeOff.indexOf(val) === -1)
-      //  工作类型
-      let Worktype = []
-      console.log(this.Worktype)
-      if (this.Worktype.length !== 0) {
-        this.Worktype.forEach((val) => {
-          console.log(val)
-          if (val.flag === true) {
-            let data = {
-              id: val.workmodeid
+      if (this.handleCheckData.length !== 0) {
+        this.handleCheckData.forEach((val) => {
+          if (val.hierarchy === 2) {
+            let obj = {
+              code: val.code,
+              id: val.id,
+              name: val.name
             }
-            Worktype.push(data)
+            newArr.push(obj)
+          } else {
+            return false
           }
         })
       } else {
-      //   没有选工作类型
+      //  没有选择消防设施
+        this.$message({
+          message: '没有选择消防设施!',
+          type: 'warning'
+        })
+        return false
       }
+
+      console.log(newArr)
+      // newArr = this.handleCheckData.filter((val) => wipeOff.indexOf(val) === -1)
       //  执行人
       let users = []
-      console.log('1111111111111111111110000000')
-      console.log(this.maintenanceList)
       if (this.maintenanceList.length !== 0) {
         this.maintenanceList.forEach((val) => {
           console.log(val)
@@ -316,6 +405,13 @@ export default {
           }
           users.push(data)
         })
+      } else {
+      //  没有选择执行人
+        this.$message({
+          message: '没有选择执行人!',
+          type: 'warning'
+        })
+        return false
       }
       //   巡检范围
       let scopeInspection = []
@@ -330,26 +426,65 @@ export default {
         })
       } else {
       //  没有选 巡检范围
+        this.$message({
+          message: '没有选择巡检范围!',
+          type: 'warning'
+        })
+        return false
       }
       //  频次
       //   let checkFrequency = this.frequencyradio
       //  间隔时间
+      //  制定创建时间  createTaskTime
       let interval = ''
+      let createTaskTime = ''
+      console.log('00000000')
+      console.log(this.frequencyradio)
+      console.log('00000000')
       if (this.groupBoolean) {
         console.log(this.frequencyradio)
         if (this.frequencyradio === 1) {
-          interval = 't0:00'
+          interval = '1d'
+          createTaskTime = 'd1'
         } else if (this.frequencyradio === 2) {
-          interval = 'w1'
+          interval = '1w'
+          createTaskTime = 'w1'
         } else if (this.frequencyradio === 3) {
-          interval = 'd1'
+          interval = '1m'
+          createTaskTime = `m${this.numbers}`
         } else if (this.frequencyradio === 5) {
-          interval = `b${this.manyClasses}`
-          console.log(interval)
+          interval = `${this.manyClasses}b`
+          createTaskTime = `b${this.manyClasses}`
         }
+        console.log(interval)
       } else {
-      //  判断 是否按月,如果按月  如果再写上,每月的 几号开始, 1 - 31
+        interval = `1m`
+        createTaskTime = `m${this.numbers}`
       }
+
+      //  巡检范围  scopeInspection
+      //  消防设施  checkplandetails
+      //  执行人   users
+      //  工作模式  workmodes
+      let param = {
+        areas: scopeInspection,
+        checkplandetails: newArr,
+        users: users,
+        workmodes: worktypeData
+      }
+      //  频次
+      let checkFrequency = this.frequencyradio
+      this.axios.post(`http://172.16.6.181:8920/plan/createPlan?token=${token}&worktypeid=${worktypeid}&projectid=${projectid}&planName=${planName}&planCode=${planCode}&planDesc=${planDesc}&startDate=${startDate}&endDate=${endDate}&checkFrequency=${checkFrequency}&interval=${interval}&createTaskTime=${createTaskTime}`, param).then((response) => {
+        if (response.data.code === 0) {
+          this.$message({
+            message: '创建成功',
+            type: 'success'
+          })
+          this.$emit('')
+        } else {
+          this.$message.error('创建失败')
+        }
+      })
     },
     lookupchooseChange (data, checked, indeterminate) {
       console.log(checked.checkedNodes)
@@ -357,6 +492,7 @@ export default {
     },
     scheduleChange (value) {
       console.log(value)
+      this.frequencyradio = value
       this.axios.post(`http://172.16.6.181:8920/plan/getWorkModesByWorkType?workType=${value}`).then((response) => {
         if (response.data.code === 0) {
           response.data.data.forEach(val => {
@@ -382,8 +518,17 @@ export default {
       console.log(data)
       if (data.value === 5) {
         this.dayShift = false
+        console.log('1')
+        this.monthsNumber = true
+        return false
+      } if (data.value === 3) {
+        this.monthsNumber = false
+        console.log('2')
+        return false
       } else {
         this.dayShift = true
+        this.monthsNumber = true
+        console.log('3')
       }
     },
     handleChange (value) {
@@ -630,4 +775,6 @@ export default {
   .nodeLabel
     color #666
     font-size 14px
+  .frequencyLi_P
+    margin 20px 0
 </style>
