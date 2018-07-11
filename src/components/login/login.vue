@@ -80,7 +80,7 @@ export default {
         let account = this.account
         let password = this.password
         //  获取登录 url
-        let pstDate = userLogin(account, password, 2)
+        let pstDate = userLogin(account, password)
         this.axios.post(pstDate).then((response) => {
           let data = response.data
           console.log(response)

@@ -91,7 +91,7 @@
                       <el-tree
                         class="tree"
                         :data="maintenance"
-                        node-key="id"
+                        node-key="value"
                         :props="proprietorProps">
                         <div class="custom-tree-node" slot-scope="{ node, data }">
                           <div class="nodeLabel">{{ node.label }}</div>
@@ -119,7 +119,7 @@
                       show-checkbox
                       accordion
                       @check="lookupchooseChange"
-                      node-key="id"
+                      node-key="value"
                       :props="defaultProps">
                     </el-tree>
                   </div>
@@ -323,44 +323,24 @@ export default {
         })
         return false
       }
-      console.log(token)
-      console.log(worktypeid)
-      console.log(planName)
-      console.log(planCode)
-      console.log(planDesc)
-      console.log(startDate)
-      console.log(endDate)
-      console.log(this.maintenanceList)
-      console.log(this.maintenance)
       //   workmodes  工作类型
+      console.log('999999999999999999999')
       console.log(this.Worktype)
-      let worktype = []
+      // let worktype = []
       let worktypeData = []
       if (this.Worktype.length !== 0) {
         this.Worktype.forEach((val) => {
           if (val.flag) {
-            worktype.push(val.workmodeid)
+            let data = {
+              'workmodeid': val.workmodeid
+            }
+            worktypeData.push(data)
           } else {
             return false
           }
         })
       } else {
-      //   没有工作类型 ,意味着没有选择任务类型
-        this.$message({
-          message: '没有选择任务类型!',
-          type: 'warning'
-        })
-        return false
-      }
-      if (worktype.length !== 0) {
-        worktype.forEach((val) => {
-          let data = {
-            'workmodeid': val.workmodeid
-          }
-          worktypeData.push(data)
-        })
-      } else {
-      //  没有选择工作类型
+      //  没有选择任务类型
         this.$message({
           message: '没有选择工作类型!',
           type: 'warning'
@@ -375,9 +355,9 @@ export default {
         this.handleCheckData.forEach((val) => {
           if (val.hierarchy === 2) {
             let obj = {
-              code: val.code,
-              id: val.id,
-              name: val.name
+              areacode: val.code,
+              areaid: val.id,
+              areaname: val.name
             }
             newArr.push(obj)
           } else {
@@ -392,7 +372,6 @@ export default {
         })
         return false
       }
-
       console.log(newArr)
       // newArr = this.handleCheckData.filter((val) => wipeOff.indexOf(val) === -1)
       //  执行人
@@ -418,7 +397,7 @@ export default {
       if (this.lookupchooseData.length !== 0) {
         this.lookupchooseData.forEach((val) => {
           let data = {
-            id: val.areaid,
+            areaid: val.areaid,
             code: val.areacode,
             name: val.areaname
           }
@@ -472,6 +451,8 @@ export default {
         users: users,
         workmodes: worktypeData
       }
+      console.log('111111111111111++++++++++111111111111111111')
+      console.log(worktypeData)
       //  频次
       let checkFrequency = this.frequencyradio
       this.axios.post(`http://172.16.6.181:8920/plan/createPlan?token=${token}&worktypeid=${worktypeid}&projectid=${projectid}&planName=${planName}&planCode=${planCode}&planDesc=${planDesc}&startDate=${startDate}&endDate=${endDate}&checkFrequency=${checkFrequency}&interval=${interval}&createTaskTime=${createTaskTime}`, param).then((response) => {
@@ -480,7 +461,7 @@ export default {
             message: '创建成功',
             type: 'success'
           })
-          this.$emit('')
+          this.$emit('build', false)
         } else {
           this.$message.error('创建失败')
         }
@@ -508,7 +489,7 @@ export default {
       }
     },
     closedown () {
-      console.log(this.Worktype)
+      this.$emit('build', false)
     },
     handleCheckChange (data, checked, indeterminate) {
       console.log(data, checked, indeterminate)

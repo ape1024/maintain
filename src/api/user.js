@@ -3,8 +3,8 @@
 //  沈哥    http://172.16.6.181
 //  刘哥    http://172.16.6.16
 //  登录接口
-export const userLogin = (username, password, genre) => {
-  let url = `http://172.16.6.181:8920/auth/login?usercode=${username}&password=${password}&serviceType=${genre}`
+export const userLogin = (username, password) => {
+  let url = `http://172.16.6.181:8920/auth/login?usercode=${username}&password=${password}`
   return url
 }
 //  判断token 是否失效接口

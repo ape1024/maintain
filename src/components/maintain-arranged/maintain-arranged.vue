@@ -55,10 +55,7 @@
               <p @click.stop="question(item.checkplanid)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
-              <p @click.stop="examine()" class="header_p_ten">查看</p>
-              <p @click.stop="equipment()" class="header_p_twelve">
-                修改
-              </p>
+              <p @click.stop="examine(item.checkplanid)" class="header_p_ten">修改</p>
               <p class="header_p_eleven" @click.stop="amputate(index, arrangedData)">删除</p>
             </li>
           </ul>
@@ -66,7 +63,7 @@
       </ul>
     </section>
     <section v-if="review_boolean" @click.stop class="review">
-      <lookup v-if="review_boolean"></lookup>
+      <lookup @lookup="Lookup" v-if="review_boolean" :checkplan="CheckPlan"></lookup>
     </section>
     <section v-if="examinaBoolean" class="review">
       <examination :Checkplaniddata="itemCheckplanid" v-if="examinaBoolean" @closeup="Closeup"></examination>
@@ -121,8 +118,17 @@ export default {
     Build (ev) {
       this.newlybuildBoolean = false
     },
-    examine () {
-
+    Lookup (ev) {
+      this.review_boolean = false
+    },
+    examine (checkplanid) {
+      console.log(checkplanid)
+      this.axios.post(`http://172.16.6.181:8920/plan/getCheckPlan?checkPlanId=${checkplanid}`).then((response) => {
+        if (response.data.code === 0) {
+          this.CheckPlan = response.data.data
+          this.review_boolean = true
+        }
+      })
     }
   },
   data () {
@@ -161,7 +167,8 @@ export default {
       arrangedData: '',
       examinaBoolean: false,
       itemCheckplanid: '',
-      newlybuildBoolean: false
+      newlybuildBoolean: false,
+      CheckPlan: ''
     }
   },
   created () {

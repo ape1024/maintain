@@ -370,7 +370,7 @@ export default {
       margin-left 6px
       padding 2px 0px
       color $color-text-desc
-      font-weight bold
+      text-indent 1em
     .substancedivSpanone
       color $color-border-b-fault
       width 200px
