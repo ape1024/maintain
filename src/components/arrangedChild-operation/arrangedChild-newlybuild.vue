@@ -339,10 +339,17 @@ export default {
             return false
           }
         })
+        if (worktypeData.length === 0) {
+          this.$message({
+            message: '没有选择工作类型!',
+            type: 'warning'
+          })
+          return
+        }
       } else {
       //  没有选择任务类型
         this.$message({
-          message: '没有选择工作类型!',
+          message: '没有选择任务类型!',
           type: 'warning'
         })
         return false
@@ -372,6 +379,8 @@ export default {
         })
         return false
       }
+      console.log('newArr')
+      console.log('消防设施')
       console.log(newArr)
       // newArr = this.handleCheckData.filter((val) => wipeOff.indexOf(val) === -1)
       //  执行人
@@ -398,8 +407,8 @@ export default {
         this.lookupchooseData.forEach((val) => {
           let data = {
             areaid: val.areaid,
-            code: val.areacode,
-            name: val.areaname
+            areacode: val.areacode,
+            areaname: val.areaname
           }
           scopeInspection.push(data)
         })

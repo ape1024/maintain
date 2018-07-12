@@ -313,7 +313,7 @@ export default {
   created () {
     let projectid = window.localStorage.pattern
     console.log(projectid)
-    this.axios.post(`http://172.16.6.181:8920/feedback/findFeedback?projectid=10007`).then((response) => {
+    this.axios.post(`http://172.16.6.181:8920/feedback/findFeedback?projectid=${projectid}`).then((response) => {
       if (response.data.code === 0) {
         this.exhibition = response.data.data
         console.log(this.exhibition)

@@ -34,7 +34,7 @@
               {{item.planname}}
             </li>
             <li class="repair_litwo">
-              {{item.plandesc}}
+              {{conversion(item.worktypeid)}}
             </li>
             <li class="repair_litwo">
               {{item.plancode}}
@@ -56,14 +56,14 @@
                 审核
               </p>
               <p @click.stop="examine(item.checkplanid)" class="header_p_ten">修改</p>
-              <p class="header_p_eleven" @click.stop="amputate(index, arrangedData)">删除</p>
+              <p class="header_p_eleven" @click.stop="amputate(index, arrangedData,item.checkplanid)">删除</p>
             </li>
           </ul>
         </li>
       </ul>
     </section>
     <section v-if="review_boolean" @click.stop class="review">
-      <lookup @lookup="Lookup" v-if="review_boolean" :checkplan="CheckPlan"></lookup>
+      <lookup @lookup="Lookup" v-if="review_boolean" :checkplan="CheckPlan" :Checkplanid="CheckPlanid"></lookup>
     </section>
     <section v-if="examinaBoolean" class="review">
       <examination :Checkplaniddata="itemCheckplanid" v-if="examinaBoolean" @closeup="Closeup"></examination>
@@ -104,9 +104,29 @@ export default {
       }
       return arr
     },
-    amputate ($index, content) {
+    amputate ($index, content, checkplanid) {
       // 删除
-      content.splice([$index], 1)
+      this.$confirm('此操作将删除该计划, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.post(`http://172.16.6.181:8920/plan/deletePlan?checkplanid=${checkplanid}`).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            content.splice([$index], 1)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     question (checkplanid) {
       this.itemCheckplanid = checkplanid
@@ -116,19 +136,39 @@ export default {
       this.examinaBoolean = ev
     },
     Build (ev) {
-      this.newlybuildBoolean = false
+      this.axios.post(`http://172.16.6.181:8920/plan/getAllPlans`).then((response) => {
+        console.log(response)
+        if (response.data.code === 0) {
+          this.arrangedData = response.data.data
+          this.newlybuildBoolean = false
+        }
+      })
     },
     Lookup (ev) {
-      this.review_boolean = false
+      this.axios.post(`http://172.16.6.181:8920/plan/getAllPlans`).then((response) => {
+        console.log(response)
+        if (response.data.code === 0) {
+          this.arrangedData = response.data.data
+          this.review_boolean = false
+        }
+      })
     },
     examine (checkplanid) {
       console.log(checkplanid)
+      this.CheckPlanid = checkplanid
       this.axios.post(`http://172.16.6.181:8920/plan/getCheckPlan?checkPlanId=${checkplanid}`).then((response) => {
         if (response.data.code === 0) {
           this.CheckPlan = response.data.data
           this.review_boolean = true
         }
       })
+    },
+    conversion (worktypeid) {
+      for (let i = 0; i < this.worktypeData.length; i++) {
+        if (this.worktypeData[i].worktypeid === worktypeid) {
+          return this.worktypeData[i].worktypename
+        }
+      }
     }
   },
   data () {
@@ -168,16 +208,24 @@ export default {
       examinaBoolean: false,
       itemCheckplanid: '',
       newlybuildBoolean: false,
-      CheckPlan: ''
+      CheckPlan: '',
+      CheckPlanid: '',
+      worktypeData: []
     }
   },
   created () {
+    console.log(document.documentElement.clientHeight)
     // let projectid = window.localStorage.pattern
     this.axios.post(`http://172.16.6.181:8920/plan/getAllPlans`).then((response) => {
       console.log(response)
       if (response.data.code === 0) {
         this.arrangedData = response.data.data
         console.log(this.arrangedData)
+      }
+    })
+    this.axios.post(`http://172.16.6.181:8920/plan/getAllPlanTypes`).then((response) => {
+      if (response.data.code === 0) {
+        this.worktypeData = response.data.data
       }
     })
   }
@@ -190,6 +238,7 @@ export default {
     margin 12px
     overflow hidden
     position relative
+    padding-bottom 120px
     background #141e30
   .subject_top
     margin 38px 15px 20px 15px
@@ -431,6 +480,8 @@ export default {
     margin-top 50px
     overflow hidden
     text-align center
+  .repair_lithree p
+    cursor pointer
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner

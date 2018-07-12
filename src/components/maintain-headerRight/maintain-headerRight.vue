@@ -74,6 +74,7 @@ export default {
     }
     this.axios.post(`http://172.16.6.181:8920/projects/findAllProjects`).then((response) => {
       if (response.data.code === 0) {
+        console.log('1111111122222222')
         console.log(response)
         this.options = response.data.data
       }
