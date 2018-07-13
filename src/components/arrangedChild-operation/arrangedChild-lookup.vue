@@ -2,7 +2,7 @@
   <div class="subject">
     <div class="section">
       <div class="sectionDiv">
-        <h4 class="sectionH4">新增计划</h4>
+        <h4 class="sectionH4">修改计划</h4>
         <div class="section_div">
           <div class="sectionTop">
             <ul class="sectionTopul">
@@ -223,7 +223,7 @@
 <script>
 export default {
   name: 'arrangedChild-lookup',
-  props: ['checkplan'],
+  props: ['checkplan', 'Checkplanid'],
   data () {
     return {
       maintenanceData: '',
@@ -289,15 +289,16 @@ export default {
       defaultCheckedRange: [],
       defaultCheckedFacilities: [],
       //  时间戳
-      timeStamp: ''
+      timeStamp: '',
+      facilitiesData: '',
+      judgementValue: false,
+      lookupchooseValue: false
     }
   },
   methods: {
     conserve () {
-      console.log(this.frequencyradio)
-      let token = JSON.parse(window.sessionStorage.token)
+      console.log(this.checkplan)
       let worktypeid = this.scheduleData
-      let projectid = JSON.parse(window.localStorage.pattern)
       let planName = this.planName
       let planCode = this.planCode
       let planDesc = this.planDescription
@@ -339,16 +340,25 @@ export default {
         return false
       }
       //   workmodes  工作类型
-      let worktype = []
       let worktypeData = []
       if (this.Worktype.length !== 0) {
         this.Worktype.forEach((val) => {
           if (val.flag) {
-            worktype.push(val.workmodeid)
+            let data = {
+              'workmodeid': val.workmodeid
+            }
+            worktypeData.push(data)
           } else {
             return false
           }
         })
+        if (worktypeData.length === 0) {
+          this.$message({
+            message: '没有选择工作类型!',
+            type: 'warning'
+          })
+          return
+        }
       } else {
         //   没有工作类型 ,意味着没有选择任务类型
         this.$message({
@@ -357,53 +367,50 @@ export default {
         })
         return false
       }
-      if (worktype.length !== 0) {
-        worktype.forEach((val) => {
-          let data = {
-            'workmodeid': val.workmodeid
-          }
-          worktypeData.push(data)
-        })
-      } else {
-        //  没有选择工作类型
-        this.$message({
-          message: '没有选择工作类型!',
-          type: 'warning'
-        })
-        return false
-      }
       //  选择消防设施
       let newArr = []
-      console.log('11111111111111111')
-      console.log(this.handleCheckData)
-      if (this.handleCheckData.length !== 0) {
-        this.handleCheckData.forEach((val) => {
-          if (val.hierarchy === 2) {
-            let valId = (val.id.split(','))[0]
-            let obj = {
-              code: val.code,
-              id: valId,
-              name: val.name
+      if (this.judgementValue === true) {
+        console.log('11111111111111111')
+        console.log(this.facilitiesData)
+        if (this.handleCheckData.length !== 0) {
+          this.handleCheckData.forEach((val) => {
+            if (val.hierarchy === 2) {
+              let valId = (val.id.split(','))[0]
+              let obj = {
+                code: val.code,
+                id: valId,
+                name: val.name
+              }
+              newArr.push(obj)
+            } else {
+              return false
             }
-            newArr.push(obj)
-          } else {
-            return false
-          }
-        })
+          })
+        } else {
+          //  没有选择消防设施
+          this.$message({
+            message: '没有选择消防设施!',
+            type: 'warning'
+          })
+          return false
+        }
       } else {
-        //  没有选择消防设施
-        this.$message({
-          message: '没有选择消防设施!',
-          type: 'warning'
+        this.checkplan.Plandevices.forEach((val) => {
+          let obj = {
+            code: val.areacode,
+            id: val.areaid,
+            name: val.areaname
+          }
+          newArr.push(obj)
         })
-        return false
       }
+      console.log('消防设施')
+      console.log(newArr)
       // newArr = this.handleCheckData.filter((val) => wipeOff.indexOf(val) === -1)
       //  执行人
       let users = []
       if (this.maintenanceList.length !== 0) {
         this.maintenanceList.forEach((val) => {
-          console.log(val)
           let data = {
             userid: val
           }
@@ -419,23 +426,35 @@ export default {
       }
       //   巡检范围
       let scopeInspection = []
-      if (this.lookupchooseData.length !== 0) {
-        this.lookupchooseData.forEach((val) => {
+      if (this.lookupchooseValue === true) {
+        if (this.lookupchooseData.length !== 0) {
+          this.lookupchooseData.forEach((val) => {
+            let data = {
+              areaid: val.areaid,
+              areacode: val.areacode,
+              areaname: val.areaname
+            }
+            scopeInspection.push(data)
+          })
+        } else {
+          //  没有选 巡检范围
+          this.$message({
+            message: '没有选择巡检范围!',
+            type: 'warning'
+          })
+          return false
+        }
+      } else {
+        this.checkplan.Planareas.forEach((val) => {
           let data = {
-            id: val.areaid,
-            code: val.areacode,
-            name: val.areaname
+            areaid: val.areaid,
+            areacode: val.areacode,
+            areaname: val.areaname
           }
           scopeInspection.push(data)
         })
-      } else {
-        //  没有选 巡检范围
-        this.$message({
-          message: '没有选择巡检范围!',
-          type: 'warning'
-        })
-        return false
       }
+
       //  频次
       //   let checkFrequency = this.frequencyradio
       //  间隔时间
@@ -443,7 +462,6 @@ export default {
       let interval = ''
       let createTaskTime = ''
       if (this.groupBoolean) {
-        console.log(this.frequencyradio)
         if (this.frequencyradio === 1) {
           interval = '1d'
           createTaskTime = 'd1'
@@ -457,7 +475,6 @@ export default {
           interval = `${this.manyClasses}b`
           createTaskTime = `b${this.manyClasses}`
         }
-        console.log(interval)
       } else {
         interval = `1m`
         createTaskTime = `m${this.numbers}`
@@ -475,20 +492,23 @@ export default {
       }
       //  频次
       let checkFrequency = this.frequencyradio
-      this.axios.post(`http://172.16.6.181:8920/plan/createPlan?token=${token}&worktypeid=${worktypeid}&projectid=${projectid}&planName=${planName}&planCode=${planCode}&planDesc=${planDesc}&startDate=${startDate}&endDate=${endDate}&checkFrequency=${checkFrequency}&interval=${interval}&createTaskTime=${createTaskTime}`, param).then((response) => {
+      this.axios.post(`http://172.16.6.181:8920/plan/updatePlan?checkPlanId=${this.Checkplanid}&planName=${planName}&planCode=${planCode}&worktype=${worktypeid}&planDesc=${planDesc}&startDate=${startDate}&endDate=${endDate}&checkFrequency=${checkFrequency}&interval=${interval}&createTaskTime=${createTaskTime}`, param).then((response) => {
+        console.log('11111111111111111++++')
         if (response.data.code === 0) {
           this.$message({
-            message: '创建成功',
+            message: '修改成功',
             type: 'success'
           })
           this.$emit('lookup', false)
+          return false
         } else {
+          console.log(response)
           this.$message.error('创建失败')
         }
       })
     },
     lookupchooseChange (data, checked, indeterminate) {
-      console.log(checked.checkedNodes)
+      this.lookupchooseValue = true
       this.lookupchooseData = checked.checkedNodes
     },
     scheduleChange (value) {
@@ -511,11 +531,11 @@ export default {
       this.$emit('lookup', false)
     },
     handleCheckChange (data, checked, indeterminate) {
-      console.log(data, checked, indeterminate)
+      this.judgementValue = true
+
       this.handleCheckData = checked.checkedNodes
     },
     frequencyChange (data) {
-      console.log(data)
       if (data.value === 5) {
         this.dayShift = false
         this.monthsNumber = true
@@ -535,17 +555,20 @@ export default {
   },
   created () {
     //  时间戳
-
     this.timeStamp = Date.parse(new Date())
+    let PlanworkmodesData = []
+    this.axios.post(`http://172.16.6.181:8920/plan/getCheckPlan?checkPlanId=${this.Checkplanid}`).then((response) => {
+      if (response.data.code === 0) {
+        response.data.data.Planworkmodes.forEach((val) => {
+          val.flag = true
+        })
+        PlanworkmodesData = response.data.data.Planworkmodes
+        this.Worktype = PlanworkmodesData
+      }
+    })
+
     this.Planusers = this.checkplan.Planusers
     this.Planareas = this.checkplan.Planareas
-    this.Planworkmodes = this.checkplan.Planworkmodes
-    console.log('++++++++++++++++++++++++++++++++++++')
-    console.log(this.Planworkmodes)
-    this.Planworkmodes.forEach((val) => {
-      val.flag = true
-    })
-    this.Worktype = this.Planworkmodes
     this.PlanData = this.checkplan.Plan
     this.Plandevices = this.checkplan.Plandevices
     this.planName = this.PlanData.planname
@@ -564,13 +587,9 @@ export default {
     //   执行人
     // this.defaultCheckedPeople
     this.Planusers.forEach((val) => {
-      console.log('val.userid')
-      console.log(val)
-      console.log(val.userid)
       this.maintenanceList.push(val.userid)
     })
 
-    console.log(this.defaultCheckedPeople)
     //  选择巡检范围  this.defaultCheckedRange
     this.Planareas.forEach((val) => {
       this.defaultCheckedRange.push(val.areaid)
@@ -579,7 +598,6 @@ export default {
     this.Plandevices.forEach((val) => {
       this.defaultCheckedFacilities.push(`${val.areaid},${this.timeStamp}`)
     })
-    console.log(this.defaultCheckedFacilities)
     //  维保单位 this.equipment
     this.axios.post(`http://172.16.6.181:8920/organization/getRepairOrgTreeByDeviceId?deviceid=12690`).then((response) => {
       if (response.data.code === 0) {
@@ -589,8 +607,6 @@ export default {
     let projectid = window.localStorage.pattern
     //  获取巡检范围
     this.axios.post(`http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=${projectid}`).then((response) => {
-      console.log('.................................')
-      console.log(response.data.data)
       if (response.data.code === 0) {
         this.purview = response.data.data
       }
@@ -620,7 +636,6 @@ export default {
           'children': response.data.data
         }]
         this.facilities = arr
-        console.log(this.facilities)
       }
     })
     //  获取计划类型
@@ -633,27 +648,10 @@ export default {
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
           val.switch = false
-          console.log(val)
         })
         this.frequency = response.data.data
-        console.log('++++++++++\\\\')
-        console.log(this.scheduleData)
         if (this.scheduleData === 1 || this.scheduleData === 3) {
-          console.log('00000000000000000000')
-          let Numberdays = ''
-          console.log(this.PlanData.createtasktime)
-          if (this.PlanData.createtasktime !== null) {
-            Numberdays = this.PlanData.createtasktime.substr(this.PlanData.createtasktime.length - 1, 1)
-            console.log(Numberdays)
-          } else {
-            Numberdays = 1
-          }
-          this.groupBoolean = false
-        } else {
-          console.log('2+')
           let string = this.PlanData.interval.substr(this.PlanData.interval.length - 1, 1)
-          console.log(this.PlanData.interval.substr(0, 1))
-          console.log(string)
           if (string === 'b') {
             this.frequencyradio = 5
             this.dayShift = false
@@ -665,10 +663,33 @@ export default {
           } else if (string === 'm') {
             this.frequencyradio = 3
           }
+          if (this.PlanData.createtasktime !== null) {
+            this.numbers = this.PlanData.createtasktime.substr(this.PlanData.createtasktime.length - 1, 1)
+          } else {
+            this.numbers = 1
+          }
+          this.groupBoolean = false
+        } else {
+          let string = this.PlanData.interval.substr(this.PlanData.interval.length - 1, 1)
+          if (string === 'b') {
+            console.log('--------')
+            this.frequencyradio = 5
+            this.dayShift = false
+            this.manyClasses = this.PlanData.interval.substr(0, this.PlanData.interval.length - 1)
+            console.log(this.PlanData.interval)
+          } else if (string === 'd') {
+            this.frequencyradio = 1
+          } else if (string === 'w') {
+            this.frequencyradio = 2
+          } else if (string === 'm') {
+            this.frequencyradio = 3
+          }
           this.groupBoolean = true
         }
       }
     })
+    console.log('2')
+    console.log(this.Worktype)
   }
 }
 </script>
@@ -797,7 +818,7 @@ export default {
     float left
     color #d5d5d5
     font-size 16px
-    margin-top 10px
+    margin-top 8px
     margin-right 16px
   .el-tree
     background transparent

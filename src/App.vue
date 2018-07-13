@@ -82,7 +82,6 @@
 import login from 'components/login/login'
 import MaintainheaderRight from 'components/maintain-headerRight/maintain-headerRight'
 // import { judgeToken } from 'api/user'
-
 export default {
   name: 'App',
   components: {
