@@ -1,5 +1,5 @@
 import * as types from './mutation-types'
 
-export const addStr = function ({commit}, {str}) {
-  commit(types.SET, str)
+export const updateMap = function ({commit}, areaId) {
+  commit(types.UPDATE_MAP_AREA_ID, areaId)
 }

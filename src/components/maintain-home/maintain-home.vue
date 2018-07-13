@@ -6,43 +6,20 @@
       </h4>
       <!--区域1-->
       <section class="popu_top">
-        <div class="popu_header">
-           <p class="header_p"></p>
-            <div class="title">区域1</div>
-        </div>
-        <div class="popu_top_div">
-
-        </div>
+        <map-city></map-city>
       </section>
       <!--区域2-->
       <section class="popu_top">
-        <div class="popu_header">
-          <p class="header_p"></p>
-          <div class="title">区域2</div>
-        </div>
-        <div class="popu_top_div">
-
-        </div>
+        <map-factory></map-factory>
       </section>
       <!--区域3-->
       <section class="popu_top">
-        <div class="popu_header">
-          <p class="header_p"></p>
-          <div class="title">区域3</div>
-        </div>
-        <div class="popu_top_div">
-
-        </div>
+        <map-building></map-building>
       </section>
     </div>
     <div class="population_middle">
       <div class="middle_top">
-        <h4 class="popu_h4">
-          楼层平面
-        </h4>
-        <section class="top_section">
-
-        </section>
+        <floor-plans></floor-plans>
       </div>
       <div class="middle_bottom">
         <h4 class="popu_h4">
@@ -116,12 +93,46 @@
 <script>
 import stacked from '../homeChild-stacked/homeChild-stacked'
 import implement from '../homeChild-stacked/homeChild-implement'
+import MapCity from 'components/map-city/map-city'
+import MapFactory from 'components/map-factory/map-factory'
+import MapBuilding from 'components/map-building/map-building'
+import FloorPlans from 'components/floor-plans/floor-plans'
 // import { judgeToken } from 'api/user'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'maintain-home',
+  computed: {
+    ...mapGetters([
+      'userData'
+    ])
+  },
+  methods: {
+    ...mapActions([
+      'updateMap'
+    ]),
+    ...mapMutations({
+      updateCity: 'UPDATE_MAP_AREA_ID',
+      updateFactory: 'UPDATE_FACTORY_AREA_ID',
+      updateBuilding: 'UPDATE_BUILDING_AREA_ID',
+      updateFloorPlans: 'UPDATE_FLOOR_PLANS_AREA_ID'
+    })
+  },
+  mounted () {
+    this.updateMap(this.userData.areaId)
+  },
+  beforeDestroy () {
+    this.updateCity(-1)
+    this.updateFactory(-1)
+    this.updateBuilding(-1)
+    this.updateFloorPlans(-1)
+  },
   components: {
     stacked,
-    implement
+    implement,
+    MapCity,
+    MapFactory,
+    MapBuilding,
+    FloorPlans
   },
   created () {
     // if (window.sessionStorage.length !== 0) {
@@ -166,6 +177,7 @@ export default {
     .popu_top
       margin 0 20px 8px
       overflow hidden
+      height 300px
       .popu_header
          width 100%
          overflow hidden
@@ -196,8 +208,6 @@ export default {
       width 100%
       height 620px
       overflow hidden
-      background url("../../../static/img/middle_top.png") no-repeat
-      background-size cover
       .top_section
         width 1072px
         height 566px

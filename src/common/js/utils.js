@@ -27,3 +27,46 @@ export const fmtDate = (obj) => {
   let d = `0` + date.getDate()
   return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
 }
+
+export function resetTime (time, type) {
+  if (time === '946656000000') {
+    return '--:--'
+  }
+  let myTime = parseInt(time)
+  let myDate = new Date(myTime)
+  let year = myDate.getFullYear()
+  let month = myDate.getMonth() + 1
+  let day = myDate.getDate()
+  let hour = myDate.getHours()
+  let minutes = myDate.getMinutes()
+  if (month < 10) {
+    month = '0' + month
+  }
+  if (day < 10) {
+    day = '0' + day
+  }
+  if (hour < 10) {
+    hour = '0' + hour
+  }
+  if (minutes < 10) {
+    minutes = '0' + minutes
+  }
+  if (type === 'hh') {
+    return `${hour}`
+  } else if (type === 'mm') {
+    return `${minutes}`
+  } else if (type === 'time') {
+    return `${hour}:${minutes}`
+  } else if (type === 'date') {
+    return `${year}-${month}-${day}`
+  } else if (type === 'all') {
+    return `${year}-${month}-${day} ${hour}:${minutes}`
+  }
+}
+
+export function resize (pos, size, max) {
+  if ((pos + size) > max) {
+    return (pos - size)
+  }
+  return pos
+}

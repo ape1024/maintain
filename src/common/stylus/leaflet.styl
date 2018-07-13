@@ -1,0 +1,59 @@
+.message-container {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0);
+}
+
+.message-container img {
+  width: 100%;
+}
+
+.message-number {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  padding: 2px;
+  border: 1px solid #fff;
+  background-color: #1895ff;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  line-height: 14px;
+}
+
+.leaflet-div-icon {
+  background: transparent!important;
+  border: none!important;
+}
+
+.message-container-text {
+  width: 200px;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 30px;
+  font-size: 25px;
+  color: #222222;
+  position: relative;
+  transform: translate(-50%, 0);
+}
+
+.icon-alarm {
+  animation: fade 1s infinite;
+}
+
+@keyframes fade {
+  0% { opacity: 1.0; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1.0; }
+}
+
+.icon-selected {
+  border-radius: 18px;
+  border: 3px solid #000;
+  box-shadow: 0 0 25px #000;
+}
