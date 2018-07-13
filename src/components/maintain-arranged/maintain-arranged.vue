@@ -237,9 +237,12 @@ export default {
   .subject
     margin 12px
     overflow hidden
+    min-height 760px
+    max-height 750px
     position relative
-    padding-bottom 120px
+    padding-bottom 70px
     background #141e30
+    overflow-y scroll
   .subject_top
     margin 38px 15px 20px 15px
     overflow hidden
@@ -443,7 +446,7 @@ export default {
     position relative
     overflow hidden
   .superinduce
-    position absolute
+    position fixed
     bottom 50px
     left 50%
     margin-left -53px

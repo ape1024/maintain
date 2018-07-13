@@ -1,5 +1,5 @@
 <template>
-  <div class="subject">
+  <div class="subjectlookup">
     <div class="section">
       <div class="sectionDiv">
         <h4 class="sectionH4">修改计划</h4>
@@ -607,8 +607,12 @@ export default {
     let projectid = window.localStorage.pattern
     //  获取巡检范围
     this.axios.post(`http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=${projectid}`).then((response) => {
+      console.log('++++++++')
+      console.log(response)
       if (response.data.code === 0) {
         this.purview = response.data.data
+        console.log('111111111')
+        console.log(this.purview)
       }
     })
     //  获取消防设施
@@ -695,7 +699,7 @@ export default {
 </script>
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
-  .subject
+  .subjectlookup
     init()
     margin-top 60px
     background #111a28
