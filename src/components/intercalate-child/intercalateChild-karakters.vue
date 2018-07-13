@@ -14,70 +14,64 @@
       <div class="karakters">
         <div class="jurisdictionBottom">
           <div class="header">
-            <p class="headerP">角色名称：</p>
-            <div class="headerDiv">
-              <el-select v-model="value" placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </div>
             <div @click="increasd" class="increased">
               新增角色信息
             </div>
           </div>
           <div class="definition">
-            <ul class="definitionUl">
-              <li class="definitionLi">
-                模块
-              </li>
-              <li class="definitionLitwo">
-                权限
-              </li>
-            </ul>
-            <ul class="content">
-              <li class="contentLi">
-                <el-checkbox v-model="checked">模块一</el-checkbox>
-              </li>
-              <li class="contentLitwo">
-
-              </li>
-            </ul>
-            <ul class="content">
-              <li class="contentLi">
-                <el-checkbox v-model="checked">模块一</el-checkbox>
-              </li>
-              <li class="contentLitwo">
-
-              </li>
-            </ul>
-            <ul class="content">
-              <li class="contentLi">
-                <el-checkbox v-model="checked">模块一</el-checkbox>
-              </li>
-              <li class="contentLitwo">
-
-              </li>
-            </ul>
-            <ul class="content">
-              <li class="contentLi">
-                <el-checkbox v-model="checked">模块一</el-checkbox>
-              </li>
-              <li class="contentLitwo">
-
-              </li>
-            </ul>
-            <ul class="content">
-              <li class="contentLi">
-                <el-checkbox v-model="checked">模块一</el-checkbox>
-              </li>
-              <li class="contentLitwo">
-
-              </li>
-            </ul>
+            <div class="definitionHeader">
+              <ul class="definitionHeaderul">
+                <li class="definitionHeaderli">模块</li>
+                <li class="definitionHeaderlitwo">查看</li>
+                <li class="definitionHeaderlitwo">新增</li>
+                <li class="definitionHeaderlitwo">修改</li>
+                <li class="definitionHeaderlitwo">删除</li>
+              </ul>
+            </div>
+            <div class="content">
+             <div :key='index' v-for="(item, index) in fullFunctionality" class="contentDiv">
+               <div class="contentDivtwo">
+                 <ul class="definitionHeaderul">
+                   <li @click="definitionLi(item)" class="definitionHeaderli">
+                     {{item.first}}
+                   </li>
+                   <li class="definitionHeaderlitwo">
+                     <el-checkbox v-model="checked"></el-checkbox>
+                   </li>
+                   <li class="definitionHeaderlitwo">
+                     <el-checkbox v-model="checked"></el-checkbox>
+                   </li>
+                   <li class="definitionHeaderlitwo">
+                     <el-checkbox v-model="checked"></el-checkbox>
+                   </li>
+                   <li class="definitionHeaderlitwo">
+                     <el-checkbox v-model="checked"></el-checkbox>
+                   </li>
+                 </ul>
+               </div>
+               <ul v-show="item.flag" class="contentDivthree">
+                 <li class="contentLi" :key="index" v-for="(data, index) in item.second">
+                   <ul class="definitionHeaderul">
+                     <li class="definitionHeaderli">
+                       {{data.functionname}}
+                     </li>
+                     <li class="definitionHeaderlitwo">
+                       <el-checkbox v-model="checked"></el-checkbox>
+                     </li>
+                     <li class="definitionHeaderlitwo">
+                       <el-checkbox v-model="checked"></el-checkbox>
+                     </li>
+                     <li class="definitionHeaderlitwo">
+                       <el-checkbox v-model="checked"></el-checkbox>
+                     </li>
+                     <li class="definitionHeaderlitwo">
+                       <el-checkbox v-model="checked"></el-checkbox>
+                     </li>
+                   </ul>
+                 </li>
+               </ul>
+             </div>
+            </div>
           </div>
         </div>
       </div>
@@ -152,22 +146,7 @@ export default {
       basis: false,
       value: '',
       checked: false,
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [],
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -175,7 +154,8 @@ export default {
       structureDate: {
         label: '',
         personnel: ''
-      }
+      },
+      fullFunctionality: ''
     }
   },
   methods: {
@@ -187,7 +167,29 @@ export default {
     },
     handleNodeClick (data) {
 
+    },
+    definitionLi (item) {
+      item.flag = !item.flag
     }
+  },
+  created () {
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(`http://172.16.6.181:8920/roles/FindAllFunctions`).then((response) => {
+      console.log(response)
+      if (response.data.code === 0) {
+        console.log(response.data.data)
+        response.data.data.forEach((val) => {
+          val.flag = false
+          // console.log()
+        })
+        this.fullFunctionality = response.data.data
+      }
+    })
+    this.axios.post(`http://172.16.6.181:8920/roles/FindAllRoles?token=${token}`).then((response) => {
+      if (response.data.code === 0) {
+      //
+      }
+    })
   }
 }
 </script>
@@ -222,7 +224,6 @@ export default {
         width 100%
         min-height 800px
         max-height 800px
-        overflow hidden
         position relative
         background #101826
         height calc(100% - 50px)
@@ -237,12 +238,10 @@ export default {
         height 40px
       .karakters
         height calc(100% - 50px)
+        overflow hidden
         overflow-y auto
-        overflow-x hidden
-
         min-height 800px
         max-height 800px
-        overflow hidden
         position relative
         background #101826
       .jurisdictionBottom
@@ -275,31 +274,6 @@ export default {
         .definition
           init()
           margin-bottom 55px
-          .definitionUl
-            text-align center
-            color $color-text
-            border-left 1px solid #444d5b
-            border-top 1px solid #444d5b
-            border-right 1px solid #444d5b
-            .definitionLi
-              float left
-              padding 10px 0
-              border-right 1px solid #444d5b
-              width 338px
-            .definitionLitwo
-              padding 10px 0
-          .content
-            border 1px solid #444d5b
-            position relative
-            overflow hidden
-            .contentLi
-              float left
-              padding 10px 0
-              border-right 1px solid #444d5b
-              width 338px
-              text-align center
-            .contentLitwo
-              padding 10px 0
         .fastener
           init()
           color $color-text
@@ -323,4 +297,56 @@ export default {
     color $color-text
   .el-button--text
     color $color-border-b-fault
+  .contentDivtwo
+    color #eee
+    line-height 30px
+    padding 6px 0
+    init()
+  .definitionHeader
+     width 100%
+     position relative
+     overflow hidden
+     background #354d76
+  .contentLi
+    line-height 30px
+    color $color-text-title
+    padding 6px 0
+    height 30px
+  .contentLeft
+    width 40%
+    height 30px
+    overflow hidden
+    float left
+  .contentRight
+     height 30px
+     overflow hidden
+     float left
+     width 60%
+  .definitionHeaderul
+    init()
+    color #d5d5d5
+    line-height 30px
+    text-align center
+    height 30px
+    .definitionHeaderli
+      float left
+      overflow hidden
+      width 40%
+      cursor pointer
+    .definitionHeaderlitwo
+      float left
+      overflow hidden
+      position relative
+      text-align center
+      width 15%
+  .contentDiv
+    overflow hidden
+  .contentDivthree
+    color #eee
+    line-height 30px
+    background #0b111a
+    init()
+  .content .contentDiv:nth-child(even){
+    background #141d2c
+  }
 </style>

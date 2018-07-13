@@ -304,7 +304,7 @@ export default {
       }
       console.log(token)
       console.log(users)
-      this.axios.post(`http://172.16.6.181:8920/feedback/assignedTask?token=${token}&desc=${desc}&disposeopinion=${disposeopinion}&feedbackid=${this.examine.deviceid}&faultTypeId=${faultTypeId}`, users).then((response) => {
+      this.axios.post(`http://172.16.6.181:8920/feedback/assignedTask?token=${token}&desc=${desc}&disposeopinion=${disposeopinion}&feedbackid=${this.examine.feedbackid}&faultTypeId=${faultTypeId}`, users).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
           this.$emit('mine', this.examineBoolean)
