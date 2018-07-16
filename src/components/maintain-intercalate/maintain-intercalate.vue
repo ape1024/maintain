@@ -39,10 +39,10 @@ export default {
         overflow hidden
         text-align center
         line-height 34px
-        font-size $font-size-medium-x
         color $color-border-b-fault
         border 1px solid #2e3d54
         background #202f49
+        font-size  16px
         margin 0 10px
         .headerLi
           float left

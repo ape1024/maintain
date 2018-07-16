@@ -6,7 +6,22 @@
         <p class="subjectP">角色管理</p>
       </header>
       <div class="leftBottom">
-        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+        <ul class="leftBottomUl">
+          <li class="leftBottomLl">
+            系统角色
+          </li>
+          <li @click="systemroleClick(item.roleid)" :key="index" v-for="(item, index) in systemRole" class="leftBottomLltwo">
+            {{item.creatername}}
+          </li>
+        </ul>
+        <ul class="leftBottomUl">
+          <li class="leftBottomLl">
+            自定义角色
+          </li>
+          <li @click="systemroleClick(item.roleid)" :key="index" v-for="(item, index) in customRoles" class="leftBottomLltwo">
+            {{item.creatername}}
+          </li>
+        </ul>
       </div>
     </section>
     <section class="subjectRight">
@@ -14,6 +29,9 @@
       <div class="karakters">
         <div class="jurisdictionBottom">
           <div class="header">
+            <div class="conserveDiv" @click="conserve">
+              保 存
+            </div>
             <div @click="increasd" class="increased">
               新增角色信息
             </div>
@@ -26,26 +44,31 @@
                 <li class="definitionHeaderlitwo">新增</li>
                 <li class="definitionHeaderlitwo">修改</li>
                 <li class="definitionHeaderlitwo">删除</li>
+                <li class="definitionHeaderlitwo">审批</li>
               </ul>
             </div>
             <div class="content">
              <div :key='index' v-for="(item, index) in fullFunctionality" class="contentDiv">
                <div class="contentDivtwo">
-                 <ul class="definitionHeaderul">
-                   <li @click="definitionLi(item)" class="definitionHeaderli">
+                 <ul  class="definitionHeaderul">
+                   <li @click.stop="definitionLi(item)" class="definitionHeaderli">
                      {{item.first}}
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox v-model="checked"></el-checkbox>
+                     <el-checkbox @change="definitionExamine(item, item.examine,0)" v-model="item.examine"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox v-model="checked"></el-checkbox>
+                     <el-checkbox @change="definitionExamine(item, item.added,1)" v-model="item.added"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox v-model="checked"></el-checkbox>
+                     <el-checkbox @change="definitionExamine(item, item.modify,2)" v-model="item.modify"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox v-model="checked"></el-checkbox>
+                     <el-checkbox @change="definitionExamine(item, item.delete,3)" v-model="item.delete"></el-checkbox>
+                   </li>
+
+                   <li class="definitionHeaderlitwo">
+                     <el-checkbox @change="definitionExamine(item, item.insert,4)" v-model="item.insert"></el-checkbox>
                    </li>
                  </ul>
                </div>
@@ -56,16 +79,19 @@
                        {{data.functionname}}
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-model="checked"></el-checkbox>
+                       <el-checkbox v-if="data.select === 1" v-model="data.selectBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-model="checked"></el-checkbox>
+                       <el-checkbox v-if="data.approval === 1" v-model="data.approvalBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-model="checked"></el-checkbox>
+                       <el-checkbox v-if="data.update === 1" v-model="data.updateBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-model="checked"></el-checkbox>
+                       <el-checkbox v-if="data.delete === 1" v-model="data.deleteBoolean"></el-checkbox>
+                     </li>
+                     <li class="definitionHeaderlitwo">
+                       <el-checkbox v-if="data.insert === 1" v-model="data.insertBoolean"></el-checkbox>
                      </li>
                    </ul>
                  </li>
@@ -91,58 +117,8 @@ export default {
   },
   data () {
     return {
-      data: [{
-        label: '项目一',
-        personnel: '王大，曹大，赵大，越大',
-        children: [{
-          label: '部门一',
-          personnel: '曹大',
-          children: [{
-            label: '研发部',
-            personnel: '王大',
-            children: [{
-              label: '下属',
-              personnel: '李大，赵大'
-            }]
-          }]
-        }]
-      }, {
-        label: '项目二',
-        personnel: '邱大，慕大，乔大，刘大',
-        children: [{
-          label: '人事部',
-          personnel: '习大',
-          children: [{
-            label: '下属',
-            personnel: '邱大，慕大，乔大'
-          }]
-        }, {
-          label: '工程部',
-          personnel: '朱大，蔺大，王大，习大',
-          children: [{
-            label: '下属',
-            personnel: '曹大'
-          }]
-        }]
-      }, {
-        label: '项目三',
-        personnel: '孙大，搭大，港大，泽大, 姬大，周大，红大',
-        children: [{
-          label: '人事部',
-          personnel: '孙大',
-          children: [{
-            label: '下属',
-            personnel: '搭大，港大'
-          }]
-        }, {
-          label: '后勤部',
-          personnel: '姬大',
-          children: [{
-            label: '下属',
-            personnel: '周大，红大'
-          }]
-        }]
-      }],
+      systemRole: [],
+      customRoles: [],
       basis: false,
       value: '',
       checked: false,
@@ -155,7 +131,9 @@ export default {
         label: '',
         personnel: ''
       },
-      fullFunctionality: ''
+      fullFunctionality: '',
+      // 点击左侧获取其id值
+      kayakersId: ''
     }
   },
   methods: {
@@ -165,29 +143,177 @@ export default {
     Basis (ev) {
       this.basis = ev
     },
-    handleNodeClick (data) {
-
-    },
     definitionLi (item) {
       item.flag = !item.flag
+    },
+    definitionExamine (data, flag, number) {
+      console.log(data)
+      console.log(flag)
+      console.log(number)
+      if (number === 0) {
+        if (flag === true) {
+          data.second.forEach((val) => {
+            val.selectBoolean = true
+          })
+        } else {
+          data.second.forEach((val) => {
+            val.selectBoolean = false
+          })
+        }
+      } else if (number === 1) {
+        if (flag === true) {
+          data.second.forEach((val) => {
+            val.approvalBoolean = true
+          })
+        } else {
+          data.second.forEach((val) => {
+            val.approvalBoolean = false
+          })
+        }
+      } else if (number === 2) {
+        if (flag === true) {
+          data.second.forEach((val) => {
+            val.updateBoolean = true
+          })
+        } else {
+          data.second.forEach((val) => {
+            val.updateBoolean = false
+          })
+        }
+      } else if (number === 3) {
+        if (flag === true) {
+          data.second.forEach((val) => {
+            val.deleteBoolean = true
+          })
+        } else {
+          data.second.forEach((val) => {
+            val.deleteBoolean = false
+          })
+        }
+      }
+    },
+    conserve () {
+      if (this.kayakersId !== '') {
+        console.log('1')
+        let roleid = this.kayakersId
+        let data = []
+
+        this.fullFunctionality.forEach((val) => {
+          val.second.forEach((item) => {
+            let obj = {}
+            //  id
+            obj.functionid = item.functionid
+            //  增加
+            obj.approval = item.approvalBoolean
+            //  删除
+            obj.delete = item.deleteBoolean
+            //  查看
+            obj.select = item.selectBoolean
+            //  修改
+            obj.update = item.updateBoolean
+            // 审批
+            data.insert = item.insertBoolean
+            data.push(obj)
+          })
+        })
+        this.axios.post(`http://172.16.6.181:8920/roles/SetRoleFunctions?roleid=${roleid}`, data).then((response) => {
+          if (response.data.code === 0) {
+            console.log(response)
+            this.$message({
+              message: '保存成功',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: '保存失败',
+              type: 'warning'
+            })
+          }
+        })
+      } else {
+      //  没有点击左侧的列表
+        this.$message({
+          message: '没有选中角色',
+          type: 'warning'
+        })
+      }
+    },
+    systemroleClick (roleid) {
+      //  临时写成10006  记得后续修改
+      console.log(roleid)
+      this.kayakersId = roleid
+      this.axios.post(`http://172.16.6.181:8920/roles/FindRoleFunctions?roleid=${roleid}`).then((response) => {
+        console.log('1111')
+        console.log(response)
+        if (response.data.code === 0) {
+          for (let i = 0; i < response.data.data.length; i++) {
+            let functionId = response.data.data[i].functionid
+            this.fullFunctionality.forEach((val) => {
+              val.second.forEach((data) => {
+                if (data.functionid === functionId) {
+                  //  查看
+                  data.selectBoolean = response.data.data[i].select
+                  //  新增
+                  data.approvalBoolean = response.data.data[i].approval
+                  //  修改
+                  data.updateBoolean = response.data.data[i].update
+                  //  删除
+                  data.deleteBoolean = response.data.data[i].delete
+                  //  审批
+                  data.insertBoolean = response.data.data[i].insert
+                }
+              })
+            })
+          }
+        }
+      })
     }
   },
   created () {
     let token = JSON.parse(window.sessionStorage.token)
+    console.log(token)
     this.axios.post(`http://172.16.6.181:8920/roles/FindAllFunctions`).then((response) => {
       console.log(response)
       if (response.data.code === 0) {
-        console.log(response.data.data)
         response.data.data.forEach((val) => {
+          //  二级开关
           val.flag = false
-          // console.log()
+          //  查看
+          val.examine = false
+          //  新增
+          val.added = false
+          //  修改
+          val.modify = false
+          // 删除
+          val.delete = false
+          val.second.forEach((val) => {
+            //  添加
+            val.approvalBoolean = false
+            //  删除
+            val.deleteBoolean = false
+            //  修改
+            val.updateBoolean = false
+            //  查看
+            val.selectBoolean = false
+          })
         })
         this.fullFunctionality = response.data.data
+        console.log('0002000')
+        console.log(this.fullFunctionality)
       }
     })
     this.axios.post(`http://172.16.6.181:8920/roles/FindAllRoles?token=${token}`).then((response) => {
       if (response.data.code === 0) {
-      //
+        console.log('0000')
+        console.log(response.data.data)
+        response.data.data.forEach((val) => {
+          console.log(val)
+          if (val.issystem === 0) {
+            this.systemRole.push(val)
+          } else {
+            this.customRoles.push(val)
+          }
+        })
       }
     })
   }
@@ -264,7 +390,9 @@ export default {
             margin-right 20px
             background $color-background-newly
             text-align center
-            padding 8px 28px
+            padding 0 20px
+            height 36px
+            line-height 36px
             color $color-text-title
             border-radius 5px
             cursor pointer
@@ -338,7 +466,8 @@ export default {
       overflow hidden
       position relative
       text-align center
-      width 15%
+      height 31px
+      width 10%
   .contentDiv
     overflow hidden
   .contentDivthree
@@ -349,4 +478,22 @@ export default {
   .content .contentDiv:nth-child(even){
     background #141d2c
   }
+  .leftBottomUl
+    font-size 16px
+    color #d5d5d5
+    margin-top 10px
+    .leftBottomLl
+       text-indent 1em
+       cursor pointer
+       overflow hidden
+       padding 10px 0
+  .leftBottomLltwo
+    text-indent 2em
+    cursor pointer
+    overflow hidden
+    color #999
+    padding 10px 0
+  .conserveDiv
+    float right
+    conserve()
 </style>
