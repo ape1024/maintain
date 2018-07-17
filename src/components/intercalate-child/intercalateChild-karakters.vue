@@ -11,7 +11,7 @@
             系统角色
           </li>
           <li @click="systemroleClick(item.roleid)" :key="index" v-for="(item, index) in systemRole" class="leftBottomLltwo">
-            {{item.creatername}}
+            {{item.rolename}}
           </li>
         </ul>
         <ul class="leftBottomUl">
@@ -19,7 +19,7 @@
             自定义角色
           </li>
           <li @click="systemroleClick(item.roleid)" :key="index" v-for="(item, index) in customRoles" class="leftBottomLltwo">
-            {{item.creatername}}
+            {{item.rolename}}
           </li>
         </ul>
       </div>
@@ -102,8 +102,8 @@
         </div>
       </div>
     </section>
-    <section v-show="basis" class="popup">
-      <increased :increaSed="basis" @baSis="Basis"></increased>
+    <section v-if="basis" class="popup">
+      <increased v-if="basis" :increaSed="basis" @baSis="Basis"></increased>
     </section>
   </div>
 </template>
@@ -141,15 +141,30 @@ export default {
       this.basis = true
     },
     Basis (ev) {
-      this.basis = ev
+      let token = JSON.parse(window.sessionStorage.token)
+
+      this.axios.post(`http://172.16.6.181:8920/roles/FindAllRoles?token=${token}`).then((response) => {
+        if (response.data.code === 0) {
+          console.log('-----------')
+          console.log(response.data.data)
+          this.systemRole = []
+          this.customRoles = []
+          response.data.data.forEach((val) => {
+            console.log(val)
+            if (val.issystem === 1) {
+              this.systemRole.push(val)
+            } else {
+              this.customRoles.push(val)
+            }
+          })
+          this.basis = ev
+        }
+      })
     },
     definitionLi (item) {
       item.flag = !item.flag
     },
     definitionExamine (data, flag, number) {
-      console.log(data)
-      console.log(flag)
-      console.log(number)
       if (number === 0) {
         if (flag === true) {
           data.second.forEach((val) => {
@@ -190,6 +205,16 @@ export default {
             val.deleteBoolean = false
           })
         }
+      } else if (number === 4) {
+        if (flag === true) {
+          data.second.forEach((val) => {
+            val.insertBoolean = true
+          })
+        } else {
+          data.second.forEach((val) => {
+            val.insertBoolean = false
+          })
+        }
       }
     },
     conserve () {
@@ -197,7 +222,6 @@ export default {
         console.log('1')
         let roleid = this.kayakersId
         let data = []
-
         this.fullFunctionality.forEach((val) => {
           val.second.forEach((item) => {
             let obj = {}
@@ -212,7 +236,7 @@ export default {
             //  修改
             obj.update = item.updateBoolean
             // 审批
-            data.insert = item.insertBoolean
+            obj.insert = item.insertBoolean
             data.push(obj)
           })
         })
@@ -240,7 +264,15 @@ export default {
     },
     systemroleClick (roleid) {
       //  临时写成10006  记得后续修改
-      console.log(roleid)
+      console.log(this.fullFunctionality)
+      this.fullFunctionality.forEach((val) => {
+        console.log(val)
+        val.added = false
+        val.delete = false
+        val.examine = false
+        val.insert = false
+        val.modify = false
+      })
       this.kayakersId = roleid
       this.axios.post(`http://172.16.6.181:8920/roles/FindRoleFunctions?roleid=${roleid}`).then((response) => {
         console.log('1111')
@@ -248,6 +280,7 @@ export default {
         if (response.data.code === 0) {
           for (let i = 0; i < response.data.data.length; i++) {
             let functionId = response.data.data[i].functionid
+            console.log(functionId)
             this.fullFunctionality.forEach((val) => {
               val.second.forEach((data) => {
                 if (data.functionid === functionId) {
@@ -265,6 +298,8 @@ export default {
               })
             })
           }
+          console.log('------')
+          console.log(this.fullFunctionality)
         }
       })
     }
@@ -304,11 +339,10 @@ export default {
     })
     this.axios.post(`http://172.16.6.181:8920/roles/FindAllRoles?token=${token}`).then((response) => {
       if (response.data.code === 0) {
-        console.log('0000')
         console.log(response.data.data)
         response.data.data.forEach((val) => {
           console.log(val)
-          if (val.issystem === 0) {
+          if (val.issystem === 1) {
             this.systemRole.push(val)
           } else {
             this.customRoles.push(val)
@@ -487,6 +521,7 @@ export default {
        cursor pointer
        overflow hidden
        padding 10px 0
+       background #141d2c
   .leftBottomLltwo
     text-indent 2em
     cursor pointer

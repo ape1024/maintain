@@ -91,7 +91,7 @@
           </li>
         </ul>
         <ul class="entryList">
-          <li v-for="(item, $index) in information"  v-bind:key="item.userid" class="listLi">
+          <li v-for="(item, $index) in information"  :key="$index" class="listLi">
             <ul class="listLiulL">
               <li class="entryLione">
                 {{item.usercode?item.usercode:' '}}
@@ -107,13 +107,6 @@
               <li class="entryLitwo">{{item.lastlogintime?item.lastlogintime:' '}}</li>
               <li class="entryLithree">
                 {{item.userroleid?item.userroleid:' '}}
-                <!--判断锁定情况，目前没有参数-->
-                <!--<div v-if="item.locking == 0">-->
-                  <!--<img src="../../../static/img/locking.png" alt="">-->
-                <!--</div>-->
-                <!--<div v-if="item.locking == 1">-->
-                  <!--<img src="../../../static/img/unlock.png" alt="">-->
-                <!--</div>-->
               </li>
               <li class="entryLifour">
                 <!--查看-->
@@ -123,6 +116,10 @@
                 <!--修改-->
                 <p @click="moDify(item)" class="modify">
                   修改
+                </p>
+                <!--授权-->
+                <p @click="authorization(item.userid)" class="authorization">
+                  授权
                 </p>
                 <!--修改密码-->
                 <p @click="infor(item.userid)" class="password">
@@ -162,6 +159,10 @@
     <section v-if="inforBoolean" class="adhibit">
       <edit :UserId="itemUserId" :edit="inforBoolean" @edit="eDit"></edit>
     </section>
+    <!--授权-->
+    <section v-if="accreditBBoolean" class="adhibit">
+      <accredit @acredit="Acredit" :userid="authorizationUserid" v-if="accreditBBoolean"></accredit>
+    </section>
   </div>
 </template>
 
@@ -172,34 +173,21 @@ import examine from '../intercalateChild-operation/consumerChild-seeinfo'
 import edit from '../intercalateChild-operation/consumerChild-steganogram'
 //  修改
 import information from '../intercalateChild-operation/consumerChild-changeinfo'
+import accredit from '../intercalateChild-operation/consumerChild-accredit'
 export default {
   name: 'tercalateChild-consumer',
   components: {
     increase,
     examine,
     edit,
-    information
+    information,
+    accredit
   },
   data () {
     return {
       //  用户id
       itemUserId: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [],
       value: '',
       input: '',
       //  用户名
@@ -213,12 +201,23 @@ export default {
       examineBoolean: false,
       modifyBoolean: false,
       inforBoolean: false,
+      accreditBBoolean: false,
       //  查看：向子级传递的值
       exaMineCodo: [],
-      moDifynews: ''
+      moDifynews: '',
+      authorizationUserid: ''
     }
   },
   methods: {
+    Acredit (ev) {
+      console.log(ev)
+      this.accreditBBoolean = ev
+    },
+    authorization (data) {
+      console.log(data)
+      this.authorizationUserid = data
+      this.accreditBBoolean = true
+    },
     induce () {
       this.adhibitBoolean = true
     },
@@ -281,19 +280,16 @@ export default {
     this.postData()
   },
   created () {
-    // //  判断当前页 是否有token
-    // let Judgetoken = window.sessionStorage.token
-    // judgeToken(Judgetoken)
-    // if (this.tokenStatus === false) {
-    //   this.$router.push('/login')
-    //   return false
-    // }
-  },
-  beforeMount () {
-    let url = `http://172.16.6.16:8920/users/findAllBy?pageIndex=1&pageSize=30`
+    let url = `http://172.16.6.181:8920/users/findAllBy?pageIndex=1&pageSize=30`
     this.axios.post(url).then((response) => {
+      console.log(response)
       this.information = response.data.data.data
     })
+    console.log('----')
+    console.log(this.information)
+  },
+  beforeMount () {
+
   }
 }
 </script>
@@ -400,7 +396,7 @@ export default {
       overflow hidden
       text-overflow ellipsis
     .entryLifour
-      width 20%
+      width 24%
       float left
       text-align left
     .entryLifive
@@ -427,13 +423,19 @@ export default {
     .modify
       float left
       text-decoration underline
-      margin-right 35px
+      margin-right 16px
       cursor pointer
       color $color-background-newly
+    .authorization
+      float left
+      text-decoration underline
+      margin-right 16px
+      cursor pointer
+      color #32a697
     .password
       float left
       text-decoration underline
-      margin-right 35px
+      margin-right 16px
       cursor pointer
       color $color-background-introduce
     .amputate
