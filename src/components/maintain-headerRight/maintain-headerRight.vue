@@ -11,7 +11,7 @@
               <el-option
                 v-for="item in options"
                 :key="item.projectid"
-                :label="item.proprietorname"
+                :label="item.projectname"
                 :value="item.projectid">
               </el-option>
             </el-select>
@@ -72,7 +72,8 @@ export default {
     if (window.localStorage.pattern !== undefined) {
       this.value = JSON.parse(window.localStorage.pattern)
     }
-    this.axios.post(`http://172.16.6.181:8920/projects/findAllProjects`).then((response) => {
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(`http://172.16.6.181:8920/projects/findUserProjects?token=${token}`).then((response) => {
       if (response.data.code === 0) {
         console.log('1111111122222222')
         console.log(response)

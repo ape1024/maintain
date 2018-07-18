@@ -7,12 +7,15 @@
           <p @click="subjectpCreate" class="subjectptwo">新增</p>
         </header>
         <div class="leftBottom">
-          <el-tree node-click="changClick" :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+          <div class="leftBottomDiv">
+            <el-tree node-click="changClick" :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+          </div>
         </div>
       </section>
       <section class="subjectRight">
         <div class="information">
           <ul class="informationUl">
+            <!--上级主管单位-->
             <li class="informationLi">
               <div class="informationDiv">
                 <p class="informationP">
@@ -28,6 +31,7 @@
                 </div>
               </div>
             </li>
+            <!--单位简称-->
             <li class="informationLitwo">
               <div class="informationDiv">
                 <p class="informationP">
@@ -46,7 +50,8 @@
                 </div>
               </div>
             </li>
-            <li class="informationLifive">
+            <!--所在区域-->
+            <li v-if="classification" class="informationLifive">
               <div class="informationDiv">
                 <p class="informationP">
                   所在区域：
@@ -81,7 +86,8 @@
                 </div>
               </div>
             </li>
-            <li class="informationLitwo">
+            <!--专业类别-->
+            <li v-if="classification" class="informationLitwo">
               <div class="informationDiv">
                 <p class="informationP">
                   专业类别：
@@ -104,7 +110,8 @@
                 </div>
               </div>
             </li>
-            <li class="informationLitwo">
+            <!--资质等级-->
+            <li v-if="classification" class="informationLitwo">
               <div class="informationDiv">
                 <p class="informationP">
                   资质等级：
@@ -127,6 +134,7 @@
                 </div>
               </div>
             </li>
+            <!--单位联系人-->
             <li class="informationLitwo">
               <div class="informationDiv">
                 <p class="informationP">
@@ -145,21 +153,14 @@
                 </div>
               </div>
             </li>
+            <!--组织机构名称-->
             <li class="informationLitwo">
               <div class="informationDiv">
-                <p class="informationP">
-                  组织机构名称：
-                </p>
-                <div class="content">
-                  <el-input v-model="organization" placeholder=""  clearable>></el-input>
-                </div>
-              </div>
-              <div class="informationDivtwo">
                 <p class="informationP">
                   组织类别：
                 </p>
                 <div class="content">
-                  <el-select v-model="regimentaValue" placeholder="请选择">
+                  <el-select @change="organizationCategory" v-model="regimentaValue" placeholder="请选择">
                     <el-option
                       v-for="item in regimentation"
                       :key="item.value"
@@ -169,8 +170,17 @@
                   </el-select>
                 </div>
               </div>
+              <div v-if="classification" class="informationDivtwo">
+                <p class="informationP">
+                  组织机构名称：
+                </p>
+                <div class="content">
+                  <el-input v-model="organization" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
             </li>
-            <li class="informationLithree">
+            <!--上传图标-->
+            <li v-if="classification" class="informationLithree">
               <div class="informationDivthree">
                 <p class="informationP">
                   组织机构图标：
@@ -182,6 +192,7 @@
                 </div>
               </div>
             </li>
+            <!--备注说明-->
             <li class="informationLithree">
               <div class="informationDivthree">
                 <p class="informationP">
@@ -323,7 +334,9 @@ export default {
       categoryProps: {
         label: 'name',
         value: 'value'
-      }
+      },
+      //  组织类别切换
+      classification: true
     }
   },
   methods: {
@@ -404,8 +417,13 @@ export default {
         if (parentID !== '') {
           if (organizationtype === 3) {
             this.axios.post(url).then((response) => {
+              console.log('----------------')
+              console.log(response)
               if (response.data.code === 0) {
-                alert('添加成功')
+                this.$message({
+                  message: '添加成功',
+                  type: 'success'
+                })
                 let responseDate = response.data.data
                 let result = null
                 let findData = (data) => {
@@ -426,6 +444,11 @@ export default {
                   organizationId: responseDate
                 }
                 result.subOrgnizations.push(obj)
+              } else if (response.data.code === -1) {
+                this.$message({
+                  message: '组织机构代码不能重复！',
+                  type: 'warning'
+                })
               }
             })
           } else {
@@ -433,6 +456,9 @@ export default {
           }
         } else {
           this.axios.post(url).then((response) => {
+            if (response.data.code === 0) {
+              console.log(response.data.data)
+            }
           })
         }
       } else {
@@ -445,15 +471,38 @@ export default {
       console.log(token)
       //  组织id
       const organization = this.organizationId
+      console.log(this.organizationId)
+      if (organization === '') {
+        this.$message({
+          message: '请选择结构组织',
+          type: 'warning'
+        })
+        return false
+      }
       //   组织节点parentid
       //  组织类型
       const organizationtype = this.regimentaValue
+      console.log(organizationtype)
+      if (organizationtype === '') {
+        this.$message({
+          message: '请选择组织机构',
+          type: 'warning'
+        })
+        return false
+      }
       //   区县
-      const countyid = this.countytownId
+      const countyid = this.countytownId === undefined ? '' : this.countytownId
       //  城市
-      const city = this.conurbationId
+      const city = this.conurbationId === undefined ? '' : this.conurbationId
       //  省
       const province = this.provinceId
+      if (this.provinceId === undefined) {
+        this.$message({
+          message: '请选择区域',
+          type: 'warning'
+        })
+        return false
+      }
       //  单位编码
       const organizationcode = this.encrypt
       //  单位名称
@@ -461,15 +510,30 @@ export default {
       //   组织缩写
       const shortname = this.organization
       //  详细地址
-      const address = this.address
+      const address = this.address === '' ? ' ' : this.address
       //  专业类别
-      const professionalcategory = (this.businessOptions)[0]
+      // let professionalcategory = (this.businessOptions)[0]
+      let professionalcategory = ''
+      console.log('------')
+      console.log(this.businessOptions)
+      this.businessOptions.forEach((val) => {
+        if (val !== null) {
+          professionalcategory = parseInt(this.businessOptions)
+        } else {
+          professionalcategory = ''
+        }
+      })
+      console.log(professionalcategory)
+      let scope = this.grading
+
       //
-      //  业务范围 目前没有
+      //
       //  组织机构的父节点ID  目前没有
       //
       //  资质等级  level
       const level = (this.selectedOptions)[0]
+      console.log('--------------------')
+      console.log((this.selectedOptions)[0])
       //  资质编号
       const qualificationnumber = this.identifier
       //  联系人
@@ -480,13 +544,16 @@ export default {
       // const memo = this.textarea
       //  父级的id
       const parentid = this.parentid
+      console.log('0000')
+      console.log(parentid)
       //  url
       let url = ``
       if (parentid === undefined) {
-        url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&organizationid=${organization}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
+        url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&organizationid=${organization}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&scope=${scope}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
       } else {
-        url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&organizationid=${organization}&parentid=${parentid}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
+        url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&organizationid=${organization}&parentid=${parentid}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&scope=${scope}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
       }
+      console.log(url)
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {
           alert('修改成功')
@@ -546,11 +613,14 @@ export default {
         this.businessOptions.push(urlDate.level)
         //  资质等级
         this.grading = urlDate.scope
-        //  联系人
-        this.linkman = urlDate.linkman
+        // //  联系人
+        // this.linkman = urlDate.linkman
       })
       this.axios.post(url).then((response) => {
         let urlData = JSON.parse(response.data.data)
+        console.log(urlData)
+        //  联系人
+        this.linkman = urlData.creatername
         //   图标
         this.filelistDate = urlData.icon
         console.log(urlData)
@@ -700,6 +770,14 @@ export default {
       this.conurbationId = coundata.cityid
       //  县城ID
       this.countytownId = coundata.countyid
+    },
+    organizationCategory (data) {
+      console.log(data)
+      if (data === 4 || data === 5) {
+        this.classification = false
+      } else {
+        this.classification = true
+      }
     }
   },
   created () {
@@ -719,6 +797,8 @@ export default {
     this.axios.post(CreatedProvince).then((response) => {
       if (response.data.code === 0) {
         this.province = response.data.data
+        console.log('11111111111111111111111111111')
+        console.log(this.province)
       }
     })
     //   专业类别
@@ -989,6 +1069,10 @@ export default {
     width 100%
   .el-select
     width 100%
+  .leftBottomDiv
+    init()
+    line-height 28px
+    margin-top 10px
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"

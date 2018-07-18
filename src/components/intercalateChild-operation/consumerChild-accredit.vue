@@ -42,6 +42,7 @@ export default {
             message: '设置成功',
             type: 'success'
           })
+          this.$emit('acredit', false)
         }
       })
     },
@@ -51,30 +52,32 @@ export default {
   },
   created () {
     let token = JSON.parse(window.sessionStorage.token)
+    console.log(token)
+    console.log('+-+')
     let getUserRoles = []
-    this.axios.post(`http://172.16.6.181:8920/roles/FindAllRoles?token=${token}`).then((response) => {
+    this.axios.post(`http://172.16.6.181:8920/roles/FindAllFunctions?token=${token}`).then((response) => {
       if (response.data.code === 0) {
+        console.log('++++++')
         console.log(response)
         response.data.data.forEach((val) => {
           val.flag = false
         })
         this.sectionLi = response.data.data
         this.axios.post(`http://172.16.6.181:8920/users/getUserRoles?userid=${this.userid}`).then((response) => {
-          if (response.data.code === 0) {
-            if (response.data.data.length !== 0) {
-              response.data.data.forEach((val) => {
-                getUserRoles.push(val.roleid)
+          console.log(response.data)
+          if (response.data.length !== 0) {
+            response.data.forEach((val) => {
+              getUserRoles.push(val.roleid)
+            })
+            for (let i = 0; i < getUserRoles.length; i++) {
+              this.sectionLi.forEach((val) => {
+                if (val.roleid === getUserRoles[i]) {
+                  val.flag = true
+                }
               })
-              for (let i = 0; i < getUserRoles.length; i++) {
-                this.sectionLi.forEach((val) => {
-                  if (val.roleid === getUserRoles[i]) {
-                    val.flag = true
-                  }
-                })
-              }
-            } else {
-              return false
             }
+          } else {
+            return false
           }
         })
       }

@@ -235,7 +235,7 @@ export default {
   created () {
     let token = JSON.parse(window.sessionStorage.token)
     console.log(token)
-    this.axios.post(`http://172.16.6.181:8920/roles/FindAllFunctions`).then((response) => {
+    this.axios.post(`http://172.16.6.181:8920/roles/FindAllFunctions?token=${token}`).then((response) => {
       console.log(response)
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
