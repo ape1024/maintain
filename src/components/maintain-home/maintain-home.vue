@@ -177,7 +177,7 @@ export default {
     .popu_top
       margin 0 20px 8px
       overflow hidden
-      height 300px
+      height 260px
       .popu_header
          width 100%
          overflow hidden

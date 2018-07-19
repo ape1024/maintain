@@ -112,8 +112,8 @@ const routes = [
       component: tercalateProject
     }, {
       path: '/',
-      component: intercalateDepartment,
-      redirect: 'department'
+      component: intercalateStructure,
+      redirect: 'structure'
     }
     ]
   },

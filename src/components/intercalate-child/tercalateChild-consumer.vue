@@ -280,7 +280,7 @@ export default {
     this.postData()
   },
   created () {
-    let url = `http://172.16.6.181:8920/users/findAllBy?pageIndex=1&pageSize=30`
+    let url = `http://172.16.6.181:8920/users/findAll?pageIndex=0&pageSize=30`
     this.axios.post(url).then((response) => {
       console.log(response)
       this.information = response.data.data.data

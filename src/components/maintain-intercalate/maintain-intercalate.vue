@@ -2,7 +2,7 @@
   <div class="intercalate">
     <header class="header">
       <ul class="headerUl">
-        <router-link to="/intercalate/department"><li class="headerLi">维保部门管理</li></router-link>
+        <!--<router-link to="/intercalate/department"><li class="headerLi">维保部门管理</li></router-link>-->
         <router-link to="/intercalate/structure"><li class="headerLi">组织结构权限管理</li></router-link>
         <router-link to="/intercalate/karakters"><li class="headerLi">角色管理</li></router-link>
         <router-link to="/intercalate/consumer"><li class="headerLi">用户设置</li></router-link>

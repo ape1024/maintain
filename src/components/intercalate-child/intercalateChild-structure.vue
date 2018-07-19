@@ -106,7 +106,42 @@
                   业务类别：
                 </p>
                 <div class="content">
-                  <el-input v-model="grading" placeholder=""  clearable>></el-input>
+                  <el-select v-model="businessCategoryData" placeholder="请选择">
+                    <el-option
+                      v-for="item in businessCategory"
+                      :key="item.industrycategoryid"
+                      :label="item.industrycategoryname"
+                      :value="item.industrycategoryid">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+            </li>
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">消防监管机构:</p>
+                <div class="content">
+                  <el-select v-model="superVisionData" placeholder="请选择">
+                    <el-option
+                      v-for="item in supervision"
+                      :key="item.firebrigadeid"
+                      :label="item.firebrigadename"
+                      :value="item.firebrigadeid">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">消防单位类别</p>
+                <div class="content">
+                  <el-select v-model="categoryfireFightingData" placeholder="请选择">
+                    <el-option
+                      v-for="item in categoryfireFighting"
+                      :key="item.firecontrolcategoryid"
+                      :label="item.firecontrolcategoryname"
+                      :value="item.firecontrolcategoryid">
+                    </el-option>
+                  </el-select>
                 </div>
               </div>
             </li>
@@ -336,7 +371,13 @@ export default {
         value: 'value'
       },
       //  组织类别切换
-      classification: true
+      classification: true,
+      supervision: '',
+      superVisionData: '',
+      categoryfireFighting: '',
+      categoryfireFightingData: '',
+      businessCategory: '',
+      businessCategoryData: ''
     }
   },
   methods: {
@@ -411,8 +452,14 @@ export default {
       // let file = this.Headportrait
       console.log('0000000000000000')
       console.log(level)
+      //  消防监管机构
+      let firebrigadeid = this.superVisionData
+      //   消防单位类别
+      let firecontrolcategoryid = this.categoryfireFightingData
+      //  业务类别
+      let industrycategoryid = this.businessCategoryData
       //  url
-      const url = managementAuthority(token, organizationtype, countytown, conurbation, province, organizationcode, organizationname, address, professionalcategory, level, qualificationnumber, linkman, tel)
+      const url = managementAuthority(token, organizationtype, firebrigadeid, firecontrolcategoryid, industrycategoryid, countytown, conurbation, province, organizationcode, organizationname, address, professionalcategory, level, qualificationnumber, linkman, tel)
       if (organizationcode !== '' && organizationname !== '') {
         if (parentID !== '') {
           if (organizationtype === 3) {
@@ -525,15 +572,9 @@ export default {
       })
       console.log(professionalcategory)
       let scope = this.grading
-
-      //
-      //
       //  组织机构的父节点ID  目前没有
-      //
       //  资质等级  level
       const level = (this.selectedOptions)[0]
-      console.log('--------------------')
-      console.log((this.selectedOptions)[0])
       //  资质编号
       const qualificationnumber = this.identifier
       //  联系人
@@ -546,12 +587,18 @@ export default {
       const parentid = this.parentid
       console.log('0000')
       console.log(parentid)
+      //  消防监管机构
+      let firebrigadeid = this.superVisionData
+      //   消防单位类别
+      let firecontrolcategoryid = this.categoryfireFightingData
+      //  业务类别
+      let industrycategoryid = this.businessCategoryData
       //  url
       let url = ``
       if (parentid === undefined) {
-        url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&organizationid=${organization}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&scope=${scope}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
+        url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&firebrigadeid=${firebrigadeid}&firecontrolcategoryid=${firecontrolcategoryid}&industrycategoryid=${industrycategoryid}&organizationid=${organization}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&scope=${scope}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
       } else {
-        url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&organizationid=${organization}&parentid=${parentid}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&scope=${scope}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
+        url = `http://172.16.6.181:8920/organization/update?token=${token}&organizationtype=${organizationtype}&firebrigadeid=${firebrigadeid}&firecontrolcategoryid=${firecontrolcategoryid}&industrycategoryid=${industrycategoryid}&organizationid=${organization}&parentid=${parentid}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&scope=${scope}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
       }
       console.log(url)
       this.axios.post(url).then((response) => {
@@ -593,6 +640,7 @@ export default {
       this.axios.post(urltwo).then((response) => {
         // console.log(response.data.data)
         let urlDate = response.data.data
+        console.log('-')
         console.log(urlDate)
         //  专业类别
         //  目前专业类别对应不上
@@ -610,11 +658,15 @@ export default {
         //  电话
         this.CellPhone = urlDate.tel
         //  业务类别
-        this.businessOptions.push(urlDate.level)
+        this.businessOptions.push(urlDate.professionalcategory)
         //  资质等级
         this.grading = urlDate.scope
-        // //  联系人
-        // this.linkman = urlDate.linkman
+        //  业务类别
+        this.businessCategoryData = urlDate.industrycategoryid === null ? '' : urlDate.industrycategoryid
+        //  消防单位类别
+        this.categoryfireFightingData = urlDate.firecontrolcategoryid === null ? '' : urlDate.firecontrolcategoryid
+        //  消防监管机构
+        this.superVisionData = urlDate.firebrigadeid === null ? '' : urlDate.firebrigadeid
       })
       this.axios.post(url).then((response) => {
         let urlData = JSON.parse(response.data.data)
@@ -814,6 +866,8 @@ export default {
     const Createdbusiness = managementCreatedbusiness()
     this.axios.post(Createdbusiness).then((response) => {
       if (response.data.code === 0) {
+        console.log('+++----+++=')
+        console.log(response.data.data)
         this.business = response.data.data
       }
     })
@@ -825,6 +879,26 @@ export default {
       // regimentaDate
       this.regimentation = regimentaDate
       console.log(regimentaDate)
+    })
+    //  消防监管机构
+    this.axios.post(`http://172.16.6.181:8920/organization/getFirebrigades`).then((response) => {
+      if (response.data.code === 0) {
+        this.supervision = response.data.data
+      }
+    })
+    //  消防单位类别
+    this.axios.post(`http://172.16.6.181:8920/organization/getFirecontrolcategory`).then((response) => {
+      if (response.data.code === 0) {
+        this.categoryfireFighting = response.data.data
+      }
+    })
+    //  行业类别
+    this.axios.post(`http://172.16.6.181:8920/organization/getIndustrycategory`).then((response) => {
+      console.log('--------')
+      console.log(response)
+      if (response.data.code === 0) {
+        this.businessCategory = response.data.data
+      }
     })
   }
 }
@@ -960,7 +1034,7 @@ export default {
 .information
   width 900px
   overflow hidden
-  margin 50px auto
+  margin 30px auto
   .informationUl
     init()
     .informationLi
