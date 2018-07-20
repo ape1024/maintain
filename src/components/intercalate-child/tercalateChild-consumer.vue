@@ -16,14 +16,12 @@
               所属部门
             </p>
             <div class="headerDiv">
-              <el-select v-model="value" placeholder="">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+              <el-cascader
+                :options="options"
+                :props="selectedProps"
+                change-on-select
+                v-model="selectedOptions">
+              </el-cascader>
             </div>
           </li>
           <li class="headerLi">
@@ -100,11 +98,12 @@
                 {{item.username?item.username:' '}}
               </li>
               <li class="entryLitwo">
-                {{item.userstate?item.userstate:' '}}</li>
+                {{item.userstate?item.userstate:' '}}
+              </li>
               <li class="entryLitwo">{{item.email?item.email:' '}}</li>
               <li class="entryLitwo">{{item.tel?item.tel:' '}}</li>
               <li class="entryLitwo">{{item.organizationid?item.organizationid:' '}}</li>
-              <li class="entryLitwo">{{item.lastlogintime?item.lastlogintime:' '}}</li>
+              <li class="entryLitwo">{{item.lastlogintime?fmtDate(item.lastlogintime):' '}}</li>
               <li class="entryLithree">
                 {{item.userroleid?item.userroleid:' '}}
               </li>
@@ -205,10 +204,24 @@ export default {
       //  查看：向子级传递的值
       exaMineCodo: [],
       moDifynews: '',
-      authorizationUserid: ''
+      authorizationUserid: '',
+      selectedOptions: [],
+      selectedProps: {
+        label: 'organizationName',
+        value: 'organizationId',
+        children: 'subOrgnizations'
+      }
     }
   },
   methods: {
+    //  时间戳
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = '0' + (date.getMonth() + 1)
+      let d = '0' + date.getDate()
+      return y + '-' + m.substring(m.length - 2, m.length) + '-' + d.substring(d.length - 2, d.length)
+    },
     Acredit (ev) {
       console.log(ev)
       this.accreditBBoolean = ev
@@ -225,6 +238,7 @@ export default {
       this.adhibitBoolean = ev
     },
     exaMine (userid) {
+      console.log('-1')
       let url = iConsumerexamine(userid)
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {
@@ -255,19 +269,35 @@ export default {
       console.log(ev)
     },
     amputate ($index, content, userId) {
-      let Userid = JSON.parse(window.sessionStorage.userInfo).userid
-      // console.log(Userid)
-      this.axios.post(`http://172.16.6.16:8920/users/delUser?userid=${userId}`).then((response) => {
-        if (response.data.code === 0) {
-          content.splice([$index], 1)
-          if (userId === Userid) {
-            sessionStorage.clear()
-            this.$router.push({path: '/login'})
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let Userid = JSON.parse(window.sessionStorage.userInfo).userid
+        console.log(Userid)
+        this.axios.post(`http://172.16.6.181:8920/users/delUser?userid=${userId}`).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
             content.splice([$index], 1)
-            return false
+            console.log(response)
+            if (userId === Userid) {
+              sessionStorage.clear()
+              this.$router.push({path: '/login'})
+              return false
+            }
+          } else {
+            this.$message.error('删除失败,请重试')
           }
-        }
-        console.log(response)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
     postData () {
@@ -287,9 +317,14 @@ export default {
     })
     console.log('----')
     console.log(this.information)
-  },
-  beforeMount () {
-
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(`http://172.16.6.181:8920/organization/getOrganizationTreeByUser?token=${token}`).then((response) => {
+      if (response.data.code === 0) {
+        console.log('--------')
+        console.log(response.data.data)
+        this.options.push(response.data.data)
+      }
+    })
   }
 }
 </script>

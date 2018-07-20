@@ -97,7 +97,6 @@ import MapCity from 'components/map-city/map-city'
 import MapFactory from 'components/map-factory/map-factory'
 import MapBuilding from 'components/map-building/map-building'
 import FloorPlans from 'components/floor-plans/floor-plans'
-// import { judgeToken } from 'api/user'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'maintain-home',
@@ -135,20 +134,7 @@ export default {
     FloorPlans
   },
   created () {
-    // if (window.sessionStorage.length !== 0) {
-    //   let Judgetoken = JSON.parse(window.sessionStorage.token)
-    //   let userId = JSON.parse(window.sessionStorage.userInfo).userid
-    //   console.log(Judgetoken)
-    //   judgeToken(Judgetoken, userId).then(res => {
-    //     if (res === true) {
-    //       return false
-    //     } else {
-    //       this.$router.push('/login')
-    //     }
-    //   })
-    // } else {
-    //   this.$router.push('/login')
-    // }
+    console.log(this.goods)
   }
 }
 </script>

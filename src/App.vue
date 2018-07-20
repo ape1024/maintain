@@ -100,22 +100,6 @@ export default {
   methods: {
   },
   created () {
-    if (window.sessionStorage.length !== 0) {
-      // let Judgetoken = JSON.parse(window.sessionStorage.token)
-      // let userId = JSON.parse(window.sessionStorage.userInfo).userid
-      // console.log(Judgetoken)
-      // judgeToken(Judgetoken, userId).then(res => {
-      //   if (res === true) {
-      //     return false
-      //   } else {
-      //     this.$router.push('/login')
-      //   }
-      // })
-    } else {
-      this.$router.push('/login')
-    }
-  },
-  mounted () {
   }
 }
 </script>

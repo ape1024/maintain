@@ -34,6 +34,8 @@ export default {
   props: {},
   data () {
     return {
+      //  权限
+      authority: [],
       icon: '',
       username: '',
       //  检验是否有token
@@ -99,13 +101,29 @@ export default {
                   let token = JSON.stringify(response.data.data.token)
                   window.sessionStorage.setItem('userInfo', userinfo)
                   window.sessionStorage.setItem('token', token)
+                  console.log(token)
+                  let newToken = JSON.parse(token)
+                  this.axios.post(`http://172.16.6.181:8920/users/getUserFuncions?token=${newToken}`).then((data) => {
+                    console.log('++++++++++++')
+                    console.log(data)
+                    data.data.forEach((val) => {
+                      let obj = {
+                        functioncode: val.functioncode,
+                        approval: val.approval,
+                        delete: val.delete,
+                        insert: val.insert,
+                        select: val.select,
+                        update: val.update
+                      }
+                      this.authority.push(obj)
+                    })
+                  })
                   let dom = e.target
                   $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
                   console.log(response)
-                  this.$router.go(0)
                   this.$router.push('/loginBlank')
                 } else {
-                  alert('登录失败')
+                  this.$message.error('登录失败')
                 }
               }
             }

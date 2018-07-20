@@ -5,6 +5,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'loginBlank',
   data () {
@@ -12,6 +13,7 @@ export default {
     }
   },
   created () {
+    this.$router.go(0)
     this.$router.replace('/home')
   }
 }
