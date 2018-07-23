@@ -102,21 +102,60 @@ export default {
                   window.sessionStorage.setItem('userInfo', userinfo)
                   window.sessionStorage.setItem('token', token)
                   console.log(token)
+                  console.log(userinfo)
+
+                  let username = JSON.parse(window.sessionStorage.userInfo).username
+                  let usericon = JSON.parse(window.sessionStorage.userInfo).icon
+                  this.$store.state.usericon = usericon
+                  this.$store.state.username = username
                   let newToken = JSON.parse(token)
                   this.axios.post(`http://172.16.6.181:8920/users/getUserFuncions?token=${newToken}`).then((data) => {
                     console.log('++++++++++++')
                     console.log(data)
                     data.data.forEach((val) => {
+                      let approval = ''
+                      let deleteData = ''
+                      let insertData = ''
+                      let selectData = ''
+                      let updateData = ''
+                      if (val.approval === 0) {
+                        approval = false
+                      } else {
+                        approval = true
+                      }
+                      if (val.delete === 0) {
+                        deleteData = false
+                      } else {
+                        deleteData = true
+                      }
+                      if (val.insert === 0) {
+                        insertData = false
+                      } else {
+                        insertData = true
+                      }
+                      if (val.select === 0) {
+                        selectData = false
+                      } else {
+                        selectData = true
+                      }
+                      if (val.update === 0) {
+                        updateData = false
+                      } else {
+                        updateData = true
+                      }
                       let obj = {
                         functioncode: val.functioncode,
-                        approval: val.approval,
-                        delete: val.delete,
-                        insert: val.insert,
-                        select: val.select,
-                        update: val.update
+                        approval: approval,
+                        delete: deleteData,
+                        insert: insertData,
+                        select: selectData,
+                        update: updateData
                       }
                       this.authority.push(obj)
                     })
+                    console.log(this.authority)
+                    let authority = JSON.stringify(this.authority)
+                    window.sessionStorage.setItem('Jurisdiction', authority)
                   })
                   let dom = e.target
                   $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')

@@ -72,7 +72,7 @@
               查 询
             </div>
             <!--新增-->
-            <div @click.stop="auditing" class="newly">
+            <div v-if="JurisdictionApproval" @click.stop="auditing" class="newly">
               新 增
             </div>
             <!--导入-->
@@ -277,10 +277,19 @@ export default {
       review_boolean: false,
       // 获取点击的id
       click_id: '',
-      tableData: []
+      tableData: [],
+      JurisdictionApproval: ''
     }
   },
   created () {
+    //  权限
+    console.log(JSON.parse(window.sessionStorage.Jurisdiction))
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'device') {
+        this.JurisdictionApproval = val.approval
+      }
+    })
     const token = JSON.parse(window.sessionStorage.token)
     console.log(token)
     //  获取区域

@@ -1,7 +1,7 @@
 <template>
   <div class="subject">
     <div class="subjectDiv">
-      <div @click="conserve" class="conserve">
+      <div v-if="JurisdictionApproval" @click="conserve" class="conserve">
         增 加
       </div>
     </div>
@@ -41,9 +41,9 @@
               {{item.creatername}}
             </li>
             <li class="headerLithree">
-              <p @click="exaMine(item.projectid, item)" class="contentLi_ulP">查看明细</p>
-              <p @click="modify(item)" class="contentLi_ulPtwo">修改</p>
-              <p @click="amputate($index, contentliDate, item.projectid)" class="contentLi_ulPthree">删除</p>
+              <p v-if="JurisdictionSelect" @click="exaMine(item.projectid, item)" class="contentLi_ulP">查看明细</p>
+              <p v-if="JurisdictionUpdate" @click="modify(item)" class="contentLi_ulPtwo">修改</p>
+              <p v-if="JurisdictionDelete" @click="amputate($index, contentliDate, item.projectid)" class="contentLi_ulPthree">删除</p>
             </li>
           </ul>
         </li>
@@ -87,7 +87,11 @@ export default {
       value: '',
       //  修改信息
       projectDate: '',
-      modifyDate: ''
+      modifyDate: '',
+      JurisdictionSelect: '',
+      JurisdictionDelete: '',
+      JurisdictionApproval: '',
+      JurisdictionUpdate: ''
     }
   },
   methods: {
@@ -148,6 +152,15 @@ export default {
     }
   },
   created () {
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'device') {
+        this.JurisdictionSelect = val.select
+        this.JurisdictionDelete = val.delete
+        this.JurisdictionApproval = val.approval
+        this.JurisdictionUpdate = val.update
+      }
+    })
     this.axios.post(`http://172.16.6.181:8920/projects/findAllProjects`).then((response) => {
       if (response.data.code === 0) {
         this.contentliDate = response.data.data

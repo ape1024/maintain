@@ -96,32 +96,34 @@
           <transition enter-active-class="fadeInUp"
                       leave-active-class="fadeOutDown">
             <div v-if="item.flag" class="inline_div">
-              <dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild"></dailytwo>
+              <maintaintwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild"></maintaintwo>
             </div>
           </transition>
         </li>
       </ul>
     </section>
-    <section v-show="modifyBoolean" class="review">
-      <modify :sag="modifyBoolean" @say="Say"></modify>
-    </section>
+    <!--<section v-show="modifyBoolean" class="review">-->
+      <!--<modify :sag="modifyBoolean" @say="Say"></modify>-->
+    <!--</section>-->
   </div>
 </template>
 
 <script>
-import dailytwo from '../dailyChild-two/dailyChild-two'
+import maintaintwo from '../maintainChild-two/maintainChild-two'
 // 修改
-import modify from '../dailyChild-operation/dailyChild-modify'
+// import modify from '../dailyChild-operation/dailyChild-modify'
 export default {
   name: 'maintain-maintain',
   components: {
-    dailytwo,
-    modify
+    maintaintwo
   },
   methods: {
     query () {
       if (this.regionModel.length === 0) {
-        alert('请选择区域！')
+        this.$message({
+          message: '请选择区域！',
+          type: 'warning'
+        })
         return false
       } else {
         let projectid = window.localStorage.pattern
@@ -200,19 +202,20 @@ export default {
   },
   created () {
     //  获取区域
-    this.axios.post('http://172.16.6.16:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
+    console.log(window.sessionStorage.token)
+    this.axios.post('http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
       }
     })
     //  获取设备类别
-    this.axios.post('http://172.16.6.16:8920/dev/findAllDeviceType').then((response) => {
+    this.axios.post('http://172.16.6.181:8920/dev/findAllDeviceType').then((response) => {
       if (response.data.code === 0) {
         this.equipment = response.data.data
       }
     })
     //  审核状态
-    this.axios.post('http://172.16.6.16:8920/dev/FindDevAllApprovalstate').then((response) => {
+    this.axios.post('http://172.16.6.181:8920/dev/FindDevAllApprovalstate').then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
       }

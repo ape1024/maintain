@@ -50,11 +50,8 @@
           用户列表
         </p>
         <div class="informationDiv">
-          <div @click="induce" class="superinduce">
+          <div v-if="JurisdictionApproval" @click="induce" class="superinduce">
             添加
-          </div>
-          <div class="amputate">
-            删除
           </div>
         </div>
       </div>
@@ -109,23 +106,23 @@
               </li>
               <li class="entryLifour">
                 <!--查看-->
-                <p @click="exaMine(item.userid)" class="examine">
+                <p v-if="JurisdictionSelect" @click="exaMine(item.userid)" class="examine">
                   查看
                 </p>
                 <!--修改-->
-                <p @click="moDify(item)" class="modify">
+                <p v-if="JurisdictionUpdate" @click="moDify(item)" class="modify">
                   修改
                 </p>
                 <!--授权-->
-                <p @click="authorization(item.userid)" class="authorization">
+                <p v-if="JurisdictionInsert" @click="authorization(item.userid)" class="authorization">
                   授权
                 </p>
                 <!--修改密码-->
-                <p @click="infor(item.userid)" class="password">
+                <p v-if="JurisdictionUpdate" @click="infor(item.userid)" class="password">
                   修改密码
                 </p>
                 <!--删除-->
-                <p @click="amputate($index, information, item.userid)" class="amputate">
+                <p v-if="JurisdictionDelete" @click="amputate($index, information, item.userid)" class="amputate">
                   删除
                 </p>
               </li>
@@ -210,7 +207,12 @@ export default {
         label: 'organizationName',
         value: 'organizationId',
         children: 'subOrgnizations'
-      }
+      },
+      JurisdictionSelect: '',
+      JurisdictionInsert: '',
+      JurisdictionDelete: '',
+      JurisdictionApproval: '',
+      JurisdictionUpdate: ''
     }
   },
   methods: {
@@ -310,6 +312,16 @@ export default {
     this.postData()
   },
   created () {
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'device') {
+        this.JurisdictionSelect = val.select
+        this.JurisdictionInsert = val.insert
+        this.JurisdictionDelete = val.delete
+        this.JurisdictionApproval = val.approval
+        this.JurisdictionUpdate = val.update
+      }
+    })
     let url = `http://172.16.6.181:8920/users/findAll?pageIndex=0&pageSize=30`
     this.axios.post(url).then((response) => {
       console.log(response)

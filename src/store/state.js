@@ -5,7 +5,9 @@ const state = {
   cityAreaId: '',
   factoryAreaId: '',
   buildingAreaId: '',
-  floorPlansAreaId: ''
+  floorPlansAreaId: '',
+  username: '',
+  usericon: ''
 }
 
 export default state

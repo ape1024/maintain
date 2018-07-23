@@ -588,7 +588,7 @@ export default {
   @import "~common/stylus/variable"
   .subject
     init()
-    margin-top 60px
+    margin-top 40px
     background #111a28
     .section
       overflow hidden
@@ -655,7 +655,7 @@ export default {
               margin-bottom 10px
               overflow hidden
       .lookupChoose
-        margin 30px 0 0  23px
+        margin 10px 0 0  23px
         position relative
         overflow hidden
         .lookupChooseUl
@@ -735,7 +735,7 @@ export default {
   .fastener
     init()
     text-align center
-    margin-top 40px
+    margin-top 10px
     .conserve
       conserve()
       margin-right 40px

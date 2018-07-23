@@ -28,47 +28,26 @@
         <div class="middle_bottom_div">
           <div class="middle_bottom_left">
             <!--日巡查总览-->
-
+            <inspection></inspection>
           </div>
           <div class="middle_bottom_right">
             <!--上报故障-->
+            <inspectionRight></inspectionRight>
           </div>
         </div>
       </div>
     </div>
     <div class="population_right">
       <section class="right_top">
-        <div class="right_title">
+        <div :key="index" v-for="(item, index) in integrityRate" class="right_title">
           <h4 class="right_h4">
-            设备完好率
+            {{item.name}}
           </h4>
           <div class="progress_bar">
             <div class="progress_left">
-              <el-progress :percentage="80" color="#61a0a8"></el-progress>
+              <el-progress :percentage="item.value" :color="item.color"></el-progress>
             </div>
-            <span class="equipment">80%</span>
-          </div>
-        </div>
-        <div class="right_title">
-          <h4 class="right_h4">
-            问题处理率
-          </h4>
-          <div class="progress_bar">
-            <div class="progress_left">
-              <el-progress :percentage="80" color="#91c7ae"></el-progress>
-            </div>
-            <span class="problem">80%</span>
-          </div>
-        </div>
-        <div class="right_title">
-          <h4 class="right_h4">
-            设备完好率
-          </h4>
-          <div class="progress_bar">
-            <div class="progress_left">
-              <el-progress :percentage="80" color="#d48265"></el-progress>
-            </div>
-            <span class="integrityrate">80%</span>
+            <span :style="{'color':item.color}" class="equipment">{{item.value}}</span>
           </div>
         </div>
       </section>
@@ -97,9 +76,16 @@ import MapCity from 'components/map-city/map-city'
 import MapFactory from 'components/map-factory/map-factory'
 import MapBuilding from 'components/map-building/map-building'
 import FloorPlans from 'components/floor-plans/floor-plans'
+import inspection from '../homeChild-stacked/homeChild-inspection'
+import inspectionRight from '../homeChild-stacked/homeChild-inspectionRight'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'maintain-home',
+  data () {
+    return {
+      integrityRate: ''
+    }
+  },
   computed: {
     ...mapGetters([
       'userData'
@@ -131,10 +117,34 @@ export default {
     MapCity,
     MapFactory,
     MapBuilding,
-    FloorPlans
+    FloorPlans,
+    inspection,
+    inspectionRight
   },
   created () {
-    console.log(this.goods)
+    if (window.sessionStorage.length === 0) {
+      this.$router.replace('/login')
+      return false
+    }
+    let projectid = window.localStorage.pattern
+    console.log(projectid)
+    //  设备完好率
+    this.axios.post(`http://172.16.6.16:8920/dev/statDeviceAndQuestionAndTaskRate?projectid=${projectid}`).then((response) => {
+      console.log(response.data.data)
+      if (response.data.code === 0) {
+        // let colorData = ['#61a0a8', '#91c7ae', '#d48265']
+        response.data.data.forEach((val) => {
+          val.value = val.value * 100 + '%'
+          // for (let i = 0; i < colorData.length; i++) {
+          //   val.color = color[i]
+          // }
+        })
+        this.integrityRate = response.data.data
+        console.log('-----')
+        console.log(this.integrityRate)
+      }
+    })
+    //
   }
 }
 </script>
@@ -150,7 +160,7 @@ export default {
     .population_left
         float left
         width 430px
-        height 945px
+        height 858px
         overflow hidden
         margin 0 12px 0 16px
         background url("../../../static/img/population_left.png") no-repeat
@@ -192,7 +202,7 @@ export default {
     position relative
     .middle_top
       width 100%
-      height 620px
+      height 531px
       overflow hidden
       .top_section
         width 1072px
@@ -204,7 +214,7 @@ export default {
       margin-top 7px
       width 100%
       height 319px
-      overflow hidden
+      display inline-block
       position relative
       background url("../../../static/img/middle_bottom.png") no-repeat
       background-size cover
@@ -222,7 +232,7 @@ export default {
   .population_right
     margin-left 12px
     width 300px
-    height 945px
+    height 858px
     background url("../../../static/img/population_right.png") no-repeat
     background-size cover
     margin-right 16px
@@ -243,7 +253,6 @@ export default {
      .equipment
        float right
        line-height 20px
-       color #61a0a8
   .right_top
      margin 0 8px
      overflow hidden
@@ -253,15 +262,15 @@ export default {
     overflow hidden
     position relative
    .right_h4
-     margin: 8px 0 26px;
-     font-size: 18px;
-     color: #eee;
+     margin 8px 0 8px
+     font-size 18px
+     color #eee
   .right_top
     border-bottom 1px dashed #444d5b
   .right_bottom
     margin 0 8px
-    overflow: hidden;
-    position: relative;
+    overflow hidden
+    position relative
   .right_bottom_div
     font-size $font-size-small-s
     color $color-text

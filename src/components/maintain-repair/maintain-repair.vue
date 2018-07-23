@@ -117,17 +117,17 @@
               {{approvalStatusfn(item.approvalstate)}}
             </li>
             <li class="repair_lifive">
-              <p @click.stop="question(item.repairtaskid, item)" class="header_p_eight threelevel_litwo_p">
+              <p v-if="JurisdictionInsert" @click.stop="question(item.repairtaskid, item)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
-              <p @click.stop="examine(item.repairtaskid)" class="header_p_ten">查看</p>
-              <p @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
+              <p v-if="JurisdictionSelect" @click.stop="examine(item.repairtaskid)" class="header_p_ten">查看</p>
+              <p v-if="JurisdictionInsert" @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
                 重新安排
               </p>
               <!--<p @click.stop="modify" class="header_pe_quipment">-->
                 <!--安排-->
               <!--</p>-->
-              <p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>
+              <p v-if="JurisdictionDelete" class="header_p_eleven" @click.stop="amputate(index, tabulationData,item.repairtaskid)">删除</p>
             </li>
           </ul>
         </li>
@@ -246,9 +246,29 @@ export default {
       // 子级组件传递 参数 让新增组件 隐藏
       this.review_boolean = ev
     },
-    amputate ($index, content) {
+    amputate (index, content, repairtaskid) {
       // 删除
-      content.splice([$index], 1)
+      this.$confirm('是否删除此设施?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.post(`http://172.16.6.181:8920/repairtasks/removeRepairtasks?repairtaskid=${repairtaskid}`).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            content.splice([index], 1)
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     examine (id) {
       // 点击查看
@@ -346,10 +366,24 @@ export default {
       approvalStatus: [],
       quipmentData: '',
       maintenance: '',
-      maintenanceData: ''
+      maintenanceData: '',
+      JurisdictionSelect: '',
+      JurisdictionInsert: '',
+      JurisdictionDelete: '',
+      JurisdictionApproval: ''
     }
   },
   created () {
+    //   权限
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'task_gzwx') {
+        this.JurisdictionSelect = val.select
+        this.JurisdictionInsert = val.insert
+        this.JurisdictionDelete = val.delete
+        this.JurisdictionApproval = val.approval
+      }
+    })
     //  获取区域
     this.axios.post('http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
       if (response.data.code === 0) {
@@ -371,6 +405,8 @@ export default {
       console.log(response)
       if (response.data.code === 0) {
         this.tabulationData = response.data.data
+        console.log('----')
+        console.log(this.tabulationData)
       }
     })
     //  获取维修状态

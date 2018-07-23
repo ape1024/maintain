@@ -4,7 +4,7 @@
         <header class="leftHeader">
           <img class="subjectImg" src="../../../static/img/department.png" alt="">
           <p class="subjectP">结构组织权限管理</p>
-          <p @click="subjectpCreate" class="subjectptwo">新增</p>
+          <p v-if="JurisdictionApproval" @click="subjectpCreate" class="subjectptwo">新增</p>
         </header>
         <div class="leftBottom">
           <div class="leftBottomDiv">
@@ -377,7 +377,9 @@ export default {
       categoryfireFighting: '',
       categoryfireFightingData: '',
       businessCategory: '',
-      businessCategoryData: ''
+      businessCategoryData: '',
+      JurisdictionApproval: '',
+      JurisdictionUpdate: ''
     }
   },
   methods: {
@@ -513,6 +515,9 @@ export default {
       }
     },
     conserve () {
+      if (this.JurisdictionUpdate === false) {
+        return false
+      }
       //   点击保存
       const token = JSON.parse(window.sessionStorage.token)
       console.log(token)
@@ -833,6 +838,13 @@ export default {
     }
   },
   created () {
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'system') {
+        this.JurisdictionApproval = val.approval
+        this.JurisdictionUpdate = val.update
+      }
+    })
     let token = JSON.parse(window.sessionStorage.token)
     console.log(token)
     //  左边的树状结构

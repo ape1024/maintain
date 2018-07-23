@@ -7,7 +7,7 @@
         <div class="headerRight_bottom">
           <img class="project" src="../../../static/img/project.png" alt="">
           <div class="headerRight">
-            <el-select v-model="value" placeholder=""  @change="patternSwitch">
+            <el-select v-model="value"  @change="patternSwitch">
               <el-option
                 v-for="item in options"
                 :key="item.projectid"
@@ -20,11 +20,13 @@
      </div>
      <div class="headerRight_right">
        <div class="portrait">
-         <img class="portraitImg" :src="portrait?portrait:''" alt="">
+         <img class="portraitImg" :src="$store.state.usericon" alt="">
        </div>
        <div class="userOperation">
          <p class="userOperationP">
-           {{username?username:''}}
+           <!--{{username?username:''}}-->
+           <!--{{name}}-->
+           {{$store.state.username}}
          </p>
          <div @click="signout" class="userBottom">
            <img class="userBottomImg" src="../../../static/img/secede.png" alt="">
@@ -40,6 +42,7 @@
 import { secede } from '../../api/user'
 export default {
   name: 'maintain-headerRight',
+  props: ['name'],
   data () {
     return {
       portrait: sessionStorage.userInfo ? JSON.parse(sessionStorage.userInfo).icon : '',
@@ -65,18 +68,12 @@ export default {
     }
   },
   created () {
-    if (window.sessionStorage.length !== 0) {
-      this.portrait = JSON.parse(sessionStorage.userInfo).icon
-      this.username = JSON.parse(sessionStorage.userInfo).username
-    }
     if (window.localStorage.pattern !== undefined) {
       this.value = JSON.parse(window.localStorage.pattern)
     }
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(`http://172.16.6.181:8920/projects/findUserProjects?token=${token}`).then((response) => {
       if (response.data.code === 0) {
-        console.log('1111111122222222')
-        console.log(response)
         this.options = response.data.data
       }
     })

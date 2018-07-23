@@ -140,13 +140,15 @@
                 {{buildscope}}
               </div>
               <div v-if="buildscopeBoolean" class="firecontrolDiv">
-                <el-tree
-                  :data="purview"
-                  :props="purviewProps"
-                  node-key="areaid"
-                  show-checkbox
-                  @check="purviewCheck">
-                </el-tree>
+                <div class="firecontrolDiv_div">
+                  <el-tree
+                    :data="purview"
+                    :props="purviewProps"
+                    node-key="areaid"
+                    show-checkbox
+                    @check="purviewCheck">
+                  </el-tree>
+                </div>
               </div>
             </div>
             <p class="substanceP">
@@ -159,13 +161,15 @@
                 {{firecontrolda}}
               </div>
               <div v-if="firecontrolBoolean" class="firecontrolDiv">
-                <el-tree
-                  :data="firecontrol"
-                  :props="firecontrolProps"
-                  node-key="id"
-                  show-checkbox
-                  @check="firecontrolCheck">
-                </el-tree>
+                <div class="firecontrolDiv_div">
+                  <el-tree
+                    :data="firecontrol"
+                    :props="firecontrolProps"
+                    node-key="id"
+                    show-checkbox
+                    @check="firecontrolCheck">
+                  </el-tree>
+                </div>
               </div>
             </div>
             <p class="substanceP">
@@ -237,7 +241,7 @@
       </div>
       <div class="fastener">
         <div @click="conserve" class="conserve">保存</div>
-        <div class="closedown">关闭</div>
+        <div @click="closedown" class="closedown">关闭</div>
       </div>
     </section>
   </div>
@@ -706,6 +710,11 @@ export default {
     min-height 250px
     max-height 250px
     z-index 11
+    .firecontrolDiv_div
+      position relative
+      line-height 24px
+      margin 20px 10px
+      overflow hidden
   .firecontrolBooleanLi
     padding 4px 0 4px 20px
   .firecontrolLi

@@ -69,15 +69,15 @@
             <!--<p @click.stop="question" class="header_p_eight threelevel_litwo_p">-->
               <!--审核-->
             <!--</p>-->
-            <p @click.stop="examine(dataset.deviceid)" class="header_p_ten">查看</p>
-            <p @click.stop="modify(dataset, dataset.deviceid)" class="header_p_twelve">
+            <p v-if="JurisdictionSelect" @click.stop="examine(dataset.deviceid)" class="header_p_ten">查看</p>
+            <p v-if="JurisdictionUpdate" @click.stop="modify(dataset, dataset.deviceid)" class="header_p_twelve">
               修改
             </p>
             <!--<p @click.stop="equipment" class="header_pe_quipment">-->
               <!--更换设备-->
             <!--</p>-->
             <!--<p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>-->
-            <p class="header_p_eleven" @click.stop="">
+            <p v-if="JurisdictionDelete" class="header_p_eleven" @click.stop="">
               <el-button type="text" @click="amputate($index, tabChild, dataset.deviceid)">删除</el-button>
             </p>
           </li>
@@ -129,7 +129,12 @@ export default {
       examineInformation: '',
       examineInspection: '',
       modifyDate: '',
-      examineDataset: ''
+      examineDataset: '',
+      JurisdictionSelect: '',
+      JurisdictionInsert: '',
+      JurisdictionDelete: '',
+      JurisdictionApproval: '',
+      JurisdictionUpdate: ''
     }
   },
   methods: {
@@ -147,7 +152,12 @@ export default {
             content.splice([$index], 1)
             this.axios.post(`http://172.16.6.181:8920/dev/delDevice?devid=${deviceid}`).then((response) => {
               if (response.data.code === 0) {
-
+                this.$message({
+                  message: '删除成功',
+                  type: 'success'
+                })
+              } else {
+                this.$message.error('删除失败')
               }
             })
           }
@@ -247,6 +257,16 @@ export default {
   },
   created () {
     console.log(this.tabChild)
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'device') {
+        this.JurisdictionSelect = val.select
+        this.JurisdictionInsert = val.insert
+        this.JurisdictionDelete = val.delete
+        this.JurisdictionApproval = val.approval
+        this.JurisdictionUpdate = val.update
+      }
+    })
   }
 }
 </script>

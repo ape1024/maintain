@@ -96,27 +96,27 @@
           <transition enter-active-class="fadeInUp"
                       leave-active-class="fadeOutDown">
             <div v-if="item.flag" class="inline_div">
-              <dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild"></dailytwo>
+              <inspecttwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild"></inspecttwo>
             </div>
           </transition>
         </li>
       </ul>
     </section>
-    <section v-show="modifyBoolean" class="review">
-      <modify :sag="modifyBoolean" @say="Say"></modify>
-    </section>
+    <!--<section v-show="modifyBoolean" class="review">-->
+      <!--<modify :sag="modifyBoolean" @say="Say"></modify>-->
+    <!--</section>-->
   </div>
 </template>
 
 <script>
-import dailytwo from '../dailyChild-two/dailyChild-two'
+import inspecttwo from '../inspect-child/inspectChild-two'
 // 修改
-import modify from '../dailyChild-operation/dailyChild-modify'
+// import modify from '../dailyChild-operation/dailyChild-modify'
 export default {
   name: 'maintain-inspect',
   components: {
-    dailytwo,
-    modify
+    inspecttwo
+    // modify
   },
   methods: {
     query () {

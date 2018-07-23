@@ -67,7 +67,7 @@
          </ul>
        </div>
        <div class="header_right">
-         <MaintainheaderRight></MaintainheaderRight>
+         <MaintainheaderRight :name="username"></MaintainheaderRight>
        </div>
      </header>
      <section class="subject">
@@ -94,7 +94,8 @@ export default {
       isShowed: false,
       headername: '',
       portrait: '',
-      textarea: ''
+      textarea: '',
+      username: ''
     }
   },
   methods: {

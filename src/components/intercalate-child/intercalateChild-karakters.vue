@@ -29,10 +29,10 @@
       <div class="karakters">
         <div class="jurisdictionBottom">
           <div class="header">
-            <div class="conserveDiv" @click="conserve">
+            <div v-if="JurisdictionUpdate" class="conserveDiv" @click="conserve">
               保 存
             </div>
-            <div @click="increasd" class="increased">
+            <div v-if="JurisdictionApproval" @click="increasd" class="increased">
               新增角色信息
             </div>
           </div>
@@ -133,7 +133,9 @@ export default {
       },
       fullFunctionality: '',
       // 点击左侧获取其id值
-      kayakersId: ''
+      kayakersId: '',
+      JurisdictionApproval: '',
+      JurisdictionUpdate: ''
     }
   },
   methods: {
@@ -305,6 +307,13 @@ export default {
     }
   },
   created () {
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'role') {
+        this.JurisdictionApproval = val.approval
+        this.JurisdictionUpdate = val.update
+      }
+    })
     let token = JSON.parse(window.sessionStorage.token)
     console.log(token)
     this.axios.post(`http://172.16.6.181:8920/roles/FindAllFunctions?token=${token}`).then((response) => {
@@ -334,7 +343,6 @@ export default {
           })
         })
         this.fullFunctionality = response.data.data
-        console.log('0002000')
         console.log(this.fullFunctionality)
       }
     })

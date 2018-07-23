@@ -102,21 +102,22 @@
         </li>
       </ul>
     </section>
-    <section v-show="modifyBoolean" class="review">
-      <modify :sag="modifyBoolean" @say="Say"></modify>
-    </section>
+    <!--目前不需要修改-->
+    <!--<section v-show="modifyBoolean" class="review">-->
+      <!--<modify :sag="modifyBoolean" @say="Say"></modify>-->
+    <!--</section>-->
   </div>
 </template>
 
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
 // 修改
-import modify from '../dailyChild-operation/dailyChild-modify'
+// import modify from '../dailyChild-operation/dailyChild-modify'
 export default {
   name: 'maintain-daily',
   components: {
-    dailytwo,
-    modify
+    dailytwo
+    // modify
   },
   methods: {
     query () {

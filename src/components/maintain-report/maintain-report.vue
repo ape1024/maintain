@@ -104,14 +104,14 @@
             <li class="header_li">{{item.feedbackstatename}}</li>
             <li class="header_li">{{item.comfirmstatename}}</li>
             <li class="header_litwo">
-              <p @click.stop="examine(item.ID)" class="header_p_ten">查看</p>
-              <p @click.stop="modify(item.ID)" class="header_p_twelve">
+              <p v-if="JurisdictionSelect" @click.stop="examine(item.ID)" class="header_p_ten">查看</p>
+              <p v-if="JurisdictionInsert" @click.stop="modify(item.ID)" class="header_p_twelve">
                 确认
               </p>
-              <p @click.stop="question(item.ID)" class="header_p_eight threelevel_litwo_p">
+              <p v-if="JurisdictionInsert" @click.stop="question(item.ID)" class="header_p_eight threelevel_litwo_p">
                 安排
               </p>
-              <p class="header_p_eleven" @click.stop="amputate(item.ID, index, exhibition)">删除</p>
+              <p v-if="JurisdictionDelete" class="header_p_eleven" @click.stop="amputate(item.ID, index, exhibition)">删除</p>
             </li>
           </ul>
           <!--<transition enter-active-class="fadeInUp"-->
@@ -159,11 +159,25 @@ export default {
   },
   methods: {
     amputate (ID, index, data) {
-      this.axios.post(`http://172.16.6.181:8920/feedback/removeFeedbacks?feedbackid=${ID}`).then((response) => {
-        if (response.data.code === 0) {
-          console.log(response.data)
-          data.splice(index, 1)
-        }
+      this.$confirm('是否删除此任务?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.post(`http://172.16.6.181:8920/feedback/removeFeedbacks?feedbackid=${ID}`).then((response) => {
+          if (response.data.code === 0) {
+            data.splice(index, 1)
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
     // auditing () {
@@ -307,10 +321,22 @@ export default {
       disposeData: [],
       identification: '',
       identificationData: [],
-      arrangeData: ''
+      arrangeData: '',
+      JurisdictionSelect: '',
+      JurisdictionInsert: '',
+      JurisdictionDelete: ''
     }
   },
   created () {
+    //  权限
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'task_wtcl') {
+        this.JurisdictionSelect = val.select
+        this.JurisdictionInsert = val.insert
+        this.JurisdictionDelete = val.delete
+      }
+    })
     let projectid = window.localStorage.pattern
     console.log(projectid)
     this.axios.post(`http://172.16.6.181:8920/feedback/findFeedback?projectid=${projectid}`).then((response) => {
