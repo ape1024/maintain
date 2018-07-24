@@ -9,16 +9,39 @@ export default {
   name: 'homeChild-stacked',
   data () {
     return {
-      msg: ''
+      msg: '',
+      equipment: [],
+      equipmentData: []
     }
   },
   mounted () {
-    this.drawLine()
+    let pattern = window.localStorage.pattern
+    this.axios.post(`http://172.16.6.16:8920/dev/statDevRunState?projectid=${pattern}`).then((response) => {
+      if (response.data.code === 0) {
+        console.log('+++++')
+        console.log(response.data.data)
+        const equipment = []
+        const equipmentData = []
+        response.data.data.forEach((val) => {
+          let obj = {
+            value: val.count,
+            name: val.faulttypename
+          }
+          equipment.push(val.faulttypename)
+          equipmentData.push(obj)
+        })
+        this.drawLine(equipmentData, equipment)
+        console.log('----')
+      }
+    })
   },
   methods: {
-    drawLine () {
+    drawLine (equipmentData, equipment) {
       // 基于准备好的dom，初始化echarts实例
       let myChart = this.$echarts.init(document.getElementById('myChart'))
+      console.log('啦啦啦')
+      console.log(equipmentData)
+      console.log(equipment)
       myChart.setOption({
         tooltip: {
           trigger: 'item',
@@ -27,7 +50,7 @@ export default {
         legend: {
           orient: 'vertical',
           left: 'left',
-          data: ['系统故障', '设备故障', '附件损坏', '元器件损坏', '管线损坏'],
+          data: equipment,
           textStyle: {
             color: '#fff'
           },
@@ -50,13 +73,7 @@ export default {
             type: 'pie',
             radius: '55%',
             center: ['50%', '60%'],
-            data: [
-              {value: 10, name: '系统故障'},
-              {value: 10, name: '设备故障'},
-              {value: 10, name: '附件损坏'},
-              {value: 10, name: '元器件损坏'},
-              {value: 10, name: '管线损坏'}
-            ]
+            data: equipmentData
           }
         ]
       })

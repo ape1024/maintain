@@ -13,7 +13,7 @@ export default {
     }
   },
   created () {
-    // this.$router.go(0)
+    this.$router.go(0)
     this.$router.replace('/home')
   }
 }

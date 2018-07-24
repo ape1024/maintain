@@ -20,13 +20,13 @@
      </div>
      <div class="headerRight_right">
        <div class="portrait">
-         <img class="portraitImg" :src="$store.state.usericon" alt="">
+         <img class="portraitImg" :src="portrait" alt="">
        </div>
        <div class="userOperation">
          <p class="userOperationP">
            <!--{{username?username:''}}-->
            <!--{{name}}-->
-           {{$store.state.username}}
+           {{username}}
          </p>
          <div @click="signout" class="userBottom">
            <img class="userBottomImg" src="../../../static/img/secede.png" alt="">
@@ -45,8 +45,8 @@ export default {
   props: ['name'],
   data () {
     return {
-      portrait: sessionStorage.userInfo ? JSON.parse(sessionStorage.userInfo).icon : '',
-      username: sessionStorage.userInfo ? JSON.parse(sessionStorage.userInfo).username : '',
+      portrait: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).icon : this.$store.state.usericon,
+      username: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).username : this.$store.state.username,
       options: [],
       value: []
     }
@@ -71,12 +71,21 @@ export default {
     if (window.localStorage.pattern !== undefined) {
       this.value = JSON.parse(window.localStorage.pattern)
     }
-    let token = JSON.parse(window.sessionStorage.token)
-    this.axios.post(`http://172.16.6.181:8920/projects/findUserProjects?token=${token}`).then((response) => {
-      if (response.data.code === 0) {
-        this.options = response.data.data
-      }
-    })
+    if (window.sessionStorage.token === undefined) {
+      let token = this.$store.state.userToken
+      this.axios.post(`http://172.16.6.181:8920/projects/findUserProjects?token=${token}`).then((response) => {
+        if (response.data.code === 0) {
+          this.options = response.data.data
+        }
+      })
+    } else {
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(`http://172.16.6.181:8920/projects/findUserProjects?token=${token}`).then((response) => {
+        if (response.data.code === 0) {
+          this.options = response.data.data
+        }
+      })
+    }
   }
 }
 </script>

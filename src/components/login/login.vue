@@ -99,6 +99,7 @@ export default {
                 if (data.data.code === 0) {
                   let userinfo = JSON.stringify(response.data.data.userInfo)
                   let token = JSON.stringify(response.data.data.token)
+                  this.$store.state.userToken = token
                   window.sessionStorage.setItem('userInfo', userinfo)
                   window.sessionStorage.setItem('token', token)
                   console.log(token)

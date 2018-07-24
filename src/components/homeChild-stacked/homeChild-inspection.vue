@@ -8,23 +8,100 @@
 export default {
   name: 'homeChild-inspection',
   mounted () {
-    this.drawline()
+    let pattern = window.localStorage.pattern
+    this.axios.post(`http://172.16.6.16:8920/dev/statTaskDoneState2?projectid=${pattern}`).then((response) => {
+      if (response.data.code === 0) {
+        let nameData = []
+        let stateData = ['未开始', '问题', '错误', '完好']
+        console.log('嘤嘤嘤')
+        console.log(response.data.data)
+        let seriesData = []
+        let nostart = []
+        let problem = []
+        let error = []
+        let complete = []
+        let aggregate = []
+        response.data.data.forEach((val, index) => {
+          nameData.push(val.typename)
+          // 未开始
+          nostart.push(val.num_nostart)
+          //  问题
+          problem.push(val.num_problem)
+          //  错误
+          error.push(val.num_error)
+          //  完成
+          complete.push(val.num_ok)
+          // let keys = []
+          // for (let property in val) {
+          //   keys.push(val[property])
+          // }
+          // keys.pop()
+          // console.log(keys)
+
+          // let obj = {
+          //   name: `${stateData[index]}`,
+          //   type: 'bar',
+          //   stack: '总量',
+          //   label: {
+          //     normal: {
+          //       show: true,
+          //       position: 'insideRight'
+          //     }
+          //   },
+          //   data: keys
+          // }
+          // seriesData.push(obj)
+        })
+        aggregate.push(nostart)
+        aggregate.push(problem)
+        aggregate.push(error)
+        aggregate.push(complete)
+        stateData.forEach((val, index) => {
+          let obj = {
+            name: `${val}`,
+            type: 'bar',
+            stack: '总量',
+            label: {
+              normal: {
+                show: true,
+                position: 'insideRight'
+              }
+            },
+            data: aggregate[index]
+          }
+          seriesData.push(obj)
+        })
+
+        console.log(nameData)
+        console.log('-----')
+        console.log(stateData)
+        let stateDataTwo = []
+        stateData.forEach((val) => {
+          let obj = {
+            name: val,
+            textStyle: {color: '#fff'}
+          }
+          stateDataTwo.push(obj)
+        })
+        console.log('aaa')
+        console.log(stateDataTwo)
+
+        this.drawline(nameData, seriesData, stateDataTwo)
+      }
+    })
   },
   methods: {
-    drawline () {
+    drawline (name, seriesData, stateDa) {
       let Chart = this.$echarts.init(document.getElementById('Chart'))
       Chart.setOption({
         tooltip: {
           trigger: 'axis',
           axisPointer: {
-            // 坐标轴指示器，坐标轴触发有效
             type: 'shadow'
-            // 默认为直线，可选为：'line' | 'shadow'
           }
         },
         legend: {
-          color: ['#fff'],
-          data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+          data: stateDa
         },
         grid: {
           left: '3%',
@@ -37,71 +114,14 @@ export default {
         },
         yAxis: {
           type: 'category',
-          color: ['#fff'],
-          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+          axisLine: {
+            lineStyle: {
+              color: '#fff'
+            }
+          },
+          data: name
         },
-        series: [
-          {
-            name: '直接访问',
-            type: 'bar',
-            stack: '总量',
-            label: {
-              normal: {
-                show: true,
-                position: 'insideRight'
-              }
-            },
-            data: [320, 302, 301, 334, 390, 330, 320]
-          },
-          {
-            name: '邮件营销',
-            type: 'bar',
-            stack: '总量',
-            label: {
-              normal: {
-                show: true,
-                position: 'insideRight'
-              }
-            },
-            data: [120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name: '联盟广告',
-            type: 'bar',
-            stack: '总量',
-            label: {
-              normal: {
-                show: true,
-                position: 'insideRight'
-              }
-            },
-            data: [220, 182, 191, 234, 290, 330, 310]
-          },
-          {
-            name: '视频广告',
-            type: 'bar',
-            stack: '总量',
-            label: {
-              normal: {
-                show: true,
-                position: 'insideRight'
-              }
-            },
-            data: [150, 212, 201, 154, 190, 330, 410]
-          },
-          {
-            name: '搜索引擎',
-            type: 'bar',
-            stack: '总量',
-            label: {
-              normal: {
-                show: true,
-                position: 'insideRight'
-              }
-            },
-            data: [820, 832, 901, 934, 1290, 1330, 1320]
-          }
-        ]
+        series: seriesData
       })
     }
   }

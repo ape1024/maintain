@@ -7,7 +7,8 @@ const state = {
   buildingAreaId: '',
   floorPlansAreaId: '',
   username: '',
-  usericon: ''
+  usericon: '',
+  userToken: ''
 }
 
 export default state

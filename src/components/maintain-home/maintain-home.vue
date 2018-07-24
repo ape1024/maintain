@@ -45,9 +45,9 @@
           </h4>
           <div class="progress_bar">
             <div class="progress_left">
-              <el-progress :percentage="item.value" :color="item.color"></el-progress>
+              <el-progress :text-inside="true" :stroke-width="22" :percentage="item.value" :color="item.color"></el-progress>
             </div>
-            <span :style="{'color':item.color}" class="equipment">{{item.value}}</span>
+            <!--<span :style="{'color':item.color}" class="equipment">{{item.value}}</span>-->
           </div>
         </div>
       </section>
@@ -132,9 +132,10 @@ export default {
     this.axios.post(`http://172.16.6.16:8920/dev/statDeviceAndQuestionAndTaskRate?projectid=${projectid}`).then((response) => {
       console.log(response.data.data)
       if (response.data.code === 0) {
-        // let colorData = ['#61a0a8', '#91c7ae', '#d48265']
-        response.data.data.forEach((val) => {
-          val.value = val.value * 100 + '%'
+        let colorData = ['#61a0a8', '#91c7ae', '#d48265']
+        response.data.data.forEach((val, index) => {
+          val.value = val.value * 100
+          val.color = colorData[index]
           // for (let i = 0; i < colorData.length; i++) {
           //   val.color = color[i]
           // }
