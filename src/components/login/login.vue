@@ -102,17 +102,12 @@ export default {
                   this.$store.state.userToken = token
                   window.sessionStorage.setItem('userInfo', userinfo)
                   window.sessionStorage.setItem('token', token)
-                  console.log(token)
-                  console.log(userinfo)
-
                   let username = JSON.parse(window.sessionStorage.userInfo).username
                   let usericon = JSON.parse(window.sessionStorage.userInfo).icon
                   this.$store.state.usericon = usericon
                   this.$store.state.username = username
                   let newToken = JSON.parse(token)
                   this.axios.post(`http://172.16.6.181:8920/users/getUserFuncions?token=${newToken}`).then((data) => {
-                    console.log('++++++++++++')
-                    console.log(data)
                     data.data.forEach((val) => {
                       let approval = ''
                       let deleteData = ''

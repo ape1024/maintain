@@ -175,6 +175,7 @@
 </template>
 
 <script>
+import { maintainDailyapprovalTaskDetail, maintainDailygetEquirementjudgments, maintainDailygetTaskApprovalItems } from '../../api/user'
 import $ from 'jquery'
 export default {
   name: 'dailyChild-examine',
@@ -225,7 +226,10 @@ export default {
         }
       })
       if (arrData.length === 0) {
-        alert('请选择设备!')
+        this.$message({
+          message: '请选择设备!',
+          type: 'warning'
+        })
         return false
       } else {
         this.$emit('examineMine', arrData)
@@ -244,15 +248,21 @@ export default {
         }
       })
       if (taskDetailArr.length === 0) {
-        alert('请选择工作事项')
+        this.$message({
+          message: '请选择工作事项',
+          type: 'warning'
+        })
         return false
       } else {
         if (textarea === '') {
-          alert('请输入审核意见!')
+          this.$message({
+            message: '请输入审核意见!',
+            type: 'warning'
+          })
           return false
         } else {
           taskDetailArr.forEach((val) => {
-            this.axios.post(`http://172.16.6.181:8920/task/approvalTaskDetail?token=${token}&taskDetailId=${val}&approvalOpinion=${textarea}&approvalState=${radio}`).then((response) => {
+            this.axios.post(maintainDailyapprovalTaskDetail(token, val, textarea, radio)).then((response) => {
               if (response.data.code === 0) {
                 this.examine_Boolean = this.examine
                 this.examine_Boolean = !this.examine_Boolean
@@ -275,7 +285,7 @@ export default {
         $(item).removeClass('content_ulBack')
       })
       $(el).addClass('content_ulBack')
-      this.axios.post(`http://172.16.6.181:8920/task/getEquirementjudgments?checkdetailid=${checktaskdetailid}`).then((response) => {
+      this.axios.post(maintainDailygetEquirementjudgments(checktaskdetailid)).then((response) => {
         if (response.data.code === 0) {
           this.determinant = response.data.data
         }
@@ -287,7 +297,7 @@ export default {
       val.fuleco = false
     })
     //  任务审批选项
-    this.axios.post(`http://172.16.6.181:8920/task/getTaskApprovalItems`).then((response) => {
+    this.axios.post(maintainDailygetTaskApprovalItems()).then((response) => {
       if (response.data.code === 0) {
         this.approvaloptions = response.data.data
       }

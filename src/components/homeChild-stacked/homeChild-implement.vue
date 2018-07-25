@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { maintainHomeRightBottom } from '../../api/user'
 export default {
   name: 'homeChild-implement',
   data () {
@@ -49,10 +50,8 @@ export default {
   },
   created () {
     let pattern = JSON.parse(window.localStorage.pattern)
-    this.axios.post(`http://172.16.6.16:8920/dev/statTaskDoneState?projectid=${pattern}`).then((response) => {
+    this.axios.post(maintainHomeRightBottom(pattern)).then((response) => {
       if (response.data.code === 0) {
-        console.log('+-+')
-        console.log(response.data.data)
         let color = ['#53dcad', '#ad65d6', '#fc9e7d', '#f78540', '#69d4e2']
         response.data.data.forEach((val, index) => {
           val.rate = val.rate * 100
@@ -64,11 +63,6 @@ export default {
         this.checkTest = this.implement[2]
         this.problemHandling = this.implement[3]
         this.troubleshooting = this.implement[4]
-        console.log(this.maintenance)
-        console.log(this.inspection)
-        console.log(this.checkTest)
-        console.log(this.problemHandling)
-        console.log(this.troubleshooting)
       }
     })
   }

@@ -50,9 +50,9 @@
               <el-select v-model="userstate" multiple placeholder="请选择">
                 <el-option
                   v-for="item in roleSelect"
-                  :key="item.objectId"
+                  :key="item.roleid"
                   :label="item.creatername"
-                  :value="item.objectId">
+                  :value="item.roleid">
                 </el-option>
               </el-select>
             </div>
@@ -73,8 +73,14 @@
             <p class="subjectP">
               用户头像：
             </p>
-            <el-upload class="upload-demo" ref="upload" action="" :on-change="onChange" :file-list="fileList" :auto-upload="false">
-              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <el-upload
+              class="avatar-uploader"
+              action="http://172.16.6.181:8920/upload/upload"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </div>
         </div>
@@ -89,6 +95,7 @@
                 :show-all-levels="false"
                 :props="defaultProps"
                 @change="handleChange"
+                change-on-select
               ></el-cascader>
             </div>
           </div>
@@ -139,7 +146,7 @@
 import { modifytheUser } from '../../api/user'
 export default {
   name: 'consumerChild-changeinfo',
-  props: ['changei', 'communication'],
+  props: ['communication'],
   components: {
   },
   data () {
@@ -163,25 +170,10 @@ export default {
       //  组织结构
       organize: [],
       imageUrl: this.communication.icon,
-      roleSelect: '',
+      roleSelect: [],
       dialogImageUrl: '',
       dialogVisible: false,
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [],
       value: '',
       textarea: '',
       organizationid: '',
@@ -203,6 +195,20 @@ export default {
         this.fileList = fileList.slice(1, 2)
       }
     },
+    handleAvatarSuccess (response, file, fileList) {
+      this.imageUrl = response.data
+    },
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
     conserve () {
       let urlconserve = JSON.parse(window.sessionStorage.userInfo)
       //  获取当前用户id
@@ -210,12 +216,10 @@ export default {
       console.log(userid)
       //  获取组织id
       let organizationid = this.organizationid
-      //  获取当前用户登录名
-      let usercode = this.nameoflanding
       //  获取用户姓名
       let username = this.Username
       //  获取邮箱
-      let email = this.Useremail
+      let email = this.Useremail !== null ? this.Useremail : ''
       //  获取电话
       let tel = this.pheneInput
       //  获取角色
@@ -224,20 +228,18 @@ export default {
       let job = this.businesspostCode
       //  获取备注
       let memo = this.textarea
-      var fd = new FormData()
-      fd.append('file', this.Headportrait)
-      let url = modifytheUser(userid, organizationid, usercode, username, email, tel, userstate, job, memo)
-      this.axios.post(url, fd).then((response) => {
+      //  角色信息
+      let roleids = this.userstate.length !== 0 ? this.userstate : ''
+      console.log(roleids)
+
+      //  获取上传图片
+      let file = this.imageUrl !== null ? this.imageUrl : ''
+      let url = modifytheUser(userid, organizationid, username, email, tel, userstate, job, memo, roleids, file)
+      console.log(url)
+      this.axios.post(url).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
-          this.communication.usercode = usercode
-          this.communication.username = username
-          this.communication.email = email
-          this.communication.tel = tel
-          this.communication.userstate = userstate
-          this.thisPage = this.changei
-          this.thisPage = !this.thisPage
-          this.$emit('informa', this.thisPage)
+          this.$emit('informa', false)
         }
       })
     },
@@ -245,9 +247,7 @@ export default {
       this.condition = !this.condition
     },
     closedown () {
-      this.thisPage = this.changei
-      this.thisPage = !this.thisPage
-      this.$emit('informa', this.thisPage)
+      this.$emit('informa', false)
     },
     handleChange (value) {
       let Value = value[value.length - 1]
@@ -256,11 +256,13 @@ export default {
     }
   },
   created () {
-    var token = window.sessionStorage.token
-    //  用户角色 目前用一个临时token，以后修改
-    this.axios.post(`http://172.16.6.16:8920/users/getRolesList?token=5a243968-d1db-4f33-82e7-beee9e0fe38e`).then((response) => {
+    let token = JSON.parse(window.sessionStorage.token)
+    //  用户角色
+    this.axios.post(`http://172.16.6.181:8920/users/getRolesList?token=${token}`).then((response) => {
       if (response.data.code === 0) {
         this.roleSelect = response.data.data
+        console.log('=-===')
+        console.log(this.roleSelect)
         return false
       } else {
         alert('请求失败')
@@ -404,6 +406,34 @@ export default {
   }
   .el-cascader
      width  100%
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader
+    float left
+    height 100px
+    line-height 100px
+    overflow hidden
+    width 100px
+  .avatar-uploader .el-upload:hover
+    border-color #409EFF
+  .avatar-uploader-icon
+    font-size 28px
+    color #8c939d
+    height 100px
+    line-height 100px
+    overflow hidden
+    width 100px
+    text-align center
+  .avatar
+    width 100px
+    height 100px
+    display block
+
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner

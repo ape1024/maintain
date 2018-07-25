@@ -79,6 +79,7 @@ import FloorPlans from 'components/floor-plans/floor-plans'
 import inspection from '../homeChild-stacked/homeChild-inspection'
 import inspectionRight from '../homeChild-stacked/homeChild-inspectionRight'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { maintainHomeRightTop } from '../../api/user'
 export default {
   name: 'maintain-home',
   data () {
@@ -129,7 +130,7 @@ export default {
     let projectid = window.localStorage.pattern
     console.log(projectid)
     //  设备完好率
-    this.axios.post(`http://172.16.6.16:8920/dev/statDeviceAndQuestionAndTaskRate?projectid=${projectid}`).then((response) => {
+    this.axios.post(maintainHomeRightTop(projectid)).then((response) => {
       console.log(response.data.data)
       if (response.data.code === 0) {
         let colorData = ['#61a0a8', '#91c7ae', '#d48265']

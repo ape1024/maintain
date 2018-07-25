@@ -108,6 +108,7 @@
 </template>
 
 <script>
+import { maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId } from '../../api/user'
 export default {
   name: 'dailyChild-distribution',
   props: ['distriBoolean', 'getrepairDate', 'instruction', 'equipment'],
@@ -184,13 +185,14 @@ export default {
       this.instrucTion += data
     })
     //  业主单位
-    this.axios.post(`http://172.16.6.181:8920/organization/getProprietorOrgTree`).then((response) => {
+    this.axios.post(maintainDailygetProprietorOrgTree()).then((response) => {
       if (response.data.code === 0) {
         this.proprietor = response.data.data
       }
     })
+
     //  维保单位 this.equipment
-    this.axios.post(`http://172.16.6.181:8920/organization/getRepairOrgTreeByDeviceId?deviceid=${this.equipment}`).then((response) => {
+    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.equipment)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }

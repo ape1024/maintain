@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { maintainHomeStacked } from '../../api/user'
 export default {
   name: 'homeChild-stacked',
   data () {
@@ -16,10 +17,8 @@ export default {
   },
   mounted () {
     let pattern = window.localStorage.pattern
-    this.axios.post(`http://172.16.6.16:8920/dev/statDevRunState?projectid=${pattern}`).then((response) => {
+    this.axios.post(maintainHomeStacked(pattern)).then((response) => {
       if (response.data.code === 0) {
-        console.log('+++++')
-        console.log(response.data.data)
         const equipment = []
         const equipmentData = []
         response.data.data.forEach((val) => {

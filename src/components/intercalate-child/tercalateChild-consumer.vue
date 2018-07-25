@@ -149,7 +149,7 @@
     </section>
     <!--修改-->
     <section v-if="modifyBoolean" class="adhibit">
-      <information  :communication="moDifynews" :changei="modifyBoolean" @informa="inFourma"></information>
+      <information  :communication="moDifynews" @informa="inFourma"></information>
     </section>
     <!--修改密码-->
     <section v-if="inforBoolean" class="adhibit">
@@ -269,6 +269,11 @@ export default {
     inFourma (ev) {
       this.modifyBoolean = ev
       console.log(ev)
+      let url = `http://172.16.6.16:8920/users/findAll?pageIndex=0&pageSize=30`
+      this.axios.post(url).then((response) => {
+        console.log(response)
+        this.information = response.data.data.data
+      })
     },
     amputate ($index, content, userId) {
       this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
@@ -278,7 +283,7 @@ export default {
       }).then(() => {
         let Userid = JSON.parse(window.sessionStorage.userInfo).userid
         console.log(Userid)
-        this.axios.post(`http://172.16.6.181:8920/users/delUser?userid=${userId}`).then((response) => {
+        this.axios.post(`http://172.16.6.16:8920/users/delUser?userid=${userId}`).then((response) => {
           if (response.data.code === 0) {
             this.$message({
               type: 'success',
@@ -322,7 +327,7 @@ export default {
         this.JurisdictionUpdate = val.update
       }
     })
-    let url = `http://172.16.6.181:8920/users/findAll?pageIndex=0&pageSize=30`
+    let url = `http://172.16.6.16:8920/users/findAll?pageIndex=0&pageSize=30`
     this.axios.post(url).then((response) => {
       console.log(response)
       this.information = response.data.data.data
@@ -330,11 +335,14 @@ export default {
     console.log('----')
     console.log(this.information)
     let token = JSON.parse(window.sessionStorage.token)
+    console.log(token)
     this.axios.post(`http://172.16.6.181:8920/organization/getOrganizationTreeByUser?token=${token}`).then((response) => {
       if (response.data.code === 0) {
-        console.log('--------')
-        console.log(response.data.data)
-        this.options.push(response.data.data)
+        if (response.data.data !== null) {
+          this.options.push(response.data.data)
+          console.log('--------')
+          console.log(response)
+        }
       }
     })
   }
@@ -364,12 +372,13 @@ export default {
         margin-left 18px
         .headerLi
           float left
+          line-height 40px
           overflow hidden
           margin-right 50px
           .headerP
             float left
             margin-right 18px
-            line-height 30px
+            line-height 40px
           .headerDiv
            float left
       .search

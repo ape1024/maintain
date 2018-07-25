@@ -287,7 +287,10 @@ export default {
                       console.log(devicemodel)
                       this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
                         if (response.data.code === 0) {
-                          alert('修改成功')
+                          this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                          })
                           this.modifyBoolean = this.msg
                           this.modifyBoolean = !this.modifyBoolean
                           this.$emit('say', this.modifyBoolean)
@@ -303,7 +306,10 @@ export default {
           } else {
             this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
               if (response.data.code === 0) {
-                alert('修改成功')
+                this.$message({
+                  message: '修改成功',
+                  type: 'success'
+                })
                 this.modifyBoolean = this.msg
                 this.modifyBoolean = !this.modifyBoolean
                 this.$emit('say', this.modifyBoolean)
@@ -311,7 +317,10 @@ export default {
             })
           }
         } else {
-          alert('请先选择设备类型!')
+          this.$message({
+            message: '请先选择设备类型',
+            type: 'warning'
+          })
         }
       } else {
         manufacturerid = this.manufactorModel

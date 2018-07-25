@@ -5,16 +5,15 @@
 </template>
 
 <script>
+import { maintainHomeInspection } from '../../api/user'
 export default {
   name: 'homeChild-inspection',
   mounted () {
     let pattern = window.localStorage.pattern
-    this.axios.post(`http://172.16.6.16:8920/dev/statTaskDoneState2?projectid=${pattern}`).then((response) => {
+    this.axios.post(maintainHomeInspection(pattern)).then((response) => {
       if (response.data.code === 0) {
         let nameData = []
         let stateData = ['未开始', '问题', '错误', '完好']
-        console.log('嘤嘤嘤')
-        console.log(response.data.data)
         let seriesData = []
         let nostart = []
         let problem = []

@@ -20,26 +20,12 @@
               v-model="equipmentDate"
               :options="equipment"
               :props="equipmentProps"
-              change-on-select
             ></el-cascader>
           </div>
         </li>
-        <!--<li class="li_input">-->
-          <!--<p class="div_p">巡查状态：</p>-->
-          <!--<div class="div_input">-->
-            <!--<el-select v-model="value" placeholder="">-->
-              <!--<el-option-->
-                <!--v-for="item in options"-->
-                <!--:key="item.value"-->
-                <!--:label="item.label"-->
-                <!--:value="item.value">-->
-              <!--</el-option>-->
-            <!--</el-select>-->
-          <!--</div>-->
-        <!--</li>-->
         <li class="li_input">
           <p class="div_p">审核状态：</p>
-          <div class="div_input">
+          <div class="div_inputTwo">
             <el-select v-model="Auditstatus" multiple placeholder="">
               <el-option
                 v-for="item in AuditstatusDate"
@@ -111,6 +97,7 @@
 
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
+import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceStat, maintainDailygetCurrentTaskDeviceData } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 export default {
@@ -121,7 +108,8 @@ export default {
   },
   methods: {
     query () {
-      let flag = null
+      // console.log(this.regionModel)
+      let flag = false
       this.tableDatataskStat.forEach((val) => {
         if (val.flag === true) {
           flag = true
@@ -130,64 +118,23 @@ export default {
           return false
         }
       })
-      if (this.tableDatataskStat.length !== 0) {
-        if (flag === true) {
-          if (this.Auditstatus.length !== 0) {
-            if (this.Auditstatus.length === this.AuditstatusDate.length) {
-              this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${this.click_id}`).then((response) => {
-                if (response.data.code === 0) {
-                  console.log(response.data.data)
-                  this.dailyChild = response.data.data
-                }
-              })
-            } else {
-              let approvalstates = this.Auditstatus.join(',')
-              this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${this.click_id}&approvalstates=${approvalstates}`).then((response) => {
-                if (response.data.code === 0) {
-                  console.log(response.data.data)
-                  this.dailyChild = response.data.data
-                }
-              })
-            }
-          } else {
-            this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${this.click_id}`).then((response) => {
-              if (response.data.code === 0) {
-                console.log(response.data.data)
-                this.dailyChild = response.data.data
-              }
-            })
+      if (flag === true) {
+        let clickId = this.click_id
+        let areaid = this.regionModel.length !== 0 ? this.regionModel[this.this.regionModel.length - 1] : ''
+        let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
+        console.log(clickId)
+        this.axios.post(maintainDailygetCurrentTaskDeviceData(clickId, areaid, basedevicecode, approvalstates)).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            this.dailyChild = response.data.data
           }
-        } else {
-          if (this.regionModel.length === 0) {
-            alert('请选择区域！')
-            return false
-          } else {
-            let projectid = window.localStorage.pattern
-            let areaid = this.regionModel[this.regionModel.length - 1]
-            console.log(areaid)
-            this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=3&projectid=${projectid}&areaid=${areaid}`).then((response) => {
-              console.log(response)
-              if (response.data.code === 0) {
-                this.tableDatataskStat = response.data.data
-              }
-            })
-          }
-        }
+        })
       } else {
-        if (this.regionModel.length === 0) {
-          alert('请选择区域！')
-          return false
-        } else {
-          let projectid = window.localStorage.pattern
-          let areaid = this.regionModel[this.regionModel.length - 1]
-          console.log(areaid)
-          this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=3&projectid=${projectid}&areaid=${areaid}`).then((response) => {
-            console.log(response)
-            if (response.data.code === 0) {
-              this.tableDatataskStat = response.data.data
-            }
-          })
-        }
+        this.$message({
+          message: '请展开任务,才可对应查询',
+          type: 'warning'
+        })
       }
     },
     selectStyle (item, index, tableData, $event) {
@@ -198,7 +145,7 @@ export default {
         })
         let itemAreaid = item.taskID
         this.click_id = itemAreaid
-        this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${itemAreaid}`).then((response) => {
+        this.axios.post(maintainDailygetCurrentTaskDeviceStat(itemAreaid)).then((response) => {
           if (response.data.code === 0) {
             console.log(this.dailyChild)
             this.dailyChild = response.data.data
@@ -257,33 +204,34 @@ export default {
   },
   created () {
     //  获取区域
-    this.axios.post('http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
+    let projectid = window.localStorage.pattern
+    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
       }
     })
     //  获取设备类别
-    this.axios.post('http://172.16.6.181:8920/dev/findAllDeviceType').then((response) => {
+    this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
         this.equipment = response.data.data
       }
     })
     //  审核状态
-    this.axios.post('http://172.16.6.181:8920/task/getTaskQueryApprovalItems').then((response) => {
+    console.log('----------------')
+    console.log(getTaskQueryApprovalItems())
+    this.axios.post(getTaskQueryApprovalItems()).then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
         response.data.data.forEach((val) => {
+          console.log(val)
           if (val.isdefault === 1) {
             this.Auditstatus.push(val.value)
           }
         })
       }
     })
-    //  展示任务，目前projectid参数默认的是1
-    let projectid = window.localStorage.pattern
-    console.log('1111111111111111111111')
-    console.log(projectid)
-    this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=2&projectid=${projectid}`).then((response) => {
+    //  展示任务
+    this.axios.post(maintainDailyCurrentTaskStat(2, projectid)).then((response) => {
       if (response.data.code === 0) {
         this.tableDatataskStat = response.data.data
       }
@@ -326,6 +274,7 @@ export default {
            float left
            width 167px
            display flex
+
       .button
          display flex
          float right
@@ -594,4 +543,10 @@ export default {
     background rgba(000,000,000,.4)
     z-index 11
     overflow hidden
+  .div_inputTwo
+    float left
+    width 300px
+    display flex
+    .el-select
+     width 100%
 </style>
