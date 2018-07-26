@@ -24,23 +24,23 @@
             ></el-cascader>
           </div>
         </li>
-        <li class="li_input">
-          <p class="div_p">巡查状态：</p>
-          <div class="div_input">
-            <el-select v-model="value" placeholder="">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
+        <!--<li class="li_input">-->
+        <!--<p class="div_p">巡查状态：</p>-->
+        <!--<div class="div_input">-->
+        <!--<el-select v-model="value" placeholder="">-->
+        <!--<el-option-->
+        <!--v-for="item in options"-->
+        <!--:key="item.value"-->
+        <!--:label="item.label"-->
+        <!--:value="item.value">-->
+        <!--</el-option>-->
+        <!--</el-select>-->
+        <!--</div>-->
+        <!--</li>-->
         <li class="li_input">
           <p class="div_p">审核状态：</p>
-          <div class="div_input">
-            <el-select v-model="Auditstatus" placeholder="">
+          <div class="div_inputTwo">
+            <el-select v-model="Auditstatus" multiple placeholder="">
               <el-option
                 v-for="item in AuditstatusDate"
                 :key="item.value"
@@ -103,36 +103,50 @@
       </ul>
     </section>
     <!--<section v-show="modifyBoolean" class="review">-->
-      <!--<modify :sag="modifyBoolean" @say="Say"></modify>-->
+    <!--<modify :sag="modifyBoolean" @say="Say"></modify>-->
     <!--</section>-->
   </div>
 </template>
 
 <script>
 import maintaintwo from '../maintainChild-two/maintainChild-two'
+import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData } from '../../api/user'
+
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 export default {
   name: 'maintain-maintain',
   components: {
     maintaintwo
+    // modify
   },
   methods: {
     query () {
-      if (this.regionModel.length === 0) {
-        this.$message({
-          message: '请选择区域！',
-          type: 'warning'
-        })
-        return false
-      } else {
-        let projectid = window.localStorage.pattern
-        let areaid = this.regionModel[this.regionModel.length - 1]
-        this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=1&projectid=${projectid}&areaid=${areaid}`).then((response) => {
+      let flag = false
+      this.tableDatataskStat.forEach((val) => {
+        if (val.flag === true) {
+          flag = true
+          return false
+        } else {
+          return false
+        }
+      })
+      if (flag === true) {
+        let clickId = this.click_id
+        let areaid = this.regionModel.length !== 0 ? this.regionModel[this.this.regionModel.length - 1] : ''
+        let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
+        console.log(clickId)
+        this.axios.post(maintainDailygetCurrentTaskDeviceData(clickId, areaid, basedevicecode, approvalstates)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
-            this.tableDatataskStat = response.data.data
+            this.dailyChild = response.data.data
           }
+        })
+      } else {
+        this.$message({
+          message: '请展开任务,才可对应查询',
+          type: 'warning'
         })
       }
     },
@@ -143,6 +157,8 @@ export default {
           val.flag = false
         })
         let itemAreaid = item.taskID
+        this.click_id = itemAreaid
+        console.log(itemAreaid)
         this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${itemAreaid}`).then((response) => {
           if (response.data.code === 0) {
             console.log(this.dailyChild)
@@ -188,7 +204,7 @@ export default {
       },
       //  审核状态
       AuditstatusDate: [],
-      Auditstatus: '',
+      Auditstatus: [],
       equipment: [],
       equipmentDate: [],
       modifyBoolean: false,
@@ -201,37 +217,40 @@ export default {
     }
   },
   created () {
+    let projectid = window.localStorage.pattern
     //  获取区域
-    console.log(window.sessionStorage.token)
-    this.axios.post('http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
+    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
       }
     })
     //  获取设备类别
-    this.axios.post('http://172.16.6.181:8920/dev/findAllDeviceType').then((response) => {
+    this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
         this.equipment = response.data.data
       }
     })
     //  审核状态
-    this.axios.post('http://172.16.6.181:8920/dev/FindDevAllApprovalstate').then((response) => {
+    this.axios.post(getTaskQueryApprovalItems()).then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
+        response.data.data.forEach((val) => {
+          if (val.isdefault === 1) {
+            this.Auditstatus.push(val.value)
+          }
+        })
       }
     })
-    //  展示任务，目前projectid参数默认的是1
-    let projectid = JSON.parse(window.localStorage.pattern)
-    console.log(projectid)
-    this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskStat?worktypeid=1&projectid=${projectid}`).then((response) => {
+    //  展示任务
+    this.axios.post(maintainDailyCurrentTaskStat(1, projectid)).then((response) => {
       if (response.data.code === 0) {
         this.tableDatataskStat = response.data.data
+        console.log(response)
       }
     })
   }
 }
 </script>
-
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
@@ -534,4 +553,12 @@ export default {
     background rgba(000,000,000,.4)
     z-index 11
     overflow hidden
+  .el-input__inner
+    height 30px!important
+  .div_inputTwo
+    float left
+    width 300px
+    display flex
+    .el-select
+      width 100%
 </style>

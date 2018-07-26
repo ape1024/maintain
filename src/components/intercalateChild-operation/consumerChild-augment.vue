@@ -8,7 +8,7 @@
         <div class="subjectLeft">
           <div class="subjectDiv">
             <p class="subjectP">
-              登 录 名：
+              用户账号：
             </p>
             <div class="subjectRigh">
               <el-input
@@ -50,9 +50,9 @@
               <el-select v-model="userstate" multiple placeholder="请选择">
                 <el-option
                   v-for="item in roleSelect"
-                  :key="item.objectId"
+                  :key="item.roleid"
                   :label="item.creatername"
-                  :value="item.objectId">
+                  :value="item.roleid">
                 </el-option>
               </el-select>
             </div>
@@ -73,8 +73,14 @@
             <p class="subjectP">
               用户头像：
             </p>
-            <el-upload class="upload-demo" ref="upload" action="" :on-change="onChange" :file-list="fileList" :auto-upload="false">
-              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <el-upload
+              class="avatar-uploader"
+              action="http://172.16.6.181:8920/upload/upload"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </div>
         </div>
@@ -89,6 +95,7 @@
                 :show-all-levels="false"
                 :props="defaultProps"
                 @change="handleChange"
+                change-on-select
               ></el-cascader>
             </div>
           </div>
@@ -179,25 +186,11 @@ export default {
       //  密码
       Userpwd: '',
       imageUrl: '',
+      imageUrlTwo: '',
       roleSelect: '',
       dialogImageUrl: '',
       dialogVisible: false,
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [],
       value: '',
       textarea: '',
       organizationid: '',
@@ -210,17 +203,15 @@ export default {
     }
   },
   methods: {
-    onChange (file, fileList) {
-      this.Headportrait = file.url
-      if (fileList.length > 1) {
-        this.fileList = fileList.slice(1, 2)
-      }
+    handleAvatarSuccess (response, file, fileList) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+      this.imageUrlTwo = response.data
     },
     conserve () {
-      let urltoken = window.sessionStorage.token
+      let urltoken = JSON.parse(window.sessionStorage.token)
       //  获取组织id
       let organizationid = this.organizationid
-      //  获取当前用户登录名
+      //  获取当前用户账号
       let usercode = this.nameoflanding
       //  获取用户姓名
       let username = this.Username
@@ -228,17 +219,72 @@ export default {
       let email = this.Useremail
       //  获取电话
       let tel = this.pheneInput
-      //  获取角色
-      let userstate = this.userstate
       //  获取职位
       let job = this.businesspostCode
       //  获取备注
       let memo = this.textarea
+      //  获取角色
+      let roleids = this.userstate.length !== 0 ? this.userstate : []
       //  获取头像
-      // let headportrait = this.Headportrait
+      let headportrait = this.imageUrlTwo
       //  获取当前密码
       let Userpwd = this.Userpwd
-      let url = appUser(urltoken, organizationid, usercode, username, Userpwd, email, tel, job, memo, userstate)
+      if (organizationid === '') {
+        this.$message({
+          message: '请选择所属组织',
+          type: 'warning'
+        })
+        return false
+      } else if (usercode === '') {
+        this.$message({
+          message: '账号不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (username === '') {
+        this.$message({
+          message: '用户姓名不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (Userpwd === '') {
+        this.$message({
+          message: '用户密码不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (email === '') {
+        this.$message({
+          message: '请填写邮箱',
+          type: 'warning'
+        })
+        return false
+      } else if (tel === '') {
+        this.$message({
+          message: '请填写电话',
+          type: 'warning'
+        })
+        return false
+      } else if (job === '') {
+        this.$message({
+          message: '请填写工作职务',
+          type: 'warning'
+        })
+        return false
+      } else if (memo === '') {
+        this.$message({
+          message: '请填写备注信息',
+          type: 'warning'
+        })
+        return false
+      } else if (roleids.length === 0) {
+        this.$message({
+          message: '请选择用户角色',
+          type: 'warning'
+        })
+        return false
+      }
+      let url = appUser(urltoken, organizationid, usercode, username, Userpwd, email, tel, job, memo, roleids, headportrait)
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {
           this.thisPage = this.increaseBoolean
@@ -255,14 +301,26 @@ export default {
     handleChange (value) {
       let Value = value[value.length - 1]
       this.organizationid = Value
+    },
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
     }
   },
   created () {
-    var token = window.sessionStorage.token
+    var token = JSON.parse(window.sessionStorage.token)
     //  用户角色 目前用一个临时token，以后修改
-    this.axios.post(`http://172.16.6.16:8920/users/getRolesList?token=5a243968-d1db-4f33-82e7-beee9e0fe38e`).then((response) => {
+    this.axios.post(`http://172.16.6.16:8920/users/getRolesList?token=${token}`).then((response) => {
       if (response.data.code === 0) {
         this.roleSelect = response.data.data
+        console.log(this.roleSelect)
         return false
       } else {
         alert('请求失败')
@@ -381,31 +439,29 @@ export default {
   .uploaderAvatar
     font-size $font-size-small-s
     color #555555
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 40px;
-    height: 40px;
-    display: block;
-  }
-  .el-cascader
-    width  100%
+    .el-cascader
+      width  100%
+  .avatar-uploader
+    float left
+    height 100px
+    line-height 100px
+    overflow hidden
+    width 100px
+  .avatar-uploader .el-upload:hover
+    border-color #409EFF
+  .avatar-uploader-icon
+    font-size 28px
+    color #8c939d
+    height 100px
+    line-height 100px
+    overflow hidden
+    width 100px
+    text-align center
+  .avatar
+    width 100px
+    height 100px
+    display block
+
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner

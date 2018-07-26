@@ -110,7 +110,7 @@
                   查看
                 </p>
                 <!--修改-->
-                <p v-if="JurisdictionUpdate" @click="moDify(item)" class="modify">
+                <p v-if="JurisdictionUpdate" @click="moDify(item.userid)" class="modify">
                   修改
                 </p>
                 <!--授权-->
@@ -237,7 +237,11 @@ export default {
       this.adhibitBoolean = true
     },
     Incr (ev) {
-      this.adhibitBoolean = ev
+      let url = `http://172.16.6.16:8920/users/findAll?pageIndex=0&pageSize=30`
+      this.axios.post(url).then((response) => {
+        this.information = response.data.data.data
+        this.adhibitBoolean = ev
+      })
     },
     exaMine (userid) {
       console.log('-1')
@@ -254,9 +258,12 @@ export default {
     },
     moDify (user) {
       //  修改用户信息
-      this.moDifynews = user
-      console.log(user)
-      this.modifyBoolean = true
+      this.axios.post(`http://172.16.6.16:8920/users/findUser?userid=${user}`).then((response) => {
+        if (response.data.code === 0) {
+          this.moDifynews = response.data.data
+          this.modifyBoolean = true
+        }
+      })
     },
     eDit (ev) {
       this.inforBoolean = ev
@@ -271,7 +278,6 @@ export default {
       console.log(ev)
       let url = `http://172.16.6.16:8920/users/findAll?pageIndex=0&pageSize=30`
       this.axios.post(url).then((response) => {
-        console.log(response)
         this.information = response.data.data.data
       })
     },
@@ -306,18 +312,11 @@ export default {
           message: '已取消删除'
         })
       })
-    },
-    postData () {
-      // this.axios.post().then(function (response) {
-      //   console.log(response)
-      // })
     }
-  },
-  mounted () {
-    this.postData()
   },
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    console.log(window.sessionStorage)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'device') {
         this.JurisdictionSelect = val.select
@@ -325,6 +324,11 @@ export default {
         this.JurisdictionDelete = val.delete
         this.JurisdictionApproval = val.approval
         this.JurisdictionUpdate = val.update
+        console.log(val.select)
+        console.log(val.insert)
+        console.log(val.delete)
+        console.log(val.approval)
+        console.log(val.update)
       }
     })
     let url = `http://172.16.6.16:8920/users/findAll?pageIndex=0&pageSize=30`
@@ -336,7 +340,7 @@ export default {
     console.log(this.information)
     let token = JSON.parse(window.sessionStorage.token)
     console.log(token)
-    this.axios.post(`http://172.16.6.181:8920/organization/getOrganizationTreeByUser?token=${token}`).then((response) => {
+    this.axios.post(`http://172.16.6.16:8920/organization/getOrganizationTreeByUser?token=${token}`).then((response) => {
       if (response.data.code === 0) {
         if (response.data.data !== null) {
           this.options.push(response.data.data)

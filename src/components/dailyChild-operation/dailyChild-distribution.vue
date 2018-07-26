@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId } from '../../api/user'
+import { maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailyassignedTask } from '../../api/user'
 export default {
   name: 'dailyChild-distribution',
   props: ['distriBoolean', 'getrepairDate', 'instruction', 'equipment'],
@@ -139,7 +139,10 @@ export default {
   methods: {
     conserve () {
       if (this.radio2 === '') {
-        alert('请选择检查项目!')
+        this.$message({
+          message: '请选择检查项目!',
+          type: 'warning'
+        })
         return false
       } else {
         let string = ``
@@ -160,11 +163,14 @@ export default {
             users.push(obj)
           })
         } else {
-          alert('请选择维保单位或业主单位')
+          this.$message({
+            message: '请选择维保单位或业主单位!',
+            type: 'warning'
+          })
           return false
         }
         let token = JSON.parse(window.sessionStorage.token)
-        this.axios.post(`http://172.16.6.181:8920/task/assignedTask?token=${token}&detailIDs=${string}&desc=${desc}&disposeopinion=${disposeopinion}&faultTypeId=${faultTypeId}`, users).then((response) => {
+        this.axios.post(maintainDailyassignedTask(token, string, desc, disposeopinion, faultTypeId), users).then((response) => {
           if (response.data.code === 0) {
             this.distrBoolean = this.distriBoolean
             this.distrBoolean = !this.distrBoolean

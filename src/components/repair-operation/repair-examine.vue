@@ -394,6 +394,7 @@
 </template>
 
 <script>
+import { maintainRepairapprovalTask, maintainRepaircheckTask, maintainRepairgetFaultSelectItems, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindReworksByTaskid } from '../../api/user'
 export default {
   name: 'repair-examine',
   props: ['examine', 'rework', 'examina', 'state', 'approval'],
@@ -439,28 +440,21 @@ export default {
       let approvalOpinion = this.approvalOpinionInput
       let approvalState = this.approvalradio
       let assignmenttime = this.waatitime
-      if (approvalState === 30) {
-        this.axios.post(`http://172.16.6.181:8920/repairtasks/approvalTask?token=${token}&repairtaskid=${repairtaskid}&approvalOpinion=${approvalOpinion}&approvalState=${approvalState}&assignmenttime=${assignmenttime}&faulttypeid=${this.faulttypeData}&faultreasonid=${this.faultreasonData}&faultrangeid=${this.faultrangeData}&faultphenomenonid=${this.faultphenomenonData}&faulttreamentid=${this.faulttreatmentData}`).then((response) => {
-          console.log(response)
-          if (response.data.code === 0) {
-            this.$message({
-              message: '审批成功',
-              type: 'success'
-            })
-            this.$emit('mine', this.thisPage)
-          }
-        })
-      } else {
-        this.axios.post(`http://172.16.6.181:8920/repairtasks/approvalTask?token=${token}&repairtaskid=${repairtaskid}&approvalOpinion=${approvalOpinion}&approvalState=${approvalState}&&faulttypeid=${this.faulttypeData}&faultreasonid=${this.faultreasonData}&faultrangeid=${this.faultrangeData}&faultphenomenonid=${this.faultphenomenonData}&faulttreamentid=${this.faulttreatmentData}`).then((response) => {
-          if (response.data.code === 0) {
-            this.$message({
-              message: '审批成功',
-              type: 'success'
-            })
-            this.$emit('mine', this.thisPage)
-          }
-        })
-      }
+      console.log('++++=')
+      console.log(approvalOpinion)
+      console.log(approvalState)
+      console.log(assignmenttime)
+
+      this.axios.post(maintainRepairapprovalTask(token, repairtaskid, approvalOpinion, approvalState, assignmenttime, this.faulttypeData, this.faultreasonData, this.faultrangeData, this.faultphenomenonData, this.faulttreatmentData)).then((response) => {
+        console.log(response)
+        if (response.data.code === 0) {
+          this.$message({
+            message: '审批成功',
+            type: 'success'
+          })
+          this.$emit('mine', this.thisPage)
+        }
+      })
     },
     rescheduling () {
       this.$emit('newly', this.examine)
@@ -476,7 +470,8 @@ export default {
         confirmopinion = this.Otheropinions
       }
       if (confirmopinion !== '') {
-        this.axios.post(`http://172.16.6.181:8920/repairtasks/checkTask?token=${token}&taskID=${repairtaskid}&confirmopinion=${confirmopinion}`).then((response) => {
+        this.axios.post(maintainRepaircheckTask(token, repairtaskid, confirmopinion)).then((response) => {
+          console.log(response)
           if (response.data.code === 0) {
             this.$message({
               message: '验证成功',
@@ -491,25 +486,18 @@ export default {
           type: 'warning'
         })
       }
-      console.log(this.radio)
-      console.log(confirmopinion)
     },
     conserve () {
-      let token = JSON.parse(window.sessionStorage.token)
-      let repairtaskid = this.examine.repairtaskid
+      // let token = JSON.parse(window.sessionStorage.token)
+      // let repairtaskid = this.examine.repairtaskid
       let approvalOpinion = this.approvalOpinionInput
       let approvalState = this.approvalradio
       let assignmenttime = this.waatitime
-      console.log(token)
-      console.log(repairtaskid)
-      console.log(approvalOpinion)
-      console.log(approvalState)
-      console.log(assignmenttime)
       if (approvalOpinion !== '') {
         if (approvalState !== '') {
           if (approvalState === 30) {
             if (assignmenttime !== '' && assignmenttime !== null) {
-              this.axios.post(`http://172.16.6.181:8920/repairtasks/getFaultSelectItems`).then((response) => {
+              this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
                 if (response.data.code === 0) {
                   this.faulttreatment = response.data.data.faulttreatment
                   this.faultreason = response.data.data.faultreason
@@ -617,15 +605,14 @@ export default {
       let src = this.examine.beforephotos.split(',')
       this.srcData = src
     }
-    console.log('321123')
     //  任务审批选项
-    this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepariTaskApprovalItem`).then((response) => {
+    this.axios.post(maintainRepairgetRepariTaskApprovalItem()).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         this.approvaloptions = response.data.data
       }
     })
-    this.axios.post(`http://172.16.6.181:8920/reworks/findReworksByTaskid?repairtaskid=${this.examine.repairtaskid}`).then((response) => {
+
+    this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
         if (response.data.data.length !== 0) {
           response.data.data.forEach((val) => {

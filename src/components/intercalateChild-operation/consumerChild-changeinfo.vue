@@ -95,6 +95,7 @@
                 :show-all-levels="false"
                 :props="defaultProps"
                 @change="handleChange"
+                v-model="organizeOptions"
                 change-on-select
               ></el-cascader>
             </div>
@@ -175,7 +176,7 @@ export default {
       dialogVisible: false,
       options: [],
       value: '',
-      textarea: '',
+      textarea: this.communication.memo,
       organizationid: '',
       thisPage: false,
       userstate: [],
@@ -184,19 +185,15 @@ export default {
         label: 'organizationName',
         children: 'subOrgnizations',
         value: 'organizationCode'
-      }
+      },
+      organizeOptions: [],
+      imageUrlTwo: ''
     }
   },
   methods: {
-    onChange (file, fileList) {
-      this.Headportrait = file.raw
-      console.log(this.Headportrait)
-      if (fileList.length > 1) {
-        this.fileList = fileList.slice(1, 2)
-      }
-    },
     handleAvatarSuccess (response, file, fileList) {
-      this.imageUrl = response.data
+      this.imageUrl = URL.createObjectURL(file.raw)
+      this.imageUrlTwo = response.data
     },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
@@ -210,10 +207,8 @@ export default {
       return isJPG && isLt2M
     },
     conserve () {
-      let urlconserve = JSON.parse(window.sessionStorage.userInfo)
       //  获取当前用户id
-      let userid = urlconserve.userid
-      console.log(userid)
+      let userid = this.communication.userid
       //  获取组织id
       let organizationid = this.organizationid
       //  获取用户姓名
@@ -222,18 +217,19 @@ export default {
       let email = this.Useremail !== null ? this.Useremail : ''
       //  获取电话
       let tel = this.pheneInput
-      //  获取角色
-      let userstate = this.userstate
+      //  用户最后登录时间
+      //  有点问题
+      let userstate = []
       //  获取职位
       let job = this.businesspostCode
       //  获取备注
       let memo = this.textarea
       //  角色信息
-      let roleids = this.userstate.length !== 0 ? this.userstate : ''
+      let roleids = this.userstate.length !== 0 ? this.userstate : []
       console.log(roleids)
 
       //  获取上传图片
-      let file = this.imageUrl !== null ? this.imageUrl : ''
+      let file = this.imageUrlTwo !== null ? this.imageUrlTwo : ''
       let url = modifytheUser(userid, organizationid, username, email, tel, userstate, job, memo, roleids, file)
       console.log(url)
       this.axios.post(url).then((response) => {
@@ -256,6 +252,16 @@ export default {
     }
   },
   created () {
+    console.log(this.communication)
+    this.businesspostCode = this.communication.job
+    this.organizeOptions.push(this.communication)
+    console.log(this.organizeOptions)
+    let roleid = this.communication.roleid.split(';')
+    // this.userstate = roleid
+    roleid.forEach((val) => {
+      this.userstate.push(parseInt(val))
+    })
+    // this.userstate.push(this.communication.roleid)
     let token = JSON.parse(window.sessionStorage.token)
     //  用户角色
     this.axios.post(`http://172.16.6.181:8920/users/getRolesList?token=${token}`).then((response) => {
@@ -270,13 +276,13 @@ export default {
       }
     })
     //  获取职务
-    this.axios.post(`http://172.16.6.16:8920/users/getJobList`).then((response) => {
+    this.axios.post(`http://172.16.6.181:8920/users/getJobList`).then((response) => {
       if (response.data.code === 0) {
         this.businesspost = response.data.data
       }
     })
     //  获取组织结构
-    this.axios.post(`http://172.16.6.16:8920/organization/getOrganizationTrees?token=${token}`).then((response) => {
+    this.axios.post(`http://172.16.6.181:8920/organization/getOrganizationTrees?token=${token}`).then((response) => {
       if (response.data.code === 0) {
         this.organize = (response.data.data)
       }

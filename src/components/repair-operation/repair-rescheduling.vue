@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import { maintainRepairreAssignedTask, maintainDailygetRepairTypes, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId } from '../../api/user'
 export default {
   name: 'repair-rescheduling',
   props: ['msg'],
@@ -198,7 +199,8 @@ export default {
         })
         return false
       }
-      this.axios.post(`http://172.16.6.181:8920/repairtasks/reAssignedTask?token=${token}&repairid=${repairid}&desc=${desc}&disposeopinion=${disposeopinion}&faultTypeId=${faultTypeId}`, users).then((response) => {
+
+      this.axios.post(maintainRepairreAssignedTask(token, repairid, desc, disposeopinion, faultTypeId), users).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
           this.$message({
@@ -226,20 +228,20 @@ export default {
     console.log(this.msg)
     console.log(this.msg.deviceid)
     this.abnormalCondition += `情况说明: ${this.msg.exception === null ? ' ' : this.msg.exception}\n处理情况:${this.msg.treatment === null ? ' ' : this.msg.treatment}`
-    this.axios.post(`http://172.16.6.181:8920/task/getRepairTypes`).then((response) => {
+    this.axios.post(maintainDailygetRepairTypes()).then((response) => {
       if (response.data.code === 0) {
         this.getrepairDate = response.data.data
         console.log(this.getrepairDate)
       }
     })
     //  业主单位
-    this.axios.post(`http://172.16.6.181:8920/organization/getProprietorOrgTree`).then((response) => {
+    this.axios.post(maintainDailygetProprietorOrgTree()).then((response) => {
       if (response.data.code === 0) {
         this.proprietor = response.data.data
       }
     })
     //  维保单位 this.equipment
-    this.axios.post(`http://172.16.6.181:8920/organization/getRepairOrgTreeByDeviceId?deviceid=${this.msg.deviceid}`).then((response) => {
+    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.msg.deviceid)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }

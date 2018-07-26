@@ -148,6 +148,7 @@ import increase from '../admin-child/adminChild-review'
 import childLookover from '../reportChild-operation/reportChild-lookover'
 import childModify from '../reportChild-operation/reportChild-modify'
 import childExamine from '../reportChild-operation/reportChild-examine'
+import { findAllDeviceType, maintainReportgetFeedbackstateStates, maintainReportgetConfrimStates, findAreasTreeByProjectid, maintainReportfindFeedback, maintainReportfindFeedbackTwo, maintainReportfindFeedbacksByFeedbackid, maintainReportremoveFeedbacks } from '../../api/user'
 export default {
   name: 'maintain-admin',
   components: {
@@ -164,7 +165,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios.post(`http://172.16.6.181:8920/feedback/removeFeedbacks?feedbackid=${ID}`).then((response) => {
+        this.axios.post(maintainReportremoveFeedbacks(ID)).then((response) => {
           if (response.data.code === 0) {
             data.splice(index, 1)
             this.$message({
@@ -202,7 +203,7 @@ export default {
     examine (ID) {
       // 点击查看
       console.log(ID)
-      this.axios.post(`http://172.16.6.181:8920/feedback/findFeedbacksByFeedbackid?feedbackid=${ID}`).then((response) => {
+      this.axios.post(maintainReportfindFeedbacksByFeedbackid(ID)).then((response) => {
         if (response.data.code === 0) {
           this.examineData = response.data.data
           console.log(response.data.data)
@@ -212,7 +213,7 @@ export default {
     },
     modify (Id) {
       // 点击修改
-      this.axios.post(`http://172.16.6.181:8920/feedback/findFeedbacksByFeedbackid?feedbackid=${Id}`).then((response) => {
+      this.axios.post(maintainReportfindFeedbacksByFeedbackid(Id)).then((response) => {
         if (response.data.code === 0) {
           this.arrangeData = response.data.data
           console.log(response.data.data)
@@ -222,7 +223,7 @@ export default {
     },
     question (Id) {
       // 点击安排
-      this.axios.post(`http://172.16.6.181:8920/feedback/findFeedbacksByFeedbackid?feedbackid=${Id}`).then((response) => {
+      this.axios.post(maintainReportfindFeedbacksByFeedbackid(Id)).then((response) => {
         if (response.data.code === 0) {
           this.arrangeData = response.data.data
           this.examineBoolean = true
@@ -240,24 +241,14 @@ export default {
       this.modifyBoolean = ev
     },
     query () {
-      if (this.regionModel.length !== 0) {
-        if (this.equipmentDate.length !== 0) {
-          let projectid = window.localStorage.pattern
-          let areaid = this.regionModel[this.regionModel.length - 1]
-          let basedevicecode = this.equipmentDate[this.equipmentDate.length - 1]
-          console.log(basedevicecode)
-          this.axios.post(`http://172.16.6.181:8920/feedback/findFeedback?projectid=${projectid}&areaid=${areaid}&basedevicecode=${basedevicecode}&feedbackState=${this.dispose}&confirmState=${this.identification}`).then((response) => {
-            if (response.data.code === 0) {
-              console.log(response.data.data)
-              this.exhibition = response.data.data
-            }
-          })
-        } else {
-          alert('请选择设备类型')
+      let projectid = window.localStorage.pattern
+      let areaid = this.regionModel.length !== 0 ? this.regionModel[this.regionModel.length - 1] : ''
+      let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+      this.axios.post(maintainReportfindFeedbackTwo(projectid, areaid, basedevicecode, this.dispose, this.identification)).then((response) => {
+        if (response.data.code === 0) {
+          this.exhibition = response.data.data
         }
-      } else {
-        alert('请选择区域')
-      }
+      })
     }
   },
   data () {
@@ -339,31 +330,30 @@ export default {
     })
     let projectid = window.localStorage.pattern
     console.log(projectid)
-    this.axios.post(`http://172.16.6.181:8920/feedback/findFeedback?projectid=${projectid}`).then((response) => {
+    this.axios.post(maintainReportfindFeedback(projectid)).then((response) => {
       if (response.data.code === 0) {
         this.exhibition = response.data.data
         console.log(this.exhibition)
       }
     })
     //  获取区域
-    this.axios.post('http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
+    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
       }
     })
     //  获取设备类别
-    this.axios.post('http://172.16.6.181:8920/dev/findAllDeviceType').then((response) => {
+    this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
         this.equipment = response.data.data
       }
     })
     //  获取处理状态
-    this.axios.post(`http://172.16.6.181:8920/feedback/getFeedbackstateStates`).then((response) => {
-      console.log('123')
+    this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
       this.disposeData = response.data
     })
     //  获取确认状态
-    this.axios.post(`http://172.16.6.181:8920/feedback/getConfrimStates`).then((response) => {
+    this.axios.post(maintainReportgetConfrimStates()).then((response) => {
       this.identificationData = response.data
     })
   }

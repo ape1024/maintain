@@ -67,6 +67,7 @@
 import dailythree from '../dailyChild-three/dailyChild-three'
 import childExamine from '../dailyChild-operation/dailyChild-examine'
 import childDistribution from '../dailyChild-operation/dailyChild-distribution'
+import { maintainDailygetRepairTypes, maintainDailygetDetailsByDeviceId } from '../../api/user'
 export default {
   name: 'dailyChild-two',
   props: ['dailyData', 'taskid', 'taskName'],
@@ -106,7 +107,8 @@ export default {
     // 开启审核
     examine (deviceID) {
       this.equipmentID = deviceID
-      this.axios.post(`http://172.16.6.181:8920/task/getDetailsByDeviceId?taskId=${this.taskid}&deviceId=${deviceID}`).then((response) => {
+
+      this.axios.post(maintainDailygetDetailsByDeviceId(this.taskid, deviceID)).then((response) => {
         if (response.data.code === 0) {
           this.examineDate = response.data.data
           this.examineBoolean = true
@@ -117,7 +119,7 @@ export default {
       this.instructionData = ev
       this.examineBoolean = false
       this.distributionBoolean = true
-      this.axios.post(`http://172.16.6.181:8920/task/getRepairTypes`).then((response) => {
+      this.axios.post(maintainDailygetRepairTypes()).then((response) => {
         if (response.data.code === 0) {
           this.getrepair = response.data.data
         }

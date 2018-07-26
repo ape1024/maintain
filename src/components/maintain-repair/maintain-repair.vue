@@ -162,6 +162,7 @@ import childLookover from '../repair-operation/repair-lookover'
 import childModify from '../repair-operation/repair-arrange'
 import childExamine from '../repair-operation/repair-examine'
 import childquipment from '../repair-operation/repair-rescheduling'
+import { getTaskQueryApprovalItems, findAreasTreeByProjectid, maintainRepairgetRepairStates, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindRepairTasks, maintainRepairmaintainRepairfindRepairTasksTwo, maintainRepairfindTaskByTaskid, maintainRepairremoveRepairtasks, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos } from '../../api/user'
 export default {
   name: 'maintain-repair',
   components: {
@@ -200,7 +201,8 @@ export default {
           type: 'warning'
         })
       }
-      this.axios.post(`http://172.16.6.181:8920/repairtasks/findRepairTasks?projectid=${projectid}&areaid=${regionModel}&repairStates=${this.maintenanceData}&approvalStates=${this.Auditstatus}`).then((response) => {
+
+      this.axios.post(maintainRepairmaintainRepairfindRepairTasksTwo(projectid, regionModel, this.maintenanceData, this.Auditstatus)).then((response) => {
         if (response.data.code === 0) {
           this.tabulationData = response.data.data
         }
@@ -210,7 +212,8 @@ export default {
       console.log('dadadad123')
       console.log(ev)
       this.examineBoolean = false
-      this.axios.post(`http://172.16.6.181:8920/repairtasks/findTaskByTaskid?repairtaskid=${ev.repairtaskid}`).then((response) => {
+
+      this.axios.post(maintainRepairfindTaskByTaskid(ev.repairtaskid)).then((response) => {
         if (response.data.code === 0) {
           this.quipmentData = response.data.data
           this.quipmentBoolean = true
@@ -253,7 +256,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios.post(`http://172.16.6.181:8920/repairtasks/removeRepairtasks?repairtaskid=${repairtaskid}`).then((response) => {
+        this.axios.post(maintainRepairremoveRepairtasks(repairtaskid)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
             content.splice([index], 1)
@@ -272,7 +275,7 @@ export default {
     },
     examine (id) {
       // 点击查看
-      this.axios.post(`http://172.16.6.181:8920/repairtasks/findTaskByTaskid?repairtaskid=${id}`).then((response) => {
+      this.axios.post(maintainRepairfindTaskByTaskid(id)).then((response) => {
         if (response.data.code === 0) {
           console.log(response.data.data)
           this.examineData = response.data.data
@@ -287,15 +290,15 @@ export default {
     question (ID, data) {
       // 点击审核
       console.log(data)
-      this.axios.post(`http://172.16.6.181:8920/repairtasks/findTaskByTaskid?repairtaskid=${ID}`).then((response) => {
+      this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
         if (response.data.code === 0) {
           console.log('1')
           this.examineData = response.data.data
-          this.axios.post(`http://172.16.6.181:8920/reworks/findReworksByTaskid?repairtaskid=${ID}`).then((response) => {
+          this.axios.post(maintainRepairfindReworksByTaskid(ID)).then((response) => {
             if (response.data.code === 0) {
               console.log('2')
               this.reworkData = response.data.data
-              this.axios.post(`http://172.16.6.181:8920/repairtasks/getApprovalInfos?repairtaskid=${ID}`).then((response) => {
+              this.axios.post(maintainRepairgetApprovalInfos(ID)).then((response) => {
                 if (response.data.code === 0) {
                   console.log(response)
                   console.log('3')
@@ -303,7 +306,7 @@ export default {
                   this.examination = response.data.data[0]
                   console.log(this.examination)
                   //  获取维修任务状态
-                  this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepairStates`).then((response) => {
+                  this.axios.post(maintainRepairgetRepairStates()).then((response) => {
                     if (response.data.code === 0) {
                       console.log('4')
                       this.taskState = response.data.data
@@ -328,7 +331,7 @@ export default {
       this.modifyBoolean = ev
     },
     equipment (ID) {
-      this.axios.post(`http://172.16.6.181:8920/repairtasks/findTaskByTaskid?repairtaskid=${ID}`).then((response) => {
+      this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
         if (response.data.code === 0) {
           this.quipmentData = response.data.data
           this.quipmentBoolean = true
@@ -367,56 +370,49 @@ export default {
       quipmentData: '',
       maintenance: '',
       maintenanceData: '',
-      JurisdictionSelect: '',
-      JurisdictionInsert: '',
-      JurisdictionDelete: '',
-      JurisdictionApproval: ''
+      JurisdictionSelect: true,
+      JurisdictionInsert: true,
+      JurisdictionDelete: true,
+      JurisdictionApproval: true
     }
   },
   created () {
     //   权限
-    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
-    Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'task_gzwx') {
-        this.JurisdictionSelect = val.select
-        this.JurisdictionInsert = val.insert
-        this.JurisdictionDelete = val.delete
-        this.JurisdictionApproval = val.approval
-      }
-    })
+    // let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    // Jurisdiction.forEach((val) => {
+    //   if (val.functioncode === 'task_gzwx') {
+    //     this.JurisdictionSelect = val.select
+    //     this.JurisdictionInsert = val.insert
+    //     this.JurisdictionDelete = val.delete
+    //     this.JurisdictionApproval = val.approval
+    //   }
+    // })
     //  获取区域
-    this.axios.post('http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=1').then((response) => {
+    let projectid = window.localStorage.pattern
+    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
       }
     })
     //  审核状态
-    this.axios.post('http://172.16.6.181:8920/task/getTaskQueryApprovalItems').then((response) => {
+    this.axios.post(getTaskQueryApprovalItems()).then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
-        console.log('1111')
-        console.log(this.AuditstatusDate)
       }
     })
     //  获取列表
-    console.log(window.localStorage)
-    let projectid = window.localStorage.pattern
-    this.axios.post(`http://172.16.6.181:8920/repairtasks/findRepairTasks?projectid=${projectid}`).then((response) => {
-      console.log(response)
+    this.axios.post(maintainRepairfindRepairTasks(projectid)).then((response) => {
       if (response.data.code === 0) {
         this.tabulationData = response.data.data
-        console.log('----')
-        console.log(this.tabulationData)
       }
     })
     //  获取维修状态
-    this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepairStates`).then((response) => {
+    this.axios.post(maintainRepairgetRepairStates()).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
-        console.log(response.data.data)
       }
     })
-    this.axios.post(`http://172.16.6.181:8920/repairtasks/getRepariTaskApprovalItem`).then((response) => {
+    this.axios.post(maintainRepairgetRepariTaskApprovalItem()).then((response) => {
       if (response.data.code === 0) {
         this.approvalStatus = response.data.data
       }
