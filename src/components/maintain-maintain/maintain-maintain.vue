@@ -24,19 +24,6 @@
             ></el-cascader>
           </div>
         </li>
-        <!--<li class="li_input">-->
-        <!--<p class="div_p">巡查状态：</p>-->
-        <!--<div class="div_input">-->
-        <!--<el-select v-model="value" placeholder="">-->
-        <!--<el-option-->
-        <!--v-for="item in options"-->
-        <!--:key="item.value"-->
-        <!--:label="item.label"-->
-        <!--:value="item.value">-->
-        <!--</el-option>-->
-        <!--</el-select>-->
-        <!--</div>-->
-        <!--</li>-->
         <li class="li_input">
           <p class="div_p">审核状态：</p>
           <div class="div_inputTwo">

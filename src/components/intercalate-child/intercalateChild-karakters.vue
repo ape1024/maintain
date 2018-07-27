@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import { karaktersFindAllRoles, karaktersSetRoleFunctions, karaktersFindAllFunctions } from '../../api/user'
 import increased from '../intercalateChild-operation/karaktersChild-increased'
 export default {
   name: 'intercalateChild-karakters',
@@ -144,11 +145,8 @@ export default {
     },
     Basis (ev) {
       let token = JSON.parse(window.sessionStorage.token)
-
-      this.axios.post(`http://172.16.6.181:8920/roles/FindAllRoles?token=${token}`).then((response) => {
+      this.axios.post(karaktersFindAllRoles(token)).then((response) => {
         if (response.data.code === 0) {
-          console.log('-----------')
-          console.log(response.data.data)
           this.systemRole = []
           this.customRoles = []
           response.data.data.forEach((val) => {
@@ -242,7 +240,7 @@ export default {
             data.push(obj)
           })
         })
-        this.axios.post(`http://172.16.6.181:8920/roles/SetRoleFunctions?roleid=${roleid}`, data).then((response) => {
+        this.axios.post(karaktersSetRoleFunctions(roleid), data).then((response) => {
           if (response.data.code === 0) {
             console.log(response)
             this.$message({
@@ -276,9 +274,7 @@ export default {
         val.modify = false
       })
       this.kayakersId = roleid
-      this.axios.post(`http://172.16.6.181:8920/roles/FindRoleFunctions?roleid=${roleid}`).then((response) => {
-        console.log('1111')
-        console.log(response)
+      this.axios.post(karaktersSetRoleFunctions(roleid)).then((response) => {
         if (response.data.code === 0) {
           for (let i = 0; i < response.data.data.length; i++) {
             let functionId = response.data.data[i].functionid
@@ -300,8 +296,6 @@ export default {
               })
             })
           }
-          console.log('------')
-          console.log(this.fullFunctionality)
         }
       })
     }
@@ -316,9 +310,7 @@ export default {
     })
     let token = JSON.parse(window.sessionStorage.token)
     console.log(token)
-    this.axios.post(`http://172.16.6.181:8920/roles/FindAllFunctions?token=${token}`).then((response) => {
-      console.log('----')
-      console.log(response)
+    this.axios.post(karaktersFindAllFunctions(token)).then((response) => {
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
           //  二级开关
@@ -346,7 +338,7 @@ export default {
         console.log(this.fullFunctionality)
       }
     })
-    this.axios.post(`http://172.16.6.181:8920/roles/FindAllRoles?token=${token}`).then((response) => {
+    this.axios.post(karaktersFindAllRoles(token)).then((response) => {
       if (response.data.code === 0) {
         console.log(response.data.data)
         response.data.data.forEach((val) => {

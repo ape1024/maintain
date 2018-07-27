@@ -81,6 +81,7 @@
 import lookup from '../arrangedChild-operation/arrangedChild-lookup'
 import examination from '../arrangedChild-operation/arrangedChild-examination'
 import newlybuild from '../arrangedChild-operation/arrangedChild-newlybuild'
+import { maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllPlanTypes } from '../../api/user'
 export default {
   name: 'maintain-arranged',
   components: {
@@ -111,7 +112,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios.post(`http://172.16.6.181:8920/plan/deletePlan?checkplanid=${checkplanid}`).then((response) => {
+        this.axios.post(maintainArrangeddeletePlan(checkplanid)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
             this.$message({
@@ -136,7 +137,7 @@ export default {
       this.examinaBoolean = ev
     },
     Build (ev) {
-      this.axios.post(`http://172.16.6.181:8920/plan/getAllPlans`).then((response) => {
+      this.axios.post(maintainArrangegetAllPlans()).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
           this.arrangedData = response.data.data
@@ -145,7 +146,7 @@ export default {
       })
     },
     Lookup (ev) {
-      this.axios.post(`http://172.16.6.181:8920/plan/getAllPlans`).then((response) => {
+      this.axios.post(maintainArrangegetAllPlans()).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
           this.arrangedData = response.data.data
@@ -156,7 +157,7 @@ export default {
     examine (checkplanid) {
       console.log(checkplanid)
       this.CheckPlanid = checkplanid
-      this.axios.post(`http://172.16.6.181:8920/plan/getCheckPlan?checkPlanId=${checkplanid}`).then((response) => {
+      this.axios.post(maintainArranggetCheckPlan(checkplanid)).then((response) => {
         if (response.data.code === 0) {
           this.CheckPlan = response.data.data
           this.review_boolean = true
@@ -216,14 +217,14 @@ export default {
   created () {
     console.log(document.documentElement.clientHeight)
     // let projectid = window.localStorage.pattern
-    this.axios.post(`http://172.16.6.181:8920/plan/getAllPlans`).then((response) => {
+    this.axios.post(maintainArrangegetAllPlans()).then((response) => {
       console.log(response)
       if (response.data.code === 0) {
         this.arrangedData = response.data.data
         console.log(this.arrangedData)
       }
     })
-    this.axios.post(`http://172.16.6.181:8920/plan/getAllPlanTypes`).then((response) => {
+    this.axios.post(maintainArranggetAllPlanTypes()).then((response) => {
       if (response.data.code === 0) {
         this.worktypeData = response.data.data
       }

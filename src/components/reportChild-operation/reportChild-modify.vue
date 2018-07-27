@@ -142,6 +142,7 @@
 </template>
 
 <script>
+import { maintainReporconfirmFeedback, maintainReportgetConfrimStates, maintainReportgetFeedbackstateStates, maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'reportChild-modify',
   props: ['examine'],
@@ -182,8 +183,8 @@ export default {
       let deviceid = this.examine.feedbackid
       console.log(this.examine)
       let feedbackstate = this.processingsdisplay
-      console.log(token, deviceid, feedbackstate)
-      this.axios.post(`http://172.16.6.181:8920/feedback/confirmFeedback?token=${token}&feedbackid=${deviceid}&feedbackstate=${feedbackstate}`).then((response) => {
+
+      this.axios.post(maintainReporconfirmFeedback(token, deviceid, feedbackstate)).then((response) => {
         if (response.data.code === 0) {
           console.log(response.data.data)
           this.$emit('say', this.examineBoolean)
@@ -195,11 +196,11 @@ export default {
     }
   },
   created () {
-    this.axios.post(`http://172.16.6.181:8920/feedback/getConfrimStates`).then((response) => {
+    this.axios.post(maintainReportgetConfrimStates()).then((response) => {
       this.Confirmationstate = response.data
       this.Confirmationsdisplay = this.examine.feedbackstate
     })
-    this.axios.post(`http://172.16.6.181:8920/feedback/getFeedbackstateStates`).then((response) => {
+    this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
       console.log(response)
       this.processingstate = response.data
       this.processingsdisplay = this.examine.comfirmstate
@@ -208,7 +209,7 @@ export default {
       this.photograph.push(val)
     })
     this.circumstances = this.examine.feedbackinfo
-    this.axios.post(`http://172.16.6.181:8920/task/getRepairTypes`).then((response) => {
+    this.axios.post(maintainDailygetRepairTypes()).then((response) => {
       if (response.data.code === 0) {
         this.choiceData = response.data.data
         console.log(this.choiceData)

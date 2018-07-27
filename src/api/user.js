@@ -17,12 +17,22 @@ export const iConsumerexamine = (userId) => {
   const url = `http://172.16.6.16:8920/users/findUser?userid=${userId}`
   return url
 }
+//  头部右侧部分
+export const findUserProjects = (token) => {
+  const url = `http://172.16.6.181:8920/projects/findUserProjects?token=${token}`
+  return url
+}
 
 //  用户设置  修改用户
 export const modifytheUser = (userid, organizationid, username, email, tel, userstate, job, memo, roleids, file) => {
   //  用户id | 组织id | 登录名 | 用户名 | 邮箱 | 电话 | 用户角色 | 职务 | 备注
   const roleidsStr = roleids.join(',')
   const url = `http://172.16.6.16:8920/users/updateUser?userid=${userid}&organizationid=${organizationid}&username=${username}&email=${email}&tel=${tel}&userstate=${userstate}&job=${job}&memo=${memo}&roleids=${roleidsStr}&file=${file}`
+  return url
+}
+//  修改密码
+export const modifytheUserPwd = (userid, pwd) => {
+  const url = `http://172.16.6.16:8920/users/updateUser?userid=${userid}&pwd=${pwd}`
   return url
 }
 //  用户设置  添加用户
@@ -87,6 +97,22 @@ export const getTaskQueryApprovalItems = () => {
   const url = 'http://172.16.6.181:8920/task/getTaskQueryApprovalItems'
   return url
 }
+//  获取所有省份
+export const getAllProvince = () => {
+  const url = `http://172.16.6.16:8920/organization/getAllProvince`
+  return url
+}
+//  通过省份 获取所有的市
+export const getCitiesByProvinceId = (provinceid) => {
+  const url = `http://172.16.6.16:8920/organization/getCitiesByProvinceId?provinceid=${provinceid}`
+  return url
+}
+//  通过市 获取所有的区县
+export const getCountiesByCityId = (countid) => {
+  const url = `http://172.16.6.16:8920/organization/getCountiesByCityId?cityid=${countid}`
+  return url
+}
+
 //  home
 export const maintainHomeRightTop = (projectid) => {
   const url = `http://172.16.6.16:8920/dev/statDeviceAndQuestionAndTaskRate?projectid=${projectid}`
@@ -250,5 +276,172 @@ export const maintainReportfindFeedbacksByFeedbackid = (Id) => {
 //  删除反馈信息
 export const maintainReportremoveFeedbacks = (ID) => {
   const url = `http://172.16.6.181:8920/feedback/removeFeedbacks?feedbackid=${ID}`
+  return url
+}
+//  生产厂家
+export const maintainReportfindManufactures = (baseDeviceId) => {
+  const url = `http://172.16.6.16:8920/dev/findManufactures?baseDeviceId=${baseDeviceId}`
+  return url
+}
+//  添加生产厂家 AddManufacture
+export const maintainReportAddManufacture = (customManufacturerDate, devicetypeid) => {
+  const url = `http://172.16.6.16:8920/dev/AddManufacture?name=${customManufacturerDate}&basedeviceid=${devicetypeid}`
+  return url
+}
+//  增加上报问题
+export const maintainReportAddDevice = (rowcount, token, devicetypeid, manufacturerid, basedevicecode, devicemodel, position, devicecount, parameters, memo, madedate, effectivedate, mac) => {
+  const url = `http://172.16.6.16:8920/dev/AddDevice?rowcount=${rowcount}&token=${token}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodel=${devicemodel}&position=${position}&devicecount=${devicecount}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&mac=${mac}`
+  return url
+}
+//  通过厂家获取到规格型号
+export const maintainReportfindDivecemodels = (region, manufacturerId) => {
+  const url = `http://172.16.6.16:8920/dev/findDivecemodels?baseDeviceId=${region}&manufacturerId=${manufacturerId}`
+  return url
+}
+//  分配任务
+export const maintainReportassignedTask = (token, desc, disposeopinion, feedbackid, faultTypeId) => {
+  const url = `http://172.16.6.181:8920/feedback/assignedTask?token=${token}&desc=${desc}&disposeopinion=${disposeopinion}&feedbackid=${feedbackid}&faultTypeId=${faultTypeId}`
+  return url
+}
+//  确认反馈信息
+export const maintainReporconfirmFeedback = (token, deviceid, feedbackstate) => {
+  const url = `http://172.16.6.181:8920/feedback/confirmFeedback?token=${token}&feedbackid=${deviceid}&feedbackstate=${feedbackstate}`
+  return url
+}
+
+//  计划  maintainArranged
+// 删除计划 deletePlan
+export const maintainArrangeddeletePlan = (checkplanid) => {
+  const url = `http://172.16.6.181:8920/plan/deletePlan?checkplanid=${checkplanid}`
+  return url
+}
+//  获取所有的巡检计划
+export const maintainArrangegetAllPlans = () => {
+  const url = `http://172.16.6.181:8920/plan/getAllPlans`
+  return url
+}
+//  获取巡检计划
+export const maintainArranggetCheckPlan = (checkplanid) => {
+  const url = `http://172.16.6.181:8920/plan/getCheckPlan?checkPlanId=${checkplanid}`
+  return url
+}
+//  获取所有计划类型
+export const maintainArranggetAllPlanTypes = () => {
+  const url = `http://172.16.6.181:8920/plan/getAllPlanTypes`
+  return url
+}
+//  修改计划
+export const maintainArrangupdatePlan = (checkPlanId, planName, planCode, worktypeid, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime) => {
+  const url = `http://172.16.6.181:8920/plan/updatePlan?checkPlanId=${this.Checkplanid}&planName=${planName}&planCode=${planCode}&worktype=${worktypeid}&planDesc=${planDesc}&startDate=${startDate}&endDate=${endDate}&checkFrequency=${checkFrequency}&interval=${interval}&createTaskTime=${createTaskTime}`
+  return url
+}
+//  根据工作类型获取工作模式
+export const maintainArranggetWorkModesByWorkType = (workType) => {
+  const url = `http://172.16.6.181:8920/plan/getWorkModesByWorkType?workType=${workType}`
+  return url
+}
+//  插件频率类型
+export const maintainArranggetAllCheckFrequency = () => {
+  const url = `http://172.16.6.181:8920/plan/getAllCheckFrequency`
+  return url
+}
+//  查询所有的角色
+export const karaktersFindAllRoles = (token) => {
+  const url = `http://172.16.6.181:8920/roles/FindAllRoles?token=${token}`
+  return url
+}
+//  设置角色权限
+export const karaktersSetRoleFunctions = (roleid) => {
+  const url = `http://172.16.6.181:8920/roles/SetRoleFunctions?roleid=${roleid}`
+  return url
+}
+//  查询所有功能模块
+export const karaktersFindAllFunctions = (token) => {
+  const url = `http://172.16.6.181:8920/roles/FindAllFunctions?token=${token}`
+  return url
+}
+//  创建角色
+export const increasedCreaterole = (roleName, organizationinfoid, token) => {
+  const url = `http://172.16.6.181:8920/roles/createrole?roleName=${roleName}&organizationinfoid=${organizationinfoid}&token=${token}`
+  return url
+}
+//  查看用户信息
+export const consumerFindUser = (userid) => {
+  const url = `http://172.16.6.16:8920/users/findUser?userid=${userid}`
+  return url
+}
+//  获取用户列表
+export const consumerfindAll = (pageIndex, pageSize) => {
+  const url = `http://172.16.6.16:8920/users/findAll?pageIndex=0&pageSize=30`
+  return url
+}
+//  删除用户
+export const consumerdelUser = (userId) => {
+  const url = `http://172.16.6.16:8920/users/delUser?userid=${userId}`
+  return url
+}
+//  获取用户组织树
+export const getOrganizationTreeByUser = (token) => {
+  const url = `http://172.16.6.16:8920/organization/getOrganizationTreeByUser?token=${token}`
+  return url
+}
+//  获取角色列表
+export const getRolesList = (token) => {
+  const url = `http://172.16.6.16:8920/users/getRolesList?token=${token}`
+  return url
+}
+//  获取职务
+export const getJobList = () => {
+  const url = `http://172.16.6.16:8920/users/getJobList`
+  return url
+}
+//  获取组织结构
+export const getOrganizationTrees = (token) => {
+  const url = `http://172.16.6.16:8920/organization/getOrganizationTrees?token=${token}`
+  return url
+}
+//  根据ID 获取项目详情
+export const findDetailByProjectid = (projectId) => {
+  const url = `http://172.16.6.181:8920/projects/findDetailByProjectid?projectId=${projectId}`
+  return url
+}
+//  删除项目
+export const removeProjectById = (projectId) => {
+  const url = `http://172.16.6.181:8920/projects/removeProjectById?projectId=${projectId}`
+  return url
+}
+//  获取所有的项目信息
+export const findAllProjects = () => {
+  const url = `http://172.16.6.181:8920/projects/findAllProjects`
+  return url
+}
+//  获取所有的审核状态
+export const FindDevAllstate = () => {
+  const url = `http://172.16.6.181:8920/dev/FindDevAllstate`
+  return url
+}
+//  新增项目
+export const createOrUpdateProject = (token) => {
+  const url = `http://172.16.6.181:8920/projects/createOrUpdateProject?token=${token}`
+  return url
+}
+//  获取设施列表
+export const increasefindAllDevType = () => {
+  const url = `http://172.16.6.181:8920/projects/findAllDevType`
+  return url
+}
+//  获取项目类型
+export const increasegetWorkTypes = () => {
+  const url = `http://172.16.6.16:8920/projects/getWorkTypes`
+  return url
+}
+//  获取服务机构
+export const getRootOrganizationsNotProprietor = () => {
+  const url = `http://172.16.6.16:8920/organization/getRootOrganizationsNotProprietor`
+  return url
+}
+//  获取业主单位
+export const getProprietorOrganization = () => {
+  const url = `http://172.16.6.16:8920/organization/getProprietorOrganization`
   return url
 }

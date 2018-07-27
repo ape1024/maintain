@@ -249,6 +249,7 @@
 
 <script>
 import $ from 'jquery'
+import { createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince } from '../../api/user'
 export default {
   name: 'consumerChild-increase',
   props: ['edit', 'project'],
@@ -331,9 +332,6 @@ export default {
   },
   methods: {
     handlesuccess (response, file, fileList) {
-      console.log('0-0-0-0-0-0-0-0-0-0')
-      console.log(file.name)
-      console.log(response.data)
       this.documentPapers.push({
         'name': `${file.name}`,
         'url': `${response.data}`
@@ -427,7 +425,7 @@ export default {
           },
           'worktypes': worktypes
         }
-        this.axios.post(`http://172.16.6.181:8920/projects/createOrUpdateProject?token=${token}`, pr).then((response) => {
+        this.axios.post(createOrUpdateProject(token), pr).then((response) => {
           if (response.data.code === 0) {
             alert('创建成功！')
             this.$emit('incr', this.Thispage)
@@ -458,8 +456,7 @@ export default {
           $(item).css('display', 'none')
         })
         $(event.currentTarget).siblings('.regionliUl').slideDown()
-        let url = `http://172.16.6.16:8920/organization/getCitiesByProvinceId?provinceid=${provinceid}`
-        this.axios.post(url).then((response) => {
+        this.axios.post(getCitiesByProvinceId(provinceid)).then((response) => {
           if (response.data.code === 0) {
             this.conurbation = response.data.data
             console.log(response.data.data)
@@ -484,8 +481,7 @@ export default {
           $(item).css('display', 'none')
         })
         $(event.currentTarget).siblings('.countUl').slideDown()
-        let url = `http://172.16.6.16:8920/organization/getCountiesByCityId?cityid=${countid}`
-        this.axios.post(url).then((response) => {
+        this.axios.post(getCountiesByCityId(countid)).then((response) => {
           if (response.data.code === 0) {
             this.countytown = response.data.data
           }
@@ -530,35 +526,36 @@ export default {
     }
   },
   created () {
-    this.axios.post(`http://172.16.6.181:8920/projects/findAllDevType`).then((response) => {
+    this.axios.post(increasefindAllDevType()).then((response) => {
       this.firecontrol = response.data
     })
-    this.axios.post(`http://172.16.6.16:8920/areas/findAllAreaTrees`).then((response) => {
+    //  这个接口有问题  没有这个接口
+    this.axios.post(increasegetWorkTypes()).then((response) => {
       if (response.data.code === 0) {
         this.purview = response.data.data[0]
       }
     })
-    this.axios.post(`http://172.16.6.16:8920/projects/getWorkTypes`).then((response) => {
+    this.axios.post(increasegetWorkTypes()).then((response) => {
       console.log(response)
       if (response.data.code === 0) {
         this.projectType = response.data.data
       }
     })
     //  服务机构
-    this.axios.post(`http://172.16.6.16:8920/organization/getRootOrganizationsNotProprietor`).then((response) => {
+    this.axios.post(getRootOrganizationsNotProprietor()).then((response) => {
       console.log(response)
       if (response.data.code === 0) {
         this.proprietorName = response.data.data
       }
     })
     //  获取业主单位
-    this.axios.post(`http://172.16.6.16:8920/organization/getProprietorOrganization`).then((response) => {
+    this.axios.post(getProprietorOrganization()).then((response) => {
       console.log(response)
       if (response.data.code === 0) {
         this.proprieTorDate = response.data.data
       }
     })
-    this.axios.post(`http://172.16.6.16:8920/organization/getAllProvince`).then((response) => {
+    this.axios.post(managementCreatedProvince()).then((response) => {
       if (response.data.code === 0) {
         this.province = response.data.data
       }

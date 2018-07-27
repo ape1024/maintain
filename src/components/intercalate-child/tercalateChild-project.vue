@@ -68,6 +68,7 @@
 import increase from '../intercalateChild-operation/consumerChild-increase'
 import examine from '../intercalateChild-operation/consumerChild-examine'
 import edit from '../intercalateChild-operation/consumerChild-editproject'
+import { findDetailByProjectid, removeProjectById, findAllProjects, FindDevAllstate } from '../../api/user'
 export default {
   name: 'tercalateChild-project',
   components: {
@@ -105,9 +106,7 @@ export default {
     },
     //  查看
     exaMine (itemId, data) {
-      console.log(itemId)
-      console.log(data)
-      this.axios.post(`http://172.16.6.181:8920/projects/findDetailByProjectid?projectId=${itemId}`).then((response) => {
+      this.axios.post(findDetailByProjectid(itemId)).then((response) => {
         if (response.data.code === 0) {
           this.exaMineDate = response.data.data
           console.log(response.data.data)
@@ -123,8 +122,7 @@ export default {
     },
     modify (project) {
       //  修改
-      console.log(project.projectid)
-      this.axios.post(`http://172.16.6.181:8920/projects/findDetailByProjectid?projectId=${project.projectid}`).then((response) => {
+      this.axios.post(findDetailByProjectid(project.projectid)).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
           this.modifyDate = response.data.data
@@ -142,11 +140,10 @@ export default {
     },
     amputate (index, content, projectId) {
       console.log(projectId)
-      const url = `http://172.16.6.181:8920/projects/removeProjectById?projectId=${projectId}`
-      this.axios.post(url).then((response) => {
+      this.axios.post(removeProjectById(projectId)).then((response) => {
         if (response.data.code === 0) {
           content.splice([index], 1)
-          alert('删除成功！')
+          this.$message('删除成功!')
         }
       })
     }
@@ -161,13 +158,13 @@ export default {
         this.JurisdictionUpdate = val.update
       }
     })
-    this.axios.post(`http://172.16.6.181:8920/projects/findAllProjects`).then((response) => {
+    this.axios.post(findAllProjects()).then((response) => {
       if (response.data.code === 0) {
         this.contentliDate = response.data.data
         console.log(response)
       }
     })
-    this.axios.post('http://172.16.6.181:8920/dev/FindDevAllstate').then((response) => {
+    this.axios.post(FindDevAllstate()).then((response) => {
       if (response.data.code === 0) {
         this.runningstateDate = response.data.data
       }

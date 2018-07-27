@@ -156,7 +156,7 @@
 </template>
 
 <script>
-import { appUser } from '../../api/user'
+import { appUser, getRolesList, getJobList, getOrganizationTrees } from '../../api/user'
 export default {
   name: 'consumerChild-augment',
   props: ['increaseBoolean'],
@@ -317,7 +317,7 @@ export default {
   created () {
     var token = JSON.parse(window.sessionStorage.token)
     //  用户角色 目前用一个临时token，以后修改
-    this.axios.post(`http://172.16.6.16:8920/users/getRolesList?token=${token}`).then((response) => {
+    this.axios.post(getRolesList(token)).then((response) => {
       if (response.data.code === 0) {
         this.roleSelect = response.data.data
         console.log(this.roleSelect)
@@ -328,13 +328,13 @@ export default {
       }
     })
     //  获取职务
-    this.axios.post(`http://172.16.6.16:8920/users/getJobList`).then((response) => {
+    this.axios.post(getJobList()).then((response) => {
       if (response.data.code === 0) {
         this.businesspost = response.data.data
       }
     })
     //  获取组织结构
-    this.axios.post(`http://172.16.6.16:8920/organization/getOrganizationTrees?token=${token}`).then((response) => {
+    this.axios.post(getOrganizationTrees(token)).then((response) => {
       if (response.data.code === 0) {
         this.organize = (response.data.data)
       }

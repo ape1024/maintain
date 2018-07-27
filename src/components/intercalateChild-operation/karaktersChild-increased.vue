@@ -104,6 +104,7 @@
 </template>
 
 <script>
+import { increasedCreaterole } from '../../api/user'
 export default {
   name: 'karaktersChild-increased',
   props: ['increaSed'],
@@ -158,7 +159,7 @@ export default {
         })
         return false
       }
-      this.axios.post(`http://172.16.6.181:8920/roles/createrole?roleName=${roleName}&organizationinfoid=${organizationinfoid}&token=${token}`, roleFunctions).then((response) => {
+      this.axios.post(increasedCreaterole(roleName, organizationinfoid, token), roleFunctions).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '创建成功',

@@ -221,8 +221,14 @@
                   组织机构图标：
                 </p>
                 <div class="contenttwo">
-                  <el-upload class="upload-demo" ref="upload" action="" :on-change="onChange" :file-list="fileList" :auto-upload="false">
-                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                  <el-upload
+                    class="avatar-uploader"
+                    action="http://172.16.6.181:8920/upload/upload"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                   </el-upload>
                 </div>
               </div>
@@ -372,6 +378,8 @@ export default {
       },
       //  组织类别切换
       classification: true,
+      imageUrl: '',
+      imageUrlTwo: '',
       supervision: '',
       superVisionData: '',
       categoryfireFighting: '',
@@ -383,6 +391,21 @@ export default {
     }
   },
   methods: {
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+    handleAvatarSuccess (response, file, fileList) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+      this.imageUrlTwo = response.data
+    },
     subjectpCreate () {
       //  点击新增
       this.companyDate = []
@@ -689,7 +712,8 @@ export default {
         //  单位编码
         this.encrypt = urlData.organizationcode
         //   组织机构名称
-        this.organization = urlData.organizationshortname
+        console.log(urlData)
+        this.organization = urlData.organizationshortname === 'undefined' ? '' : urlData.organizationshortname
         //  组织类型
         this.regimentaValue = urlData.organizationtype
         //  省份
@@ -861,8 +885,6 @@ export default {
     this.axios.post(CreatedProvince).then((response) => {
       if (response.data.code === 0) {
         this.province = response.data.data
-        console.log('11111111111111111111111111111')
-        console.log(this.province)
       }
     })
     //   专业类别
@@ -1080,7 +1102,7 @@ export default {
     .contenttwo
        float left
        width 770px
-       height 68px
+       height 100px
        overflow hidden
     .contentthree
       float left
@@ -1159,6 +1181,25 @@ export default {
     init()
     line-height 28px
     margin-top 10px
+  .avatar-uploader .el-upload
+    border 1px dashed #d9d9d9
+    border-radius 6px
+    cursor pointer
+    position relative
+    overflow hidden
+  .avatar-uploader .el-upload:hover
+    border-color #409EFF
+  .avatar-uploader-icon
+    font-size 28px
+    color #8c939d
+    width 100px
+    height 100px
+    line-height 100px
+    text-align center
+  .avatar
+    width 100px
+    height 100px
+    display block
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"

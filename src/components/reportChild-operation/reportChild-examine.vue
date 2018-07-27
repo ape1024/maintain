@@ -232,6 +232,7 @@
 </template>
 
 <script>
+import { maintainReportassignedTask, maintainReportgetConfrimStates, maintainReportgetFeedbackstateStates, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'reportChild-examine',
   props: ['examine'],
@@ -268,7 +269,6 @@ export default {
   },
   methods: {
     conserve () {
-      // this.$emit('mine', this.examineBoolean)
       let token = JSON.parse(window.sessionStorage.token)
       //  执行人员
       let usersNumber = this.maintenanceList.concat(this.repairCheckList)
@@ -281,31 +281,40 @@ export default {
           users.push(obj)
         })
       } else {
-        alert('请选择执行人员!')
+        this.$message({
+          message: '请选择执行人员!',
+          type: 'warning'
+        })
         return false
       }
       //  问题描述
       let desc = this.circumstances
       if (desc === '') {
-        alert('异常情况不能为空!')
+        this.$message({
+          message: '异常情况不能为空!',
+          type: 'warning'
+        })
         return false
       }
       //  处理意见
       let disposeopinion = this.objection
       if (disposeopinion === '') {
-        alert('处理意见不能为空!')
+        this.$message({
+          message: '处理意见不能为空!',
+          type: 'warning'
+        })
         return false
       }
       //  故障/问题 类型
       let faultTypeId = this.choice
       if (this.choice === '') {
-        alert('请选择故障/问题 类型!')
+        this.$message({
+          message: '请选择故障/问题 类型!',
+          type: 'warning'
+        })
         return false
       }
-      console.log(token)
-      console.log(users)
-      this.axios.post(`http://172.16.6.181:8920/feedback/assignedTask?token=${token}&desc=${desc}&disposeopinion=${disposeopinion}&feedbackid=${this.examine.feedbackid}&faultTypeId=${faultTypeId}`, users).then((response) => {
-        console.log(response)
+      this.axios.post(maintainReportassignedTask(token, desc, disposeopinion, this.examine.feedbackid, faultTypeId), users).then((response) => {
         if (response.data.code === 0) {
           this.$emit('mine', this.examineBoolean)
         }
@@ -316,11 +325,11 @@ export default {
     }
   },
   created () {
-    this.axios.post(`http://172.16.6.181:8920/feedback/getConfrimStates`).then((response) => {
+    this.axios.post(maintainReportgetConfrimStates()).then((response) => {
       this.Confirmationstate = response.data
       this.Confirmationsdisplay = this.examine.feedbackstate
     })
-    this.axios.post(`http://172.16.6.181:8920/feedback/getFeedbackstateStates`).then((response) => {
+    this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
       console.log(response)
       this.processingstate = response.data
       this.processingsdisplay = this.examine.comfirmstate
@@ -330,21 +339,19 @@ export default {
     })
     this.circumstances = this.examine.feedbackinfo
     //  业主单位
-    this.axios.post(`http://172.16.6.181:8920/organization/getProprietorOrgTree`).then((response) => {
+    this.axios.post(maintainDailygetProprietorOrgTree()).then((response) => {
       if (response.data.code === 0) {
         this.proprietor = response.data.data
       }
     })
     //  维保单位 this.equipment
     let deviceid = this.examine.deviceid
-    console.log(deviceid)
-    this.axios.post(`http://172.16.6.181:8920/organization/getRepairOrgTreeByDeviceId?deviceid=${deviceid}`).then((response) => {
+    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(deviceid)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         this.maintenance = response.data.data
       }
     })
-    this.axios.post(`http://172.16.6.181:8920/task/getRepairTypes`).then((response) => {
+    this.axios.post(maintainDailygetRepairTypes()).then((response) => {
       if (response.data.code === 0) {
         this.choiceData = response.data.data
         console.log(this.choiceData)

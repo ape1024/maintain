@@ -39,7 +39,7 @@
 
 <script>
 // import $ from 'jquery'
-import { secede } from '../../api/user'
+import { secede, findUserProjects } from '../../api/user'
 export default {
   name: 'maintain-headerRight',
   props: ['name'],
@@ -73,14 +73,14 @@ export default {
     }
     if (window.sessionStorage.token === undefined) {
       let token = this.$store.state.userToken
-      this.axios.post(`http://172.16.6.181:8920/projects/findUserProjects?token=${token}`).then((response) => {
+      this.axios.post(findUserProjects(token)).then((response) => {
         if (response.data.code === 0) {
           this.options = response.data.data
         }
       })
     } else {
       let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(`http://172.16.6.181:8920/projects/findUserProjects?token=${token}`).then((response) => {
+      this.axios.post(findUserProjects(token)).then((response) => {
         if (response.data.code === 0) {
           this.options = response.data.data
         }

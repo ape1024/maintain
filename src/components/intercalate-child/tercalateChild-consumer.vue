@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import { iConsumerexamine } from '../../api/user'
+import { iConsumerexamine, consumerFindUser, consumerfindAll, consumerdelUser, getOrganizationTreeByUser } from '../../api/user'
 import increase from '../intercalateChild-operation/consumerChild-augment'
 import examine from '../intercalateChild-operation/consumerChild-seeinfo'
 import edit from '../intercalateChild-operation/consumerChild-steganogram'
@@ -237,14 +237,12 @@ export default {
       this.adhibitBoolean = true
     },
     Incr (ev) {
-      let url = `http://172.16.6.16:8920/users/findAll?pageIndex=0&pageSize=30`
-      this.axios.post(url).then((response) => {
+      this.axios.post(consumerfindAll(0, 30)).then((response) => {
         this.information = response.data.data.data
         this.adhibitBoolean = ev
       })
     },
     exaMine (userid) {
-      console.log('-1')
       let url = iConsumerexamine(userid)
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {
@@ -258,7 +256,7 @@ export default {
     },
     moDify (user) {
       //  修改用户信息
-      this.axios.post(`http://172.16.6.16:8920/users/findUser?userid=${user}`).then((response) => {
+      this.axios.post(consumerFindUser(user)).then((response) => {
         if (response.data.code === 0) {
           this.moDifynews = response.data.data
           this.modifyBoolean = true
@@ -275,9 +273,7 @@ export default {
     },
     inFourma (ev) {
       this.modifyBoolean = ev
-      console.log(ev)
-      let url = `http://172.16.6.16:8920/users/findAll?pageIndex=0&pageSize=30`
-      this.axios.post(url).then((response) => {
+      this.axios.post(consumerfindAll(0, 30)).then((response) => {
         this.information = response.data.data.data
       })
     },
@@ -289,7 +285,7 @@ export default {
       }).then(() => {
         let Userid = JSON.parse(window.sessionStorage.userInfo).userid
         console.log(Userid)
-        this.axios.post(`http://172.16.6.16:8920/users/delUser?userid=${userId}`).then((response) => {
+        this.axios.post(consumerdelUser(userId)).then((response) => {
           if (response.data.code === 0) {
             this.$message({
               type: 'success',
@@ -331,8 +327,7 @@ export default {
         console.log(val.update)
       }
     })
-    let url = `http://172.16.6.16:8920/users/findAll?pageIndex=0&pageSize=30`
-    this.axios.post(url).then((response) => {
+    this.axios.post(consumerfindAll(0, 30)).then((response) => {
       console.log(response)
       this.information = response.data.data.data
     })
@@ -340,7 +335,7 @@ export default {
     console.log(this.information)
     let token = JSON.parse(window.sessionStorage.token)
     console.log(token)
-    this.axios.post(`http://172.16.6.16:8920/organization/getOrganizationTreeByUser?token=${token}`).then((response) => {
+    this.axios.post(getOrganizationTreeByUser(token)).then((response) => {
       if (response.data.code === 0) {
         if (response.data.data !== null) {
           this.options.push(response.data.data)
@@ -520,6 +515,34 @@ export default {
     position fixed
     left 0
     top 0
+  .el-select
+  width 100%
+  .uploaderAvatar
+    font-size $font-size-small-s
+    color #555555
+    .el-cascader
+      width  100%
+  .avatar-uploader
+    float left
+    height 100px
+    line-height 100px
+    overflow hidden
+    width 100px
+  .avatar-uploader .el-upload:hover
+    border-color #409EFF
+  .avatar-uploader-icon
+    font-size 28px
+    color #8c939d
+    height 100px
+    line-height 100px
+    overflow hidden
+    width 100px
+    text-align center
+  .avatar
+    width 100px
+    height 100px
+    display block
+
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .el-input__inner

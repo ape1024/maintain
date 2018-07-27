@@ -233,6 +233,7 @@
 
 <script>
 import $ from 'jquery'
+import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, getAllProvince, findAllDeviceType, getCitiesByProvinceId, getCountiesByCityId, maintainReportfindDivecemodels } from '../../api/user'
 export default {
   name: 'adminChild-review',
   props: ['msg'],
@@ -365,10 +366,10 @@ export default {
         }
       } else {
         region = region[region.length - 1]
-        this.axios.post(`http://172.16.6.16:8920/dev/findManufactures?baseDeviceId=${region}`).then((response) => {
+
+        this.axios.post(maintainReportfindManufactures(region)).then((response) => {
           if (response.data.code === 0) {
             this.manufactor = response.data.data
-            console.log(this.manufactor)
             this.manufactor.push({
               name: '自定义',
               manufacturerid: '-9999'
@@ -476,14 +477,19 @@ export default {
         let devicetypeid = this.categoryDate[this.categoryDate.length - 1]
         if (this.customManufacturer === true) {
           console.log('2')
-          this.axios.post(`http://172.16.6.16:8920/dev/AddManufacture?name=${this.customManufacturerDate}&basedeviceid=${devicetypeid}`).then((response) => {
+
+          this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
             console.log(response)
             if (response.data.code === 0) {
               // 厂家id
               manufacturerid = response.data.data.manufacturerid
-              this.axios.post(`http://172.16.6.16:8920/dev/AddDevice?rowcount=${rowcount}&token=${token}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${this.basedevicecode}&devicemodel=${devicemodel}&position=${position}&devicecount=${devicecount}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&mac=${mac}`).then((response) => {
+
+              this.axios.post(maintainReportAddDevice(rowcount, token, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, position, devicecount, parameters, memo, madedate, effectivedate, mac)).then((response) => {
                 if (response.data.code === 0) {
-                  alert('创建成功！')
+                  this.$message({
+                    message: '创建成功',
+                    type: 'success'
+                  })
                   this.lyaddedShow = this.msg
                   this.lyaddedShow = !this.lyaddedShow
                   this.$emit('say', this.lyaddedShow)
@@ -493,10 +499,14 @@ export default {
           })
         } else {
           //  厂家 id
+
           manufacturerid = this.manufactorModel
-          this.axios.post(`http://172.16.6.16:8920/dev/AddDevice?rowcount=${rowcount}&token=${token}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${this.basedevicecode}&devicemodel=${devicemodel}&position=${position}&devicecount=${devicecount}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&mac=${mac}`).then((response) => {
+          this.axios.post(maintainReportAddDevice(rowcount, token, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, position, devicecount, parameters, memo, madedate, effectivedate, mac)).then((response) => {
             if (response.data.code === 0) {
-              alert('创建成功！')
+              this.$message({
+                message: '创建成功',
+                type: 'success'
+              })
               this.lyaddedShow = this.msg
               this.lyaddedShow = !this.lyaddedShow
               this.$emit('say', this.lyaddedShow)
@@ -504,7 +514,10 @@ export default {
           })
         }
       } else {
-        alert('请先选择设备类型！')
+        this.$message({
+          message: '请先选择设备类型！',
+          type: 'warning'
+        })
       }
     },
     accessarea () {
@@ -527,8 +540,7 @@ export default {
           $(item).css('display', 'none')
         })
         $(event.currentTarget).siblings('.regionliUl').slideDown()
-        let url = `http://172.16.6.16:8920/organization/getCitiesByProvinceId?provinceid=${provinceid}`
-        this.axios.post(url).then((response) => {
+        this.axios.post(getCitiesByProvinceId(provinceid)).then((response) => {
           if (response.data.code === 0) {
             this.conurbation = response.data.data
             console.log(response.data.data)
@@ -553,8 +565,7 @@ export default {
           $(item).css('display', 'none')
         })
         $(event.currentTarget).siblings('.countUl').slideDown()
-        let url = `http://172.16.6.16:8920/organization/getCountiesByCityId?cityid=${countid}`
-        this.axios.post(url).then((response) => {
+        this.axios.post(getCountiesByCityId(countid)).then((response) => {
           if (response.data.code === 0) {
             this.countytown = response.data.data
           }
@@ -609,7 +620,8 @@ export default {
         this.versionManufacturer = false
         let region = this.categoryDate
         region = region[region.length - 1]
-        this.axios.post(`http://172.16.6.16:8920/dev/findDivecemodels?baseDeviceId=${region}&manufacturerId=${this.manufactorModel}`).then((response) => {
+
+        this.axios.post(maintainReportfindDivecemodels(region, this.manufactorModel)).then((response) => {
           if (response.data.code === 0) {
             console.log(response)
             this.version = response.data.data
@@ -625,14 +637,14 @@ export default {
   },
   created () {
     //  设备类型
-    this.axios.post('http://172.16.6.16:8920/dev/findAllDeviceType').then((response) => {
+    this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
         console.log(response.data.data)
         this.category = response.data.data
       }
     })
     //  省份
-    this.axios.post(`http://172.16.6.16:8920/organization/getAllProvince`).then((response) => {
+    this.axios.post(getAllProvince()).then((response) => {
       if (response.data.code === 0) {
         this.province = response.data.data
       }

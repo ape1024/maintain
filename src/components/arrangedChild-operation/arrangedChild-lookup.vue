@@ -219,8 +219,8 @@
     </div>
   </div>
 </template>
-
 <script>
+import { maintainArrangupdatePlan, maintainArranggetWorkModesByWorkType, maintainArranggetCheckPlan, maintainDailygetRepairOrgTreeByDeviceId, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
 export default {
   name: 'arrangedChild-lookup',
   props: ['checkplan', 'Checkplanid'],
@@ -370,8 +370,6 @@ export default {
       //  选择消防设施
       let newArr = []
       if (this.judgementValue === true) {
-        console.log('11111111111111111')
-        console.log(this.facilitiesData)
         if (this.handleCheckData.length !== 0) {
           this.handleCheckData.forEach((val) => {
             if (val.hierarchy === 2) {
@@ -492,8 +490,8 @@ export default {
       }
       //  频次
       let checkFrequency = this.frequencyradio
-      this.axios.post(`http://172.16.6.181:8920/plan/updatePlan?checkPlanId=${this.Checkplanid}&planName=${planName}&planCode=${planCode}&worktype=${worktypeid}&planDesc=${planDesc}&startDate=${startDate}&endDate=${endDate}&checkFrequency=${checkFrequency}&interval=${interval}&createTaskTime=${createTaskTime}`, param).then((response) => {
-        console.log('11111111111111111++++')
+
+      this.axios.post(maintainArrangupdatePlan(this.Checkplanid, planName, planCode, worktypeid, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime), param).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '修改成功',
@@ -513,7 +511,7 @@ export default {
     },
     scheduleChange (value) {
       this.frequencyradio = value
-      this.axios.post(`http://172.16.6.181:8920/plan/getWorkModesByWorkType?workType=${value}`).then((response) => {
+      this.axios.post(maintainArranggetWorkModesByWorkType(value)).then((response) => {
         if (response.data.code === 0) {
           response.data.data.forEach(val => {
             val.flag = false
@@ -554,10 +552,12 @@ export default {
     }
   },
   created () {
+    console.log('3000000000000000000000')
+    console.log(this.Checkplanid)
     //  时间戳
     this.timeStamp = Date.parse(new Date())
     let PlanworkmodesData = []
-    this.axios.post(`http://172.16.6.181:8920/plan/getCheckPlan?checkPlanId=${this.Checkplanid}`).then((response) => {
+    this.axios.post(maintainArranggetCheckPlan(this.Checkplanid)).then((response) => {
       if (response.data.code === 0) {
         response.data.data.Planworkmodes.forEach((val) => {
           val.flag = true
@@ -566,7 +566,6 @@ export default {
         this.Worktype = PlanworkmodesData
       }
     })
-
     this.Planusers = this.checkplan.Planusers
     this.Planareas = this.checkplan.Planareas
     this.PlanData = this.checkplan.Plan
@@ -599,14 +598,15 @@ export default {
       this.defaultCheckedFacilities.push(`${val.areaid},${this.timeStamp}`)
     })
     //  维保单位 this.equipment
-    this.axios.post(`http://172.16.6.181:8920/organization/getRepairOrgTreeByDeviceId?deviceid=12690`).then((response) => {
+    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.Checkplanid)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }
     })
     let projectid = window.localStorage.pattern
     //  获取巡检范围
-    this.axios.post(`http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=${projectid}`).then((response) => {
+
+    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
       console.log('++++++++')
       console.log(response)
       if (response.data.code === 0) {
@@ -616,7 +616,7 @@ export default {
       }
     })
     //  获取消防设施
-    this.axios.post(`http://172.16.6.181:8920/dev/findAllDeviceType`).then((response) => {
+    this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
         response.data.data.splice(0, 1)
         let recursion = (data) => {
@@ -643,12 +643,12 @@ export default {
       }
     })
     //  获取计划类型
-    this.axios.post(`http://172.16.6.181:8920/plan/getAllPlanTypes`).then((response) => {
+    this.axios.post(maintainArranggetAllPlanTypes()).then((response) => {
       if (response.data.code === 0) {
         this.schedule = response.data.data
       }
     })
-    this.axios.post(`http://172.16.6.181:8920/plan/getAllCheckFrequency`).then((response) => {
+    this.axios.post(maintainArranggetAllCheckFrequency()).then((response) => {
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
           val.switch = false
@@ -692,8 +692,6 @@ export default {
         }
       }
     })
-    console.log('2')
-    console.log(this.Worktype)
   }
 }
 </script>

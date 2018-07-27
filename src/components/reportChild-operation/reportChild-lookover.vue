@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { maintainReportgetFeedbackstateStates, maintainReportgetConfrimStates } from '../../api/user'
 export default {
   name: 'reportChild-lookover',
   props: ['msg'],
@@ -84,7 +85,7 @@ export default {
     //  确认状态
     let confirm = []
     let confirmName = this.msg.comfirmstate
-    this.axios.post(`http://172.16.6.181:8920/feedback/getConfrimStates`).then((response) => {
+    this.axios.post(maintainReportgetConfrimStates()).then((response) => {
       confirm = response.data
       confirm.forEach((val) => {
         if (val.value === confirmName) {
@@ -96,7 +97,7 @@ export default {
     //  处理状态
     let dispose = []
     let disposeName = this.msg.feedbackstate
-    this.axios.post(`http://172.16.6.181:8920/feedback/getFeedbackstateStates`).then((response) => {
+    this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
       dispose = response.data
       console.log(dispose)
       dispose.forEach((val) => {

@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import { modifytheUserPwd } from '../../api/user'
 export default {
   name: 'consumerChild-steganogram',
   props: ['edit', 'UserId'],
@@ -78,22 +79,6 @@ export default {
       condition: true,
       input: '',
       imageUrl: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
       value: '',
       input10: '',
       textarea: '',
@@ -106,7 +91,10 @@ export default {
       if (original === item) {
         this.showState = !this.showState
       } else {
-        alert('原始密码错误!')
+        this.$message({
+          message: '原始密码错误!',
+          type: 'warning'
+        })
       }
     },
     handleAvatarSuccess (res, file) {
@@ -122,11 +110,13 @@ export default {
         if (this.newcode !== '') {
           if (this.newcode !== this.barbarism) {
             if (this.newcode === this.duplicate) {
-              let url = `http://172.16.6.16:8920/users/updateUser?userid=${useridCurrent}&pwd=${this.newcode}`
-              this.axios.post(url).then((response) => {
+              this.axios.post(modifytheUserPwd(useridCurrent, this.newcode)).then((response) => {
                 if (response.data.code === 0) {
                   if (userId === useridCurrent) {
-                    alert('修改成功，请重新登录！')
+                    this.$message({
+                      message: '修改成功，请重新登录！',
+                      type: 'success'
+                    })
                     sessionStorage.clear()
                     this.$router.push({path: '/login'})
                     return false
@@ -137,24 +127,36 @@ export default {
                     return false
                   }
                 } else {
-                  alert('修改失败')
+                  this.$message.error('修改失败')
                   return false
                 }
               })
             } else {
-              alert('新旧密码必须相同！')
+              this.$message({
+                message: '新密码填写错误！',
+                type: 'warning'
+              })
               return false
             }
           } else {
-            alert('新旧密码不能相同！')
+            this.$message({
+              message: '新旧密码不能相同！',
+              type: 'warning'
+            })
             return false
           }
         } else {
-          alert('新密码不能为空！')
+          this.$message({
+            message: '新密码不能为空！',
+            type: 'warning'
+          })
           return false
         }
       } else {
-        alert('原始密码错误！')
+        this.$message({
+          message: '原始密码错误！',
+          type: 'warning'
+        })
         return false
       }
     },
