@@ -631,7 +631,10 @@ export default {
       console.log(url)
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {
-          alert('修改成功')
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
           let result = null
           let organizaTIONId = organization
           let findData = (data) => {

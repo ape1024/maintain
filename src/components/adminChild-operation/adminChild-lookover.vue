@@ -128,6 +128,7 @@
 
 <script>
 import { fmtDate } from '../../common/js/utils'
+import { getProprietorOrganization } from '../../api/user'
 export default {
   name: 'adminChild-lookover',
   props: ['msg', 'inspection', 'information'],
@@ -166,7 +167,7 @@ export default {
   },
   created () {
     console.log(this.information)
-    this.axios.post(`http://172.16.6.16:8920/organization/getProprietorOrganization`).then((response) => {
+    this.axios.post(getProprietorOrganization()).then((response) => {
       if (response.data.code === 0) {
         this.Organization = (response.data.data)[0].organizationname
       } else {

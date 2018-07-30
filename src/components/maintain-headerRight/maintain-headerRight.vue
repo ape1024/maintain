@@ -68,21 +68,35 @@ export default {
     }
   },
   created () {
-    if (window.localStorage.pattern !== undefined) {
-      this.value = JSON.parse(window.localStorage.pattern)
-    }
     if (window.sessionStorage.token === undefined) {
-      let token = this.$store.state.userToken
-      this.axios.post(findUserProjects(token)).then((response) => {
-        if (response.data.code === 0) {
-          this.options = response.data.data
-        }
-      })
+      console.log('%c Hello World', 'color: red;font-size: 24px;font-weight: bold;text-decoration: underline;')
+      if (this.$store.state.userToken === '') {
+        return false
+      } else {
+        let token = this.$store.state.userToken
+        this.axios.post(findUserProjects(token)).then((response) => {
+          if (response.data.code === 0) {
+            this.options = response.data.data
+            if (window.localStorage.pattern !== undefined) {
+              this.value = JSON.parse(window.localStorage.pattern)
+            } else {
+              this.value = response.data.data[0].projectid
+              window.localStorage.pattern = response.data.data[0].projectid
+            }
+          }
+        })
+      }
     } else {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(findUserProjects(token)).then((response) => {
         if (response.data.code === 0) {
           this.options = response.data.data
+          if (window.localStorage.pattern !== undefined) {
+            this.value = JSON.parse(window.localStorage.pattern)
+          } else {
+            this.value = response.data.data[0].projectid
+            window.localStorage.pattern = response.data.data[0].projectid
+          }
         }
       })
     }
@@ -111,7 +125,7 @@ export default {
     .headerRight_right
       float right
       position relative
-      margin 18px 20px 0 75px
+      margin 18px 20px 0 30px
       .portrait
          float left
          width 55px

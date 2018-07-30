@@ -144,10 +144,6 @@
       <!--查看-->
       <childLookover :examine="examineData" @look="Onlook"></childLookover>
     </section>
-    <!--<section v-if="modifyBoolean" @click.stop class="review">-->
-      <!--&lt;!&ndash;安排&ndash;&gt;-->
-      <!--<childModify v-if="modifyBoolean" :msg="modifyBoolean" @say="Modify"></childModify>-->
-    <!--</section>-->
     <section v-if="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
       <childquipment v-if="quipmentBoolean" :msg="quipmentData" @quipment="Quipment"></childquipment>
@@ -200,8 +196,8 @@ export default {
           message: '请选择区域!',
           type: 'warning'
         })
+        return false
       }
-
       this.axios.post(maintainRepairmaintainRepairfindRepairTasksTwo(projectid, regionModel, this.maintenanceData, this.Auditstatus)).then((response) => {
         if (response.data.code === 0) {
           this.tabulationData = response.data.data
@@ -279,9 +275,9 @@ export default {
         if (response.data.code === 0) {
           console.log(response.data.data)
           this.examineData = response.data.data
+          this.lookoverBoolean = true
         }
       })
-      this.lookoverBoolean = true
     },
     modify () {
       // 点击修改
@@ -290,6 +286,7 @@ export default {
     question (ID, data) {
       // 点击审核
       console.log(data)
+      console.log(maintainRepairfindTaskByTaskid(ID))
       this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
         if (response.data.code === 0) {
           console.log('1')
@@ -370,23 +367,23 @@ export default {
       quipmentData: '',
       maintenance: '',
       maintenanceData: '',
-      JurisdictionSelect: true,
-      JurisdictionInsert: true,
-      JurisdictionDelete: true,
-      JurisdictionApproval: true
+      JurisdictionSelect: '',
+      JurisdictionInsert: '',
+      JurisdictionDelete: '',
+      JurisdictionApproval: ''
     }
   },
   created () {
-    //   权限
-    // let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
-    // Jurisdiction.forEach((val) => {
-    //   if (val.functioncode === 'task_gzwx') {
-    //     this.JurisdictionSelect = val.select
-    //     this.JurisdictionInsert = val.insert
-    //     this.JurisdictionDelete = val.delete
-    //     this.JurisdictionApproval = val.approval
-    //   }
-    // })
+    // 权限
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'task_gzwx') {
+        this.JurisdictionSelect = val.select
+        this.JurisdictionInsert = val.insert
+        this.JurisdictionDelete = val.delete
+        this.JurisdictionApproval = val.approval
+      }
+    })
     //  获取区域
     let projectid = window.localStorage.pattern
     this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {

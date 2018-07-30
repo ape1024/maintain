@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { approvalCheckPlan, getApprovalItems } from '../../api/user'
 export default {
   name: 'arrangedChild-examination',
   props: ['Checkplaniddata'],
@@ -60,7 +61,7 @@ export default {
           type: 'warning'
         })
       } else {
-        this.axios.post(`http://172.16.6.181:8920/plan/approvalCheckPlan?token=${token}&checkPlanId=${checkPlanId}&approvalOpinion=${approvalOpinion}&approvalState=${approvalState}`).then((response) => {
+        this.axios.post(approvalCheckPlan(token, checkPlanId, approvalOpinion, approvalState)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
             this.$emit('closeup', false)
@@ -78,7 +79,7 @@ export default {
   },
   created () {
     //  获取审批状态
-    this.axios.post(`http://172.16.6.181:8920/plan/getApprovalItems`).then((response) => {
+    this.axios.post(getApprovalItems()).then((response) => {
       if (response.data.code === 0) {
         this.approvalState = response.data.data
         console.log(response.data.data)

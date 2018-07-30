@@ -217,8 +217,9 @@
 </template>
 
 <script>
+import { createPlan, maintainArranggetWorkModesByWorkType, getRepairOrgTreeByProjectId, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
 export default {
-  name: 'arrangedChild-lookup',
+  name: 'arrangedChild-newlybuild',
   data () {
     return {
       maintenanceData: '',
@@ -324,8 +325,6 @@ export default {
         return false
       }
       //   workmodes  工作类型
-      console.log('999999999999999999999')
-      console.log(this.Worktype)
       // let worktype = []
       let worktypeData = []
       if (this.Worktype.length !== 0) {
@@ -356,8 +355,6 @@ export default {
       }
       //  选择消防设施
       let newArr = []
-      console.log('11111111111111111')
-      console.log(this.handleCheckData)
       if (this.handleCheckData.length !== 0) {
         this.handleCheckData.forEach((val) => {
           if (val.hierarchy === 2) {
@@ -460,11 +457,10 @@ export default {
         users: users,
         workmodes: worktypeData
       }
-      console.log('111111111111111++++++++++111111111111111111')
-      console.log(worktypeData)
       //  频次
       let checkFrequency = this.frequencyradio
-      this.axios.post(`http://172.16.6.181:8920/plan/createPlan?token=${token}&worktypeid=${worktypeid}&projectid=${projectid}&planName=${planName}&planCode=${planCode}&planDesc=${planDesc}&startDate=${startDate}&endDate=${endDate}&checkFrequency=${checkFrequency}&interval=${interval}&createTaskTime=${createTaskTime}`, param).then((response) => {
+
+      this.axios.post(createPlan(token, worktypeid, projectid, planName, planCode, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime), param).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '创建成功',
@@ -477,13 +473,12 @@ export default {
       })
     },
     lookupchooseChange (data, checked, indeterminate) {
-      console.log(checked.checkedNodes)
       this.lookupchooseData = checked.checkedNodes
     },
     scheduleChange (value) {
-      console.log(value)
       this.frequencyradio = value
-      this.axios.post(`http://172.16.6.181:8920/plan/getWorkModesByWorkType?workType=${value}`).then((response) => {
+
+      this.axios.post(maintainArranggetWorkModesByWorkType(value)).then((response) => {
         if (response.data.code === 0) {
           response.data.data.forEach(val => {
             val.flag = false
@@ -530,21 +525,22 @@ export default {
   },
   created () {
     //  维保单位 this.equipment
-    this.axios.post(`http://172.16.6.181:8920/organization/getRepairOrgTreeByDeviceId?deviceid=12690`).then((response) => {
+    // maintainDailygetRepairOrgTreeByDeviceId
+    let projectid = window.localStorage.pattern
+    this.axios.post(getRepairOrgTreeByProjectId(projectid)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }
     })
-    let projectid = window.localStorage.pattern
     console.log(projectid)
     //  获取巡检范围
-    this.axios.post(`http://172.16.6.181:8920/areas/findAreasTreeByProjectid?projectid=${projectid}`).then((response) => {
+    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
       if (response.data.code === 0) {
         this.purview = response.data.data
       }
     })
     //  获取消防设施
-    this.axios.post(`http://172.16.6.181:8920/dev/findAllDeviceType`).then((response) => {
+    this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
         console.log('122333')
         response.data.data.splice(0, 1)
@@ -571,12 +567,12 @@ export default {
       }
     })
     //  获取计划类型
-    this.axios.post(`http://172.16.6.181:8920/plan/getAllPlanTypes`).then((response) => {
+    this.axios.post(maintainArranggetAllPlanTypes()).then((response) => {
       if (response.data.code === 0) {
         this.schedule = response.data.data
       }
     })
-    this.axios.post(`http://172.16.6.181:8920/plan/getAllCheckFrequency`).then((response) => {
+    this.axios.post(maintainArranggetAllCheckFrequency()).then((response) => {
       if (response.data.code === 0) {
         this.frequency = response.data.data
       }

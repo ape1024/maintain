@@ -208,11 +208,11 @@ export default {
         value: 'organizationId',
         children: 'subOrgnizations'
       },
-      JurisdictionSelect: '',
-      JurisdictionInsert: '',
-      JurisdictionDelete: '',
-      JurisdictionApproval: '',
-      JurisdictionUpdate: ''
+      JurisdictionSelect: true,
+      JurisdictionInsert: true,
+      JurisdictionDelete: true,
+      JurisdictionApproval: true,
+      JurisdictionUpdate: true
     }
   },
   methods: {

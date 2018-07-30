@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import { karaktersFindAllRoles, karaktersSetRoleFunctions, karaktersFindAllFunctions } from '../../api/user'
+import { karaktersFindAllRoles, karaktersSetRoleFunctions, karaktersFindAllFunctions, karaktersFindRoleFunctions } from '../../api/user'
 import increased from '../intercalateChild-operation/karaktersChild-increased'
 export default {
   name: 'intercalateChild-karakters',
@@ -135,8 +135,8 @@ export default {
       fullFunctionality: '',
       // 点击左侧获取其id值
       kayakersId: '',
-      JurisdictionApproval: '',
-      JurisdictionUpdate: ''
+      JurisdictionApproval: true,
+      JurisdictionUpdate: true
     }
   },
   methods: {
@@ -263,7 +263,6 @@ export default {
       }
     },
     systemroleClick (roleid) {
-      //  临时写成10006  记得后续修改
       console.log(this.fullFunctionality)
       this.fullFunctionality.forEach((val) => {
         console.log(val)
@@ -273,8 +272,10 @@ export default {
         val.insert = false
         val.modify = false
       })
+      console.log(this.fullFunctionality)
       this.kayakersId = roleid
-      this.axios.post(karaktersSetRoleFunctions(roleid)).then((response) => {
+      this.axios.post(karaktersFindRoleFunctions(roleid)).then((response) => {
+        console.log(response)
         if (response.data.code === 0) {
           for (let i = 0; i < response.data.data.length; i++) {
             let functionId = response.data.data[i].functionid

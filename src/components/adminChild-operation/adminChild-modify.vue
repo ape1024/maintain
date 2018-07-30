@@ -167,6 +167,7 @@
 <script>
 import $ from 'jquery'
 import { fmtDate } from '../../common/js/utils'
+import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, getCitiesByProvinceId, getCountiesByCityId, findAllDeviceType, managementCreatedProvince } from '../../api/user'
 export default {
   name: 'adminChild-modify',
   props: ['msg', 'modify', 'Examinedataset'],
@@ -277,15 +278,15 @@ export default {
         // manufacturerid = this.customManufacturerDate
         if (devicetypeid.length !== 0) {
           if (this.customManufacturer === true) {
-            this.axios.post(`http://172.16.6.16:8920/dev/AddManufacture?name=${this.customManufacturerDate}&basedeviceid=${devicetypeid}`).then((response) => {
+            this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
               if (response.data.code === 0) {
                 manufacturerid = response.data.data.manufacturerid
                 if (this.versionManufacturer === true) {
-                  this.axios.post(`http://172.16.6.16:8920/dev/AddDivecemodels?manufactureId=${manufacturerid}&baseDeviceId=${Deviceid}&modelName=${this.versionCustom}&para=${this.technicalParameter}`).then((response) => {
+                  this.axios.post(AddDivecemodels(manufacturerid, Deviceid, this.versionCustom, this.technicalParameter)).then((response) => {
                     if (response.data.code === 0) {
                       devicemodel = response.data.data.divecemodelid
                       console.log(devicemodel)
-                      this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
+                      this.axios.post(updateDevice(token, Deviceid, devicetypeid, manufacturerid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
                         if (response.data.code === 0) {
                           this.$message({
                             message: '修改成功',
@@ -304,7 +305,7 @@ export default {
               }
             })
           } else {
-            this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
+            this.axios.post(updateDevice(token, Deviceid, devicetypeid, manufacturerid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
               if (response.data.code === 0) {
                 this.$message({
                   message: '修改成功',
@@ -325,12 +326,15 @@ export default {
       } else {
         manufacturerid = this.manufactorModel
         if (this.versionManufacturer === true) {
-          this.axios.post(`http://172.16.6.16:8920/dev/AddDivecemodels?manufactureId=${manufacturerid}&baseDeviceId=${Deviceid}&modelName=${this.versionCustom}&para=${this.technicalParameter}`).then((response) => {
+          this.axios.post(AddDivecemodels(manufacturerid, Deviceid, this.versionCustom, this.technicalParameter)).then((response) => {
             if (response.data.code === 0) {
               devicemodel = response.data.data.divecemodelid
-              this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
+              this.axios.post(updateDevice(token, Deviceid, devicetypeid, manufacturerid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
                 if (response.data.code === 0) {
-                  alert('修改成功')
+                  this.$message({
+                    message: '修改成功',
+                    type: 'success'
+                  })
                   this.modifyBoolean = this.msg
                   this.modifyBoolean = !this.modifyBoolean
                   this.$emit('say', this.modifyBoolean)
@@ -339,9 +343,12 @@ export default {
             }
           })
         } else {
-          this.axios.post(` http://172.16.6.16:8920/dev/updateDevice?token=${token}&deviceid=${Deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`).then((response) => {
+          this.axios.post(updateDevice(token, Deviceid, devicetypeid, manufacturerid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
             if (response.data.code === 0) {
-              alert('修改成功')
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
               this.modifyBoolean = this.msg
               this.modifyBoolean = !this.modifyBoolean
               this.$emit('say', this.modifyBoolean)
@@ -375,7 +382,8 @@ export default {
         }
       } else {
         region = region[region.length - 1]
-        this.axios.post(`http://172.16.6.16:8920/dev/findManufactures?baseDeviceId=${region}`).then((response) => {
+
+        this.axios.post(maintainReportfindManufactures(region)).then((response) => {
           if (response.data.code === 0) {
             this.manufactor = response.data.data
             this.manufactor.push({
@@ -399,7 +407,8 @@ export default {
         this.versionManufacturer = false
         let region = this.categoryDate
         region = region[region.length - 1]
-        this.axios.post(`http://172.16.6.16:8920/dev/findDivecemodels?baseDeviceId=${region}&manufacturerId=${this.manufactorModel}`).then((response) => {
+
+        this.axios.post(maintainReportfindDivecemodels(region, this.manufactorModel)).then((response) => {
           if (response.data.code === 0) {
             this.version = response.data.data
             this.version.push({
@@ -446,9 +455,7 @@ export default {
           $(item).css('display', 'none')
         })
         $(event.currentTarget).siblings('.regionliUl').slideDown()
-
-        let url = `http://172.16.6.16:8920/organization/getCitiesByProvinceId?provinceid=${provinceid}`
-        this.axios.post(url).then((response) => {
+        this.axios.post(getCitiesByProvinceId(provinceid)).then((response) => {
           if (response.data.code === 0) {
             this.conurbation = response.data.data
           }
@@ -472,8 +479,7 @@ export default {
           $(item).css('display', 'none')
         })
         $(event.currentTarget).siblings('.countUl').slideDown()
-        let url = `http://172.16.6.16:8920/organization/getCountiesByCityId?cityid=${countid}`
-        this.axios.post(url).then((response) => {
+        this.axios.post(getCountiesByCityId(countid)).then((response) => {
           if (response.data.code === 0) {
             this.countytown = response.data.data
           }
@@ -509,13 +515,14 @@ export default {
     }
   },
   created () {
-    this.axios.post('http://172.16.6.16:8920/dev/findAllDeviceType').then((response) => {
+    this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
         this.category = response.data.data
         this.categoryDate = (this.modify).devicetypeArray
         this.manufactorModel = (this.modify).manufacturerid
         let region = this.categoryDate[this.categoryDate.length - 1]
-        this.axios.post(`http://172.16.6.16:8920/dev/findManufactures?baseDeviceId=${region}`).then((data) => {
+
+        this.axios.post(maintainReportfindManufactures(region)).then((data) => {
           if (data.data.code === 0) {
             let arr = data.data.data
             console.log('1')
@@ -528,7 +535,8 @@ export default {
             })
           }
         })
-        this.axios.post(`http://172.16.6.16:8920/dev/findDivecemodels?baseDeviceId=${region}&manufacturerId=${(this.modify).manufacturerid}`).then((response) => {
+
+        this.axios.post(maintainReportfindDivecemodels(region, (this.modify).manufacturerid)).then((response) => {
           if (response.data.code === 0) {
             this.version = response.data.data
             this.version.push({
@@ -546,7 +554,7 @@ export default {
       }
     })
     //  省份
-    this.axios.post(`http://172.16.6.16:8920/organization/getAllProvince`).then((response) => {
+    this.axios.post(managementCreatedProvince()).then((response) => {
       if (response.data.code === 0) {
         this.province = response.data.data
       }

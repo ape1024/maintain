@@ -48,11 +48,11 @@
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">审核人员：</span>
-                    <span>{{examina.approvername}}</span>
+                    <span>{{AuditorsPersonnel}}</span>
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">审核时间：</span>
-                    <span>{{fmtDate(examina.approvaltime)}}</span>
+                    <span>{{(AuditorsTimer)}}</span>
                   </p>
                 </div>
                 <ul class="tlefttopUl">
@@ -63,7 +63,7 @@
                     </div>
                     <div class="tlefttopli__Div">
                       <span class="tlefttopli_Span">审核结论：</span>
-                      <span class="tlefttopli_Spantwo">{{approvalStatus(examina.approvalstate)}}</span>
+                      <span>{{Auditorsstate}}</span>
                     </div>
                   </li>
                   <li class="tlefttopli">
@@ -73,9 +73,10 @@
                     </div>
                     <div class="tlefttopli__Div">
                       <span class="tlefttopli_Span">审核意见：</span>
-                      <span class="tlefttopli_Spantwo">
-                        {{examina.approvalopinion}}
-                      </span>
+                      <!--<span class="tlefttopli_Spantwo">-->
+                        <!--{{examina.approvalopinion}}-->
+                      <!--</span>-->
+                      <span>{{Auditorsopinion}}</span>
                     </div>
                   </li>
                   <li class="tlefttopli">
@@ -429,8 +430,11 @@ export default {
       faulttypeData: '',
       // 故障现象
       faultphenomenon: '',
-      faultphenomenonData: ''
-
+      faultphenomenonData: '',
+      AuditorsPersonnel: '',
+      AuditorsTimer: '',
+      Auditorsstate: '',
+      Auditorsopinion: ''
     }
   },
   methods: {
@@ -515,7 +519,7 @@ export default {
               return false
             }
           } else {
-            this.axios.post(`http://172.16.6.181:8920/repairtasks/getFaultSelectItems`).then((response) => {
+            this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
               if (response.data.code === 0) {
                 this.classificationBoolean = true
                 this.faulttreatment = response.data.data.faulttreatment
@@ -598,6 +602,20 @@ export default {
     }
   },
   created () {
+    if (this.examina !== undefined) {
+      this.AuditorsPersonnel = this.examina.approvername
+      this.AuditorsTimer = fmtDate(this.examina.approvaltime)
+      console.log(this.examina.approvaltime)
+      this.Auditorsstate = this.examina.approvalstate
+      this.Auditorsopinion = this.examina.approvalopinion
+    }
+    function fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = `0` + (date.getMonth() + 1)
+      let d = `0` + date.getDate()
+      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    }
     // beforephotos  上面的现场照片
     if (this.examine.beforephotos === null) {
       this.srcData = []
@@ -611,7 +629,6 @@ export default {
         this.approvaloptions = response.data.data
       }
     })
-
     this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
         if (response.data.data.length !== 0) {
@@ -940,21 +957,20 @@ export default {
     width 50%
   .ficationEnsconceLitwoSpan
     float left
-    margin 0 15px
+    margin 0 15px 0
     line-height 40px
     color #999
   .ficationEnsconceLitwoSpantwo
     float left
     color #fff
     width 460px
-    padding: 10px 0;
+    padding 10px 0
     word-break break-all
     word-wrap break-word
   .ficationEnsconceLitwoSpanThree
     float left
     color #fff
     width 1030px
-    padding 10px 0
     word-break break-all
     word-wrap break-word
   .tlefttopli__Div

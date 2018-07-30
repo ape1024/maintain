@@ -144,7 +144,7 @@
 </template>
 
 <script>
-import { modifytheUser } from '../../api/user'
+import { modifytheUser, getRolesList, getJobList, getOrganizationTrees } from '../../api/user'
 export default {
   name: 'consumerChild-changeinfo',
   props: ['communication'],
@@ -264,7 +264,7 @@ export default {
     // this.userstate.push(this.communication.roleid)
     let token = JSON.parse(window.sessionStorage.token)
     //  用户角色
-    this.axios.post(`http://172.16.6.181:8920/users/getRolesList?token=${token}`).then((response) => {
+    this.axios.post(getRolesList(token)).then((response) => {
       if (response.data.code === 0) {
         this.roleSelect = response.data.data
         console.log('=-===')
@@ -276,13 +276,13 @@ export default {
       }
     })
     //  获取职务
-    this.axios.post(`http://172.16.6.181:8920/users/getJobList`).then((response) => {
+    this.axios.post(getJobList()).then((response) => {
       if (response.data.code === 0) {
         this.businesspost = response.data.data
       }
     })
     //  获取组织结构
-    this.axios.post(`http://172.16.6.181:8920/organization/getOrganizationTrees?token=${token}`).then((response) => {
+    this.axios.post(getOrganizationTrees(token)).then((response) => {
       if (response.data.code === 0) {
         this.organize = (response.data.data)
       }

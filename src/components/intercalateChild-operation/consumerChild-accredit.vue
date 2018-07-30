@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { setUserRoles, getRolesList, getUserRoles } from '../../api/user'
 export default {
   name: 'consumerChild-accredit',
   props: ['userid'],
@@ -36,7 +37,8 @@ export default {
         }
       })
       console.log()
-      this.axios.post(`http://172.16.6.181:8920/users/setUserRoles?userid=${this.userid}`, roles).then((response) => {
+
+      this.axios.post(setUserRoles(this.userid), roles).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '设置成功',
@@ -51,41 +53,30 @@ export default {
     }
   },
   created () {
+    console.log(window.sessionStorage)
     let token = JSON.parse(window.sessionStorage.token)
     console.log(token)
     console.log('+-+')
-    let getUserRoles = []
-    this.axios.post(`http://172.16.6.181:8920/users/getRolesList?token=${token}`).then((response) => {
-      console.log(response)
+    let getUserRolesData = []
+
+    this.axios.post(getRolesList(token)).then((response) => {
       if (response.data.code === 0) {
-        console.log('++++++')
-        console.log(response)
         response.data.data.forEach((val) => {
           val.flag = false
         })
         this.sectionLi = response.data.data
-        console.log('啦啦啦')
-        console.log(this.sectionLi)
-        this.axios.post(`http://172.16.6.181:8920/users/getUserRoles?userid=${this.userid}`).then((response) => {
-          console.log('000')
-          console.log(this.userid)
-          console.log(response.data)
+        this.axios.post(getUserRoles(this.userid)).then((response) => {
           if (response.data.length !== 0) {
-            console.log('11')
             response.data.forEach((val) => {
-              console.log(val)
-              getUserRoles.push(val.roleid)
+              getUserRolesData.push(val.roleid)
             })
-            console.log(getUserRoles)
-            for (let i = 0; i < getUserRoles.length; i++) {
+            for (let i = 0; i < getUserRolesData.length; i++) {
               this.sectionLi.forEach((val) => {
-                if (val.roleid === getUserRoles[i]) {
+                if (val.roleid === getUserRolesData[i]) {
                   val.flag = true
                 }
               })
             }
-            console.log('-----------------------------------')
-            console.log(getUserRoles)
           } else {
             return false
           }

@@ -97,7 +97,7 @@
 
 <script>
 import maintaintwo from '../maintainChild-two/maintainChild-two'
-import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData } from '../../api/user'
+import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat } from '../../api/user'
 
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
@@ -109,6 +109,7 @@ export default {
   },
   methods: {
     query () {
+      console.log(this.equipmentDate)
       let flag = false
       this.tableDatataskStat.forEach((val) => {
         if (val.flag === true) {
@@ -122,8 +123,9 @@ export default {
         let clickId = this.click_id
         let areaid = this.regionModel.length !== 0 ? this.regionModel[this.this.regionModel.length - 1] : ''
         let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        basedevicecode = basedevicecode === null ? '' : basedevicecode
         let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
-        console.log(clickId)
+        console.log(maintainDailygetCurrentTaskDeviceData(clickId, areaid, basedevicecode, approvalstates))
         this.axios.post(maintainDailygetCurrentTaskDeviceData(clickId, areaid, basedevicecode, approvalstates)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
@@ -146,7 +148,8 @@ export default {
         let itemAreaid = item.taskID
         this.click_id = itemAreaid
         console.log(itemAreaid)
-        this.axios.post(`http://172.16.6.181:8920/task/getCurrentTaskDeviceStat?taskid=${itemAreaid}`).then((response) => {
+
+        this.axios.post(maintainDailygetCurrentTaskDeviceStat(itemAreaid)).then((response) => {
           if (response.data.code === 0) {
             console.log(this.dailyChild)
             this.dailyChild = response.data.data

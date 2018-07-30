@@ -27,7 +27,7 @@
 
 <script>
 import $ from 'jquery'
-import { userLogin } from '../../api/user'
+import { userLogin, getUserFuncions } from '../../api/user'
 export default {
   name: 'login',
   components: {},
@@ -107,7 +107,7 @@ export default {
                   this.$store.state.usericon = usericon
                   this.$store.state.username = username
                   let newToken = JSON.parse(token)
-                  this.axios.post(`http://172.16.6.181:8920/users/getUserFuncions?token=${newToken}`).then((data) => {
+                  this.axios.post(getUserFuncions(newToken)).then((data) => {
                     data.data.forEach((val) => {
                       let approval = ''
                       let deleteData = ''
@@ -163,11 +163,14 @@ export default {
               }
             }
           } else {
-            alert('请求失败，请刷新，重新输入！')
+            this.$message.error('请求失败，请刷新，重新输入！')
           }
         })
       } else {
-        alert('请先拖动验证')
+        this.$message({
+          message: '请先拖动验证',
+          type: 'warning'
+        })
       }
     }
   },

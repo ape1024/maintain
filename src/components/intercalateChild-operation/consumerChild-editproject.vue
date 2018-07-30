@@ -250,6 +250,7 @@
 
 <script>
 import $ from 'jquery'
+import { getProjectDevices, getProjectAreas, increasefindAllDevType, findAllAreaTrees, increasegetWorkTypes, getProprietorOrganization, getRootOrganizationsNotProprietor, managementCreatedProvince, getCountiesByCityId, getCitiesByProvinceId, createOrUpdateProject } from '../../api/user'
 export default {
   name: 'consumerChild-editproject',
   props: ['edit', 'project'],
@@ -384,7 +385,10 @@ export default {
     },
     conserve () {
       if (this.projectName === '' || this.startdate === '' || this.proprieTor === '' || this.projectCode === '' || this.endDate === '' || this.proprietornameDate === '' || this.projectDate.length === 0 || this.buildscope === '' || this.firecontrolda === '') {
-        alert('您的信息没有填写完整')
+        this.$message({
+          message: '您的信息没有填写完整',
+          type: 'warning'
+        })
         return false
       } else {
         let token = window.JSON.parse(window.sessionStorage.token)
@@ -429,9 +433,12 @@ export default {
           },
           'worktypes': worktypes
         }
-        this.axios.post(`http://172.16.6.181:8920/projects/createOrUpdateProject?token=${token}`, pr).then((response) => {
+        this.axios.post(createOrUpdateProject(token), pr).then((response) => {
           if (response.data.code === 0) {
-            alert('修改成功！')
+            this.$message({
+              message: '修改成功！',
+              type: 'success'
+            })
             this.$emit('editt', this.Thispage)
           }
         })
@@ -460,8 +467,7 @@ export default {
           $(item).css('display', 'none')
         })
         $(event.currentTarget).siblings('.regionliUl').slideDown()
-        let url = `http://172.16.6.16:8920/organization/getCitiesByProvinceId?provinceid=${provinceid}`
-        this.axios.post(url).then((response) => {
+        this.axios.post(getCitiesByProvinceId(provinceid)).then((response) => {
           if (response.data.code === 0) {
             this.conurbation = response.data.data
           }
@@ -485,8 +491,7 @@ export default {
           $(item).css('display', 'none')
         })
         $(event.currentTarget).siblings('.countUl').slideDown()
-        let url = `http://172.16.6.16:8920/organization/getCountiesByCityId?cityid=${countid}`
-        this.axios.post(url).then((response) => {
+        this.axios.post(getCountiesByCityId(countid)).then((response) => {
           if (response.data.code === 0) {
             this.countytown = response.data.data
           }
@@ -528,7 +533,7 @@ export default {
   },
   created () {
     //  获取项目设备
-    this.axios.post(`http://172.16.6.181:8920/projects/getProjectDevices?projectid=${this.project.projectid}`).then((response) => {
+    this.axios.post(getProjectDevices(this.project.projectid)).then((response) => {
       if (response.data.code === 0) {
         let data = response.data.data
         data.forEach((val) => {
@@ -537,7 +542,8 @@ export default {
       }
     })
     //  获取范围 默认值
-    this.axios.post(`http://172.16.6.181:8920/projects/getProjectAreas?projectid=${this.project.projectid}`).then((response) => {
+
+    this.axios.post(getProjectAreas(this.project.projectid)).then((response) => {
       if (response.data.code === 0) {
         let data = response.data.data
         data.forEach((val) => {
@@ -546,32 +552,32 @@ export default {
       }
     })
 
-    this.axios.post(`http://172.16.6.181:8920/projects/findAllDevType`).then((response) => {
+    this.axios.post(increasefindAllDevType()).then((response) => {
       this.firecontrol = response.data
     })
-    this.axios.post(`http://172.16.6.16:8920/areas/findAllAreaTrees`).then((response) => {
+    this.axios.post(findAllAreaTrees()).then((response) => {
       if (response.data.code === 0) {
         this.purview = response.data.data[0]
       }
     })
-    this.axios.post(`http://172.16.6.16:8920/projects/getWorkTypes`).then((response) => {
+    this.axios.post(increasegetWorkTypes()).then((response) => {
       if (response.data.code === 0) {
         this.projectType = response.data.data
       }
     })
     //  服务机构
-    this.axios.post(`http://172.16.6.16:8920/organization/getRootOrganizationsNotProprietor`).then((response) => {
+    this.axios.post(getRootOrganizationsNotProprietor()).then((response) => {
       if (response.data.code === 0) {
         this.proprietorName = response.data.data
       }
     })
     //  获取业主单位
-    this.axios.post(`http://172.16.6.16:8920/organization/getProprietorOrganization`).then((response) => {
+    this.axios.post(getProprietorOrganization()).then((response) => {
       if (response.data.code === 0) {
         this.proprieTorDate = response.data.data
       }
     })
-    this.axios.post(`http://172.16.6.16:8920/organization/getAllProvince`).then((response) => {
+    this.axios.post(managementCreatedProvince()).then((response) => {
       if (response.data.code === 0) {
         this.province = response.data.data
       }

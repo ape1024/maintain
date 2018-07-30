@@ -12,6 +12,8 @@ export default {
     let pattern = window.localStorage.pattern
     this.axios.post(maintainHomeInspection(pattern)).then((response) => {
       if (response.data.code === 0) {
+        console.log('=-====')
+        console.log(response)
         let nameData = []
         let stateData = ['未开始', '问题', '错误', '完好']
         let seriesData = []

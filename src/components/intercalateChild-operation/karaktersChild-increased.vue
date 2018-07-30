@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { increasedCreaterole } from '../../api/user'
+import { increasedCreaterole, karaktersFindAllFunctions, getRoleOrganizations } from '../../api/user'
 export default {
   name: 'karaktersChild-increased',
   props: ['increaSed'],
@@ -236,7 +236,7 @@ export default {
   created () {
     let token = JSON.parse(window.sessionStorage.token)
     console.log(token)
-    this.axios.post(`http://172.16.6.181:8920/roles/FindAllFunctions?token=${token}`).then((response) => {
+    this.axios.post(karaktersFindAllFunctions(token)).then((response) => {
       console.log(response)
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
@@ -264,7 +264,7 @@ export default {
         this.fullFunctionality = response.data.data
       }
     })
-    this.axios.post(`http://172.16.6.181:8920/organization/getRoleOrganizations?token=${token}`).then((response) => {
+    this.axios.post(getRoleOrganizations(token)).then((response) => {
       if (response.data.code === 0) {
         console.log(response.data.data)
         this.organizationData = response.data.data

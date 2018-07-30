@@ -33,11 +33,11 @@
               <div class="tlefttopHeader">
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">检查时间：</span>
-                  <span>2018.09.11</span>
+                  <span>{{examine.createtime}}</span>
                 </p>
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">检查人员：</span>
-                  <span>张三李四</span>
+                  <span>{{examine.creatername}}</span>
                 </p>
               </div>
               <ul class="tlefttopUl">
@@ -56,7 +56,9 @@
                 <li class="tlefttopli">
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">现场照片：</span>
-                    <span>111</span>
+                    <span>
+                      <img class="ficationEnsconceLitwoSpanThreeImg" :key="index" v-for="(data, index) in examine.beforephotos" :src="data" alt="">
+                    </span>
                   </p>
                 </li>
               </ul>
@@ -66,16 +68,16 @@
                 <li class="tlefttoprightLi">
                   <p class="tlefttoprightliP">
                     <span class="tlefttoprightliSpan">安排人员：</span>
-                    <span>123</span>
+                    <span>{{examine.creatername}}</span>
                   </p>
                   <p class="tlefttoprightliP">
                     <span class="tlefttoprightliSpan">安排时间：</span>
-                    <span>123</span>
+                    <span >{{fmtDate(examine.createtime)}}</span>
                   </p>
                 </li>
                 <li class="tlefttoprightLi">
                   <span class="tlefttoprightliSpan">处理意见：</span>
-                  <span>123</span>
+                  <span class="tlefttoprightLiSpans">{{examine.creater}}</span>
                 </li>
               </ul>
             </div>
@@ -85,30 +87,32 @@
               <div class="tlefttopHeader">
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">处理时间：</span>
-                  <span>2018.09.11</span>
+                  <span>{{fmtDate(examine.repairtime)}}</span>
                 </p>
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">检查人员：</span>
-                  <span>张三李四</span>
+                  <span>{{examine.repairpersonname}}</span>
                 </p>
               </div>
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
                   <span class="tlefttopHeaderSpan">问题原因：</span>
-                  <span>111</span>
+                  <span>{{examine.reason}}</span>
                 </li>
                 <li class="tlefttopli">
                   <span class="tlefttopHeaderSpan">处理情况：</span>
-                  <span>111</span>
+                  <span>{{examine.treatment}}</span>
                 </li>
                 <li class="tlefttopli">
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">处理结果：</span>
-                    <span>111</span>
+                    <span>{{examine.repairstate}}</span>
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">现场照片：</span>
-                    <span>111</span>
+                    <span>
+                      <img :key="index" v-for="(data, index) in examine.afterphotos" :src="data" alt="">
+                    </span>
                   </p>
                 </li>
               </ul>
@@ -118,16 +122,16 @@
                 <li class="tlefttoprightLi">
                   <p class="tlefttoprightliP">
                     <span class="tlefttoprightliSpan">审核人员：</span>
-                    <span>123</span>
+                    <span>{{AuditorsPersonnel}}</span>
                   </p>
                   <p class="tlefttoprightliP">
                     <span class="tlefttoprightliSpan">审核时间：</span>
-                    <span>123</span>
+                    <span>{{AuditorsTimer}}</span>
                   </p>
                 </li>
                 <li class="tlefttoprightLi">
                   <span class="tlefttoprightliSpan">审核结论：</span>
-                  <span>123</span>
+                  <span>{{Auditorsstate}}</span>
                 </li>
               </ul>
             </div>
@@ -147,29 +151,22 @@
 </template>
 
 <script>
+import { maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos } from '../../api/user'
 export default {
   name: 'repair-lookover',
   props: ['examine'],
   data () {
     return {
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
+      options: [],
       thisPage: false,
-      value: ''
+      value: '',
+      reworkData: '',
+      ficationBoolean: false,
+      getApprovalInfos: '',
+      AuditorsPersonnel: '',
+      AuditorsTimer: '',
+      Auditorsstate: '',
+      Auditorsopinion: ''
     }
   },
   methods: {
@@ -178,10 +175,47 @@ export default {
     },
     closedown () {
       this.$emit('look', this.thisPage)
+    },
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = `0` + (date.getMonth() + 1)
+      let d = `0` + date.getDate()
+      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     }
   },
   created () {
-    console.log(this.examine)
+    function fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = `0` + (date.getMonth() + 1)
+      let d = `0` + date.getDate()
+      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    }
+    console.log(maintainRepairfindReworksByTaskid(this.examine.repairtaskid))
+    this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {
+      if (response.data.code === 0) {
+        if (response.data.data.length !== 0) {
+          response.data.data.forEach((val) => {
+            val.flag = false
+          })
+          this.reworkData = response.data.data
+        } else {
+          this.ficationBoolean = true
+        }
+      }
+    })
+    this.axios.post(maintainRepairgetApprovalInfos(this.examine.repairtaskid)).then((response) => {
+      if (response.data.code === 0) {
+        this.getApprovalInfos = response.data.data
+        if (this.getApprovalInfos !== undefined) {
+          this.AuditorsPersonnel = this.getApprovalInfos.approvername
+          this.AuditorsTimer = this.getApprovalInfos.approvaltime === undefined ? '' : fmtDate(this.getApprovalInfos.approvaltime)
+          this.Auditorsstate = this.getApprovalInfos.approvalstate
+          this.Auditorsopinion = this.getApprovalInfos.approvalopinion
+        }
+      }
+    })
   }
 }
 </script>
@@ -350,4 +384,11 @@ export default {
         .closedown
           closedown()
           display inline-block
+  .tlefttoprightLiSpans
+    color #fff
+  .ficationEnsconceLitwoSpanThreeImg
+    display inline-block
+    margin-right 20px
+    width 40px
+    height 40px
 </style>
