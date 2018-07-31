@@ -8,7 +8,7 @@
               登 录 名
             </p>
             <div class="headerDiv">
-              <el-input v-model="Username" placeholder=""  clearable>></el-input>
+              <el-input size="mini" v-model="Username" placeholder=""  clearable>></el-input>
             </div>
           </li>
           <li class="headerLi">
@@ -17,6 +17,7 @@
             </p>
             <div class="headerDiv">
               <el-cascader
+                size="mini"
                 :options="options"
                 :props="selectedProps"
                 change-on-select
@@ -29,7 +30,7 @@
               角 色
             </p>
             <div class="headerDiv">
-              <el-input v-model="role" placeholder=""  clearable>></el-input>
+              <el-input size="mini" v-model="role" placeholder=""  clearable>></el-input>
             </div>
           </li>
           <li class="headerLi">
@@ -37,7 +38,7 @@
               手 机
             </p>
             <div class="headerDiv">
-              <el-input v-model="Handphone" placeholder="" clearable>></el-input>
+              <el-input size="mini" v-model="Handphone" placeholder="" clearable>></el-input>
             </div>
           </li>
         </ul>
@@ -520,8 +521,6 @@ export default {
   .uploaderAvatar
     font-size $font-size-small-s
     color #555555
-    .el-cascader
-      width  100%
   .avatar-uploader
     float left
     height 100px
@@ -542,10 +541,4 @@ export default {
     width 100px
     height 100px
     display block
-
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
-    height 30px
-    line-height 30px
 </style>

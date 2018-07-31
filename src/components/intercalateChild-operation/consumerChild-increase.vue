@@ -30,7 +30,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-select v-model="proprieTor" placeholder="请选择">
+                <el-select size="mini" v-model="proprieTor" placeholder="请选择">
                   <el-option
                     v-for="item in proprieTorDate"
                     :key="item.organizationid"
@@ -781,8 +781,6 @@ export default {
     display inline-block
     width 50px
     height 50px
-  .el-date-editor.el-input, .el-date-editor.el-input__inner
-    width 100%!important
   .purviewUl
     overflow hidden
     position relative

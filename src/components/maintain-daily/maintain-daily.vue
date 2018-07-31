@@ -6,6 +6,7 @@
           <p class="div_p">区 域：</p>
           <div class="div_input">
               <el-cascader
+                size="mini"
                 :options="regionDate"
                 v-model="regionModel"
                 :props="regionProps"
@@ -17,6 +18,7 @@
           <p class="div_p">设备类型</p>
           <div class="div_input">
             <el-cascader
+              size="mini"
               v-model="equipmentDate"
               :options="equipment"
               :props="equipmentProps"
@@ -26,7 +28,7 @@
         <li class="li_input">
           <p class="div_p">审核状态：</p>
           <div class="div_inputTwo">
-            <el-select v-model="Auditstatus" multiple placeholder="">
+            <el-select size="small" v-model="Auditstatus" multiple placeholder="">
               <el-option
                 v-for="item in AuditstatusDate"
                 :key="item.value"

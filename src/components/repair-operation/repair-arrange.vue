@@ -73,6 +73,7 @@
           <p class="informationLeftP">异常情况</p>
           <div class="informationLeftDiv">
             <el-input
+              size="mini"
               type="textarea"
               :rows="3"
               resize="none"
@@ -83,6 +84,7 @@
           <p class="informationLeftP">处理意见</p>
           <div class="informationLeftDiv">
             <el-input
+              size="mini"
               type="textarea"
               :rows="3"
               resize="none"

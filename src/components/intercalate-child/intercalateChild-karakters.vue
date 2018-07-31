@@ -2,7 +2,7 @@
   <div class="subject">
     <section class="subjectLeft">
       <header class="leftHeader">
-        <img class="subjectImg" src="../../../static/img/department.png" alt="">
+        <img class="subjectImg" src="../../common/img/department.png" alt="">
         <p class="subjectP">角色管理</p>
       </header>
       <div class="leftBottom">

@@ -6,6 +6,7 @@
           <p class="div_p">区 域：</p>
           <div class="div_input">
             <el-cascader
+              size="mini"
               :options="regionDate"
               v-model="regionModel"
               :props="regionProps"
@@ -16,7 +17,7 @@
         <li class="li_input">
           <p class="div_p">维修状态：</p>
           <div class="div_input">
-            <el-select v-model="maintenanceData" placeholder="">
+            <el-select size="mini" v-model="maintenanceData" placeholder="">
               <el-option
                 v-for="item in maintenance"
                 :key="item.value"
@@ -29,7 +30,7 @@
         <li class="li_input">
           <p class="div_p">审批状态：</p>
           <div class="div_input">
-            <el-select v-model="Auditstatus" placeholder="">
+            <el-select size="mini" v-model="Auditstatus" placeholder="">
               <el-option
                 v-for="item in AuditstatusDate"
                 :key="item.value"
@@ -185,9 +186,6 @@ export default {
     query () {
       let regionModel = ''
       let projectid = window.localStorage.pattern
-      console.log(this.regionModel)
-      console.log(this.maintenanceData)
-      console.log(this.Auditstatus)
       if (this.regionModel.length !== 0) {
         regionModel = this.regionModel[this.regionModel.length - 1]
       } else {
@@ -205,8 +203,6 @@ export default {
       })
     },
     Newly (ev) {
-      console.log('dadadad123')
-      console.log(ev)
       this.examineBoolean = false
 
       this.axios.post(maintainRepairfindTaskByTaskid(ev.repairtaskid)).then((response) => {
@@ -218,7 +214,6 @@ export default {
     },
     selectStyle (item, index, tableData) {
       // 点击一级出现二级
-      console.log(event)
       event.cancelBubble = true
       this.tableData.forEach(function (item) {
         if (index !== item.index) {
@@ -253,7 +248,6 @@ export default {
         type: 'warning'
       }).then(() => {
         this.axios.post(maintainRepairremoveRepairtasks(repairtaskid)).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             content.splice([index], 1)
             this.$message({
@@ -273,7 +267,6 @@ export default {
       // 点击查看
       this.axios.post(maintainRepairfindTaskByTaskid(id)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response.data.data)
           this.examineData = response.data.data
           this.lookoverBoolean = true
         }
@@ -285,27 +278,19 @@ export default {
     },
     question (ID, data) {
       // 点击审核
-      console.log(data)
-      console.log(maintainRepairfindTaskByTaskid(ID))
       this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
         if (response.data.code === 0) {
-          console.log('1')
           this.examineData = response.data.data
           this.axios.post(maintainRepairfindReworksByTaskid(ID)).then((response) => {
             if (response.data.code === 0) {
-              console.log('2')
               this.reworkData = response.data.data
               this.axios.post(maintainRepairgetApprovalInfos(ID)).then((response) => {
                 if (response.data.code === 0) {
-                  console.log(response)
-                  console.log('3')
                   // 审批记录  目前 只要第一条,待定
                   this.examination = response.data.data[0]
-                  console.log(this.examination)
                   //  获取维修任务状态
                   this.axios.post(maintainRepairgetRepairStates()).then((response) => {
                     if (response.data.code === 0) {
-                      console.log('4')
                       this.taskState = response.data.data
                       this.examineBoolean = true
                     }
@@ -367,10 +352,10 @@ export default {
       quipmentData: '',
       maintenance: '',
       maintenanceData: '',
-      JurisdictionSelect: '',
-      JurisdictionInsert: '',
-      JurisdictionDelete: '',
-      JurisdictionApproval: ''
+      JurisdictionSelect: true,
+      JurisdictionInsert: true,
+      JurisdictionDelete: true,
+      JurisdictionApproval: true
     }
   },
   created () {
@@ -666,8 +651,4 @@ export default {
     position relative
     overflow hidden
 
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
-    height 30px
 </style>

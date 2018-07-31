@@ -51,7 +51,7 @@
             <div class="contentLiDiv">
               <p class="contentLiDivP">设备类别：</p>
               <div class="contentLiDivR">
-                <el-select v-model="value" placeholder="请选择">
+                <el-select size="mini" v-model="value" placeholder="请选择">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -64,7 +64,7 @@
             <div class="contentLiDiv">
               <p class="contentLiDivP">生产厂家：</p>
               <div class="contentLiDivR">
-                <el-select v-model="value" placeholder="">
+                <el-select size="mini" v-model="value" placeholder="">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -77,13 +77,13 @@
             <div class="contentLiDiv">
               <p class="contentLiDivP">规格型号：</p>
               <div class="contentLiDivR">
-                <el-input v-model="input" placeholder=""></el-input>
+                <el-input size="mini" v-model="input" placeholder=""></el-input>
               </div>
             </div>
             <div class="contentLiDiv">
               <p class="contentLiDivP">报警回路：</p>
               <div class="contentLiDivR">
-                <el-input v-model="input" placeholder=""></el-input>
+                <el-input size="mini" v-model="input" placeholder=""></el-input>
               </div>
             </div>
           </li>
@@ -102,6 +102,7 @@
               <p class="contentLiDivP">技术参数：</p>
               <div class="contentLiDivR">
                 <el-input
+                  size="mini"
                   type="textarea"
                   :rows="2"
                   resize="none"
@@ -114,6 +115,7 @@
               <p class="contentLiDivP">备注说明：</p>
               <div class="contentLiDivR">
                 <el-input
+                  size="mini"
                   type="textarea"
                   :rows="2"
                   resize="none"
@@ -265,10 +267,6 @@ export default {
       .contentLiDivR
          float left
          width 260px
-  .el-select
-     display block
-  .el-date-editor.el-input, .el-date-editor.el-input__inner
-     width 260px
   .fastener
      init()
      text-align center
@@ -278,9 +276,4 @@ export default {
       margin-right 110px
     .closedown
       closedown()
-</style>
-<style>
-  .el-input__icon{
-    line-height:30px!important;
-  }
 </style>

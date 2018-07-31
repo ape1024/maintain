@@ -302,8 +302,3 @@ export default {
      z-index 11
      overflow hidden
 </style>
-<style>
-  .el-date-editor.el-input, .el-date-editor.el-input__inner{
-    width:100%;
-  }
-</style>

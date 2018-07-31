@@ -88,7 +88,7 @@
                     <span class="tlefttopHeaderSpan">处理状态：</span>
                   </p>
                   <div>
-                    <el-select v-model="processingsdisplay" placeholder="请选择">
+                    <el-select size="mini" v-model="processingsdisplay" placeholder="请选择">
                       <el-option
                         v-for="item in processingstate"
                         :key="item.value"
@@ -103,7 +103,7 @@
                     <span class="tlefttopHeaderSpan">确认状态：</span>
                   </p>
                   <div>
-                    <el-select v-model="Confirmationsdisplay" placeholder="请选择">
+                    <el-select size="mini" v-model="Confirmationsdisplay" placeholder="请选择">
                       <el-option
                         v-for="item in Confirmationstate"
                         :key="item.value"

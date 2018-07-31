@@ -1,11 +1,11 @@
 <template>
-  <div class="subject">
+  <div :style="{ background: 'url(static/img/weblogin.png) no-repeat top' }" class="subject">
     <div class="subjectDiv">
       <div class="content">
-        <el-input v-model="account" placeholder="请输入账号"></el-input>
+        <el-input size="mini" v-model="account" placeholder="请输入账号"></el-input>
       </div>
       <div class="content">
-        <el-input type="password" v-model="password" placeholder="请输入密码"></el-input>
+        <el-input size="mini" type="password" v-model="password" placeholder="请输入密码"></el-input>
       </div>
       <div class="content">
         <div class="drag">
@@ -47,7 +47,7 @@ export default {
       //  用户信息
       userInformation: {},
       //  默认的图片src
-      defaultSrc: '../../../static/img/login.png',
+      defaultSrc: 'static/img/login.png',
       //  距离屏幕左端距离
       beginClientX: 0,
       //  触发拖动状态  判断
@@ -85,7 +85,6 @@ export default {
         let pstDate = userLogin(account, password)
         this.axios.post(pstDate).then((response) => {
           let data = response.data
-          console.log(response)
           if (data.code === 0) {
             if (data.data.code === -1) {
               alert('账号错误，请重新登录！')
@@ -149,13 +148,10 @@ export default {
                       }
                       this.authority.push(obj)
                     })
-                    console.log(this.authority)
                     let authority = JSON.stringify(this.authority)
                     window.sessionStorage.setItem('Jurisdiction', authority)
                   })
-                  let dom = e.target
-                  $(dom).css('background', 'url("../../../static/img/login-click.png") no-repeat')
-                  console.log(response)
+                  // let dom = e.target
                   this.$router.push('/loginBlank')
                 } else {
                   this.$message.error('登录失败')
@@ -225,7 +221,6 @@ export default {
     width 100%
     height 100%
     overflow hidden
-    background url("../../../static/img/weblogin.png") no-repeat top
     background-size cover
     .subjectP
       font-size 30px
@@ -241,7 +236,7 @@ export default {
        bottom 35%
        right 6%
        width 374px
-       padding 48px 62px 28px
+       padding 48px 62px 20px
        border-radius 5px
        background #fff
        overflow hidden
@@ -287,20 +282,24 @@ export default {
     -ms-user-select none
   .fastener
     init()
+    padding 10px 0
     text-align center
     .fastenerDiv
        display inline-block
        position relative
        cursor pointer
-       background url("../../../static/img/login.png") no-repeat
+       background #5497c2
        background-size cover
        font-size $font-size-medium-x
        color $color-text
-       width 201px
+       width 160px
        transition .2s
-       line-height 78px
-       height 78px
+       line-height 46px
+       border-radius 5px
+       height 46px
+       -moz-box-shadow 0 0 8px #5497C2
+       -webkit-box-shadow 0 0 8 #5497C2
+       box-shadow 0 0 8px #5497C2
        &:hover
-         background url("../../../static/img/login-hover.png") no-repeat
-         background-size cover
+         background #5da7d6
 </style>

@@ -9,7 +9,7 @@
           <li class="informationLi">
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="input" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目名称：
@@ -29,7 +29,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="input" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 业主单位：
@@ -39,7 +39,7 @@
           <li class="informationLitwo">
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="input" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目编号：
@@ -59,7 +59,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="input" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 服务机构：
@@ -69,7 +69,7 @@
           <li class="informationLitwo">
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="input" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目类别：
@@ -77,7 +77,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="input" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="input" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 创建人员：
@@ -340,6 +340,4 @@ export default {
         margin-right 110px
       .closedown
         closedown()
-  .el-date-editor.el-input, .el-date-editor.el-input__inner
-    width 100%!important
 </style>

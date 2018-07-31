@@ -5,10 +5,11 @@
           维护管理系统
         </h4>
         <div class="headerRight_bottom">
-          <img class="project" src="../../../static/img/project.png" alt="">
+          <img class="project" src="../../common/img/project.png" alt="">
           <div class="headerRight">
-            <el-select v-model="value"  @change="patternSwitch">
+            <el-select size="mini" v-model="value"  @change="patternSwitch">
               <el-option
+
                 v-for="item in options"
                 :key="item.projectid"
                 :label="item.projectname"
@@ -29,7 +30,7 @@
            {{username}}
          </p>
          <div @click="signout" class="userBottom">
-           <img class="userBottomImg" src="../../../static/img/secede.png" alt="">
+           <img class="userBottomImg" src="../../common/img/secede.png" alt="">
            <span>安全退出</span>
          </div>
        </div>
@@ -159,14 +160,4 @@ export default {
                display inline-block
                margin-top -2px
                vertical-align middle
-  .el-input--suffix .el-input__inner
-      background transparent
-      height 30px
-      border none
-      line-height 30px
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
-      height 30px
-      line-height 30px
 </style>

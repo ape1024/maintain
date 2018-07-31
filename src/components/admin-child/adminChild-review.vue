@@ -18,6 +18,7 @@
                 <p class="modify_li_p">设施类别：</p>
                 <div class="modify_li_div">
                   <el-cascader
+                    size="mini"
                     :options="category"
                     :props="equipmentProps"
                     v-model="categoryDate"
@@ -28,7 +29,7 @@
               <div class="modify_liDivthree">
                 <p class="modify_li_p">生产厂家：</p>
                 <div class="modify_li_div">
-                  <el-select @focus="focus" @change="manufacturerChange" v-model="manufactorModel" placeholder="">
+                  <el-select size="mini" @focus="focus" @change="manufacturerChange" v-model="manufactorModel" placeholder="">
                     <el-option
                       v-for="item in manufactor"
                       :key="item.manufacturerid"
@@ -38,13 +39,13 @@
                   </el-select>
                 </div>
                 <div class="modify_lidivRight">
-                  <el-input v-show="customManufacturer" v-model="customManufacturerDate" placeholder="请输入厂家"></el-input>
+                  <el-input size="mini" v-show="customManufacturer" v-model="customManufacturerDate" placeholder="请输入厂家"></el-input>
                 </div>
               </div>
               <div class="modify_liDivthree">
                 <p class="modify_li_p">规格型号：</p>
                 <div class="modify_li_div">
-                  <el-select @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
+                  <el-select size="mini" @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
                     <el-option
                       v-for="item in version"
                       :key="item.divecemodelid"
@@ -54,7 +55,7 @@
                   </el-select>
                 </div>
                 <div class="modify_lidivRight">
-                  <el-input v-show="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
+                  <el-input size="mini" v-show="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
                 </div>
               </div>
               <div class="modify_liDivthree">
@@ -63,6 +64,7 @@
                 </p>
                 <div class="modify_li_divthree">
                   <el-input
+                    size="mini"
                     type="textarea"
                     :rows="2"
                     resize="none"
@@ -77,6 +79,7 @@
                 <p class="modify_li_p">生产日期：</p>
                 <div class="modify_li_divtwo">
                   <el-date-picker
+                    size="mini"
                     v-model="productionValue1"
                     type="date"
                     value-format="yyyy-MM-dd"
@@ -90,6 +93,7 @@
                 </p>
                 <div class="modify_li_divtwo">
                   <el-date-picker
+                    size="mini"
                     v-model="validity"
                     value-format="yyyy-MM-dd"
                     type="date"
@@ -103,6 +107,7 @@
                 </p>
                 <div class="modify_li_divthree">
                   <el-input
+                    size="mini"
                     type="textarea"
                     :rows="2"
                     resize="none"
@@ -151,13 +156,13 @@
                 </div>
               </div>
               <div class="specific">
-                <el-input v-model="specific" placeholder="请输入详细地址"></el-input>
+                <el-input size="mini" v-model="specific" placeholder="请输入详细地址"></el-input>
               </div>
             </div>
             <div class="left_list">
               <p class="left_list_p">地址编码:</p>
               <div class="encrypt">
-                <el-input v-model="encoded" placeholder="请输入内容"></el-input>
+                <el-input size="mini" v-model="encoded" placeholder="请输入内容"></el-input>
               </div>
             </div>
           </li>
@@ -165,7 +170,7 @@
             <div class="left_list">
               <p class="left_list_p">设施数量:</p>
               <div class="left_list_div">
-                <el-input v-model="quantum" placeholder=""></el-input>
+                <el-input size="mini" v-model="quantum" placeholder=""></el-input>
               </div>
             </div>
           </li>
@@ -335,9 +340,7 @@ export default {
         return false
       } else {
         this.versionManufacturer = false
-        console.log(data)
         let result = this.version.find(val => val.divecemodelid === data)
-        console.log(result.parameters)
         this.technicalParameter = result.parameters
         return false
       }
@@ -1082,8 +1085,6 @@ export default {
     overflow hidden
     position relative
     margin-bottom 17px
-  .el-cascader
-     line-height 30px
   .upload
     display inline-block
     width 100px

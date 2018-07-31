@@ -15,6 +15,7 @@
               <p class="modify_li_p">设施类别：</p>
               <div class="modify_li_div">
                    <el-cascader
+                     size="mini"
                      :options="category"
                      :props="equipmentProps"
                      v-model="categoryDate"
@@ -25,7 +26,7 @@
             <div class="modify_liDiv">
               <p class="modify_li_p">生产厂家：</p>
               <div class="modify_li_div">
-                <el-select @focus="focus" @change="manufacturerChange" v-model="manufactorModel" placeholder="">
+                <el-select size="mini" @focus="focus" @change="manufacturerChange" v-model="manufactorModel" placeholder="">
                   <el-option
                     v-for="item in manufactor"
                     :key="item.manufacturerid"
@@ -41,7 +42,7 @@
             <div class="modify_liDiv">
               <p class="modify_li_p">规格型号：</p>
               <div class="modify_li_div">
-                <el-select @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
+                <el-select size="mini" @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
                   <el-option
                     v-for="item in version"
                     :key="item.divecemodelid"

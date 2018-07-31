@@ -11,6 +11,7 @@
           </p>
           <div class="cryptogramRight">
             <el-input
+              size="mini"
               placeholder=""
               type="password"
               @blur="cryptogramBlur(barbarism)"
@@ -29,6 +30,7 @@
           </p>
           <div class="cryptogramRight">
             <el-input
+              size="mini"
               placeholder=""
               type="password"
               v-model="newcode"
@@ -42,6 +44,7 @@
           </p>
           <div class="cryptogramRight">
             <el-input
+              size="mini"
               placeholder=""
               type="password"
               v-model="duplicate"
@@ -304,9 +307,4 @@ export default {
     height: 178px;
     display: block;
   }
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
-    height 30px
-    line-height 30px
 </style>

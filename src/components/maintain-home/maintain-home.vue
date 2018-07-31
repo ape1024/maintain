@@ -1,6 +1,6 @@
 <template>
   <div class="population">
-    <div class="population_left">
+    <div :style="{ background: 'url(static/img/population_left.png) no-repeat' }" class="population_left">
       <h4 class="popu_h4">
         区域视图
       </h4>
@@ -21,7 +21,7 @@
       <div class="middle_top">
         <floor-plans></floor-plans>
       </div>
-      <div class="middle_bottom">
+      <div :style="{ background: 'url(static/img/middle_bottom.png) no-repeat' }" class="middle_bottom">
         <h4 class="popu_h4">
           日巡查总览
         </h4>
@@ -37,7 +37,7 @@
         </div>
       </div>
     </div>
-    <div class="population_right">
+    <div :style="{ background: 'url(static/img/population_right.png) no-repeat'}" class="population_right">
       <section class="right_top">
         <div :key="index" v-for="(item, index) in integrityRate" class="right_title">
           <h4 class="right_h4">
@@ -165,7 +165,6 @@ export default {
         height 858px
         overflow hidden
         margin 0 12px 0 16px
-        background url("../../../static/img/population_left.png") no-repeat
         background-size cover
     .popu_h4
       margin  8px 8px 26px
@@ -218,8 +217,6 @@ export default {
       height 319px
       display inline-block
       position relative
-      background url("../../../static/img/middle_bottom.png") no-repeat
-      background-size cover
   .middle_bottom_div
     width 100%
     overflow hidden
@@ -235,7 +232,6 @@ export default {
     margin-left 12px
     width 300px
     height 858px
-    background url("../../../static/img/population_right.png") no-repeat
     background-size cover
     margin-right 16px
    .progress_bar

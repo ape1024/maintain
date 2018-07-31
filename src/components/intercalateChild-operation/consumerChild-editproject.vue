@@ -9,7 +9,7 @@
           <li class="informationLi">
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目名称：
@@ -47,7 +47,7 @@
           <li class="informationLitwo">
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="projectCode" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="projectCode" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目编号：
@@ -186,6 +186,7 @@
         </header>
         <div class="purviewDivtwo">
           <el-input
+            size="mini"
             type="textarea"
             :rows="3"
             resize="none"
@@ -201,6 +202,7 @@
         </header>
         <div class="purviewDivtwo">
           <el-input
+            size="mini"
             type="textarea"
             :rows="3"
             resize="none"
@@ -216,6 +218,7 @@
         </header>
         <div class="purviewDivtwo">
           <el-input
+            size="mini"
             type="textarea"
             :rows="3"
             resize="none"
@@ -803,8 +806,6 @@ export default {
     display inline-block
     width 50px
     height 50px
-  .el-date-editor.el-input, .el-date-editor.el-input__inner
-    width 100%!important
   .purviewUl
     overflow hidden
     position relative
@@ -860,14 +861,4 @@ export default {
             .countLi
               padding 10px 0
               text-indent 5em
-  .el-select
-    width  100%
-  .el-input__icon
-    line-height 30px
-
-</style>
-<style>
-  .el-input__icon {
-    line-height: 30px;
-  }
 </style>

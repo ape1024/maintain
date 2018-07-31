@@ -2,7 +2,7 @@
     <div class="subject">
       <section class="subjectLeft">
         <header class="leftHeader">
-          <img class="subjectImg" src="../../../static/img/department.png" alt="">
+          <img class="subjectImg" src="../../common/img/department.png" alt="">
           <p class="subjectP">维护组织信息信息</p>
         </header>
         <div class="leftBottom">
@@ -40,7 +40,7 @@
       </section>
       <section class="subjectRight">
         <header class="rightHeader">
-          <img class="subjectImg" src="../../../static/img/department.png" alt="">
+          <img class="subjectImg" src="../../common/img/department.png" alt="">
           <p class="subjectP">维护组织信息信息</p>
         </header>
         <div class="rightDiv">
@@ -54,10 +54,10 @@
              <ul class="superinduceUl">
                <li class="superinduceLi" v-bind:key=key v-for="(amoutItem, key) in amoutItem">
                  <div class="superinduceLiDiv">
-                   <el-input v-model="amoutItem.input" placeholder=""></el-input>
+                   <el-input size="mini" v-model="amoutItem.input" placeholder=""></el-input>
                  </div>
                  <div class="addto" v-if="amoutItem.judge" @click="superinduce(amoutItem)">
-                   <img src="../../../static/img/superinduce.png" alt="">
+                   <img src="../../common/img/superinduce.png" alt="">
                  </div>
                </li>
              </ul>
@@ -384,7 +384,4 @@ export default {
     color $color-text
   .el-button--text
     color $color-border-b-fault
-</style>
-<style scoped lang="stylus" rel="stylesheet/stylus">
-
 </style>

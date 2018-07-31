@@ -33,24 +33,24 @@
               <div class="tlefttopHeader">
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">检查时间：</span>
-                  <span>{{examine.createtime}}</span>
+                  <span>{{fmtDate(inspectUp.checktime)}}</span>
                 </p>
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">检查人员：</span>
-                  <span>{{examine.creatername}}</span>
+                  <span>{{inspectUp.checkpersonname}}</span>
                 </p>
               </div>
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">检查项目：</span>
-                    <span>111</span>
+                    <span class="tlefttoprightLiSpans">{{inspectUp.conclusion}}</span>
                   </p>
                 </li>
                 <li class="tlefttopli">
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">检查记录：</span>
-                    <span>111</span>
+                    <span class="tlefttoprightLiSpans">{{inspectUp.workitem}}</span>
                   </p>
                 </li>
                 <li class="tlefttopli">
@@ -97,16 +97,16 @@
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
                   <span class="tlefttopHeaderSpan">问题原因：</span>
-                  <span>{{examine.reason}}</span>
+                  <span class="tlefttoprightLiSpans">{{examine.reason}}</span>
                 </li>
                 <li class="tlefttopli">
                   <span class="tlefttopHeaderSpan">处理情况：</span>
-                  <span>{{examine.treatment}}</span>
+                  <span class="tlefttoprightLiSpans">{{examine.treatment}}</span>
                 </li>
                 <li class="tlefttopli">
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">处理结果：</span>
-                    <span>{{examine.repairstate}}</span>
+                    <span class="tlefttoprightLiSpans">{{examine.repairstate}}</span>
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">现场照片：</span>
@@ -166,7 +166,8 @@ export default {
       AuditorsPersonnel: '',
       AuditorsTimer: '',
       Auditorsstate: '',
-      Auditorsopinion: ''
+      Auditorsopinion: '',
+      inspectUp: ''
     }
   },
   methods: {
@@ -214,6 +215,12 @@ export default {
           this.Auditorsstate = this.getApprovalInfos.approvalstate
           this.Auditorsopinion = this.getApprovalInfos.approvalopinion
         }
+      }
+    })
+    this.axios.post(`http://172.16.6.181:8920/repairtasks/getCheckTaskByRepairTaskId?repairtaskid=${this.examine.repairtaskid}`).then((response) => {
+      console.log(response)
+      if (response.data.code === 0) {
+        this.inspectUp = response.data.data
       }
     })
   }

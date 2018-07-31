@@ -65,7 +65,7 @@
               <div class="sectionbottomRightDiv">
                 <span class="sectionTopliSpanSeven">任务类型:</span>
                 <span class="sectionTopliSpansix">
-                    <el-select @change="scheduleChange" v-model="scheduleData" placeholder="请选择">
+                    <el-select size="mini" @change="scheduleChange" v-model="scheduleData" placeholder="请选择">
                       <el-option
                         v-for="item in schedule"
                         :key="item.worktypeid"

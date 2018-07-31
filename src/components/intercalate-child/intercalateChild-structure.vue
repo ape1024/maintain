@@ -2,7 +2,7 @@
     <div @click="shutdown" class="subject">
       <section class="subjectLeft">
         <header class="leftHeader">
-          <img class="subjectImg" src="../../../static/img/department.png" alt="">
+          <img class="subjectImg" src="../../common/img/department.png" alt="">
           <p class="subjectP">结构组织权限管理</p>
           <p v-if="JurisdictionApproval" @click="subjectpCreate" class="subjectptwo">新增</p>
         </header>
@@ -23,6 +23,7 @@
                 </p>
                 <div class="companyContent">
                   <el-cascader
+                    size="mini"
                     :options="data"
                     :props="defaultProps"
                     change-on-select
@@ -38,7 +39,7 @@
                   单位简称：
                 </p>
                 <div class="content">
-                  <el-input v-model="abbreviation" placeholder=""  clearable>></el-input>
+                  <el-input size="mini" v-model="abbreviation" placeholder=""  clearable>></el-input>
                 </div>
               </div>
               <div class="informationDivtwo">
@@ -46,7 +47,7 @@
                   单位编码：
                 </p>
                 <div class="content">
-                  <el-input v-model="encrypt" placeholder=""  clearable>></el-input>
+                  <el-input size="mini" v-model="encrypt" placeholder=""  clearable>></el-input>
                 </div>
               </div>
             </li>
@@ -82,7 +83,7 @@
                   所在地址：
                 </p>
                 <div class="content">
-                  <el-input v-model="address" placeholder=""  clearable>></el-input>
+                  <el-input size="mini" v-model="address" placeholder=""  clearable>></el-input>
                 </div>
               </div>
             </li>
@@ -94,6 +95,7 @@
                 </p>
                 <div class="content">
                   <el-cascader
+                    size="mini"
                     :options="business"
                     :props="categoryProps"
                     v-model="businessOptions"
@@ -106,7 +108,7 @@
                   业务类别：
                 </p>
                 <div class="content">
-                  <el-select v-model="businessCategoryData" placeholder="请选择">
+                  <el-select size="mini" v-model="businessCategoryData" placeholder="请选择">
                     <el-option
                       v-for="item in businessCategory"
                       :key="item.industrycategoryid"
@@ -121,7 +123,7 @@
               <div class="informationDiv">
                 <p class="informationP">消防监管机构:</p>
                 <div class="content">
-                  <el-select v-model="superVisionData" placeholder="请选择">
+                  <el-select size="mini" v-model="superVisionData" placeholder="请选择">
                     <el-option
                       v-for="item in supervision"
                       :key="item.firebrigadeid"
@@ -134,7 +136,7 @@
               <div class="informationDivtwo">
                 <p class="informationP">消防单位类别</p>
                 <div class="content">
-                  <el-select v-model="categoryfireFightingData" placeholder="请选择">
+                  <el-select size="mini" v-model="categoryfireFightingData" placeholder="请选择">
                     <el-option
                       v-for="item in categoryfireFighting"
                       :key="item.firecontrolcategoryid"
@@ -153,6 +155,7 @@
                 </p>
                 <div class="content">
                   <el-cascader
+                    size="mini"
                     :options="category"
                     :props="categoryProps"
                     v-model="selectedOptions"
@@ -165,7 +168,7 @@
                   资质编号：
                 </p>
                 <div class="content">
-                  <el-input v-model="identifier" placeholder=""  clearable>></el-input>
+                  <el-input size="mini" v-model="identifier" placeholder=""  clearable>></el-input>
                 </div>
               </div>
             </li>
@@ -176,7 +179,7 @@
                   单位联系人：
                 </p>
                 <div class="content">
-                  <el-input v-model="linkman" placeholder=""  clearable>></el-input>
+                  <el-input size="mini" v-model="linkman" placeholder=""  clearable>></el-input>
                 </div>
               </div>
               <div class="informationDivtwo">
@@ -184,7 +187,7 @@
                   联系人手机：
                 </p>
                 <div class="content">
-                  <el-input v-model="CellPhone" placeholder=""  clearable>></el-input>
+                  <el-input size="mini" v-model="CellPhone" placeholder=""  clearable>></el-input>
                 </div>
               </div>
             </li>
@@ -195,7 +198,7 @@
                   组织类别：
                 </p>
                 <div class="content">
-                  <el-select @change="organizationCategory" v-model="regimentaValue" placeholder="请选择">
+                  <el-select size="mini" @change="organizationCategory" v-model="regimentaValue" placeholder="请选择">
                     <el-option
                       v-for="item in regimentation"
                       :key="item.value"
@@ -210,7 +213,7 @@
                   组织机构名称：
                 </p>
                 <div class="content">
-                  <el-input v-model="organization" placeholder=""  clearable>></el-input>
+                  <el-input size="mini" v-model="organization" placeholder=""  clearable>></el-input>
                 </div>
               </div>
             </li>
@@ -241,6 +244,7 @@
                 </p>
                 <div class="contentthree">
                   <el-input
+                    size="mini"
                     type="textarea"
                     :rows="3"
                     placeholder=""
@@ -681,7 +685,7 @@ export default {
         //  上级主管单位
         this.selectedOptions.push(21)
         //  所在地址
-        this.address = urlDate.address
+        this.address = urlDate.pcc
         //  备注信息
         this.textarea = urlDate.memo
         //  资格编号
@@ -705,7 +709,7 @@ export default {
         //  联系人
         this.linkman = urlData.creatername
         //   图标
-        this.filelistDate = urlData.icon
+        this.imageUrl = urlData.icon
         console.log(urlData)
         this.companyDate.push(urlData.organizationcode)
         //   所在区域
@@ -1176,10 +1180,6 @@ export default {
    false left
    overflow hidden
    width 770px
- .el-cascader
-    width 100%
-  .el-select
-    width 100%
   .leftBottomDiv
     init()
     line-height 28px
@@ -1203,7 +1203,4 @@ export default {
     width 100px
     height 100px
     display block
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
-  @import "~common/stylus/variable"
 </style>

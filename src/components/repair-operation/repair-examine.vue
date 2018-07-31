@@ -105,12 +105,13 @@
                   </div>
                   <div class="verificationLithreeDivtwo">
                     <span>审核意见：</span>
-                    <span class="differingOpinion"><el-input v-model="approvalOpinionInput" placeholder="请输入内容"></el-input></span>
+                    <span class="differingOpinion"><el-input size="mini" v-model="approvalOpinionInput" placeholder="请输入内容"></el-input></span>
                   </div>
                   <div class="verificationLithreeDiv">
                     <span class="verificationLithreeDiv_Spantwo">返工时间:</span>
                     <span class="verificationLithreeDiv_Span">
                       <el-date-picker
+                        size="mini"
                         v-model="waatitime"
                         value-format="yyyy-MM-dd"
                         type="date"
@@ -148,7 +149,7 @@
                       <el-radio v-model="radio" label="2">
                         其他意见
                         <div class="inputDiv">
-                          <el-input v-model="Otheropinions" placeholder="请输入内容"></el-input>
+                          <el-input size="mini" v-model="Otheropinions" placeholder="请输入内容"></el-input>
                         </div>
                       </el-radio>
                     </p>
@@ -602,12 +603,15 @@ export default {
     }
   },
   created () {
+    console.log('---------')
+    console.log('---------')
     if (this.examina !== undefined) {
       this.AuditorsPersonnel = this.examina.approvername
       this.AuditorsTimer = fmtDate(this.examina.approvaltime)
       console.log(this.examina.approvaltime)
       this.Auditorsstate = this.examina.approvalstate
       this.Auditorsopinion = this.examina.approvalopinion
+    } else {
     }
     function fmtDate (obj) {
       let date = new Date(obj)

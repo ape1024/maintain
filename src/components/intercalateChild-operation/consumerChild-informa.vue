@@ -14,7 +14,7 @@
                 登 录 名：
               </p>
               <div class="subjectRigh">
-                <el-select v-model="value" placeholder="请选择">
+                <el-select size="mini" v-model="value" placeholder="请选择">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -53,7 +53,7 @@
                 用户角色：
               </p>
               <div class="subjectRigh">
-                <el-select v-model="value" placeholder="">
+                <el-select size="mini" v-model="value" placeholder="">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -98,7 +98,7 @@
                 所属组织：
               </p>
               <div class="subjectRigh">
-                <el-select v-model="value" placeholder="请选择">
+                <el-select size="mini" v-model="value" placeholder="请选择">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -113,7 +113,7 @@
               工作职务：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="value" placeholder="请选择">
+              <el-select size="mini" v-model="value" placeholder="请选择">
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -362,8 +362,6 @@ export default {
   .subjectRight
      float right
      overflow hidden
-  .el-select
-     width 100%
   .uploaderAvatar
      font-size $font-size-small-s
      color #555555
@@ -390,9 +388,4 @@ export default {
     height: 178px;
     display: block;
   }
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
-    height 30px
-    line-height 30px
 </style>

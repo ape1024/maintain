@@ -8,6 +8,7 @@
               <p class="div_p">区 域：</p>
               <div class="div_input">
                 <el-cascader
+                  size="mini"
                   :options="regionDate"
                   v-model="regionModel"
                   :props="regionProps"
@@ -19,6 +20,7 @@
               <p class="div_p">设备类型：</p>
               <div class="div_input">
                 <el-cascader
+                  size="mini"
                   v-model="equipmentDate"
                   :options="equipment"
                   :props="equipmentProps"
@@ -29,7 +31,7 @@
             <li class="li_input">
               <p class="div_p">厂家：</p>
               <div class="div_input">
-                <el-select @focus="focus" v-model="manufactorModel" placeholder="">
+                <el-select @focus="focus" size="mini" v-model="manufactorModel" placeholder="">
                   <el-option
                     v-for="item in manufactor"
                     :key="item.manufacturerid"
@@ -42,7 +44,7 @@
             <li class="li_input">
               <p class="div_p">运行状态：</p>
               <div class="div_input">
-                <el-select v-model="runningState" placeholder="">
+                <el-select v-model="runningState" size="mini" placeholder="">
                   <el-option
                     v-for="item in runningstateDate"
                     :key="item.value"
@@ -55,7 +57,7 @@
             <li class="li_input">
               <p class="div_p">审核状态：</p>
               <div class="div_input">
-                <el-select v-model="Auditstatus" placeholder="">
+                <el-select v-model="Auditstatus" size="mini" placeholder="">
                   <el-option
                     v-for="item in AuditstatusDate"
                     :key="item.value"
@@ -533,8 +535,4 @@ export default {
   margin 12px 12px 0
 .el-main
   padding 10px
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
-      height 30px
 </style>

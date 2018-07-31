@@ -12,6 +12,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 :disabled="true"
                 placeholder=""
                 v-model="exaMineCodo.usercode"
@@ -25,6 +26,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 :disabled="true"
                 placeholder=""
                 v-model="exaMineCodo.username"
@@ -262,8 +264,6 @@ export default {
   .subjectRight
     float right
     overflow hidden
-  .el-select
-    width 100%
   .uploaderAvatar
     font-size $font-size-small-s
     color #555555
@@ -290,9 +290,4 @@ export default {
     height: 178px;
     display: block;
   }
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
-    height 30px
-    line-height 30px
 </style>

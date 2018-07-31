@@ -9,13 +9,13 @@
           <div class="headerLeft">
             <p class="headerP">角色名称：</p>
             <div class="headerDiv">
-              <el-input v-model="designation" placeholder="请输入角色名称"></el-input>
+              <el-input size="mini" v-model="designation" placeholder="请输入角色名称"></el-input>
             </div>
           </div>
           <div class="headerLeft">
             <p class="headerP">组织机构：</p>
             <div class="headerDiv">
-              <el-select v-model="organization" placeholder="请选择">
+              <el-select size="mini" v-model="organization" placeholder="请选择">
                 <el-option
                   v-for="item in organizationData"
                   :key="item.organizationid"

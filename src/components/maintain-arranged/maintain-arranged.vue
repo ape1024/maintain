@@ -487,7 +487,3 @@ export default {
   .repair_lithree p
     cursor pointer
 </style>
-<style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
-    height 30px
-</style>

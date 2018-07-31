@@ -392,6 +392,4 @@ export default {
       color #fff
       cursor pointer
       margin-left 20px
-  .el-date-editor.el-input, .el-date-editor.el-input__inner
-    width 100%!important
 </style>

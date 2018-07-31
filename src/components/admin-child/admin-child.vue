@@ -141,14 +141,10 @@ export default {
   methods: {
     amputate ($index, content, deviceid) {
       // 删除
-      console.log($index)
-      console.log(content)
-      console.log(deviceid)
       this.$confirm('此操作将删除该内容, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         callback: action => {
-          console.log(action)
           if (action === 'confirm') {
             content.splice([$index], 1)
             this.axios.post(admindelDevice(deviceid)).then((response) => {
@@ -193,7 +189,6 @@ export default {
     },
     modify (dataset, deviceId) {
       // 点击修改
-      console.log(dataset.areaid)
       this.datasetAreaid = dataset.areaid
       this.modifyBoolean = true
       this.axios.post(adminfindDeviceDetail(deviceId)).then((response) => {
@@ -218,7 +213,6 @@ export default {
 
       this.axios.post(admingetDevListDetailProjects(this.datasetAreaid)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response.data.data)
           this.tabChild = response.data.data
         }
       })
@@ -259,7 +253,6 @@ export default {
     }
   },
   created () {
-    console.log(this.tabChild)
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'device') {

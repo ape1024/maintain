@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div :style="{ background: 'url(static/img/back.png) no-repeat' }" id="app">
    <div  class="macrocosm">
-     <header class="header">
+     <header class="header" :style="{ background: 'url(static/img/header.png) no-repeat' }">
        <div class="header_left">
          <ul class="ul_router">
            <router-link to="/home">
@@ -115,7 +115,6 @@ export default {
    position relative
    width 100%
    height 100%
-   background url("../static/img/back.png") no-repeat
    background-size cover
  .debarkation
    position fixed
@@ -129,7 +128,6 @@ export default {
      width 100%
      overflow hidden
      position relative
-     background url("/static/img/header.png") no-repeat
      background-size cover
     .header_left
           overflow hidden
@@ -167,57 +165,57 @@ export default {
     margin-bottom 12px
     min-height 857px
   .headerHome
-    headerRouter("../static/img/home.png")
+    headerRouter("./common/img/home.png")
   .headerAdmin
-    headerRouter("../static/img/admin.png")
+    headerRouter("./common/img/admin.png")
    .headerDaily
-     headerRouter("../static/img/daily.png")
+     headerRouter("./common/img/daily.png")
    .headerInspect
-     headerRouter("../static/img/inspect.png")
+     headerRouter("./common/img/inspect.png")
    .headerMaintain
-     headerRouter("../static/img/maintain.png")
+     headerRouter("./common/img/maintain.png")
    .headerRepair
-     headerRouter("../static/img/repair.png")
+     headerRouter("./common/img/repair.png")
    .headerArchives
-     headerRouter("../static/img/archives.png")
+     headerRouter("./common/img/archives.png")
    .headerReport
-     headerRouter("../static/img/report.png")
+     headerRouter("./common/img/report.png")
    .headerIntercalate
-     headerRouter("../static/img/intercalate.png")
+     headerRouter("./common/img/intercalate.png")
    .headerArranged
-     headerRouter("../static/img/headerArrangedtwo.png")
+     headerRouter("./common/img/headerArrangedtwo.png")
   .router-link-active li
     background rgba(255,255,255,.1)
     color $color-text
     border-bottom 4px solid #5ea8d7
  .router-link-active .headerHome
-   background url("../static/img/home_select.png") no-repeat
+   background url("./common/img/home_select.png") no-repeat
    background-size cover
  .router-link-active .headerAdmin
-   background url("../static/img/admin_select.png") no-repeat
+   background url("./common/img/admin_select.png") no-repeat
    background-size cover
  .router-link-active .headerDaily
-   background url("../static/img/daily_select.png") no-repeat
+   background url("./common/img/daily_select.png") no-repeat
    background-size cover
  .router-link-active .headerInspect
-   background url("../static/img/inspect_select.png") no-repeat
+   background url("./common/img/inspect_select.png") no-repeat
    background-size cover
  .router-link-active .headerMaintain
-   background url("../static/img/maintain_select.png") no-repeat
+   background url("./common/img/maintain_select.png") no-repeat
    background-size cover
  .router-link-active .headerRepair
-   background url("../static/img/repair_select.png") no-repeat
+   background url("./common/img/repair_select.png") no-repeat
    background-size cover
  .router-link-active .headerArchives
-   background url("../static/img/archives_select.png") no-repeat
+   background url("./common/img/archives_select.png") no-repeat
    background-size cover
  .router-link-active .headerReport
-   background url("../static/img/report_select.png") no-repeat
+   background url("./common/img/report_select.png") no-repeat
    background-size cover
  .router-link-active .headerIntercalate
-   background url("../static/img/intercalate_select.png") no-repeat
+   background url("./common/img/intercalate_select.png") no-repeat
    background-size cover
  .router-link-active .headerArranged
-   background url("../static/img/headerArranged.png") no-repeat
+   background url("./common/img/headerArranged.png") no-repeat
    background-size cover
 </style>

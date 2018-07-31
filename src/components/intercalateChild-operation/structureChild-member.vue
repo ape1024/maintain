@@ -7,7 +7,7 @@
         <div class="content">
           <div class="contentLeft">
             <div class="leftHeader">
-              <img class="HeaderImg" src="../../../static/img/department.png" alt="">
+              <img class="HeaderImg" src="../../common/img/department.png" alt="">
               部门结构
             </div>
             <div class="leftBottom">
@@ -16,7 +16,7 @@
           </div>
           <div class="contentRight">
             <div class="leftHeader">
-              <img class="HeaderImg" src="../../../static/img/department.png" alt="">
+              <img class="HeaderImg" src="../../common/img/department.png" alt="">
               部门结构
             </div>
             <div class="rightBottom">

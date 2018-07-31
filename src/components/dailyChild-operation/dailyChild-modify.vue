@@ -23,7 +23,7 @@
                 计划状态：
               </p>
               <div class="contentLeftDivthree">
-                <el-select v-model="value" placeholder="请选择">
+                <el-select size="mini" v-model="value" placeholder="请选择">
                   <el-option
                     v-for="item in options"
                     :key="item.value"

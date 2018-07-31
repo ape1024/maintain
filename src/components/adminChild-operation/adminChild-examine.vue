@@ -88,7 +88,7 @@
           <div class="situation_div">
             <p class="lookover_p">审核意见：</p>
             <div class="lookoverDiv">
-              <el-select v-model="view.value" placeholder="请选择">
+              <el-select size="mini" v-model="view.value" placeholder="请选择">
                 <el-option
                   v-for="item in view.child"
                   :key="item.value"

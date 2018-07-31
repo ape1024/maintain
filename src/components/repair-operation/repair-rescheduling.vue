@@ -19,6 +19,7 @@
             </p>
             <div class="situationdivRight">
               <el-input
+                size="mini"
                 type="textarea"
                 :rows="4"
                 resize="none"
@@ -33,6 +34,7 @@
             </p>
             <div class="situationdivRight">
               <el-input
+                size="mini"
                 type="textarea"
                 :rows="4"
                 resize="none"

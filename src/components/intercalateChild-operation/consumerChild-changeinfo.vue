@@ -47,7 +47,7 @@
               用户角色：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="userstate" multiple placeholder="请选择">
+              <el-select size="mini" v-model="userstate" multiple placeholder="请选择">
                 <el-option
                   v-for="item in roleSelect"
                   :key="item.roleid"
@@ -91,6 +91,7 @@
             </p>
             <div class="subjectRigh">
               <el-cascader
+                size="mini"
                 :options="organize"
                 :show-all-levels="false"
                 :props="defaultProps"
@@ -105,7 +106,7 @@
               工作职务：
             </p>
             <div class="subjectRigh">
-              <el-select v-model="businesspostCode" placeholder="请选择">
+              <el-select size="mini" v-model="businesspostCode" placeholder="请选择">
                 <el-option
                   v-for="item in businesspost"
                   :key="item.value"
@@ -382,8 +383,6 @@ export default {
   .subjectRight
     float right
     overflow hidden
-  .el-select
-    width 100%
   .uploaderAvatar
     font-size $font-size-small-s
     color #555555
@@ -410,8 +409,6 @@ export default {
     height: 40px;
     display: block;
   }
-  .el-cascader
-     width  100%
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -440,9 +437,4 @@ export default {
     height 100px
     display block
 
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
-  .el-input__inner
-    height 30px
-    line-height 30px
 </style>

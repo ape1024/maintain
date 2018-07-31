@@ -278,13 +278,3 @@ export default {
     left 0
     top 0
 </style>
-<style>
-  .el-input--suffix .el-input__inner {
-    height:30px;
-    line-height:30px;
-  }
-  .el-input__inner{
-    height:30px!important;
-    line-height:30px!important;
-  }
-</style>
