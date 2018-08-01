@@ -52,7 +52,7 @@
               {{item.plandesc}}
             </li>
             <li class="repair_lithree">
-              <p @click.stop="question(item.checkplanid)" class="header_p_eight threelevel_litwo_p">
+              <p @click.stop="question(item.checkplanid, item)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
               <p @click.stop="examine(item.checkplanid)" class="header_p_ten">修改</p>
@@ -129,7 +129,7 @@ export default {
         })
       })
     },
-    question (checkplanid) {
+    question (checkplanid, data) {
       this.itemCheckplanid = checkplanid
       this.examinaBoolean = true
     },

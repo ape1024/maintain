@@ -222,20 +222,19 @@ export default {
       //  获取邮箱
       let email = this.Useremail !== null ? this.Useremail : ''
       //  获取电话
-      let tel = this.pheneInput
+      let tel = this.pheneInput !== null ? this.pheneInput : ''
       //  用户最后登录时间
-      //  有点问题
       let userstate = []
       //  获取职位
-      let job = this.businesspostCode
+      let job = this.businesspostCode !== null ? this.businesspostCode : ''
       //  获取备注
-      let memo = this.textarea
+      let memo = this.textarea !== null ? this.textarea : ''
       //  角色信息
       let roleids = this.userstate.length !== 0 ? this.userstate : []
       console.log(roleids)
-
       //  获取上传图片
       let file = this.imageUrlTwo !== null ? this.imageUrlTwo : ''
+
       let url = modifytheUser(userid, organizationid, username, email, tel, userstate, job, memo, roleids, file)
       console.log(url)
       this.axios.post(url).then((response) => {
@@ -258,15 +257,17 @@ export default {
     }
   },
   created () {
-    if (this.communication.roleid !== '') {
-      this.organizeOptions = this.communication.roleid.split(';')
-      console.log('-+-')
-      console.log(this.communication.roleid.split(';'))
-      console.log(this.organizeOptions)
+    if (this.communication.allorgid.length !== 0) {
+      this.organizeOptions = this.communication.allorgid
+      this.communication.allorgid.forEach((val) => {
+        this.organizeOptions.push(`${val}`)
+      })
+      // console.log(this.communication.allorgid.split(';'))
+      console.log('----+++++')
+      console.log(this.communication)
     }
     this.businesspostCode = this.communication.job
-    this.organizeOptions.push(this.communication)
-    console.log(this.organizeOptions)
+    // this.organizeOptions.push(this.communication)
     let roleid = this.communication.roleid.split(';')
     // this.userstate = roleid
     roleid.forEach((val) => {

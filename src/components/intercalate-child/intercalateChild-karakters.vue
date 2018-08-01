@@ -66,7 +66,6 @@
                    <li class="definitionHeaderlitwo">
                      <el-checkbox @change="definitionExamine(item, item.delete,3)" v-model="item.delete"></el-checkbox>
                    </li>
-
                    <li class="definitionHeaderlitwo">
                      <el-checkbox @change="definitionExamine(item, item.insert,4)" v-model="item.insert"></el-checkbox>
                    </li>
@@ -206,11 +205,13 @@ export default {
           })
         }
       } else if (number === 4) {
+        console.log('===4')
         if (flag === true) {
           data.second.forEach((val) => {
             val.insertBoolean = true
           })
         } else {
+          console.log(data, flag, number)
           data.second.forEach((val) => {
             val.insertBoolean = false
           })
@@ -242,7 +243,7 @@ export default {
         })
         console.log(data)
         // return
-        this.axioss.post(karaktersSetRoleFunctions(roleid), data).then((response) => {
+        this.axios.post(karaktersSetRoleFunctions(roleid), data).then((response) => {
           if (response.data.code === 0) {
             console.log(response)
             this.$message({
@@ -326,6 +327,8 @@ export default {
           val.modify = false
           // 删除
           val.delete = false
+          //  审核
+          val.insert = false
           val.second.forEach((val) => {
             //  添加
             val.approvalBoolean = false
@@ -335,6 +338,8 @@ export default {
             val.updateBoolean = false
             //  查看
             val.selectBoolean = false
+            //  审核
+            val.insertBoolean = false
           })
         })
         this.fullFunctionality = response.data.data

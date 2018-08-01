@@ -9,13 +9,13 @@
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">计划名称:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input v-model="planName" placeholder="请输入内容"></el-input>
+                  <el-input size="mini" v-model="planName" placeholder="请输入内容"></el-input>
                 </span>
               </li>
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">计划编号:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input v-model="planCode" placeholder="请输入内容"></el-input>
+                  <el-input size="mini" v-model="planCode" placeholder="请输入内容"></el-input>
                 </span>
               </li>
             </ul>
@@ -24,6 +24,7 @@
                 <span class="sectionTopliSpan">开始时间:</span>
                 <span class="sectionTopliSpantwo">
                 <el-date-picker
+                  size="mini"
                   v-model="startTime"
                   type="date"
                   value-format="yyyy-MM-dd"
@@ -35,6 +36,7 @@
                 <span class="sectionTopliSpan">结束时间:</span>
                 <span class="sectionTopliSpantwo">
                    <el-date-picker
+                     size="mini"
                      v-model="endTime"
                      type="date"
                      value-format="yyyy-MM-dd"
@@ -65,7 +67,7 @@
               <div class="sectionbottomRightDiv">
                 <span class="sectionTopliSpanSeven">任务类型:</span>
                 <span class="sectionTopliSpansix">
-                    <el-select @change="scheduleChange" v-model="scheduleData" placeholder="请选择">
+                    <el-select size="mini" @change="scheduleChange" v-model="scheduleData" placeholder="请选择">
                       <el-option
                         v-for="item in schedule"
                         :key="item.worktypeid"
@@ -794,6 +796,7 @@ export default {
               overflow-y scroll
   .sectionTopliSpantwo
     line-height 38px
+    width 202px
     display inline-block
   .sectionTopliSpan
     display inline-block

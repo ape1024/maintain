@@ -62,7 +62,7 @@
                   </p>
                 </li>
                 <li class="tlefttoplitwo">
-                  <p class="tlefttopHeaderP">
+                  <p class="">
                     <span class="tlefttopHeaderSpantwo">现场照片：</span>
                     <img class="tlefttopli_img" :key="index" v-for="(item, index) in photograph" :src="item" alt="">
                   </p>
@@ -84,10 +84,10 @@
               </div>
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderP">
+                  <p class="tlefttopHeaderPDivtwo">
                     <span class="tlefttopHeaderSpan">处理状态：</span>
                   </p>
-                  <div>
+                  <div class="tlefttopHeaderPDiv">
                     <el-select size="mini" v-model="processingsdisplay" placeholder="请选择">
                       <el-option
                         v-for="item in processingstate"
@@ -99,10 +99,10 @@
                   </div>
                 </li>
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderP">
+                  <p class="tlefttopHeaderPDivtwo">
                     <span class="tlefttopHeaderSpan">确认状态：</span>
                   </p>
-                  <div>
+                  <div class="tlefttopHeaderPDiv">
                     <el-select size="mini" v-model="Confirmationsdisplay" disabled placeholder="请选择">
                       <el-option
                         v-for="item in Confirmationstate"
@@ -307,7 +307,7 @@ export default {
           overflow hidden
           position relative
           border-bottom 1px solid #444d5b
-          padding 28px 0
+          padding 26px 0
         .tlefttopUl .tlefttopli:last-child
           border none
         .tlefttopLeft
@@ -454,4 +454,9 @@ export default {
     position relative
     border-bottom 1px solid #444d5b
     padding 10px 0 26px
+  .tlefttopHeaderPDivtwo
+     float left
+     line-height 26px
+  .tlefttopHeaderPDiv
+     float left
 </style>

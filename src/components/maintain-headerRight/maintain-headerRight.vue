@@ -88,18 +88,37 @@ export default {
         })
       }
     } else {
-      let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(findUserProjects(token)).then((response) => {
-        if (response.data.code === 0) {
-          this.options = response.data.data
-          if (window.localStorage.pattern !== undefined) {
-            this.value = JSON.parse(window.localStorage.pattern)
-          } else {
-            this.value = response.data.data[0].projectid
-            window.localStorage.pattern = response.data.data[0].projectid
+      if (window.sessionStorage.token === undefined) {
+        return false
+      } else {
+        let token = JSON.parse(window.sessionStorage.token)
+        this.axios.post(findUserProjects(token)).then((response) => {
+          console.log('===========================')
+          console.log(response)
+          if (response.data.code === 0) {
+            console.log(response.data.data)
+            this.options = response.data.data
+            let pattern = JSON.parse(window.localStorage.pattern)
+            let patternBo = false
+            if (window.localStorage.pattern !== undefined) {
+              response.data.data.forEach((val) => {
+                if (val.projectid === pattern) {
+                  patternBo = true
+                }
+              })
+              if (patternBo) {
+                this.value = pattern
+              } else {
+                this.value = response.data.data[0].projectid
+                window.localStorage.pattern = response.data.data[0].projectid
+              }
+            } else {
+              this.value = response.data.data[0].projectid
+              window.localStorage.pattern = response.data.data[0].projectid
+            }
           }
-        }
-      })
+        })
+      }
     }
   }
 }

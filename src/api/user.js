@@ -3,11 +3,12 @@
 //  沈哥
 let Test = `http://172.16.6.181:8920`
 //  刘哥
-// let Test  = `http://172.16.6.181:8920`
+// let Test = `http://172.16.6.16:8920`
 //  测试
 // let Test = `http://172.16.5.35:18920`
 //  虎哥
-// let Test = `http://172.16.6.81:18920`
+// let Test = `http://172.16.6.81:8920`
+//  let Test = `http://172.16.6.92:8920`
 //  登录接口
 export const userLogin = (username, password) => {
   let url = `${Test}/auth/login?usercode=${username}&password=${password}`
@@ -73,8 +74,10 @@ export const managementCreatedorganization = (token) => {
   return url
 }
 //  组织结构权限管理 点击新增保存
-export const managementAuthority = (token, organizationtype, firecontrolcategoryid, industrycategoryid, organization, countytown, conurbation, province, organizationcode, organizationname, address, professionalcategory, level, qualificationnumber, linkman, tel) => {
-  const url = `${Test}/organization/update?token=${token}&organizationtype=${organizationtype}&firecontrolcategoryid=${firecontrolcategoryid}&industrycategoryid=${industrycategoryid}&organizationid=${organization}&countyid=${countytown}&cityid=${conurbation}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&&address=${address}&professionalcategory=${professionalcategory}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}`
+export const managementAuthority = (token, organizationtype, firebrigadeid, firecontrolcategoryid, industrycategoryid, file, organization, parentid, countyid, city, province, organizationcode, organizationname, shortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo) => {
+  console.log(file)
+  const url = `${Test}/organization/update?token=${token}&organizationtype=${organizationtype}&firebrigadeid=${firebrigadeid}&firecontrolcategoryid=${firecontrolcategoryid}&industrycategoryid=${industrycategoryid}&file=${file}&organizationid=${organization}&parentid=${parentid}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&scope=${scope}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}&memo=${memo}`
+  console.log(url)
   return url
 }
 //  组织结构权限管理  点击左边树状获取数据-one
@@ -556,5 +559,20 @@ export const getProprietorOrganization = () => {
 //  getRepairOrgTreeByProjectId
 export const getRepairOrgTreeByProjectId = (projectid) => {
   const url = `${Test}/organization/getRepairOrgTreeByProjectId?projectId=${projectid}`
+  return url
+}
+//  getFirebrigades  消防监管机构
+export const getFirebrigades = () => {
+  const url = `${Test}/organization/getFirebrigades`
+  return url
+}
+//  消防单位类别
+export const getFirecontrolcategory = () => {
+  const url = `${Test}/organization/getFirecontrolcategory`
+  return url
+}
+//  getIndustrycategory  行业类别
+export const getIndustrycategory = () => {
+  const url = `${Test}/organization/getIndustrycategory`
   return url
 }

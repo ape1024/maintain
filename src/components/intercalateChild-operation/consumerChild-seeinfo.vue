@@ -40,6 +40,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 :disabled="true"
                 placeholder=""
                 v-model="exaMineCodo.email"
@@ -53,6 +54,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 :disabled="true"
                 placeholder=""
                 v-model="exaMineCodo.rolename"
@@ -66,6 +68,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 :disabled="true"
                 placeholder=""
                 v-model="exaMineCodo.tel"
@@ -89,6 +92,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 :disabled="true"
                 placeholder=""
                 v-model="exaMineCodo.organizationname"
@@ -102,6 +106,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 :disabled="true"
                 placeholder=""
                 v-model="exaMineCodo.jobname"
@@ -115,6 +120,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 type="textarea"
                 :rows="2"
                 :disabled="true"

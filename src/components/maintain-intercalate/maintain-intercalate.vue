@@ -24,7 +24,7 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .intercalate
-    margin 12px
+    margin 12px 12px 0
     overflow hidden
     position relative
     background rgba(000, 000, 000, .4)

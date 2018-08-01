@@ -79,9 +79,10 @@ export default {
     }
   },
   created () {
-    this.photograph = this.msg.photos.split(',')
+    this.photograph = this.msg.photos !== '' ? this.msg.photos.split(',') : ''
     console.log('1111')
-    console.log(this.photograph)
+    console.log(this.msg.photos)
+    console.log(this.msg)
     //  确认状态
     let confirm = []
     let confirmName = this.msg.comfirmstate

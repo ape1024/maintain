@@ -391,7 +391,7 @@ export default {
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height: 40px;
+      line-height 30px
     .div_input
       float left
       width 167px
