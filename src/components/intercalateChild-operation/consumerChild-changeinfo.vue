@@ -12,6 +12,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 placeholder=""
                 v-model="nameoflanding"
                 clearable>
@@ -24,6 +25,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 placeholder=""
                 v-model="Username"
                 clearable>
@@ -36,6 +38,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 placeholder=""
                 v-model="Useremail"
                 clearable>
@@ -63,6 +66,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 placeholder=""
                 v-model="pheneInput"
                 clearable>
@@ -74,6 +78,7 @@
               用户头像：
             </p>
             <el-upload
+              size="mini"
               class="avatar-uploader"
               action="http://172.16.6.181:8920/upload/upload"
               :show-file-list="false"
@@ -253,7 +258,12 @@ export default {
     }
   },
   created () {
-    console.log(this.communication)
+    if (this.communication.roleid !== '') {
+      this.organizeOptions = this.communication.roleid.split(';')
+      console.log('-+-')
+      console.log(this.communication.roleid.split(';'))
+      console.log(this.organizeOptions)
+    }
     this.businesspostCode = this.communication.job
     this.organizeOptions.push(this.communication)
     console.log(this.organizeOptions)

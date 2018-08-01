@@ -1,11 +1,13 @@
 // import axios from 'axios'
 
 //  沈哥
-// let Test = `http://172.16.6.181:8920`
+let Test = `http://172.16.6.181:8920`
 //  刘哥
 // let Test  = `http://172.16.6.181:8920`
 //  测试
-let Test = `http://172.16.5.35:18920`
+// let Test = `http://172.16.5.35:18920`
+//  虎哥
+// let Test = `http://172.16.6.81:18920`
 //  登录接口
 export const userLogin = (username, password) => {
   let url = `${Test}/auth/login?usercode=${username}&password=${password}`

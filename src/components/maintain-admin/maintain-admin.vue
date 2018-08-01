@@ -292,6 +292,7 @@ export default {
     console.log(JSON.parse(window.sessionStorage.Jurisdiction))
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
+      console.log(val)
       if (val.functioncode === 'device') {
         this.JurisdictionApproval = val.approval
       }

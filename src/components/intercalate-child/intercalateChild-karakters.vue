@@ -240,7 +240,9 @@ export default {
             data.push(obj)
           })
         })
-        this.axios.post(karaktersSetRoleFunctions(roleid), data).then((response) => {
+        console.log(data)
+        // return
+        this.axioss.post(karaktersSetRoleFunctions(roleid), data).then((response) => {
           if (response.data.code === 0) {
             console.log(response)
             this.$message({
