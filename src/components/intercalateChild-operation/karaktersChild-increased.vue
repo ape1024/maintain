@@ -128,22 +128,24 @@ export default {
       let roleFunctions = []
       this.fullFunctionality.forEach((val) => {
         val.second.forEach((item) => {
-          let obj = {}
-          //  id
-          obj.functionid = item.functionid
-          //  增加
-          obj.approval = item.approvalBoolean
-          //  删除
-          obj.delete = item.deleteBoolean
-          //  查看
-          obj.select = item.selectBoolean
-          //  修改
-          obj.update = item.updateBoolean
-          // 审批
-          obj.insert = item.insertBoolean
+          let obj = {
+            //  id
+            'functionid': item.functionid,
+            //  增加
+            'approval': item.approvalBoolean,
+            //  删除
+            'delete': item.deleteBoolean,
+            //  查看
+            'select': item.selectBoolean,
+            //  修改
+            'update': item.updateBoolean,
+            // 审批
+            'insert': item.insertBoolean
+          }
           roleFunctions.push(obj)
         })
       })
+      roleFunctions = JSON.stringify(roleFunctions)
       console.log(token)
       console.log(roleFunctions)
       if (organizationinfoid === '') {
@@ -159,7 +161,11 @@ export default {
         })
         return false
       }
-      this.axios.post(increasedCreaterole(roleName, organizationinfoid, token), roleFunctions).then((response) => {
+      console.log(roleName)
+      console.log(organizationinfoid)
+      console.log(token)
+      console.log(roleFunctions)
+      this.axios.post(increasedCreaterole(roleName, organizationinfoid, token), {roleFunctions}).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '创建成功',
@@ -250,6 +256,8 @@ export default {
           val.modify = false
           // 删除
           val.delete = false
+          //  审批
+          val.insert = false
           val.second.forEach((val) => {
             //  添加
             val.approvalBoolean = false
@@ -259,6 +267,8 @@ export default {
             val.updateBoolean = false
             //  查看
             val.selectBoolean = false
+            //  审批
+            val.insertBoolean = false
           })
         })
         this.fullFunctionality = response.data.data
@@ -268,6 +278,8 @@ export default {
       if (response.data.code === 0) {
         console.log(response.data.data)
         this.organizationData = response.data.data
+        console.log('==================')
+        console.log(this.organizationData)
       }
     })
   }

@@ -91,6 +91,7 @@ export default {
   methods: {
     cryptogramBlur (item) {
       let original = JSON.parse(window.sessionStorage.userInfo).pwd
+      this.axios.post(``)
       if (original === item) {
         this.showState = !this.showState
       } else {
@@ -104,60 +105,51 @@ export default {
       this.imageUrl = URL.createObjectURL(file.raw)
     },
     conserve () {
-      //  首先判断 原始密码 是否和账号密码一样，其次判断 新密码和重复密码是否一样
-      let original = JSON.parse(window.sessionStorage.userInfo).pwd
+      //  判断 新密码和重复密码是否一样
       let userId = JSON.parse(window.sessionStorage.userInfo).userid
       let useridCurrent = this.UserId
       console.log(useridCurrent)
-      if (this.barbarism === original) {
-        if (this.newcode !== '') {
-          if (this.newcode !== this.barbarism) {
-            if (this.newcode === this.duplicate) {
-              this.axios.post(modifytheUserPwd(useridCurrent, this.newcode)).then((response) => {
-                if (response.data.code === 0) {
-                  if (userId === useridCurrent) {
-                    this.$message({
-                      message: '修改成功，请重新登录！',
-                      type: 'success'
-                    })
-                    sessionStorage.clear()
-                    this.$router.push({path: '/login'})
-                    return false
-                  } else {
-                    this.thisPage = this.edit
-                    this.thisPage = !this.thisPage
-                    this.$emit('edit', this.thisPage)
-                    return false
-                  }
+      if (this.newcode !== '') {
+        if (this.newcode !== this.barbarism) {
+          if (this.newcode === this.duplicate) {
+            this.axios.post(modifytheUserPwd(useridCurrent, this.newcode)).then((response) => {
+              if (response.data.code === 0) {
+                if (userId === useridCurrent) {
+                  this.$message({
+                    message: '修改成功，请重新登录！',
+                    type: 'success'
+                  })
+                  sessionStorage.clear()
+                  this.$router.push({path: '/login'})
+                  return false
                 } else {
-                  this.$message.error('修改失败')
+                  this.thisPage = this.edit
+                  this.thisPage = !this.thisPage
+                  this.$emit('edit', this.thisPage)
                   return false
                 }
-              })
-            } else {
-              this.$message({
-                message: '新密码填写错误！',
-                type: 'warning'
-              })
-              return false
-            }
+              } else {
+                this.$message.error('修改失败')
+                return false
+              }
+            })
           } else {
             this.$message({
-              message: '新旧密码不能相同！',
+              message: '新密码填写错误！',
               type: 'warning'
             })
             return false
           }
         } else {
           this.$message({
-            message: '新密码不能为空！',
+            message: '新旧密码不能相同！',
             type: 'warning'
           })
           return false
         }
       } else {
         this.$message({
-          message: '原始密码错误！',
+          message: '新密码不能为空！',
           type: 'warning'
         })
         return false

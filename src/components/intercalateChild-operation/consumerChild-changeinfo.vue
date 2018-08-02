@@ -176,7 +176,7 @@ export default {
       businesspostCode: '',
       //  组织结构
       organize: [],
-      imageUrl: this.communication.icon,
+      imageUrl: this.communication.fullicon,
       roleSelect: [],
       dialogImageUrl: '',
       dialogVisible: false,
@@ -190,7 +190,7 @@ export default {
       defaultProps: {
         label: 'organizationName',
         children: 'subOrgnizations',
-        value: 'organizationCode'
+        value: 'organizationId'
       },
       organizeOptions: [],
       imageUrlTwo: ''
@@ -213,10 +213,17 @@ export default {
       return isJPG && isLt2M
     },
     conserve () {
+      if (this.organizeOptions.length === 0) {
+        this.$message({
+          message: '请选择所属组织',
+          type: 'warning'
+        })
+        return
+      }
       //  获取当前用户id
       let userid = this.communication.userid
       //  获取组织id
-      let organizationid = this.organizationid
+      let organizationid = this.organizeOptions[this.organizeOptions.length - 1]
       //  获取用户姓名
       let username = this.Username
       //  获取邮箱
@@ -233,11 +240,9 @@ export default {
       let roleids = this.userstate.length !== 0 ? this.userstate : []
       console.log(roleids)
       //  获取上传图片
-      let file = this.imageUrlTwo !== null ? this.imageUrlTwo : ''
 
-      let url = modifytheUser(userid, organizationid, username, email, tel, userstate, job, memo, roleids, file)
-      console.log(url)
-      this.axios.post(url).then((response) => {
+      let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
+      this.axios.post(modifytheUser(userid, organizationid, username, email, tel, userstate, job, memo, roleids, file)).then((response) => {
         console.log(response)
         if (response.data.code === 0) {
           this.$emit('informa', false)

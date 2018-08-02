@@ -32,7 +32,7 @@
             <div v-if="JurisdictionUpdate" class="conserveDiv" @click="conserve">
               保 存
             </div>
-            <div v-if="JurisdictionApproval" @click="increasd" class="increased">
+            <div @click="increasd" class="increased">
               新增角色信息
             </div>
           </div>

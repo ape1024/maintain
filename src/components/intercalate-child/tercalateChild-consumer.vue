@@ -42,7 +42,7 @@
             </div>
           </li>
         </ul>
-        <div class="search">
+        <div @click="search" class="search">
           搜索
         </div>
       </header>
@@ -217,6 +217,17 @@ export default {
     }
   },
   methods: {
+    search () {
+      //  用户名
+      // this.Username
+      //  所属部门
+      // this.selectedOptions
+      //  角色
+      // this.role
+      //  手机号
+      // this.Handphone
+      alert('目前接口500')
+    },
     //  时间戳
     fmtDate (obj) {
       let date = new Date(obj)

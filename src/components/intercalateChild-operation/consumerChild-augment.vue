@@ -12,6 +12,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 placeholder=""
                 v-model="nameoflanding"
                 clearable>
@@ -24,6 +25,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 placeholder=""
                 v-model="Username"
                 clearable>
@@ -36,6 +38,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 placeholder=""
                 v-model="Useremail"
                 clearable>
@@ -63,6 +66,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 placeholder=""
                 v-model="pheneInput"
                 clearable>
@@ -121,6 +125,7 @@
             </p>
             <div class="subjectRigh">
               <el-input
+                size="mini"
                 type="password"
                 placeholder=""
                 v-model="Userpwd"
@@ -254,27 +259,9 @@ export default {
           type: 'warning'
         })
         return false
-      } else if (email === '') {
-        this.$message({
-          message: '请填写邮箱',
-          type: 'warning'
-        })
-        return false
-      } else if (tel === '') {
-        this.$message({
-          message: '请填写电话',
-          type: 'warning'
-        })
-        return false
       } else if (job === '') {
         this.$message({
           message: '请填写工作职务',
-          type: 'warning'
-        })
-        return false
-      } else if (memo === '') {
-        this.$message({
-          message: '请填写备注信息',
           type: 'warning'
         })
         return false
@@ -316,8 +303,7 @@ export default {
     }
   },
   created () {
-    var token = JSON.parse(window.sessionStorage.token)
-    //  用户角色 目前用一个临时token，以后修改
+    let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(getRolesList(token)).then((response) => {
       if (response.data.code === 0) {
         this.roleSelect = response.data.data

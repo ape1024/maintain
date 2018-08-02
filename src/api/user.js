@@ -8,7 +8,9 @@ let Test = `http://172.16.6.181:8920`
 // let Test = `http://172.16.5.35:18920`
 //  虎哥
 // let Test = `http://172.16.6.81:8920`
+//  小磊
 //  let Test = `http://172.16.6.92:8920`
+// let Test = `http://172.16.6.99:8920`
 //  登录接口
 export const userLogin = (username, password) => {
   let url = `${Test}/auth/login?usercode=${username}&password=${password}`

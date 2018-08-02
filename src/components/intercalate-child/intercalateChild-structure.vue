@@ -642,6 +642,14 @@ export default {
       }
     },
     handleNodeClick (data) {
+      //  http://172.16.6.181:8920/organization/getAllHigherOrgIDs?orgid=2
+      // return
+      this.axios.post(`http://172.16.6.181:8920/organization/getAllHigherOrgIDs?orgid=${data.organizationId}`).then((response) => {
+        this.companyDate = []
+        if (response.data.code === 0) {
+          this.companyDate = response.data.data
+        }
+      })
       this.conserveBoolean = true
       const organization = data.organizationId
       this.organizationId = organization
@@ -708,7 +716,6 @@ export default {
         //   图标
         this.imageUrl = urlData.icon.indexOf('null') === -1 ? urlData.icon : ''
         this.imageUrlTwo = ''
-        this.companyDate.push(urlData.organizationcode)
         //   所在区域
         this.regionDate = urlData.pcc
         console.log('09')

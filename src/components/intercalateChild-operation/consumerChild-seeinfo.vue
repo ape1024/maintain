@@ -81,7 +81,7 @@
               用户头像：
             </p>
             <div class="upload">
-              <img class="uploadImg" :src="exaMineCodo.icon" alt="">
+              <img class="uploadImg" :src="exaMineCodo.fullicon" alt="">
             </div>
           </div>
         </div>
@@ -201,7 +201,7 @@ export default {
     .subject
       overflow hidden
       position relative
-      margin 0 120px 130px
+      margin 0 120px 60px
       .subjectLeft
         float left
         overflow hidden
@@ -220,8 +220,8 @@ export default {
         float left
         width 258px
       .upload
-        width 60px
-        height 60px
+        width 100px
+        height 100px
         text-align center
         line-height 60px
         background #0a111b

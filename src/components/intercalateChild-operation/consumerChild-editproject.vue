@@ -18,6 +18,7 @@
             <div class="informationDiv">
               <div class="content">
                 <el-date-picker
+                  size="mini"
                   v-model="startdate"
                   type="date"
                   value-format="yyyy-MM-dd"
@@ -30,7 +31,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-select v-model="proprieTor" placeholder="请选择">
+                <el-select size="mini" v-model="proprieTor" placeholder="请选择">
                   <el-option
                     v-for="item in proprieTorDate"
                     :key="item.organizationid"
@@ -56,6 +57,7 @@
             <div class="informationDiv">
               <div class="content">
                 <el-date-picker
+                  size="mini"
                   v-model="endDate"
                   type="date"
                   value-format="yyyy-MM-dd"
@@ -68,7 +70,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-select v-model="proprietornameDate" placeholder="请选择">
+                <el-select size="mini" v-model="proprietornameDate" placeholder="请选择">
                   <el-option
                     v-for="item in proprietorName"
                     :key="item.organizationid"
@@ -85,7 +87,7 @@
           <li class="informationLitwo">
             <div class="informationDiv">
               <div class="content">
-                <el-select v-model="projectDate" multiple placeholder="请选择">
+                <el-select size="mini" v-model="projectDate" multiple placeholder="请选择">
                   <el-option
                     v-for="item in projectType"
                     :key="item.worktypeid"
@@ -134,7 +136,6 @@
         <div class="purviewDiv">
           <div class="substance">
             <div class="substanceDiv">
-              <!--<el-input v-model="projectRange" placeholder="请输入内容"></el-input>-->
               <div @click.stop="firecontrolClick" class="firecontrol">
                 {{buildscope}}
               </div>
@@ -163,12 +164,14 @@
               <div v-if="firecontrolBoolean" class="firecontrolDiv">
                 <div class="firecontrolDiv_div">
                   <el-tree
-                    :data="firecontrol"
-                    :props="firecontrolProps"
-                    node-key="id"
                     :default-checked-keys=this.firecontrolDate
+                    :data="firecontrol"
                     show-checkbox
-                    @check="firecontrolCheck">
+                    default-expand-all
+                    highlight-current
+                    node-key="id"
+                    ref="tree"
+                    :props="firecontrolProps">
                   </el-tree>
                 </div>
               </div>
@@ -179,6 +182,7 @@
           </div>
         </div>
       </div>
+
       <div class="purview">
         <header class="contentHeader">
           <p class="headerP">维保内容</p>
@@ -244,7 +248,7 @@
         </div>
       </div>
       <div class="fastener">
-        <div @click="conserve" class="conserve">保存</div>
+        <div @click="conserve" class="conserve" v-loading.fullscreen.lock="fullscreenLoading">保存</div>
         <div @click="closedown" class="closedown">关闭</div>
       </div>
     </section>
@@ -253,12 +257,13 @@
 
 <script>
 import $ from 'jquery'
-import { getProjectDevices, getProjectAreas, increasefindAllDevType, findAllAreaTrees, increasegetWorkTypes, getProprietorOrganization, getRootOrganizationsNotProprietor, managementCreatedProvince, getCountiesByCityId, getCitiesByProvinceId, createOrUpdateProject } from '../../api/user'
+import { getProjectDevices, getProjectAreas, increasefindAllDevType, increasegetWorkTypes, getProprietorOrganization, getRootOrganizationsNotProprietor, managementCreatedProvince, getCountiesByCityId, getCitiesByProvinceId, createOrUpdateProject } from '../../api/user'
 export default {
   name: 'consumerChild-editproject',
   props: ['edit', 'project'],
   data () {
     return {
+      fullscreenLoading: false,
       //  范围 传给后台
       buildscopeDate: [],
       buildscope: '',
@@ -267,6 +272,7 @@ export default {
       regionDate: '',
       //  省份
       province: '',
+      firecontrolDData: [],
       //  省份下所有的城市
       conurbation: '',
       //  县城/区
@@ -282,7 +288,6 @@ export default {
       firecontrolDate: [],
       // 本页面的显示隐藏
       Thispage: false,
-      fileList3: [],
       //  项目名称
       projectName: this.project.projectname,
       //  项目开始时间
@@ -354,6 +359,7 @@ export default {
     },
 
     firecontrolClick () {
+      console.log('00000')
       this.buildscopeBoolean = !this.buildscopeBoolean
     },
     purviewCheckbox (item) {
@@ -387,6 +393,7 @@ export default {
       this.firecontrolBoolean = !this.firecontrolBoolean
     },
     conserve () {
+      //  项目名称 项目开始 业主单位 项目编号 项目结束 服务机构 项目类别  建筑范围  消防设备
       if (this.projectName === '' || this.startdate === '' || this.proprieTor === '' || this.projectCode === '' || this.endDate === '' || this.proprietornameDate === '' || this.projectDate.length === 0 || this.buildscope === '' || this.firecontrolda === '') {
         this.$message({
           message: '您的信息没有填写完整',
@@ -394,6 +401,7 @@ export default {
         })
         return false
       } else {
+        // this.fullscreenLoading = true
         let token = window.JSON.parse(window.sessionStorage.token)
         let areas = []
         for (let i = 0; i < this.buildscopeDate.length; i++) {
@@ -402,13 +410,17 @@ export default {
           }
           areas.push(areasObj)
         }
+        let getCheckedNodesData = this.$refs.tree.getCheckedNodes()
         let baseDevices = []
-        for (let i = 0; i < this.firecontrolDate.length; i++) {
-          let base = {
-            'basedeviceid': this.firecontrolDate[i]
+        getCheckedNodesData.forEach((val) => {
+          if (!val.children) {
+            let base = {
+              'basedeviceid': val.id,
+              'basedevicecode': val.code
+            }
+            baseDevices.push(base)
           }
-          baseDevices.push(base)
-        }
+        })
         let worktypes = []
         for (let i = 0; i < this.projectDate.length; i++) {
           let work = {
@@ -416,7 +428,14 @@ export default {
           }
           worktypes.push(work)
         }
-        let pr = {
+        this.fileList.forEach((val) => {
+          let obj = {
+            'name': `${val.name}`,
+            'url': `${val.url}`
+          }
+          this.documentPapers.push(obj)
+        })
+        let rp = {
           'areas': areas,
           'baseDevices': baseDevices,
           'files': this.documentPapers,
@@ -436,8 +455,10 @@ export default {
           },
           'worktypes': worktypes
         }
-        this.axios.post(createOrUpdateProject(token), pr).then((response) => {
+        this.axios.post(createOrUpdateProject(token), rp).then((response) => {
+          console.log('------')
           if (response.data.code === 0) {
+            this.fullscreenLoading = false
             this.$message({
               message: '修改成功！',
               type: 'success'
@@ -536,6 +557,47 @@ export default {
   },
   created () {
     //  获取项目设备
+
+    console.log(this.edit.projectsinfosviewdetail.projectrange)
+    //  服务机构
+    this.proprietornameDate = this.edit.projectsinfosviewdetail.vindicatorid
+    //  建筑范围
+    this.buildscope = this.edit.projectsinfosviewdetail.areas
+    //  设备
+    this.firecontrolda = this.edit.projectsinfosviewdetail.projectrange
+    //  维保要求
+    this.requirement = this.edit.projectsinfosviewdetail.requirement
+    //  业主单位
+    this.proprieTor = this.edit.projectsinfosviewdetail.proprietorid
+    //  地址
+    this.regionDate = this.edit.projectsinfosviewdetail.address
+    //  维保内容
+    this.conTent = this.edit.projectsinfosviewdetail.content
+    //  备注
+    this.comment = this.edit.projectsinfosviewdetail.comment
+    //  项目名称
+    this.projectName = this.edit.projectsinfosviewdetail.proprietorname
+    //  项目code
+    this.projectCode = this.edit.projectsinfosviewdetail.proprietorcode
+    if (this.edit.filenames) {
+      this.edit.filenames.forEach((val, index) => {
+        let obj = {
+          name: val,
+          url: this.edit.fullnames[index]
+        }
+        this.fileList.push(obj)
+      })
+    }
+    console.log('=--=---!11')
+    this.edit.devtypes.forEach((val) => {
+      val.children.forEach((data) => {
+        this.firecontrolDate.push(data.id)
+      })
+    })
+    console.log('----1')
+    console.log(this.firecontrolDate)
+    console.log('**')
+
     this.axios.post(getProjectDevices(this.project.projectid)).then((response) => {
       if (response.data.code === 0) {
         let data = response.data.data
@@ -545,23 +607,27 @@ export default {
       }
     })
     //  获取范围 默认值
-
     this.axios.post(getProjectAreas(this.project.projectid)).then((response) => {
       if (response.data.code === 0) {
-        let data = response.data.data
-        data.forEach((val) => {
-          this.buildscopeDate.push(val.areaid)
-        })
+        console.log('===============')
+        this.purview = response.data.data
+        console.log(this.purview)
       }
     })
 
     this.axios.post(increasefindAllDevType()).then((response) => {
+      console.log('--------------')
       this.firecontrol = response.data
-    })
-    this.axios.post(findAllAreaTrees()).then((response) => {
-      if (response.data.code === 0) {
-        this.purview = response.data.data[0]
-      }
+      console.log(response.data)
+      // response.data.forEach((val) => {
+      //   val.children.forEach((data) => {
+      //     for (let i = 0; i < this.firecontrolDate.length; i++) {
+      //       if (data.id === this.firecontrolDate[i]) {
+      //         this.firecontrolda += ` ${data.name} `
+      //       }
+      //     }
+      //   })
+      // })
     })
     this.axios.post(increasegetWorkTypes()).then((response) => {
       if (response.data.code === 0) {
@@ -861,4 +927,6 @@ export default {
             .countLi
               padding 10px 0
               text-indent 5em
+  .el-date-editor.el-input
+    width 100%
 </style>

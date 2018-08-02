@@ -59,7 +59,7 @@
     </section>
     <!--修改-->
     <section v-if="modifyBoolean" class="adhibit">
-      <edit :edit="modifyBoolean" :project="projectDate" @editt="eDit"></edit>
+      <edit :edit="modifyDate" :project="projectDate" @editt="eDit"></edit>
     </section>
   </div>
 </template>
@@ -126,11 +126,10 @@ export default {
         console.log(response)
         if (response.data.code === 0) {
           this.modifyDate = response.data.data
-          console.log(this.modifyDate)
+          this.projectDate = project
+          this.modifyBoolean = true
         }
       })
-      this.projectDate = project
-      this.modifyBoolean = true
     },
     conserve () {
       this.adhibitBoolean = true

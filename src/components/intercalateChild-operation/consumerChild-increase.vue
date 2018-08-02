@@ -9,7 +9,7 @@
           <li class="informationLi">
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目名称：
@@ -18,6 +18,7 @@
             <div class="informationDiv">
               <div class="content">
                 <el-date-picker
+                  size="mini"
                   v-model="startdate"
                   type="date"
                   value-format="yyyy-MM-dd"
@@ -48,7 +49,7 @@
           <li class="informationLitwo">
             <div class="informationDiv">
               <div class="content">
-                <el-input v-model="projectCode" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="projectCode" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 项目编号：
@@ -57,6 +58,7 @@
             <div class="informationDiv">
               <div class="content">
                 <el-date-picker
+                  size="mini"
                   v-model="endDate"
                   type="date"
                   value-format="yyyy-MM-dd"
@@ -69,7 +71,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-select v-model="proprietornameDate" placeholder="请选择">
+                <el-select size="mini" v-model="proprietornameDate" placeholder="请选择">
                   <el-option
                     v-for="item in proprietorName"
                     :key="item.organizationid"
@@ -86,7 +88,7 @@
           <li class="informationLitwo">
             <div class="informationDiv">
               <div class="content">
-                <el-select v-model="projectDate" multiple placeholder="请选择">
+                <el-select size="mini" v-model="projectDate" multiple placeholder="请选择">
                   <el-option
                     v-for="item in projectType"
                     :key="item.worktypeid"
@@ -332,6 +334,9 @@ export default {
   },
   methods: {
     handlesuccess (response, file, fileList) {
+      console.log(response.data)
+      console.log(file)
+      console.log(fileList)
       this.documentPapers.push({
         'name': `${file.name}`,
         'url': `${response.data}`
@@ -836,14 +841,6 @@ export default {
             .countLi
               padding 10px 0
               text-indent 5em
-  .el-select
-     width  100%
-.el-input__icon
-  line-height 30px
-
-</style>
-<style>
-  .el-input__icon {
-     line-height: 30px;
-  }
+  .el-date-editor.el-input
+    width 100%
 </style>

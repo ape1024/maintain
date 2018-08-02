@@ -36,8 +36,6 @@ export default {
           roles.push(val.roleid)
         }
       })
-      console.log()
-
       this.axios.post(setUserRoles(this.userid), roles).then((response) => {
         if (response.data.code === 0) {
           this.$message({
