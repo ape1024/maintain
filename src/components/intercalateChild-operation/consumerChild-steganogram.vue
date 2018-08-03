@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { modifytheUserPwd } from '../../api/user'
+import { modifytheUserPwd, steganogramCheckOldPwd } from '../../api/user'
 export default {
   name: 'consumerChild-steganogram',
   props: ['edit', 'UserId'],
@@ -90,16 +90,21 @@ export default {
   },
   methods: {
     cryptogramBlur (item) {
-      let original = JSON.parse(window.sessionStorage.userInfo).pwd
-      this.axios.post(``)
-      if (original === item) {
-        this.showState = !this.showState
-      } else {
-        this.$message({
-          message: '原始密码错误!',
-          type: 'warning'
-        })
-      }
+      let usercode = JSON.parse(window.sessionStorage.userInfo).usercode
+      let password = item
+      console.log(usercode)
+      console.log(password)
+      this.axios.post(steganogramCheckOldPwd(usercode, password)).then((response) => {
+        console.log(response)
+        if (response.data.data === true) {
+          this.showState = !this.showState
+        } else {
+          this.$message({
+            message: '原始密码错误!',
+            type: 'warning'
+          })
+        }
+      })
     },
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
@@ -233,7 +238,7 @@ export default {
         float left
   .cryptogram
     width 360px
-    margin 150px auto
+    margin 100px auto
     overflow hidden
     .cryptogramDiv
       overflow hidden

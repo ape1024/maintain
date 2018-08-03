@@ -281,8 +281,8 @@ export default {
         color $color-border-b-fault
         font-size $font-size-medium
         line-height 40px
-        margin-left 24px
-        margin-right 10px
+        margin-left 6px
+        margin-right 6px
         float left
       .content
         width 267px
@@ -379,8 +379,8 @@ export default {
       border-left 1px solid #444d5b
       padding-left 6px
   .examine
-    width: 267px;
-    float: right;
+    width 290px
+    float right
     color $color-text-title
     line-height 40px
   .uploaddivIdiv

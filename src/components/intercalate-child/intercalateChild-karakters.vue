@@ -266,7 +266,6 @@ export default {
       }
     },
     systemroleClick (roleid) {
-      console.log(this.fullFunctionality)
       this.fullFunctionality.forEach((val) => {
         console.log(val)
         val.added = false
@@ -274,10 +273,17 @@ export default {
         val.examine = false
         val.insert = false
         val.modify = false
+        val.second.forEach((data) => {
+          data.approvalBoolean = false
+          data.deleteBoolean = false
+          data.insertBoolean = false
+          data.selectBoolean = false
+          data.updateBoolean = false
+        })
       })
-      console.log(this.fullFunctionality)
       this.kayakersId = roleid
       this.axios.post(karaktersFindRoleFunctions(roleid)).then((response) => {
+        console.log('-------')
         console.log(response)
         if (response.data.code === 0) {
           for (let i = 0; i < response.data.data.length; i++) {

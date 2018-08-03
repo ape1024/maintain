@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { increasedCreaterole, karaktersFindAllFunctions, getRoleOrganizations } from '../../api/user'
+import { karaktersFindAllFunctions, getRoleOrganizations } from '../../api/user'
 export default {
   name: 'karaktersChild-increased',
   props: ['increaSed'],
@@ -145,7 +145,7 @@ export default {
           roleFunctions.push(obj)
         })
       })
-      roleFunctions = JSON.stringify(roleFunctions)
+      // roleFunctions = JSON.stringify(roleFunctions)
       console.log(token)
       console.log(roleFunctions)
       if (organizationinfoid === '') {
@@ -165,7 +165,7 @@ export default {
       console.log(organizationinfoid)
       console.log(token)
       console.log(roleFunctions)
-      this.axios.post(increasedCreaterole(roleName, organizationinfoid, token), {roleFunctions}).then((response) => {
+      this.axios.post(`http://172.16.6.181:8920/users/createrole?roleName=${roleName}&organizationid=${organizationinfoid}&token=${token}`, roleFunctions).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '创建成功',
