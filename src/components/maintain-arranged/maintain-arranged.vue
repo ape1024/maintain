@@ -40,7 +40,7 @@
               {{item.plancode}}
             </li>
             <li class="repair_litwo">
-              {{item.planstate}}
+              {{conversionPlanState(item.planstate)}}
             </li>
             <li class="repair_litwo">
               {{item.createtime}}
@@ -52,9 +52,10 @@
               {{item.plandesc}}
             </li>
             <li class="repair_lithree">
-              <p @click.stop="question(item.checkplanid, item)" class="header_p_eight threelevel_litwo_p">
+              <p v-if="item.planstate === 0"  @click.stop="question(item.checkplanid, item)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
+              <p v-if="item.planstate !== 0" class="header_p_fourteen" >审核</p>
               <p @click.stop="examine(item.checkplanid)" class="header_p_ten">修改</p>
               <p class="header_p_eleven" @click.stop="amputate(index, arrangedData,item.checkplanid)">删除</p>
             </li>
@@ -81,7 +82,7 @@
 import lookup from '../arrangedChild-operation/arrangedChild-lookup'
 import examination from '../arrangedChild-operation/arrangedChild-examination'
 import newlybuild from '../arrangedChild-operation/arrangedChild-newlybuild'
-import { maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllPlanTypes } from '../../api/user'
+import { maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes } from '../../api/user'
 export default {
   name: 'maintain-arranged',
   components: {
@@ -170,7 +171,15 @@ export default {
           return this.worktypeData[i].worktypename
         }
       }
+    },
+    conversionPlanState (planstate) {
+      for (let i = 0; i < this.planStateData.length; i++) {
+        if (this.planStateData[i].value === planstate) {
+          return this.planStateData[i].name
+        }
+      }
     }
+
   },
   data () {
     return {
@@ -211,7 +220,8 @@ export default {
       newlybuildBoolean: false,
       CheckPlan: '',
       CheckPlanid: '',
-      worktypeData: []
+      worktypeData: [],
+      planStateData: []
     }
   },
   created () {
@@ -229,6 +239,12 @@ export default {
         this.worktypeData = response.data.data
       }
     })
+    // 获取计划状态
+    this.axios.post(maintainArranggetAllApprovalItems()).then((response) => {
+      if (response.data.code === 0) {
+        this.planStateData = response.data.data
+      }
+    })
   }
 }
 </script>
@@ -236,7 +252,6 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
-    margin 12px
     overflow hidden
     min-height 760px
     max-height 750px
@@ -419,26 +434,34 @@ export default {
     left 0
     width 100%
     height 100%
-    background rgba(000,000,000,.4)
+    background rgba(000,000,000,.9)
     z-index 11
     overflow hidden
   .header_p_eight
+    cursor:pointer
     float left
     margin-right 20px
     color $color-background-query
   .header_p_ten
+    cursor:pointer
     float left
     margin-right 20px
     color $color-background-newly
   .header_p_twelve
+    cursor:pointer
     float left
     margin-right 20px
     color $color-background-introduce
+  .header_p_fourteen
+    float left
+    margin-right 20px
+    color $color-text-tile-handle
   .header_pe_quipment
     float left
     margin-right 20px
     color #32a697
   .header_p_eleven
+    cursor:pointer
     float left
     margin-right 20px
     color #83292b
@@ -484,6 +507,4 @@ export default {
     margin-top 50px
     overflow hidden
     text-align center
-  .repair_lithree p
-    cursor pointer
 </style>

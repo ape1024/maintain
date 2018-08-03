@@ -9,13 +9,13 @@
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">计划名称:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input v-model="planName" placeholder="请输入内容"></el-input>
+                  <el-input  size="mini" v-model="planName" placeholder="请输入内容"></el-input>
                 </span>
               </li>
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">计划编号:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input v-model="planCode" placeholder="请输入内容"></el-input>
+                  <el-input size="mini" v-model="planCode" placeholder="请输入内容"></el-input>
                 </span>
               </li>
             </ul>
@@ -24,6 +24,7 @@
                 <span class="sectionTopliSpan">开始时间:</span>
                 <span class="sectionTopliSpantwo">
                 <el-date-picker
+                  size="mini"
                   v-model="startTime"
                   type="date"
                   value-format="yyyy-MM-dd"
@@ -35,6 +36,7 @@
                 <span class="sectionTopliSpan">结束时间:</span>
                 <span class="sectionTopliSpantwo">
                    <el-date-picker
+                     size="mini"
                      v-model="endTime"
                      type="date"
                      value-format="yyyy-MM-dd"
@@ -97,7 +99,11 @@
                           <div class="nodeLabel">{{ node.label }}</div>
                           <div class="tree-checkbox">
                             <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
-                              <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
+                              <el-checkbox :label="item.userid"
+                                           :disabled="proprietorCheckList.length > 0">
+                                <svg class="icon" style="color:lightblue ;width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1593"><path d="M717.664 612.195c-52.734 47.461-121.289 79.102-200.391 79.102s-147.656-31.641-205.664-79.102c-131.836 68.555-221.484 158.203-221.484 321.68l843.75 0c0-163.477-89.648-247.852-216.211-321.68zM512 628.016c131.836 0 237.305-110.742 237.305-242.578s-105.469-242.578-237.305-242.578-237.305 110.742-237.305 242.578c0 137.109 110.742 242.578 237.305 242.578z" p-id="1594"></path></svg>
+                                <span class="nodeLabel">{{item.username}}</span>
+                              </el-checkbox>
                             </div>
                           </div>
                         </div>
@@ -121,6 +127,9 @@
                       @check="lookupchooseChange"
                       node-key="value"
                       :props="defaultProps">
+                      <div class="custom-tree-node" slot-scope="{ node, data }">
+                        <div class="nodeLabel">{{ node.label }}</div>
+                      </div>
                     </el-tree>
                   </div>
                 </div>
@@ -140,6 +149,9 @@
                       accordion
                       @check="handleCheckChange"
                       :props="facilitiesProps">
+                      <div class="custom-tree-node" slot-scope="{ node, data }">
+                        <div class="nodeLabel">{{ node.label }}</div>
+                      </div>
                     </el-tree>
                   </div>
                 </div>
@@ -153,7 +165,7 @@
                 <el-radio-group v-if="groupBoolean" v-model="frequencyradio">
                   <ul class="frequencyUl">
                     <li class="frequencyLi" @change="frequencyChange(item)" :key="index" v-for="(item,index) in frequency">
-                      <el-radio :label="item.value">{{item.desc}}</el-radio>
+                      <el-radio class="nodeLabel" :label="item.value">{{item.desc}}</el-radio>
                     </li>
                     <li v-show="monthsNumber" class="frequencyLi">
                      <p class="frequencyLi_P">
@@ -644,6 +656,7 @@ export default {
               position relative
           .sectionbottomRight
             float right
+            margin-right 15px
             margin-top 40px
             position relative
             overflow hidden
@@ -660,8 +673,8 @@ export default {
           .lookupChooseLi
             float left
             overflow hidden
-            margin-left 53px
-            width 250px
+            margin-left 5px
+            width 295px
             .lookupChooseLiTop
               overflow hidden
               font-size 16px
@@ -678,6 +691,7 @@ export default {
               height 460px
               overflow-y scroll
   .sectionTopliSpantwo
+    width 202px
     line-height 38px
     display inline-block
   .sectionTopliSpan
@@ -742,6 +756,7 @@ export default {
   .el-input__icon
     line-height 30px
   .personChargeDiv
+    color #d5d5d5
     margin-top 20px
     overflow hidden
     position relative
@@ -756,11 +771,32 @@ export default {
     margin 12px 0 0 16px
     .frequencyLi
       font-size 12px
-      color #eee
+      color #d5d5d5
       margin-bottom 18px
   .nodeLabel
-    color #666
+    color #d5d5d5
     font-size 14px
   .frequencyLi_P
     margin 20px 0
+  /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+  ::-webkit-scrollbar
+  {
+    width: 16px;
+    height: 16px;
+    background-color: #F5F5F5;
+  }
+  /*定义滚动条轨道 内阴影+圆角*/
+  ::-webkit-scrollbar-track
+  {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+  }
+  /*定义滑块 内阴影+圆角*/
+  ::-webkit-scrollbar-thumb
+  {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+  }
 </style>

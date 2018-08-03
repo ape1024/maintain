@@ -92,6 +92,7 @@
                     <el-checkbox-group v-model="maintenanceList">
                       <el-tree
                         class="tree"
+                        :expand-on-click-node="false"
                         :data="maintenance"
                         node-key="value"
                         :props="proprietorProps">
@@ -99,7 +100,11 @@
                           <div class="nodeLabel">{{ node.label }}</div>
                           <div class="tree-checkbox">
                             <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
-                              <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
+                              <el-checkbox :label="item.userid"
+                                           :disabled="proprietorCheckList.length > 0">
+                                <svg class="icon" style="color: lightblue;width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1593"><path d="M717.664 612.195c-52.734 47.461-121.289 79.102-200.391 79.102s-147.656-31.641-205.664-79.102c-131.836 68.555-221.484 158.203-221.484 321.68l843.75 0c0-163.477-89.648-247.852-216.211-321.68zM512 628.016c131.836 0 237.305-110.742 237.305-242.578s-105.469-242.578-237.305-242.578-237.305 110.742-237.305 242.578c0 137.109 110.742 242.578 237.305 242.578z" p-id="1594"></path></svg>
+                                <span class="nodeLabel">{{item.username}}</span>
+                              </el-checkbox>
                             </div>
                           </div>
                         </div>
@@ -125,6 +130,9 @@
                       :default-checked-keys="defaultCheckedRange"
                       :default-expanded-keys="defaultCheckedRange"
                       :props="defaultProps">
+                      <div class="custom-tree-node" slot-scope="{ node, data }">
+                        <div class="nodeLabel">{{ node.label }}</div>
+                      </div>
                     </el-tree>
                   </div>
                 </div>
@@ -146,6 +154,9 @@
                       :default-expanded-keys="defaultCheckedFacilities"
                       @check="handleCheckChange"
                       :props="facilitiesProps">
+                      <div class="custom-tree-node" slot-scope="{ node, data }">
+                        <div class="nodeLabel">{{ node.label }}</div>
+                      </div>
                     </el-tree>
                   </div>
                 </div>
@@ -159,7 +170,7 @@
                 <el-radio-group v-if="groupBoolean" v-model="frequencyradio">
                   <ul class="frequencyUl">
                     <li class="frequencyLi" @change="frequencyChange(item)" :key="index" v-for="(item,index) in frequency">
-                      <el-radio v-model="item.switch" :label="item.value">{{item.desc}}</el-radio>
+                      <el-radio class="nodeLabel" v-model="item.switch" :label="item.value">{{item.desc}}</el-radio>
                     </li>
                     <li v-show="monthsNumber" class="frequencyLi">
                       <p class="frequencyLi_P">
@@ -222,7 +233,7 @@
   </div>
 </template>
 <script>
-import { maintainArrangupdatePlan, maintainArranggetWorkModesByWorkType, maintainArranggetCheckPlan, maintainDailygetRepairOrgTreeByDeviceId, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
+import { maintainArrangupdatePlan, maintainArranggetWorkModesByWorkType, getRepairOrgTreeByProjectId, maintainArranggetCheckPlan, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
 export default {
   name: 'arrangedChild-lookup',
   props: ['checkplan', 'Checkplanid'],
@@ -493,6 +504,7 @@ export default {
       //  频次
       let checkFrequency = this.frequencyradio
 
+      console.log('------------------------------' + this.Checlplanid + '----------------------------------------')
       this.axios.post(maintainArrangupdatePlan(this.Checkplanid, planName, planCode, worktypeid, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime), param).then((response) => {
         if (response.data.code === 0) {
           this.$message({
@@ -599,13 +611,15 @@ export default {
     this.Plandevices.forEach((val) => {
       this.defaultCheckedFacilities.push(`${val.areaid},${this.timeStamp}`)
     })
-    //  维保单位 this.equipment
-    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.Checkplanid)).then((response) => {
+    let projectid = window.localStorage.pattern
+    // 维保单位 this.equipment
+    // maintainDailygetRepairOrgTreeByDeviceId   Update 20180803 By rad
+    // this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.Checkplanid)).then((response) => {
+    this.axios.post(getRepairOrgTreeByProjectId(projectid)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }
     })
-    let projectid = window.localStorage.pattern
     //  获取巡检范围
 
     this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
@@ -761,6 +775,7 @@ export default {
               position relative
           .sectionbottomRight
             float right
+            margin-right 15px
             margin-top 40px
             position relative
             overflow hidden
@@ -777,8 +792,8 @@ export default {
           .lookupChooseLi
             float left
             overflow hidden
-            margin-left 53px
-            width 250px
+            margin-left 5px
+            width 295px
             .lookupChooseLiTop
               overflow hidden
               font-size 16px
@@ -823,7 +838,7 @@ export default {
     float left
     color #d5d5d5
     font-size 16px
-    margin-top 8px
+    margin-top 10px
     margin-right 16px
   .el-tree
     background transparent
@@ -877,7 +892,7 @@ export default {
       color #eee
       margin-bottom 18px
   .nodeLabel
-    color #666
+    color #d5d5d5
     font-size 14px
   .frequencyLi_P
     margin 20px 0

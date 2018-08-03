@@ -82,7 +82,7 @@ export default {
     this.axios.post(getApprovalItems()).then((response) => {
       if (response.data.code === 0) {
         this.approvalState = response.data.data
-        console.log(response.data.data)
+        this.radio = this.approvalState[0].value
       }
     })
   }

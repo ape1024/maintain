@@ -363,6 +363,11 @@ export const maintainArranggetAllPlanTypes = () => {
   const url = `${Test}/plan/getAllPlanTypes`
   return url
 }
+//  获取计划状态 20180803 rad
+export const maintainArranggetAllApprovalItems = () => {
+  const url = `${Test}/plan/getAllApprovalItems`
+  return url
+}
 //  修改计划
 export const maintainArrangupdatePlan = (checkPlanId, planName, planCode, worktypeid, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime) => {
   const url = `${Test}/plan/updatePlan?checkPlanId=${this.Checkplanid}&planName=${planName}&planCode=${planCode}&worktype=${worktypeid}&planDesc=${planDesc}&startDate=${startDate}&endDate=${endDate}&checkFrequency=${checkFrequency}&interval=${interval}&createTaskTime=${createTaskTime}`
