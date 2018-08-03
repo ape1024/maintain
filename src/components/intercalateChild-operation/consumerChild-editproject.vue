@@ -145,6 +145,7 @@
                     :data="purview"
                     :props="purviewProps"
                     node-key="areaid"
+                    ref="one"
                     :default-checked-keys=this.buildscopeDate
                     show-checkbox
                     @check="purviewCheck">
@@ -256,7 +257,7 @@
 
 <script>
 import $ from 'jquery'
-import { getProjectDevices, getProjectAreas, increasefindAllDevType, increasegetWorkTypes, getProprietorOrganization, getRootOrganizationsNotProprietor, managementCreatedProvince, getCountiesByCityId, getCitiesByProvinceId, createOrUpdateProject } from '../../api/user'
+import { getProjectDevices, increasefindAllDevType, increasegetWorkTypes, getProprietorOrganization, getRootOrganizationsNotProprietor, managementCreatedProvince, getCountiesByCityId, getCitiesByProvinceId, createOrUpdateProject, findAllRootAreasTree } from '../../api/user'
 export default {
   name: 'consumerChild-editproject',
   props: ['edit', 'project'],
@@ -408,13 +409,17 @@ export default {
       } else {
         // this.fullscreenLoading = true
         let token = window.JSON.parse(window.sessionStorage.token)
+        let getCheckedNodes = this.$refs.one.getCheckedNodes()
         let areas = []
-        for (let i = 0; i < this.buildscopeDate.length; i++) {
-          let areasObj = {
-            'areaid': this.buildscopeDate[i]
+        console.log(areas)
+        getCheckedNodes.forEach((val) => {
+          let obj = {
+            areacode: val.areacode,
+            areaid: val.areaid,
+            areaname: val.areaname
           }
-          areas.push(areasObj)
-        }
+          areas.push(obj)
+        })
         let getCheckedNodesData = this.$refs.tree.getCheckedNodes()
         let baseDevices = []
         getCheckedNodesData.forEach((val) => {
@@ -564,7 +569,9 @@ export default {
   },
   created () {
     //  获取项目设备
-    console.log(this.edit.projectsinfosviewdetail.projectrange)
+    console.log('-0-0-0-0-0-0-0-0-0-0-0-0-0')
+    console.log(this.edit)
+
     //  服务机构
     this.proprietornameDate = this.edit.projectsinfosviewdetail.vindicatorid
     //  建筑范围
@@ -613,9 +620,9 @@ export default {
       }
     })
     //  获取范围 默认值
-    this.axios.post(getProjectAreas(this.project.projectid)).then((response) => {
+    this.axios.post(findAllRootAreasTree()).then((response) => {
       if (response.data.code === 0) {
-        console.log('===============')
+        console.log(response)
         this.purview = response.data.data
         console.log(this.purview)
       }

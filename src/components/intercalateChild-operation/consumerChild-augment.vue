@@ -162,14 +162,17 @@
 </template>
 
 <script>
-import { appUser, getRolesList, getJobList, getOrganizationTrees } from '../../api/user'
+import { appUser, getRolesList, getJobList, getOrganizationTrees, upload } from '../../api/user'
 export default {
   name: 'consumerChild-augment',
   props: ['increaseBoolean'],
   data () {
     return {
+      roleDisabled: false,
       fileList: [],
       condition: true,
+      // upload
+      upload: upload(),
       //  登陆名
       nameoflanding: '',
       //  用户姓名
@@ -204,11 +207,26 @@ export default {
       defaultProps: {
         label: 'organizationName',
         children: 'subOrgnizations',
-        value: 'organizationCode'
+        value: 'organizationId'
       }
     }
   },
+  watch: {
+    organizationid: function (val) {
+      console.log(val)
+      this.axios.post(`http://172.16.6.181:8920/roles/FindAllRolesByOrgID?orgid=${val}`).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response)
+          this.userstate = []
+          this.roleSelect = response.data.data
+        }
+      })
+    }
+  },
   methods: {
+    defaultPropsBlur (item) {
+      console.log(item)
+    },
     handleAvatarSuccess (response, file, fileList) {
       this.imageUrl = URL.createObjectURL(file.raw)
       this.imageUrlTwo = response.data
@@ -303,6 +321,8 @@ export default {
     }
   },
   created () {
+    console.log('000000')
+    console.log(this.upload)
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(getRolesList(token)).then((response) => {
       if (response.data.code === 0) {
@@ -324,6 +344,7 @@ export default {
     this.axios.post(getOrganizationTrees(token)).then((response) => {
       if (response.data.code === 0) {
         this.organize = (response.data.data)
+        console.log(this.organize)
       }
     })
   }

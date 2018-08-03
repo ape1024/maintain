@@ -289,7 +289,7 @@ import Jurisdiction from '../intercalateChild-operation/structureChild-jurisdict
 import member from '../intercalateChild-operation/structureChild-member'
 import bluepencil from '../intercalateChild-operation/structureChild-bluepencil'
 import structureCopy from '../intercalateChild-operation/structureChild-copy'
-import {managementAuthority, managementhandleNodeClickOne, managementhandleNodeClickTwo, managementCreatedtree, managementCreatedProvince, managementCreatedcategory, managementCreatedbusiness, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, getCitiesByProvinceId, getCountiesByCityId} from '../../api/user'
+import {managementAuthority, managementhandleNodeClickOne, managementhandleNodeClickTwo, managementCreatedtree, managementCreatedProvince, managementCreatedcategory, managementCreatedbusiness, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, getCitiesByProvinceId, getCountiesByCityId, getAllHigherOrgIDs} from '../../api/user'
 export default {
   name: 'intercalateChild-structure',
   components: {
@@ -632,7 +632,8 @@ export default {
     handleNodeClick (data) {
       //  http://172.16.6.181:8920/organization/getAllHigherOrgIDs?orgid=2
       // return
-      this.axios.post(`http://172.16.6.181:8920/organization/getAllHigherOrgIDs?orgid=${data.organizationId}`).then((response) => {
+
+      this.axios.post(getAllHigherOrgIDs(data.organizationId)).then((response) => {
         this.companyDate = []
         if (response.data.code === 0) {
           this.companyDate = response.data.data

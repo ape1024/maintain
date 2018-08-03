@@ -1,18 +1,6 @@
 // import axios from 'axios'
-
-//  沈哥
-// let Test = `http://172.16.6.181:8920`
-//  刘哥
-// let Test = `http://172.16.6.16:8920`
-//  测试
-// let Test = `http://172.16.5.35:18920`
-//  虎哥
-// let Test = `http://172.16.6.81:8920`
-//  小磊
-// let Test = `http://172.16.6.99:8920`
 //  登录接口
-
-/* global Test:true */
+const Test = window.Test
 export const userLogin = (username, password) => {
   let url = `${Test}/auth/login?usercode=${username}&password=${password}`
   return url
@@ -51,7 +39,11 @@ export const appUser = (token, organizationid, usercode, username, pwd, email, t
   const url = `${Test}/users/createUser?token=${token}&organizationid=${organizationid}&usercode=${usercode}&username=${username}&pwd=${pwd}&email=${email}&tel=${tel}&job=${job}&memo=${memo}&roleids=${roleidsStr}&file=${file}`
   return url
 }
-//  http://172.16.6.181:8920/upload/upload
+
+export const upload = () => {
+  const url = `${Test}/upload/upload`
+  return url
+}
 //  组织结构权限管理  获取左边的树状结构
 export const managementCreatedtree = (token) => {
   const url = `${Test}/organization/getOrganizationTreeByUser?token=${token}`
@@ -269,6 +261,11 @@ export const maintainRepaircheckTask = (token, repairtaskid, confirmopinion) => 
   const url = `${Test}/repairtasks/checkTask?token=${token}&taskID=${repairtaskid}&confirmopinion=${confirmopinion}`
   return url
 }
+//  getAllHigherOrgIDs
+export const getAllHigherOrgIDs = (orgid) => {
+  const url = `http://172.16.6.181:8920/organization/getAllHigherOrgIDs?orgid=${orgid}`
+  return url
+}
 //  获取故障维修所有分类选项
 export const maintainRepairgetFaultSelectItems = () => {
   const url = `${Test}/repairtasks/getFaultSelectItems`
@@ -470,8 +467,8 @@ export const karaktersFindAllFunctions = (token) => {
   return url
 }
 //  创建角色
-export const increasedCreaterole = (jsonRoleFunctions, roleName, organizationinfoid, token) => {
-  const url = `${Test}/roles/createrole?jsonRoleFunctions=${jsonRoleFunctions}&roleName=${roleName}&organizationid=${organizationinfoid}&token=${token}`
+export const increasedCreaterole = (roleName, organizationinfoid, token) => {
+  const url = `${Test}/users/createrole?roleName=${roleName}&organizationid=${organizationinfoid}&token=${token}`
   return url
 }
 //  查看用户信息
@@ -552,6 +549,11 @@ export const findAllAreaTrees = () => {
 //  获取项目类型
 export const increasegetWorkTypes = () => {
   const url = `${Test}/projects/getWorkTypes`
+  return url
+}
+//  获取项目区域 (所有)
+export const findAllRootAreasTree = () => {
+  const url = `http://172.16.6.181:8920/areas/findAllRootAreasTree`
   return url
 }
 //  获取服务机构
