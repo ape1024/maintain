@@ -452,14 +452,6 @@ export default {
         })
         return
       }
-      //  父级id
-      let parentID = ''
-      if ((this.companyDate).length === 0) {
-        parentID = ''
-      } else {
-        let parentLength = this.companyDate
-        parentID = parentLength[parentLength.length - 1]
-      }
       //  *单位编码
       let organizationcode = this.encrypt
       //  *单位名称
@@ -516,28 +508,25 @@ export default {
       const url = managementAuthority(token, organizationtype, firebrigadeid, firecontrolcategoryid, industrycategoryid, file, organization, parentid, countyid, city, province, organizationcode, organizationname, shortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)
       console.log(url)
       if (organizationcode !== '' && organizationname !== '') {
-        if (parentID !== '') {
-          this.axios.post(url).then((response) => {
-            if (response.data.code === 0) {
-              this.$message({
-                message: '添加成功',
-                type: 'success'
-              })
-              this.axios.post(managementCreatedtree(token)).then((response) => {
-                if (response.data.code === 0) {
-                  this.data = []
-                  this.data.push(response.data.data)
-                }
-              })
-              //  获取到 对应的数组
-            } else if (response.data.code === -1) {
-              this.$message({
-                message: '组织机构代码不能重复！',
-                type: 'warning'
-              })
-            }
-          })
-        }
+        this.axios.post(url).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+            this.axios.post(managementCreatedtree(token)).then((response) => {
+              if (response.data.code === 0) {
+                this.data = response.data.data
+              }
+            })
+            //  获取到 对应的数组
+          } else if (response.data.code === -1) {
+            this.$message({
+              message: '组织机构代码不能重复！',
+              type: 'warning'
+            })
+          }
+        })
       } else {
         this.$message({
           message: '名称和编码都不能为空！',
@@ -626,8 +615,7 @@ export default {
           })
           this.axios.post(managementCreatedtree(token)).then((response) => {
             if (response.data.code === 0) {
-              this.data = []
-              this.data.push(response.data.data)
+              this.data = response.data.data
             }
           })
         }
@@ -877,7 +865,7 @@ export default {
     //  左边的树状结构
     this.axios.post(managementCreatedtree(token)).then((response) => {
       if (response.data.code === 0) {
-        this.data.push(response.data.data)
+        this.data = response.data.data
       }
     })
     //  省份

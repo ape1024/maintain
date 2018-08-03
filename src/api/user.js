@@ -1,7 +1,7 @@
 // import axios from 'axios'
 
 //  沈哥
-let Test = `http://172.16.6.181:8920`
+// let Test = `http://172.16.6.181:8920`
 //  刘哥
 // let Test = `http://172.16.6.16:8920`
 //  测试
@@ -9,9 +9,10 @@ let Test = `http://172.16.6.181:8920`
 //  虎哥
 // let Test = `http://172.16.6.81:8920`
 //  小磊
-//  let Test = `http://172.16.6.92:8920`
 // let Test = `http://172.16.6.99:8920`
 //  登录接口
+
+/* global Test:true */
 export const userLogin = (username, password) => {
   let url = `${Test}/auth/login?usercode=${username}&password=${password}`
   return url
@@ -50,6 +51,7 @@ export const appUser = (token, organizationid, usercode, username, pwd, email, t
   const url = `${Test}/users/createUser?token=${token}&organizationid=${organizationid}&usercode=${usercode}&username=${username}&pwd=${pwd}&email=${email}&tel=${tel}&job=${job}&memo=${memo}&roleids=${roleidsStr}&file=${file}`
   return url
 }
+//  http://172.16.6.181:8920/upload/upload
 //  组织结构权限管理  获取左边的树状结构
 export const managementCreatedtree = (token) => {
   const url = `${Test}/organization/getOrganizationTreeByUser?token=${token}`
@@ -128,7 +130,11 @@ export const getCountiesByCityId = (countid) => {
   const url = `${Test}/organization/getCountiesByCityId?cityid=${countid}`
   return url
 }
-
+//  测试当前密码
+export const steganogramCheckOldPwd = (usercode, password) => {
+  const url = `http://172.16.6.181:8920/auth/checkOldPwd?usercode=${usercode}&password=${password}`
+  return url
+}
 //  home
 export const maintainHomeRightTop = (projectid) => {
   const url = `${Test}/dev/statDeviceAndQuestionAndTaskRate?projectid=${projectid}`
@@ -464,8 +470,8 @@ export const karaktersFindAllFunctions = (token) => {
   return url
 }
 //  创建角色
-export const increasedCreaterole = (roleName, organizationinfoid, token) => {
-  const url = `${Test}/roles/createrole?roleName=${roleName}&organizationinfoid=${organizationinfoid}&token=${token}`
+export const increasedCreaterole = (jsonRoleFunctions, roleName, organizationinfoid, token) => {
+  const url = `${Test}/roles/createrole?jsonRoleFunctions=${jsonRoleFunctions}&roleName=${roleName}&organizationid=${organizationinfoid}&token=${token}`
   return url
 }
 //  查看用户信息

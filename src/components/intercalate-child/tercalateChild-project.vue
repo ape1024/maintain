@@ -123,6 +123,7 @@ export default {
     modify (project) {
       //  修改
       this.axios.post(findDetailByProjectid(project.projectid)).then((response) => {
+        console.log('---=++=')
         console.log(response)
         if (response.data.code === 0) {
           this.modifyDate = response.data.data

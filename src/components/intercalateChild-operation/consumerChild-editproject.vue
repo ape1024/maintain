@@ -139,7 +139,7 @@
               <div @click.stop="firecontrolClick" class="firecontrol">
                 {{buildscope}}
               </div>
-              <div v-if="buildscopeBoolean" class="firecontrolDiv">
+              <div v-show="buildscopeBoolean" class="firecontrolDiv">
                 <div class="firecontrolDiv_div">
                   <el-tree
                     :data="purview"
@@ -161,7 +161,7 @@
               <div class="firecontrol" @click.stop="fireconboolean">
                 {{firecontrolda}}
               </div>
-              <div v-if="firecontrolBoolean" class="firecontrolDiv">
+              <div v-show="firecontrolBoolean" class="firecontrolDiv">
                 <div class="firecontrolDiv_div">
                   <el-tree
                     :default-checked-keys=this.firecontrolDate
@@ -182,7 +182,6 @@
           </div>
         </div>
       </div>
-
       <div class="purview">
         <header class="contentHeader">
           <p class="headerP">维保内容</p>
@@ -289,7 +288,7 @@ export default {
       // 本页面的显示隐藏
       Thispage: false,
       //  项目名称
-      projectName: this.project.projectname,
+      projectName: '',
       //  项目开始时间
       startdate: this.project.startdate,
       //  业主单位
@@ -335,6 +334,12 @@ export default {
       fileList: [],
       documentPapers: [],
       arrayAddresses: []
+    }
+  },
+  watch: {
+    firecontrolDate: function (val) {
+      console.log('1111')
+      console.log(val)
     }
   },
   methods: {
@@ -444,7 +449,9 @@ export default {
             'projectid': `${this.project.projectid}`,
             'proprietor': `${this.proprieTor}`,
             'startdate': `${this.startdate}`,
-            'vindicator': `${this.proprietornameDate}`
+            'vindicator': `${this.proprietornameDate}`,
+            'projectname': `${this.projectName}`,
+            'projectcode': `${this.projectCode}`
           },
           'projectInfo': {
             'address': `${this.regionDate}`,
@@ -557,7 +564,6 @@ export default {
   },
   created () {
     //  获取项目设备
-
     console.log(this.edit.projectsinfosviewdetail.projectrange)
     //  服务机构
     this.proprietornameDate = this.edit.projectsinfosviewdetail.vindicatorid
@@ -576,9 +582,9 @@ export default {
     //  备注
     this.comment = this.edit.projectsinfosviewdetail.comment
     //  项目名称
-    this.projectName = this.edit.projectsinfosviewdetail.proprietorname
+    this.projectName = this.edit.projectsinfosviewdetail.projectname
     //  项目code
-    this.projectCode = this.edit.projectsinfosviewdetail.proprietorcode
+    this.projectCode = this.edit.projectsinfosviewdetail.projectcode
     if (this.edit.filenames) {
       this.edit.filenames.forEach((val, index) => {
         let obj = {
