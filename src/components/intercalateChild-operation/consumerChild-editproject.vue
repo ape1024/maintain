@@ -570,8 +570,9 @@ export default {
   created () {
     //  获取项目设备
     console.log('-0-0-0-0-0-0-0-0-0-0-0-0-0')
-    console.log(this.edit)
-
+    console.log(this.edit.areaids)
+    this.buildscopeDate = this.edit.areaids
+    this.projectDate = this.edit.workTypeids
     //  服务机构
     this.proprietornameDate = this.edit.projectsinfosviewdetail.vindicatorid
     //  建筑范围
@@ -602,11 +603,14 @@ export default {
       })
     }
     console.log('=--=---!11')
-    this.edit.devtypes.forEach((val) => {
-      val.children.forEach((data) => {
-        this.firecontrolDate.push(data.id)
+    console.log(this.edit.devtypes)
+    if (this.edit.devtypes) {
+      this.edit.devtypes.forEach((val) => {
+        val.children.forEach((data) => {
+          this.firecontrolDate.push(data.id)
+        })
       })
-    })
+    }
     console.log('----1')
     console.log(this.firecontrolDate)
     console.log('**')

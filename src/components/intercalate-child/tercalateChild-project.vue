@@ -122,6 +122,7 @@ export default {
     },
     modify (project) {
       //  修改
+      console.log(findDetailByProjectid(project.projectid))
       this.axios.post(findDetailByProjectid(project.projectid)).then((response) => {
         console.log('---=++=')
         console.log(response)

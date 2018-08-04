@@ -54,7 +54,7 @@
                 <el-option
                   v-for="item in roleSelect"
                   :key="item.roleid"
-                  :label="item.creatername"
+                  :label="item.rolename"
                   :value="item.roleid">
                 </el-option>
               </el-select>
@@ -150,7 +150,7 @@
 </template>
 
 <script>
-import { modifytheUser, getRolesList, getJobList, getOrganizationTrees } from '../../api/user'
+import { modifytheUser, getRolesList, getJobList, getOrganizationTrees, FindAllRolesByOrgID } from '../../api/user'
 export default {
   name: 'consumerChild-changeinfo',
   props: ['communication'],
@@ -196,7 +196,22 @@ export default {
       imageUrlTwo: ''
     }
   },
+  watch: {
+    organizeOptions (val) {
+      console.log('-09')
+      let data = val[val.length - 1]
+      this.FindAllRolesByOrg(data)
+    }
+  },
   methods: {
+    FindAllRolesByOrg (data) {
+      this.axios.post(FindAllRolesByOrgID(data)).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response.data.data)
+          this.roleSelect = response.data.data
+        }
+      })
+    },
     handleAvatarSuccess (response, file, fileList) {
       this.imageUrl = URL.createObjectURL(file.raw)
       this.imageUrlTwo = response.data
@@ -240,7 +255,6 @@ export default {
       let roleids = this.userstate.length !== 0 ? this.userstate : []
       console.log(roleids)
       //  获取上传图片
-
       let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
       this.axios.post(modifytheUser(userid, organizationid, username, email, tel, userstate, job, memo, roleids, file)).then((response) => {
         console.log(response)
@@ -257,27 +271,32 @@ export default {
     },
     handleChange (value) {
       let Value = value[value.length - 1]
-      console.log(Value)
       this.organizationid = Value
+      this.userstate = []
     }
   },
   created () {
     if (this.communication.allorgid.length !== 0) {
       this.organizeOptions = this.communication.allorgid
-      this.communication.allorgid.forEach((val) => {
-        this.organizeOptions.push(`${val}`)
-      })
-      // console.log(this.communication.allorgid.split(';'))
-      console.log('----+++++')
-      console.log(this.communication)
+      console.log('----')
+      console.log(this.communication.allorgid)
     }
+    console.log(this.communication.job)
+    console.log(typeof this.communication.roleid)
     this.businesspostCode = this.communication.job
     // this.organizeOptions.push(this.communication)
-    let roleid = this.communication.roleid.split(';')
-    // this.userstate = roleid
-    roleid.forEach((val) => {
-      this.userstate.push(parseInt(val))
-    })
+    if (this.communication.roleid !== '') {
+      let roleid = this.communication.roleid.split(';')
+      console.log(roleid)
+      console.log('090909090909090')
+      // this.userstate = roleid
+      roleid.forEach((val) => {
+        this.userstate.push(parseInt(val))
+      })
+    } else {
+      this.userstate = []
+    }
+
     // this.userstate.push(this.communication.roleid)
     let token = JSON.parse(window.sessionStorage.token)
     //  用户角色

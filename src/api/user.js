@@ -39,7 +39,11 @@ export const appUser = (token, organizationid, usercode, username, pwd, email, t
   const url = `${Test}/users/createUser?token=${token}&organizationid=${organizationid}&usercode=${usercode}&username=${username}&pwd=${pwd}&email=${email}&tel=${tel}&job=${job}&memo=${memo}&roleids=${roleidsStr}&file=${file}`
   return url
 }
-
+//   FindAllRolesByOrgID
+export const FindAllRolesByOrgID = (data) => {
+  const url = `http://172.16.6.181:8920/roles/FindAllRolesByOrgID?orgid=${data}`
+  return url
+}
 export const upload = () => {
   const url = `${Test}/upload/upload`
   return url
@@ -479,6 +483,16 @@ export const consumerFindUser = (userid) => {
 //  获取用户列表
 export const consumerfindAll = (pageIndex, pageSize) => {
   const url = `${Test}/users/findAll?pageIndex=0&pageSize=30`
+  return url
+}
+//  获取用户列表(自己下属)
+export const findAllBydefault = (pageIndex, pageSize, token) => {
+  const url = `${Test}/users/findAllBy?&&pageIndex=${pageIndex}&pageSize=${pageSize}&token=${token}`
+  return url
+}
+//  获取用户列表 (条件查询)
+export const findAllBy = (selectedOptions, role, Username, Handphone, pageIndex, pageSize, token) => {
+  const url = `${Test}/users/findAllBy?organizationId=${selectedOptions}&roleId=${role}&usercode=${Username}&tel=${Handphone}&pageIndex=${pageIndex}&pageSize=${pageSize}&token=${token}`
   return url
 }
 //  删除用户

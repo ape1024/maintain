@@ -9,6 +9,7 @@
               <div class="div_input">
                 <el-cascader
                   size="mini"
+                  clearable
                   :options="regionDate"
                   v-model="regionModel"
                   :props="regionProps"
@@ -21,6 +22,7 @@
               <div class="div_input">
                 <el-cascader
                   size="mini"
+                  clearable
                   v-model="equipmentDate"
                   :options="equipment"
                   :props="equipmentProps"
@@ -31,7 +33,7 @@
             <li class="li_input">
               <p class="div_p">厂家：</p>
               <div class="div_input">
-                <el-select @focus="focus" size="mini" v-model="manufactorModel" placeholder="">
+                <el-select @focus="focus" size="mini" v-model="manufactorModel" placeholder="" clearable>
                   <el-option
                     v-for="item in manufactor"
                     :key="item.manufacturerid"
@@ -44,7 +46,7 @@
             <li class="li_input">
               <p class="div_p">运行状态：</p>
               <div class="div_input">
-                <el-select v-model="runningState" size="mini" placeholder="">
+                <el-select v-model="runningState" size="mini" placeholder="" clearable>
                   <el-option
                     v-for="item in runningstateDate"
                     :key="item.value"
@@ -57,7 +59,7 @@
             <li class="li_input">
               <p class="div_p">审核状态：</p>
               <div class="div_input">
-                <el-select v-model="Auditstatus" size="mini" placeholder="">
+                <el-select v-model="AuditstatusD" size="mini" placeholder="" clearable>
                   <el-option
                     v-for="item in AuditstatusDate"
                     :key="item.value"
@@ -156,44 +158,40 @@
 <script>
 import adminchild from '../admin-child/admin-child'
 import increase from '../admin-child/adminChild-review'
-import { admingetDevListDetailProjects, getDevListDetailProjectsTwo, maintainReportfindManufactures, findAreasTreeByProjectid, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
+import { admingetDevListDetailProjects, maintainReportfindManufactures, findAreasTreeByProjectid, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
 export default {
   name: 'maintain-admin',
   components: {
     adminchild,
     increase
   },
+  watch: {
+    equipmentDate (val) {
+      console.log('分割线')
+      console.log(val)
+    }
+  },
   methods: {
     //  查询
     query () {
-      //  区域id
-      let areaid = this.regionModel[this.regionModel.length - 1]
-      if (areaid === undefined) {
-        this.$message({
-          message: '请先选择区域!',
-          type: 'warning'
-        })
-        return false
-      } else {
-        //  设备类型 code  basedevicecode
-        if (this.equipmentDate[0] !== undefined && this.equipmentDate.length !== 0) {
-          let basedevicecode = this.equipmentDate[this.equipmentDate.length - 1]
-
-          this.axios.post(getDevListDetailProjectsTwo(basedevicecode, areaid)).then((response) => {
-            if (response.data.code === 0) {
-              console.log(response)
-              this.tableData = response.data.data
-            }
-          })
-        } else {
-          this.axios.post(admingetDevListDetailProjects(areaid)).then((response) => {
-            if (response.data.code === 0) {
-              console.log(response.data.data)
-              this.tableData = response.data.data
-            }
-          })
-        }
-      }
+      //  接口 getDevListDetailProjectsTwo
+      // console.log(this.AuditstatusD)
+      // //  区域id
+      // let areaid = this.regionModel.length === 0 ? '' : this.regionModel[this.regionModel.length - 1]
+      // console.log(areaid)
+      // //  设备类型
+      // let equipment = ''
+      // if (this.equipmentDate.length === 0 || !this.equipmentDate[0]) {
+      //   equipment = ''
+      // } else {
+      //   equipment = this.equipmentDate[this.equipmentDate.length - 1]
+      //
+      // }
+      // //  运行状态
+      // let running = this.runningState
+      // //  审核状态
+      // let Auditstatus = this.AuditstatusD
+      //
     },
     selectStyle (item) {
       this.tableData.forEach((val) => {
@@ -275,7 +273,7 @@ export default {
       runningState: '',
       //  审核状态
       AuditstatusDate: [],
-      Auditstatus: '',
+      AuditstatusD: '',
       //  传给子级值
       tableChild: '',
       options: [],
@@ -337,6 +335,8 @@ export default {
     this.axios.post(FindDevAllApprovalstate()).then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
+        console.log('-adad')
+        console.log(this.AuditstatusDate)
       }
     })
   }
