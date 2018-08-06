@@ -72,24 +72,24 @@
           <li class="entryLitwo">
             姓名
           </li>
-          <li class="entryLitwo">
+         <!-- <li class="entryLitwo">
             角色
-          </li>
+          </li>-->
           <li class="entryLitwo">
             邮箱
           </li>
           <li class="entryLitwo">
             电话
           </li>
-          <li class="entryLitwo">
+         <!-- <li class="entryLitwo">
             组织机构
-          </li>
+          </li>-->
           <li class="entryLitwo">
             最后登录时间
           </li>
-          <li class="entryLithree">
+         <!-- <li class="entryLithree">
             锁定
-          </li>
+          </li>-->
           <li class="entryLifour">
             操作
           </li>
@@ -103,16 +103,16 @@
               <li class="entryLitwo">
                 {{item.username?item.username:' '}}
               </li>
-              <li class="entryLitwo">
+             <!-- <li class="entryLitwo">
                 {{item.userid?item.userid:' '}}
-              </li>
+              </li>-->
               <li class="entryLitwo">{{item.email?item.email:' '}}</li>
               <li class="entryLitwo">{{item.tel?item.tel:' '}}</li>
-              <li class="entryLitwo">{{item.organizationid?item.organizationid:' '}}</li>
+              <!--<li class="entryLitwo">{{item.organizationid?item.organizationid:' '}}</li>-->
               <li class="entryLitwo">{{item.lastlogintime?fmtDate(item.lastlogintime):' '}}</li>
-              <li class="entryLithree">
+             <!-- <li class="entryLithree">
                 {{item.userroleid?item.userroleid:' '}}
-              </li>
+              </li>-->
               <li class="entryLifour">
                 <!--查看-->
                 <p v-if="JurisdictionSelect" @click="exaMine(item.userid)" class="examine">
@@ -142,9 +142,14 @@
       <div class="paging">
         <!--分页器-->
         <el-pagination
+          @current-change="currentChangeHandle"
           background
+          :page-count="totalPage"
+          :page-size="pageSize"
+          :current-page="pageIndex"
           layout="prev, pager, next"
-          :page-count="10">
+          prev-text="上一页"
+          next-text="下一页">
         </el-pagination>
       </div>
     </section>
@@ -172,7 +177,7 @@
 </template>
 
 <script>
-import { iConsumerexamine, findAllBydefault, karaktersFindAllRoles, consumerFindUser, consumerfindAll, consumerdelUser, getOrganizationTreeByUser, findAllBy } from '../../api/user'
+import { iConsumerexamine, karaktersFindAllRoles, consumerFindUser, consumerdelUser, getOrganizationTreeByUser, findAllBy } from '../../api/user'
 import increase from '../intercalateChild-operation/consumerChild-augment'
 import examine from '../intercalateChild-operation/consumerChild-seeinfo'
 import edit from '../intercalateChild-operation/consumerChild-steganogram'
@@ -222,10 +227,14 @@ export default {
       JurisdictionInsert: true,
       JurisdictionDelete: true,
       JurisdictionApproval: true,
-      JurisdictionUpdate: true
+      JurisdictionUpdate: true,
+      pageIndex: 1,
+      pageSize: 10,
+      totalPage: 0
     }
   },
   methods: {
+    // 获取数据列表
     search () {
       //  用户名
       // this.Username
@@ -238,12 +247,19 @@ export default {
       console.log(this.Handphone)
 
       let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(findAllBy(this.selectedOptions, this.role, this.Username, this.Handphone, 1, 30, token)).then((response) => {
+      this.axios.post(findAllBy(this.selectedOptions, this.role, this.Username, this.Handphone, this.pageIndex, this.pageSize, token)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response.data.data.data)
+          console.log(response.data.data)
           this.information = response.data.data.data
+          this.totalPage = response.data.data.pageTotal
+          console.log(this.totalPage)
         }
       })
+    },
+    // 当前页
+    currentChangeHandle (val) {
+      this.pageIndex = val
+      this.search()
     },
     //  时间戳
     fmtDate (obj) {
@@ -265,11 +281,10 @@ export default {
     induce () {
       this.adhibitBoolean = true
     },
+    // 新增
     Incr (ev) {
-      this.axios.post(consumerfindAll(0, 30)).then((response) => {
-        this.information = response.data.data.data
-        this.adhibitBoolean = ev
-      })
+      this.adhibitBoolean = ev
+      this.search()
     },
     exaMine (userid) {
       let url = iConsumerexamine(userid)
@@ -300,11 +315,10 @@ export default {
       this.itemUserId = item
       this.inforBoolean = true
     },
+    // 修改用户
     inFourma (ev) {
       this.modifyBoolean = ev
-      this.axios.post(consumerfindAll(0, 30)).then((response) => {
-        this.information = response.data.data.data
-      })
+      this.search()
     },
     amputate ($index, content, userId) {
       this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
@@ -357,10 +371,6 @@ export default {
         console.log(val.update)
       }
     })
-    this.axios.post(findAllBydefault(1, 30, token)).then((response) => {
-      console.log(response)
-      this.information = response.data.data.data
-    })
     this.axios.post(karaktersFindAllRoles(token)).then((response) => {
       if (response.data.code === 0) {
         this.roleData = response.data.data
@@ -373,6 +383,7 @@ export default {
         this.options = response.data.data
       }
     })
+    this.search()
   }
 }
 </script>
@@ -465,11 +476,11 @@ export default {
         font-size $font-size-medium
     .entryLione
       float left
-      width 9%
+      width 10%
       padding-left 1%
       text-align left
     .entryLitwo
-      width 10%
+      width 14%
       text-align left
       float left
     .entryLithree
@@ -480,7 +491,7 @@ export default {
       overflow hidden
       text-overflow ellipsis
     .entryLifour
-      width 24%
+      width 30%
       float left
       text-align left
     .entryLifive

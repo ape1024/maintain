@@ -39,7 +39,7 @@
           </div>
           <div class="stateText">
             <p class="seatP">现场照片：</p>
-            <img :key="index" v-for="(item, index) in photograph" class="photograph" :src="item" alt="">
+            <img :key="index" @click="selectImg(index)"  v-for="(item, index) in photograph" class="photograph" :src="item" alt="">
           </div>
         </div>
       </div>
@@ -48,10 +48,12 @@
         <div @click.stop="closedown" class="closedown">关闭</div>
       </div>
     </section>
+    <dialog-img ref="dialogImg" :list="photograph"></dialog-img>
   </div>
 </template>
 
 <script>
+import DialogImg from 'base/dialog-img/dialog-img'
 import { maintainReportgetFeedbackstateStates, maintainReportgetConfrimStates } from '../../api/user'
 export default {
   name: 'reportChild-lookover',
@@ -76,7 +78,14 @@ export default {
     },
     closedown () {
       this.$emit('look', this.lookoverBoolean)
+    },
+    selectImg (index) {
+      this.$refs.dialogImg.switchIndex(index)
+      this.$refs.dialogImg.open()
     }
+  },
+  components: {
+    DialogImg
   },
   created () {
     this.photograph = this.msg.photos !== '' ? this.msg.photos.split(',') : ''
