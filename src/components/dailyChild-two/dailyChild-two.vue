@@ -1,7 +1,8 @@
 <template>
   <div class="inline_fill">
     <ul class="list_heder">
-      <li class="list_heder_litwo">
+      <li @click.stop class="list_heder_litwo">
+        <el-checkbox @change="checkedChange(checked)" v-model="checked"></el-checkbox>
         设备名称
       </li>
       <li class="list_heder_li">
@@ -22,11 +23,15 @@
       <li class="list_heder_li">
         操作
       </li>
+      <li class="list_heder_li_three">
+        批量审批
+      </li>
     </ul>
     <ul class="inline_list">
-      <li :key="index" v-for="(item,index) in dailyData" class="inline_list_li" @click.stop="">
+      <li :key="index" v-for="(item,index) in dailyChild" class="inline_list_li" @click.stop="">
         <ul :id="item.id" :class="[item.error + item.problem > 0?'list_dataUl':'list_data']">
           <li class="list_data_litwo">
+            <el-checkbox v-model="item.judge" v-bind:disabled="item.available"></el-checkbox>
             {{item.deviceName}}
           </li>
           <li class="list_data_li">
@@ -47,6 +52,9 @@
           <li class="list_data_li">
             <p v-if="JurisdictionInsert" @click.stop="examine(item.deviceID)" class="list_data_li_p">审核</p>
             <!--<p @click.stop="distriBoolean" class="list_data_li_ptwo">快速分配</p>-->
+            <p @click.stop="ArrBoolean(item.deviceID)" class="list_data_li_ptwo">
+              快速分配
+            </p>
           </li>
         </ul>
         <!--第三级，目前不需要了-->
@@ -59,11 +67,15 @@
       </li>
       <section v-if="examineBoolean" @click.stop class="review">
         <!--审核-->
-        <childExamine :examine="examineBoolean" :childDate="examineDate" :examineName="taskName" @examineMine="examineDistribution" @mine="mineSwitch"></childExamine>
+        <childExamine :examine="examineBoolean"  :examineName="taskName" @examineMine="examineDistribution" :taskidCode="taskid" :equipmentCode="equipmentID" @mine="mineSwitch"></childExamine>
       </section>
       <!--安排任务-->
       <section v-if="distributionBoolean" @click.stop class="distribution">
         <childDistribution :getrepairDate="getrepair" :instruction="instructionData" :distriBoolean="distributionBoolean" :equipment="equipmentID"  @dist="Dist"></childDistribution>
+      </section>
+      <!--安排任务查看-->
+      <section v-if="ArrangetheviewBoolean" @click.stop  class="review">
+        <childArrangethview :examine="examineBoolean"  :examineName="taskName" @examineMine="examineDistribution" :taskidCode="taskid" :equipmentCode="equipmentID" @mine="arrangSwitch"></childArrangethview>
       </section>
     </ul>
   </div>
@@ -72,15 +84,17 @@
 <script>
 import dailythree from '../dailyChild-three/dailyChild-three'
 import childExamine from '../dailyChild-operation/dailyChild-examine'
+import childArrangethview from '../dailyChild-operation/daily-Arrangetheview'
 import childDistribution from '../dailyChild-operation/dailyChild-distribution'
-import { maintainDailygetRepairTypes, maintainDailygetDetailsByDeviceId } from '../../api/user'
+import { maintainDailygetRepairTypes, maintainDailygetCurrentTaskDeviceStat } from '../../api/user'
 export default {
   name: 'dailyChild-two',
   props: ['dailyData', 'taskid', 'taskName'],
   components: {
     dailythree,
     childExamine,
-    childDistribution
+    childDistribution,
+    childArrangethview
   },
   data () {
     return {
@@ -88,13 +102,16 @@ export default {
       examineBoolean: false,
       // 快速分配
       distributionBoolean: false,
+      ArrangetheviewBoolean: false,
       content: [],
       examineDate: '',
       getrepair: '',
       instructionData: '',
       // 点击哪个设备的id
       equipmentID: '',
-      JurisdictionInsert: ''
+      JurisdictionInsert: '',
+      checked: false,
+      dailyChild: ''
     }
   },
   methods: {
@@ -107,27 +124,43 @@ export default {
     //   })
     //   item.active = !item.active
     // },
+    arrangSwitch (ev) {
+      this.ArrangetheviewBoolean = ev
+    },
+    ArrBoolean (deviceID) {
+      this.equipmentID = deviceID
+      this.ArrangetheviewBoolean = true
+    },
+    checkedChange (data) {
+      if (data) {
+        this.dailyChild.forEach((val) => {
+          if ((val.error + val.problem) <= 0) {
+            val.judge = true
+          }
+        })
+      } else {
+        this.dailyChild.forEach((val) => {
+          val.judge = false
+        })
+      }
+    },
     mineSwitch (ev) {
       this.examineBoolean = ev
     },
     // 开启审核
     examine (deviceID) {
+      console.log(deviceID)
       this.equipmentID = deviceID
-
-      this.axios.post(maintainDailygetDetailsByDeviceId(this.taskid, deviceID)).then((response) => {
-        if (response.data.code === 0) {
-          this.examineDate = response.data.data
-          this.examineBoolean = true
-        }
-      })
+      this.examineBoolean = true
     },
     examineDistribution (ev) {
       this.instructionData = ev
+      this.ArrangetheviewBoolean = false
       this.examineBoolean = false
-      this.distributionBoolean = true
       this.axios.post(maintainDailygetRepairTypes()).then((response) => {
         if (response.data.code === 0) {
           this.getrepair = response.data.data
+          this.distributionBoolean = true
         }
       })
     },
@@ -145,10 +178,26 @@ export default {
     }
   },
   created () {
+    console.log('--------')
+    console.log(this.taskid)
+    console.log(this.dailyData)
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'task_xj') {
         this.JurisdictionInsert = val.insert
+      }
+    })
+    this.axios.post(maintainDailygetCurrentTaskDeviceStat(this.taskid)).then((response) => {
+      if (response.data.code === 0) {
+        response.data.data.forEach((val) => {
+          val.judge = false
+          if ((val.error + val.problem) > 0) {
+            val.available = true
+          } else {
+            val.available = false
+          }
+        })
+        this.dailyChild = response.data.data
       }
     })
   }
@@ -335,12 +384,12 @@ export default {
         .list_heder_li
           float left
           text-align center
-          width 13%
+          width 12%
           overflow hidden
         .list_heder_litwo
           float left
           width 14%
-          text-align center
+          text-align left
           overflow hidden
           padding-left 2%
       .inline_list
@@ -369,10 +418,10 @@ export default {
         float left
         text-align center
         overflow hidden
-        width 13%
+        width 12%
       .list_data_litwo
         float left
-        text-align center
+        text-align left
         width 14%
         overflow hidden
         padding-left 2%
@@ -454,5 +503,10 @@ export default {
     height 100%
     background transparent
     z-index 11
+    overflow hidden
+  .list_heder_li_three
+    float left
+    text-align center
+    width 12%
     overflow hidden
 </style>

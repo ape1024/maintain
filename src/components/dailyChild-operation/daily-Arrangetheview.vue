@@ -2,7 +2,7 @@
   <div class="newlyadded">
     <section class="increase">
       <h4 class="increase_h4">
-        审核
+        快速分配
       </h4>
       <section class="examine">
         <header class="examine_header">
@@ -11,26 +11,26 @@
             <div class="header_div">{{examineName}}</div>
           </div>
         </header>
-          <div class="examine_div">
-            <ul class="examine_div_ul">
-              <li class="examine_div_li">
-                <p>设施名称：</p>
-                <div>{{equipmentData.devicename}}</div>
-              </li>
-              <li class="examine_div_li">
-                <p>设备编码：</p>
-                <div>{{equipmentData.devicecode}}</div>
-              </li>
-              <li class="examine_div_li">
-                <p>设备位置：</p>
-                <div>{{equipmentData.position}}</div>
-              </li>
-              <li class="examine_div_li">
-                <p>设施数量：</p>
-                <div>{{equipmentData.devicecount}}</div>
-              </li>
-            </ul>
-          </div>
+        <div class="examine_div">
+          <ul class="examine_div_ul">
+            <li class="examine_div_li">
+              <p>设施名称：</p>
+              <div>{{equipmentData.devicename}}</div>
+            </li>
+            <li class="examine_div_li">
+              <p>设备编码：</p>
+              <div>{{equipmentData.devicecode}}</div>
+            </li>
+            <li class="examine_div_li">
+              <p>设备位置：</p>
+              <div>{{equipmentData.position}}</div>
+            </li>
+            <li class="examine_div_li">
+              <p>设施数量：</p>
+              <div>{{equipmentData.devicecount}}</div>
+            </li>
+          </ul>
+        </div>
         <div class="proceeding">
           <div class="matters">
             <div class="mattersHeaderdiv">
@@ -129,44 +129,11 @@
                 </ul>
               </div>
             </div>
-            <div class="opinion_right">
-              <div class="left_header">
-                <p class="left_hederP">记录审计情况</p>
-                <p class="left_hederPtwo"></p>
-              </div>
-              <div class="choices">
-                <p class="choicesP">
-                  审核结论：
-                </p>
-                <div class="choicesDiv">
-                  <el-radio-group v-model="radio">
-                    <el-radio :key="index" v-for="(item, index) in approvaloptions" :label="item.value">{{item.name}}</el-radio>
-                  </el-radio-group>
-                </div>
-              </div>
-              <div class="differing">
-                <p class="choicesP">
-                  审核意见：
-                </p>
-                <div class="differingDiv">
-                  <el-input
-                    type="textarea"
-                    :rows="3"
-                    resize="none"
-                    placeholder=""
-                    v-model="textarea">
-                  </el-input>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
         <div class="arrange">
           <div @click="assignment" class="assignment">
             安排任务
-          </div>
-          <div @click="preservation" class="preservation">
-            审 核
           </div>
           <div @click="closeup" class="closeup">
             关 闭
@@ -178,10 +145,10 @@
 </template>
 
 <script>
-import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments, maintainDailygetTaskApprovalItems } from '../../api/user'
+import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments } from '../../api/user'
 import $ from 'jquery'
 export default {
-  name: 'dailyChild-examine',
+  name: 'daily-Arrangetheview',
   props: ['examine', 'examineName', 'equipmentCode', 'taskidCode'],
   data () {
     return {
@@ -215,8 +182,6 @@ export default {
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     },
     assignment () {
-      // this.examine_Boolean = this.examine
-      // this.examine_Boolean = !this.examine_Boolean
       let arrData = []
       this.equipment.forEach((val) => {
         if (val.fuleco === false) {
@@ -269,9 +234,7 @@ export default {
           taskDetailArr.forEach((val) => {
             this.axios.post(maintainDailyapprovalTaskDetail(token, val, textarea, radio)).then((response) => {
               if (response.data.code === 0) {
-                this.examine_Boolean = this.examine
-                this.examine_Boolean = !this.examine_Boolean
-                this.$emit('mine', this.examine_Boolean)
+                this.$emit('mine', false)
                 return false
               }
             })
@@ -280,9 +243,7 @@ export default {
       }
     },
     closeup () {
-      this.examine_Boolean = this.examine
-      this.examine_Boolean = !this.examine_Boolean
-      this.$emit('mine', this.examine_Boolean)
+      this.$emit('mine', false)
     },
     determine (event, checktaskdetailid) {
       let el = event.currentTarget
@@ -303,12 +264,7 @@ export default {
     }
   },
   created () {
-    console.log('-0-0-0----------')
-    console.log(this.examine)
-    console.log(this.examineName)
-    console.log(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode))
     this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
-      console.log(response.data.data)
       if (response.data.code === 0) {
         let arrData = []
         response.data.data.details.forEach((val) => {
@@ -325,25 +281,15 @@ export default {
           }
           val.fuleco = false
           val.pathBoolem = false
-          console.log('../')
-          console.log(val.conclusionname)
           if (val.conclusionname) {
             arrData.push(val)
           }
         })
-        console.log(arrData)
         this.equipment = arrData
         this.equipmentData = response.data.data
-        console.log('lkalklklklklklklklkl')
-        console.log(this.equipment)
       }
     })
     //  任务审批选项
-    this.axios.post(maintainDailygetTaskApprovalItems()).then((response) => {
-      if (response.data.code === 0) {
-        this.approvaloptions = response.data.data
-      }
-    })
   }
 }
 </script>
@@ -392,218 +338,218 @@ export default {
           float left
           margin-right 6px
           color $color-border-b-fault
-     .proceeding
-       width 100%
-       min-height 400px
-       max-height 400px
-       height calc(100% - 50px)
-       overflow-y auto
-       overflow-x hidden
-      .examine_div
-        margin-left 6px
+    .proceeding
+      width 100%
+      min-height 400px
+      max-height 400px
+      height calc(100% - 50px)
+      overflow-y auto
+      overflow-x hidden
+    .examine_div
+      margin-left 6px
+      overflow hidden
+      position relative
+      .examine_div_ul
         overflow hidden
-        position relative
-        .examine_div_ul
+        font-size $font-size-medium
+        color $color-text-title
+        padding-top 30px
+        .examine_div_li
+          float left
           overflow hidden
-          font-size $font-size-medium
-          color $color-text-title
-          padding-top 30px
-          .examine_div_li
+          margin-right 40px
+          margin-bottom 30px
+          p
             float left
-            overflow hidden
-            margin-right 40px
-            margin-bottom 30px
-            p
-              float left
-              margin-right 6px
-              color $color-border-b-fault
-            div
-              width 276px
-              float left
-         .examine_div_ul li:nth-child(3)
-           margin-right 0
-      .matters
+            margin-right 6px
+            color $color-border-b-fault
+          div
+            width 276px
+            float left
+      .examine_div_ul li:nth-child(3)
+        margin-right 0
+    .matters
+      width 100%
+      position relative
+      margin-bottom 20px
+      .mattersHeaderdiv
         width 100%
+        background #202f49
+        overflow hidden
+      .matters_header
+        width calc(100% - 20px)
+        overflow hidden
+        background #202f49
+        color $color-text-title
+        font-size $font-size-small
+      .content
+        width 100%
+        max-height 120px
+        min-height 120px
+        overflow-y scroll
+        overflow-x hidden
         position relative
-        margin-bottom 20px
-        .mattersHeaderdiv
+        background #0c121b
+        color $color-header-b-normal
+        font-size $font-size-small
+      .matters_ul
+        overflow hidden
+        padding 13px 0
+        .matters_li
+          float left
+          width 10%
+        .matters_litwo
+          float left
+          width 18%
+          position relative
+          padding 0 1%
+        .matters_lithree
+          float left
+          padding-left 2%
+          width 8%
+      .content_ul
+        cursor pointer
+        height 30px
+        line-height 30px
+        transition .2s
+        .matters_li
+          float left
+          width 10%
+          height 30px
+          text-overflow ellipsis
+          white-space nowrap
+        .matters_litwo
+          position relative
+          float left
+          width 18%
+          height 30px
+          padding 0 1%
+          text-overflow ellipsis
+          white-space nowrap
+        .matters_lithree
+          float left
+          padding-left 2%
+          width 8%
+          overflow hidden
+          text-overflow ellipsis
+          white-space nowrap
+      .content_ulBack
+        background #263652
+      .content_ul:hover
+        background #1c273a
+    .opinion
+      width 100%
+      overflow hidden
+      font-size $font-size-small
+      color $color-text-title
+      position relative
+      .opinion_left
+        float left
+        width 45%
+        overflow hidden
+      .opinion_right
+        float right
+        width 45%
+        overflow hidden
+      .left_header
+        overflow hidden
+        width 100%
+        margin-bottom 12px
+      .left_hederPtwo
+        float right
+        width 400px
+        height 1px
+        background #444d5b
+        margin-top 6px
+      .left_hederP
+        float left
+      .opinion_title
+        width 100%
+        background #0e1520
+        overflow hidden
+        .opinion_ulDiv
           width 100%
-          background #202f49
           overflow hidden
-        .matters_header
+          background #202f49
+        .opinion_ul
           width calc(100% - 20px)
-          overflow hidden
           background #202f49
-          color $color-text-title
-          font-size $font-size-small
-        .content
+          overflow hidden
+          padding 5px 0
+        .opinion_li
+          float left
+          padding-left 5%
+          width 55%
+          overflow hidden
+          text-overflow ellipsis
+          white-space nowrap
+        .opinion_litwo
+          float left
+          width 20%
+        .title_ul
           width 100%
           max-height 120px
           min-height 120px
           overflow-y scroll
-          overflow-x hidden
-          position relative
-          background #0c121b
           color $color-header-b-normal
-          font-size $font-size-small
-        .matters_ul
-          overflow hidden
-          padding 13px 0
-          .matters_li
-            float left
-            width 10%
-          .matters_litwo
-            float left
-            width 18%
-            position relative
-            padding 0 1%
-          .matters_lithree
-            float left
-            padding-left 2%
-            width 8%
-        .content_ul
-          cursor pointer
-          height 30px
-          line-height 30px
-          transition .2s
-          .matters_li
-            float left
-            width 10%
-            height 30px
-            text-overflow ellipsis
-            white-space nowrap
-          .matters_litwo
-            position relative
-            float left
-            width 18%
-            height 30px
-            padding 0 1%
-            text-overflow ellipsis
-            white-space nowrap
-          .matters_lithree
-            float left
-            padding-left 2%
-            width 8%
-            overflow hidden
-            text-overflow ellipsis
-            white-space nowrap
-        .content_ulBack
-          background #263652
-        .content_ul:hover
-          background #1c273a
-      .opinion
-         width 100%
-         overflow hidden
-         font-size $font-size-small
-         color $color-text-title
-         position relative
-         .opinion_left
-           float left
-           width 45%
-           overflow hidden
-         .opinion_right
-           float right
-           width 45%
-           overflow hidden
-         .left_header
-           overflow hidden
-           width 100%
-           margin-bottom 12px
-         .left_hederPtwo
-           float right
-           width 400px
-           height 1px
-           background #444d5b
-           margin-top 6px
-         .left_hederP
-           float left
-         .opinion_title
-            width 100%
-            background #0e1520
-            overflow hidden
-            .opinion_ulDiv
-              width 100%
-              overflow hidden
-              background #202f49
-            .opinion_ul
-               width calc(100% - 20px)
-               background #202f49
-               overflow hidden
-               padding 5px 0
-            .opinion_li
-              float left
-              padding-left 5%
-              width 55%
-              overflow hidden
-              text-overflow ellipsis
-              white-space nowrap
-            .opinion_litwo
-              float left
-              width 20%
-            .title_ul
-              width 100%
-              max-height 120px
-              min-height 120px
-              overflow-y scroll
-              color $color-header-b-normal
-           .title_li
-               width 100%
-               padding 13px 0
-               overflow hidden
-            .title_li_ul
-               overflow hidden
-          .choices
-            overflow hidden
-            position relative
-            margin: 20px 0;
-          .choicesP
-            float left
-            margin-right 20px
-          .choicesDiv
-            float left
-          .differing
-             overflow hidden
-             position relative
-             margin 10px 0
-          .differingDiv
-             width 430px
-             float left
-             overflow hidden
-      .arrange
+      .title_li
         width 100%
-        text-align center
+        padding 13px 0
         overflow hidden
-        margin-bottom: 20px;
-        .assignment
-          display inline-block
-          cursor pointer
-          width 107px
-          height 36px
-          background #32a692
-          border-radius 5px
-          text-align center
-          line-height 36px
-          transition .2s
-          margin-right 30px
-          &:hover
-            background #4eb7a5
-        .preservation
-          display inline-block
-          cursor pointer
-          width 107px
-          height 36px
-          background $color-background-query
-          border-radius 5px
-          text-align center
-          line-height 36px
-          transition .2s
-          margin-right 30px
-          prohibit()
-          &:hover
-            background: #4b92bf;
-        .closeup
-          closedown()
-          prohibit()
+      .title_li_ul
+        overflow hidden
+      .choices
+        overflow hidden
+        position relative
+        margin: 20px 0;
+      .choicesP
+        float left
+        margin-right 20px
+      .choicesDiv
+        float left
+      .differing
+        overflow hidden
+        position relative
+        margin 10px 0
+      .differingDiv
+        width 430px
+        float left
+        overflow hidden
+    .arrange
+      width 100%
+      text-align center
+      overflow hidden
+      margin-bottom: 20px;
+      .assignment
+        display inline-block
+        cursor pointer
+        width 107px
+        height 36px
+        background #32a692
+        border-radius 5px
+        text-align center
+        line-height 36px
+        transition .2s
+        margin-right 30px
+        &:hover
+          background #4eb7a5
+      .preservation
+        display inline-block
+        cursor pointer
+        width 107px
+        height 36px
+        background $color-background-query
+        border-radius 5px
+        text-align center
+        line-height 36px
+        transition .2s
+        margin-right 30px
+        prohibit()
+        &:hover
+          background: #4b92bf;
+      .closeup
+        closedown()
+        prohibit()
   .photosImg
     display inline-block
     margin-right 10px

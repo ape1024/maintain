@@ -303,16 +303,12 @@ export default {
     //  获取区域
     let projectid = window.localStorage.pattern
     this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
-      console.log(response)
-      console.log('------++=-------')
       if (response.data.code === 0) {
         this.regionDate = response.data.data
         this.regionModel.push((this.regionDate)[0].areaid)
         //  获取 列表数据 默认第一页 20个
         let regionId = (this.regionModel).shift()
         this.axios.post(CalcDevCount(regionId, 1, 20)).then((data) => {
-          console.log('----------------------')
-          console.log(data)
           if (data.data.code === 0) {
             this.tableData = data.data.data.datas
             console.log(this.tableData)

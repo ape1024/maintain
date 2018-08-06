@@ -105,7 +105,7 @@
 
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
-import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceStat, maintainDailygetCurrentTaskDeviceData } from '../../api/user'
+import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 export default {
@@ -153,13 +153,7 @@ export default {
         })
         let itemAreaid = item.taskID
         this.click_id = itemAreaid
-        this.axios.post(maintainDailygetCurrentTaskDeviceStat(itemAreaid)).then((response) => {
-          if (response.data.code === 0) {
-            console.log(this.dailyChild)
-            this.dailyChild = response.data.data
-            item.flag = !item.flag
-          }
-        })
+        item.flag = !item.flag
       } else {
         item.flag = !item.flag
       }

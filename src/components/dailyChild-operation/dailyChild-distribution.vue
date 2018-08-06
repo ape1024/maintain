@@ -175,6 +175,11 @@ export default {
             this.distrBoolean = this.distriBoolean
             this.distrBoolean = !this.distrBoolean
             this.$emit('dist', this.distrBoolean)
+          } else if (response.data.code === -1) {
+            this.$message({
+              message: '异常状态!',
+              type: 'warning'
+            })
           }
         })
       }
