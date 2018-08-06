@@ -32,7 +32,7 @@
               </div>
             </div>
           </li>
-          <li class="informationLitwo">
+          <li class="informationLiThree">
             <div class="informationDiv">
               <p class="informationP">
                 项目编号：
@@ -267,13 +267,19 @@ export default {
           float left
           overflow hidden
           position relative
-          width 33%
-      .informationLitwo
+          width 30%
+      .informationLiThree
         float left
         overflow hidden
         margin-left .5%
         position relative
         width 33%
+      .informationLitwo
+        float left
+        overflow hidden
+        margin-left .5%
+        position relative
+        width 36%
       .informationDiv
         init()
         margin-bottom 15px
@@ -379,7 +385,7 @@ export default {
       border-left 1px solid #444d5b
       padding-left 6px
   .examine
-    width 290px
+    width 240px
     float right
     color $color-text-title
     line-height 40px

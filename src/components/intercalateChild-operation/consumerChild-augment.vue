@@ -50,11 +50,11 @@
               用户角色：
             </p>
             <div class="subjectRigh">
-              <el-select size="mini" v-model="userstate" multiple placeholder="请选择">
+              <el-select size="mini"  v-model="userstate" multiple placeholder="请选择">
                 <el-option
                   v-for="item in roleSelect"
                   :key="item.roleid"
-                  :label="item.creatername"
+                  :label="item.rolename"
                   :value="item.roleid">
                 </el-option>
               </el-select>
@@ -100,6 +100,7 @@
                 :show-all-levels="false"
                 :props="defaultProps"
                 @change="handleChange"
+                v-model="organizeOptions"
                 change-on-select
               ></el-cascader>
             </div>
@@ -162,7 +163,7 @@
 </template>
 
 <script>
-import { appUser, getRolesList, getJobList, getOrganizationTrees } from '../../api/user'
+import { appUser, getRolesList, getJobList, getOrganizationTrees, upload, FindAllRolesByOrgID } from '../../api/user'
 export default {
   name: 'consumerChild-augment',
   props: ['increaseBoolean'],
@@ -170,6 +171,8 @@ export default {
     return {
       fileList: [],
       condition: true,
+      // upload
+      upload: upload(),
       //  登陆名
       nameoflanding: '',
       //  用户姓名
@@ -201,14 +204,31 @@ export default {
       textarea: '',
       organizationid: '',
       userstate: [],
+      organizeOptions: [],
       defaultProps: {
         label: 'organizationName',
         children: 'subOrgnizations',
-        value: 'organizationCode'
+        value: 'organizationId'
       }
     }
   },
+  watch: {
+    organizeOptions (val) {
+      console.log('-09')
+      let data = val[val.length - 1]
+      console.log(data)
+      this.FindAllRolesByOrg(data)
+    }
+  },
   methods: {
+    FindAllRolesByOrg (data) {
+      this.axios.post(FindAllRolesByOrgID(data)).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response.data.data)
+          this.roleSelect = response.data.data
+        }
+      })
+    },
     handleAvatarSuccess (response, file, fileList) {
       this.imageUrl = URL.createObjectURL(file.raw)
       this.imageUrlTwo = response.data
@@ -273,6 +293,7 @@ export default {
         return false
       }
       let url = appUser(urltoken, organizationid, usercode, username, Userpwd, email, tel, job, memo, roleids, headportrait)
+      console.log(url)
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {
           this.thisPage = this.increaseBoolean
@@ -289,6 +310,7 @@ export default {
     handleChange (value) {
       let Value = value[value.length - 1]
       this.organizationid = Value
+      this.userstate = []
     },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
@@ -303,6 +325,8 @@ export default {
     }
   },
   created () {
+    console.log('000000')
+    console.log(this.upload)
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(getRolesList(token)).then((response) => {
       if (response.data.code === 0) {
@@ -324,6 +348,7 @@ export default {
     this.axios.post(getOrganizationTrees(token)).then((response) => {
       if (response.data.code === 0) {
         this.organize = (response.data.data)
+        console.log(this.organize)
       }
     })
   }

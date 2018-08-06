@@ -141,12 +141,13 @@
               <div @click.stop="firecontrolClick" class="firecontrol">
                 {{buildscope}}
               </div>
-              <div v-if="buildscopeBoolean" class="firecontrolDiv">
+              <div v-show="buildscopeBoolean" class="firecontrolDiv">
                 <div class="firecontrolDiv_div">
                   <el-tree
                     :data="purview"
                     :props="purviewProps"
-                    node-key="areaid"
+                    node-key="id"
+                    ref="one"
                     show-checkbox
                     @check="purviewCheck">
                   </el-tree>
@@ -162,13 +163,16 @@
               <div class="firecontrol" @click.stop="fireconboolean">
                 {{firecontrolda}}
               </div>
-              <div v-if="firecontrolBoolean" class="firecontrolDiv">
+              <div v-show="firecontrolBoolean" class="firecontrolDiv">
                 <div class="firecontrolDiv_div">
                   <el-tree
                     :data="firecontrol"
                     :props="firecontrolProps"
                     node-key="id"
+                    ref="tree"
                     show-checkbox
+                    default-expand-all
+                    highlight-current
                     @check="firecontrolCheck">
                   </el-tree>
                 </div>
@@ -251,7 +255,7 @@
 
 <script>
 import $ from 'jquery'
-import { createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince } from '../../api/user'
+import { createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree } from '../../api/user'
 export default {
   name: 'consumerChild-increase',
   props: ['edit', 'project'],
@@ -385,25 +389,38 @@ export default {
       this.firecontrolBoolean = !this.firecontrolBoolean
     },
     conserve () {
+      //  项目名称 项目开始 业主单位 项目编号 项目结束 服务机构 项目类别  建筑范围  消防设备
       if (this.projectName === '' || this.startdate === '' || this.proprieTor === '' || this.projectCode === '' || this.endDate === '' || this.proprietornameDate === '' || this.projectDate.length === 0 || this.buildscope === '' || this.firecontrolda === '') {
-        alert('您的信息没有填写完整')
+        this.$message({
+          message: '您的信息没有填写完整',
+          type: 'warning'
+        })
         return false
       } else {
+        // this.fullscreenLoading = true
         let token = window.JSON.parse(window.sessionStorage.token)
+        let getCheckedNodes = this.$refs.one.getCheckedNodes()
         let areas = []
-        for (let i = 0; i < this.buildscopeDate.length; i++) {
-          let areasObj = {
-            'areaid': this.buildscopeDate[i]
+        console.log(areas)
+        getCheckedNodes.forEach((val) => {
+          let obj = {
+            areacode: val.areacode,
+            areaid: val.areaid,
+            areaname: val.areaname
           }
-          areas.push(areasObj)
-        }
+          areas.push(obj)
+        })
+        let getCheckedNodesData = this.$refs.tree.getCheckedNodes()
         let baseDevices = []
-        for (let i = 0; i < this.firecontrolDate.length; i++) {
-          let base = {
-            'basedeviceid': this.firecontrolDate[i]
+        getCheckedNodesData.forEach((val) => {
+          if (!val.children) {
+            let base = {
+              'basedeviceid': val.id,
+              'basedevicecode': val.code
+            }
+            baseDevices.push(base)
           }
-          baseDevices.push(base)
-        }
+        })
         let worktypes = []
         for (let i = 0; i < this.projectDate.length; i++) {
           let work = {
@@ -411,7 +428,14 @@ export default {
           }
           worktypes.push(work)
         }
-        let pr = {
+        this.fileList.forEach((val) => {
+          let obj = {
+            'name': `${val.name}`,
+            'url': `${val.url}`
+          }
+          this.documentPapers.push(obj)
+        })
+        let rp = {
           'areas': areas,
           'baseDevices': baseDevices,
           'files': this.documentPapers,
@@ -419,7 +443,9 @@ export default {
             'enddate': `${this.endDate}`,
             'proprietor': `${this.proprieTor}`,
             'startdate': `${this.startdate}`,
-            'vindicator': `${this.proprietornameDate}`
+            'vindicator': `${this.proprietornameDate}`,
+            'projectname': `${this.projectName}`,
+            'projectcode': `${this.projectCode}`
           },
           'projectInfo': {
             'address': `${this.regionDate}`,
@@ -430,10 +456,15 @@ export default {
           },
           'worktypes': worktypes
         }
-        this.axios.post(createOrUpdateProject(token), pr).then((response) => {
+        this.axios.post(createOrUpdateProject(token), rp).then((response) => {
+          console.log('------')
           if (response.data.code === 0) {
-            alert('创建成功！')
-            this.$emit('incr', this.Thispage)
+            this.fullscreenLoading = false
+            this.$message({
+              message: '创建成功！',
+              type: 'success'
+            })
+            this.$emit('incr', false)
           }
         })
       }
@@ -532,12 +563,13 @@ export default {
   },
   created () {
     this.axios.post(increasefindAllDevType()).then((response) => {
+      console.log(response.data)
       this.firecontrol = response.data
     })
     //  这个接口有问题  没有这个接口
-    this.axios.post(increasegetWorkTypes()).then((response) => {
+    this.axios.post(findAllRootAreasTree()).then((response) => {
       if (response.data.code === 0) {
-        this.purview = response.data.data[0]
+        this.purview = response.data.data
       }
     })
     this.axios.post(increasegetWorkTypes()).then((response) => {

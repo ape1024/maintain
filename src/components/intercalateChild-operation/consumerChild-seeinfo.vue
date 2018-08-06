@@ -57,7 +57,7 @@
                 size="mini"
                 :disabled="true"
                 placeholder=""
-                v-model="exaMineCodo.rolename"
+                v-model="rolename"
                 clearable>
               </el-input>
             </div>
@@ -142,6 +142,7 @@
 </template>
 
 <script>
+import { FindAllRolesByOrgID } from '../../api/user'
 export default {
   name: 'consumerChild-seeinfo',
   props: ['examine', 'exaMineCodo'],
@@ -153,7 +154,8 @@ export default {
       imageUrl: '',
       value: '',
       input10: '',
-      textarea: ''
+      textarea: '',
+      rolename: ''
     }
   },
   methods: {
@@ -170,7 +172,44 @@ export default {
     }
   },
   created () {
-    console.log(this.exaMineCodo)
+    console.log(this.exaMineCodo.roleid)
+    console.log(this.exaMineCodo.organizationid)
+    console.log(FindAllRolesByOrgID(this.exaMineCodo.organizationid))
+    this.axios.post(FindAllRolesByOrgID(this.exaMineCodo.organizationid)).then((response) => {
+      console.log(response)
+      if (response.data.code === 0) {
+        if (response.data.data.length !== 0) {
+          if (this.exaMineCodo.roleid.indexOf(';') !== -1) {
+            let roleidArr = []
+            this.exaMineCodo.roleid.split(';').forEach((val) => {
+              roleidArr.push(parseInt(val))
+            })
+            console.log('====')
+            console.log(roleidArr)
+            roleidArr.forEach((val, index) => {
+              response.data.data.forEach((data) => {
+                console.log(val)
+                if (data.roleid === val) {
+                  console.log('---')
+                  console.log(data)
+                  this.rolename += ` ${data.rolename} `
+                }
+              })
+            })
+          } else {
+            let exaRoleid = parseInt(this.exaMineCodo.roleid)
+            response.data.data.forEach((val) => {
+              if (val.roleid === exaRoleid) {
+                console.log(val.rolename)
+                this.rolename += ` ${val.rolename} `
+              }
+            })
+          }
+        } else {
+          this.rolename = ''
+        }
+      }
+    })
   }
 }
 </script>

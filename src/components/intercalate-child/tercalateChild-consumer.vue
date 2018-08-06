@@ -8,7 +8,7 @@
               登 录 名
             </p>
             <div class="headerDiv">
-              <el-input size="mini" v-model="Username" placeholder=""  clearable>></el-input>
+              <el-input size="mini"  v-model="Username" placeholder=""  clearable>></el-input>
             </div>
           </li>
           <li class="headerLi">
@@ -18,6 +18,7 @@
             <div class="headerDiv">
               <el-cascader
                 size="mini"
+                clearable
                 :options="options"
                 :props="selectedProps"
                 change-on-select
@@ -30,7 +31,14 @@
               角 色
             </p>
             <div class="headerDiv">
-              <el-input size="mini" v-model="role" placeholder=""  clearable>></el-input>
+              <el-select size="mini" v-model="role" placeholder="请选择" clearable>
+                <el-option
+                  v-for="item in roleData"
+                  :key="item.roleid"
+                  :label="item.rolename"
+                  :value="item.roleid">
+                </el-option>
+              </el-select>
             </div>
           </li>
           <li class="headerLi">
@@ -96,7 +104,7 @@
                 {{item.username?item.username:' '}}
               </li>
               <li class="entryLitwo">
-                {{item.userstate?item.userstate:' '}}
+                {{item.userid?item.userid:' '}}
               </li>
               <li class="entryLitwo">{{item.email?item.email:' '}}</li>
               <li class="entryLitwo">{{item.tel?item.tel:' '}}</li>
@@ -164,7 +172,7 @@
 </template>
 
 <script>
-import { iConsumerexamine, consumerFindUser, consumerfindAll, consumerdelUser, getOrganizationTreeByUser } from '../../api/user'
+import { iConsumerexamine, findAllBydefault, karaktersFindAllRoles, consumerFindUser, consumerfindAll, consumerdelUser, getOrganizationTreeByUser, findAllBy } from '../../api/user'
 import increase from '../intercalateChild-operation/consumerChild-augment'
 import examine from '../intercalateChild-operation/consumerChild-seeinfo'
 import edit from '../intercalateChild-operation/consumerChild-steganogram'
@@ -182,6 +190,7 @@ export default {
   },
   data () {
     return {
+      roleData: [],
       //  用户id
       itemUserId: '',
       options: [],
@@ -226,7 +235,16 @@ export default {
       // this.role
       //  手机号
       // this.Handphone
-      alert('目前接口500')
+      console.log(this.Handphone)
+
+      let token = JSON.parse(window.sessionStorage.token)
+      console.log(`http://172.16.6.181:8920/users/findAllBy?organizationId=${this.selectedOptions}&roleId=${this.role}&usercode=${this.Username}&tel=${this.Handphone}&pageIndex=1&pageSize=30&token=${token}`)
+      this.axios.post(findAllBy(this.selectedOptions, this.role, this.Username, this.Handphone, 1, 30, token)).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response.data.data.data)
+          this.information = response.data.data.data
+        }
+      })
     },
     //  时间戳
     fmtDate (obj) {
@@ -323,6 +341,7 @@ export default {
     }
   },
   created () {
+    let token = JSON.parse(window.sessionStorage.token)
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     console.log(window.sessionStorage)
     Jurisdiction.forEach((val) => {
@@ -339,21 +358,20 @@ export default {
         console.log(val.update)
       }
     })
-    this.axios.post(consumerfindAll(0, 30)).then((response) => {
+    this.axios.post(findAllBydefault(1, 30, token)).then((response) => {
       console.log(response)
       this.information = response.data.data.data
     })
-    console.log('----')
-    console.log(this.information)
-    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(karaktersFindAllRoles(token)).then((response) => {
+      if (response.data.code === 0) {
+        this.roleData = response.data.data
+      }
+    })
+
     console.log(token)
     this.axios.post(getOrganizationTreeByUser(token)).then((response) => {
       if (response.data.code === 0) {
-        if (response.data.data !== null) {
-          this.options.push(response.data.data)
-          console.log('--------')
-          console.log(response)
-        }
+        this.options = response.data.data
       }
     })
   }

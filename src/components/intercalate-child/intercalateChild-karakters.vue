@@ -10,7 +10,7 @@
           <li class="leftBottomLl">
             系统角色
           </li>
-          <li @click="systemroleClick(item.roleid)" :key="index" v-for="(item, index) in systemRole" class="leftBottomLltwo">
+          <li @click="systemroleClick(item.roleid, item)" :key="index" v-for="(item, index) in systemRole" v-bind:class="item.flag ? 'leftBottomLlThree' : 'leftBottomLltwo'">
             {{item.rolename}}
           </li>
         </ul>
@@ -18,7 +18,7 @@
           <li class="leftBottomLl">
             自定义角色
           </li>
-          <li @click="systemroleClick(item.roleid)" :key="index" v-for="(item, index) in customRoles" class="leftBottomLltwo">
+          <li @click="systemroleClick(item.roleid, item)" :key="index" v-for="(item, index) in customRoles" v-bind:class="item.flag ? 'leftBottomLlThree' : 'leftBottomLltwo'">
             {{item.rolename}}
           </li>
         </ul>
@@ -31,6 +31,9 @@
           <div class="header">
             <div v-if="JurisdictionUpdate" class="conserveDiv" @click="conserve">
               保 存
+            </div>
+            <div @click="amputate" class="amputateDIv">
+              删除
             </div>
             <div @click="increasd" class="increased">
               新增角色信息
@@ -139,6 +142,45 @@ export default {
     }
   },
   methods: {
+    amputate () {
+      if (!this.kayakersId) {
+        this.$message({
+          message: '必须选中左侧的角色,才可以删除',
+          type: 'warning'
+        })
+      } else {
+        console.log(this.kayakersId)
+        this.axios.post(`http://172.16.6.181:8920/roles/DeleteRole?roleid=${this.kayakersId}`).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.kayakersId = ''
+            let token = JSON.parse(window.sessionStorage.token)
+            this.axios.post(karaktersFindAllRoles(token)).then((response) => {
+              if (response.data.code === 0) {
+                this.systemRole = []
+                this.customRoles = []
+                console.log(response.data.data)
+                response.data.data.forEach((val) => {
+                  val.flag = false
+                  console.log(val)
+                  if (val.issystem === 1) {
+                    this.systemRole.push(val)
+                  } else {
+                    this.customRoles.push(val)
+                  }
+                })
+              }
+            })
+          } else {
+            this.$message.error('删除失败')
+          }
+        })
+      }
+    },
     increasd () {
       this.basis = true
     },
@@ -149,6 +191,7 @@ export default {
           this.systemRole = []
           this.customRoles = []
           response.data.data.forEach((val) => {
+            val.flag = false
             console.log(val)
             if (val.issystem === 1) {
               this.systemRole.push(val)
@@ -265,7 +308,18 @@ export default {
         })
       }
     },
-    systemroleClick (roleid) {
+    systemroleClick (roleid, data) {
+      data.flag = true
+      this.systemRole.forEach((val) => {
+        if (val.roleid !== data.roleid) {
+          val.flag = false
+        }
+      })
+      this.customRoles.forEach((val) => {
+        if (val.roleid !== data.roleid) {
+          val.flag = false
+        }
+      })
       this.fullFunctionality.forEach((val) => {
         console.log(val)
         val.added = false
@@ -283,12 +337,9 @@ export default {
       })
       this.kayakersId = roleid
       this.axios.post(karaktersFindRoleFunctions(roleid)).then((response) => {
-        console.log('-------')
-        console.log(response)
         if (response.data.code === 0) {
           for (let i = 0; i < response.data.data.length; i++) {
             let functionId = response.data.data[i].functionid
-            console.log(functionId)
             this.fullFunctionality.forEach((val) => {
               val.second.forEach((data) => {
                 if (data.functionid === functionId) {
@@ -356,6 +407,7 @@ export default {
       if (response.data.code === 0) {
         console.log(response.data.data)
         response.data.data.forEach((val) => {
+          val.flag = false
           console.log(val)
           if (val.issystem === 1) {
             this.systemRole.push(val)
@@ -397,8 +449,8 @@ export default {
         line-height 40px
       .leftBottom
         width 100%
-        min-height 800px
-        max-height 800px
+        min-height 700px
+        max-height 700px
         position relative
         background #101826
         height calc(100% - 50px)
@@ -415,8 +467,8 @@ export default {
         height calc(100% - 50px)
         overflow hidden
         overflow-y auto
-        min-height 800px
-        max-height 800px
+        min-height 700px
+        max-height 700px
         position relative
         background #101826
       .jurisdictionBottom
@@ -546,4 +598,15 @@ export default {
   .conserveDiv
     float right
     conserve()
+  .leftBottomLlThree
+    text-indent 2em
+    cursor pointer
+    background rgba(255, 255, 255, .2)
+    overflow hidden
+    color #fff
+    padding 10px 0
+  .amputateDIv
+    amputateDIv()
+    float right
+    margin-right 20px
 </style>
