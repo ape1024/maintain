@@ -64,7 +64,7 @@
                 <li class="tlefttoplitwo">
                   <p class="">
                     <span class="tlefttopHeaderSpantwo">现场照片：</span>
-                    <img class="tlefttopli_img" :key="index" v-for="(item, index) in photograph" :src="item" alt="">
+                    <img class="tlefttopli_img" @click="selectImg(index)" :key="index" v-for="(item, index) in photograph" :src="item" alt="">
                   </p>
                 </li>
               </ul>
@@ -113,7 +113,7 @@
                     </el-select>
                   </div>
                 </li>
-                <li class="tlefttopli">
+                <li class="tlefttoplitwo tlefttoplitwoSpan">
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">确认时间：</span>
                     <span class="tlefttopli_Span">{{examine.confirmpertime}}</span>
@@ -175,10 +175,15 @@
             </li>
           </ul>
           <div class="personnel">
+            <!--分割线开始-->
+            <p class="boundary"></p>
+            <!--分割线结束-->
             <div class="assortmentLi_divtwo">
-              <p class="assortmentliP">
-                维保执行人员:
-              </p>
+              <div class="assortmentLiTop">
+                <p class="assortmentliP">
+                  维保执行人员
+                </p>
+              </div>
               <div class="personChargeDiv">
                 <el-checkbox-group v-model="maintenanceList">
                   <el-tree
@@ -190,7 +195,11 @@
                       <div>{{ node.label }}</div>
                       <div class="tree-checkbox">
                         <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
-                          <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
+                          <el-checkbox :label="item.userid"
+                                       :disabled="proprietorCheckList.length > 0">
+                            <svg class="icon" style="color: lightblue;width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1593"><path d="M717.664 612.195c-52.734 47.461-121.289 79.102-200.391 79.102s-147.656-31.641-205.664-79.102c-131.836 68.555-221.484 158.203-221.484 321.68l843.75 0c0-163.477-89.648-247.852-216.211-321.68zM512 628.016c131.836 0 237.305-110.742 237.305-242.578s-105.469-242.578-237.305-242.578-237.305 110.742-237.305 242.578c0 137.109 110.742 242.578 237.305 242.578z" p-id="1594"></path></svg>
+                            <span class="nodeLabel">{{item.username}}</span>
+                          </el-checkbox>
                         </div>
                       </div>
                     </div>
@@ -199,39 +208,49 @@
               </div>
             </div>
             <div class="assortmentLi_div">
-              <p class="assortmentliP">业主执行人员</p>
-              <div class="tree-wrapper">
-                <el-checkbox-group v-model="repairCheckList">
-                  <el-tree
-                    class="tree"
-                    :data="proprietor"
-                    node-key="id"
-                    :props="ownerProps">
-                    <div class="custom-tree-node" slot-scope="{ node, data }">
-                      <div>{{ node.label }}</div>
-                      <div class="tree-checkbox">
-                        <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
-                          <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
+              <div class="assortmentLiTop">
+                <p class="assortmentliP">业主执行人员</p>
+              </div>
+              <div style=" float: left">
+                <div class="tree-wrapper">
+                  <el-checkbox-group v-model="repairCheckList">
+                    <el-tree
+                      class="tree"
+                      :data="proprietor"
+                      node-key="id"
+                      :props="ownerProps">
+                      <div class="custom-tree-node" slot-scope="{ node, data }">
+                        <div>{{ node.label }}</div>
+                        <div class="tree-checkbox">
+                          <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
+                            <el-checkbox :label="item.userid"
+                                         :disabled="proprietorCheckList.length > 0">
+                              <svg class="icon" style="color: lightblue;width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1593"><path d="M717.664 612.195c-52.734 47.461-121.289 79.102-200.391 79.102s-147.656-31.641-205.664-79.102c-131.836 68.555-221.484 158.203-221.484 321.68l843.75 0c0-163.477-89.648-247.852-216.211-321.68zM512 628.016c131.836 0 237.305-110.742 237.305-242.578s-105.469-242.578-237.305-242.578-237.305 110.742-237.305 242.578c0 137.109 110.742 242.578 237.305 242.578z" p-id="1594"></path></svg>
+                              <span class="nodeLabel">{{item.username}}</span>
+                            </el-checkbox>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </el-tree>
-                </el-checkbox-group>
+                    </el-tree>
+                  </el-checkbox-group>
+                </div>
               </div>
             </div>
           </div>
           <div class="fastener">
             <!--<div class="examine">重新安排</div>-->
-            <div @click="conserve" class="conserve">保存</div>
+            <div @click="conserve" class="conserve">确定</div>
             <div class="closedown" @click="closedown">关闭</div>
           </div>
         </div>
       </section>
     </section>
+    <dialog-img ref="dialogImg" :list="photograph"></dialog-img>
   </div>
 </template>
 
 <script>
+import DialogImg from 'base/dialog-img/dialog-img'
 import { maintainReportassignedTask, maintainReportgetConfrimStates, maintainReportgetFeedbackstateStates, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'reportChild-examine',
@@ -322,17 +341,24 @@ export default {
     },
     closedown () {
       this.$emit('mine', this.examineBoolean)
+    },
+    selectImg (index) {
+      this.$refs.dialogImg.switchIndex(index)
+      this.$refs.dialogImg.open()
     }
+  },
+  components: {
+    DialogImg
   },
   created () {
     this.axios.post(maintainReportgetConfrimStates()).then((response) => {
       this.Confirmationstate = response.data
-      this.Confirmationsdisplay = this.examine.feedbackstate
+      this.Confirmationsdisplay = this.examine.comfirmstate
     })
     this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
       console.log(response)
       this.processingstate = response.data
-      this.processingsdisplay = this.examine.comfirmstate
+      this.processingsdisplay = this.examine.feedbackstate
     })
     this.examine.photos.split(',').forEach((val) => {
       this.photograph.push(val)
@@ -449,7 +475,8 @@ export default {
           overflow hidden
           position relative
           border-bottom 1px solid #444d5b
-          padding 28px 0
+          padding 10px 0
+          height 29px
         .tlefttopUl .tlefttopli:last-child
           border none
         .tlefttopLeft
@@ -555,12 +582,11 @@ export default {
     margin-bottom 20px
     .assortmentliP
       float left
-      color $color-border-b-fault
       line-height 30px
     .assortmentLi_div
       width 50%
-      max-height 150px
-      min-height 150px
+      max-height 285px
+      min-height 285px
       overflow-y scroll
   .assortmentLi_divtwo
     float left
@@ -588,17 +614,37 @@ export default {
     height 40px
     margin-top 0px
   .tlefttopHeaderSpantwo
-    margin 0 12px
+    margin 0 12px 0 12px
     display inline-block
     color #999
   .tlefttoplitwo
     overflow hidden
     position relative
     border-bottom 1px solid #444d5b
-    padding 6px 0 23px
+    height 50px
+    padding-top 10px
+  .tlefttoplitwoSpan
+    padding-top 15px
+    height 45px
   .tlefttopHeaderPDivtwo
     float left
     line-height 26px
   .tlefttopHeaderPDiv
     float left
+  .boundary
+    height 1px
+    width 100%
+    margin-top 1px
+    margin-bottom 5px
+    background #444d5b
+  .assortmentLiTop
+    float left
+    overflow hidden
+    font-size 16px
+    color #fff
+    background #354d76
+    line-height 40px
+    width 120px
+    padding-left 10px
+    height 30px
 </style>

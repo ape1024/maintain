@@ -64,7 +64,7 @@
                 <li class="tlefttoplitwo">
                   <p class="">
                     <span class="tlefttopHeaderSpantwo">现场照片：</span>
-                    <img class="tlefttopli_img" :key="index" v-for="(item, index) in photograph" :src="item" alt="">
+                    <img class="tlefttopli_img" @click="selectImg(index)" :key="index" v-for="(item, index) in photograph" :src="item" alt="">
                   </p>
                 </li>
               </ul>
@@ -132,16 +132,18 @@
         <div class="assortment">
           <div class="fastener">
             <!--<div class="examine">重新安排</div>-->
-            <div @click="conserve" class="conserve">保存</div>
+            <div @click="conserve" class="conserve">确认</div>
             <div class="closedown" @click="closedown">关闭</div>
           </div>
         </div>
       </section>
     </section>
+    <dialog-img ref="dialogImg" :list="photograph"></dialog-img>
   </div>
 </template>
 
 <script>
+import DialogImg from 'base/dialog-img/dialog-img'
 import { maintainReporconfirmFeedback, maintainReportgetConfrimStates, maintainReportgetFeedbackstateStates, maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'reportChild-modify',
@@ -193,17 +195,24 @@ export default {
     },
     closedown () {
       this.$emit('say', this.examineBoolean)
+    },
+    selectImg (index) {
+      this.$refs.dialogImg.switchIndex(index)
+      this.$refs.dialogImg.open()
     }
+  },
+  components: {
+    DialogImg
   },
   created () {
     this.axios.post(maintainReportgetConfrimStates()).then((response) => {
       this.Confirmationstate = response.data
-      this.Confirmationsdisplay = this.examine.feedbackstate
+      this.Confirmationsdisplay = this.examine.comfirmstate
     })
     this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
       console.log(response)
       this.processingstate = response.data
-      this.processingsdisplay = this.examine.comfirmstate
+      this.processingsdisplay = this.examine.feedbackstate
     })
     this.examine.photos.split(',').forEach((val) => {
       this.photograph.push(val)

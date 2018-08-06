@@ -106,14 +106,34 @@
             <li class="header_li">{{item.feedbackstatename}}</li>
             <li class="header_li">{{item.comfirmstatename}}</li>
             <li class="header_litwo">
-              <p v-if="JurisdictionSelect" @click.stop="examine(item.ID)" class="header_p_ten">查看</p>
-              <p v-if="JurisdictionInsert" @click.stop="modify(item.ID)" class="header_p_twelve">
-                确认
+              <p v-if="JurisdictionSelect"
+                 @click.stop="examine(item.ID)"
+                 class="header_p_ten">查看
               </p>
-              <p v-if="JurisdictionInsert" @click.stop="question(item.ID)" class="header_p_eight threelevel_litwo_p">
-                安排
+              <p v-if="JurisdictionInsert && item.comfirmstate === 2"
+                 @click.stop="modify(item.ID)" class="header_p_twelve">
+                 确认
               </p>
-              <p v-if="JurisdictionDelete" class="header_p_eleven" @click.stop="amputate(item.ID, index, exhibition)">删除</p>
+              <p v-if="item.comfirmstate !== 2"
+                 class="header_p_fourteen" >确认
+              </p>
+              <p v-if="JurisdictionInsert && item.comfirmstate === 4"
+                 @click.stop="question(item.ID)"
+                 class="header_p_eight threelevel_litwo_p">
+                 安排
+              </p>
+              <p v-if="item.comfirmstate !== 4"
+                 class="header_p_fourteen" >安排
+              </p>
+              <p v-if="JurisdictionDelete && item.comfirmstate === 2"
+                 class="header_p_eleven"
+                 @click.stop="amputate(item.ID, index, exhibition)">
+                 删除
+              </p>
+              <p v-if="item.comfirmstate !== 2"
+                 class="header_p_fourteen" >
+                 删除
+              </p>
             </li>
           </ul>
           <!--<transition enter-active-class="fadeInUp"-->
@@ -209,9 +229,9 @@ export default {
         if (response.data.code === 0) {
           this.examineData = response.data.data
           console.log(response.data.data)
+          this.lookoverBoolean = true
         }
       })
-      this.lookoverBoolean = true
     },
     modify (Id) {
       // 点击修改
@@ -235,12 +255,14 @@ export default {
     Mine (ev) {
       // 审核 传递的参数
       this.examineBoolean = ev
+      this.query()
     },
     Onlook (ev) {
       this.lookoverBoolean = ev
     },
     Modify (ev) {
       this.modifyBoolean = ev
+      this.query()
     },
     query () {
       let projectid = window.localStorage.pattern
@@ -559,7 +581,7 @@ export default {
     left 0
     width 100%
     height 100%
-    background rgba(000,000,000,.4)
+    background rgba(000,000,000,.9)
     z-index 11
     overflow hidden
   .header_p_one
@@ -595,6 +617,10 @@ export default {
     cursor pointer
     margin-right 20px
     color $color-background-introduce
+  .header_p_fourteen
+    float left
+    margin-right 20px
+    color $color-text-tile-handle
   .header_li p
     cursor pointer
 </style>
