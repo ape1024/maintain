@@ -238,7 +238,6 @@ export default {
       console.log(this.Handphone)
 
       let token = JSON.parse(window.sessionStorage.token)
-      console.log(`http://172.16.6.181:8920/users/findAllBy?organizationId=${this.selectedOptions}&roleId=${this.role}&usercode=${this.Username}&tel=${this.Handphone}&pageIndex=1&pageSize=30&token=${token}`)
       this.axios.post(findAllBy(this.selectedOptions, this.role, this.Username, this.Handphone, 1, 30, token)).then((response) => {
         if (response.data.code === 0) {
           console.log(response.data.data.data)

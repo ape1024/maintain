@@ -11,7 +11,10 @@
         已巡检
       </li>
       <li class="list_heder_li">
-        问题数量
+       问题数量
+      </li>
+      <li class="list_heder_li">
+        待审核
       </li>
       <li class="list_heder_li">
         已分配任务项
@@ -34,6 +37,9 @@
           </li>
           <li class="list_data_li">
             {{item.error + item.problem}}
+          </li>
+          <li class="list_data_li">
+            {{item.waitapproval}}
           </li>
           <li class="list_data_li">
             {{item.assign}}
@@ -329,7 +335,7 @@ export default {
         .list_heder_li
           float left
           text-align center
-          width 16%
+          width 13%
           overflow hidden
         .list_heder_litwo
           float left
@@ -356,11 +362,14 @@ export default {
         width 100%
         padding 12px 0
         overflow hidden
+        transition .2s
+        &:hover
+          background #161d28
       .list_data_li
         float left
         text-align center
         overflow hidden
-        width 16%
+        width 13%
       .list_data_litwo
         float left
         text-align center

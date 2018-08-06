@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { karaktersFindAllRoles, karaktersSetRoleFunctions, karaktersFindAllFunctions, karaktersFindRoleFunctions } from '../../api/user'
+import { karaktersFindAllRoles, karaktersSetRoleFunctions, karaktersFindAllFunctions, karaktersFindRoleFunctions, DeleteRole } from '../../api/user'
 import increased from '../intercalateChild-operation/karaktersChild-increased'
 export default {
   name: 'intercalateChild-karakters',
@@ -149,8 +149,7 @@ export default {
           type: 'warning'
         })
       } else {
-        console.log(this.kayakersId)
-        this.axios.post(`http://172.16.6.181:8920/roles/DeleteRole?roleid=${this.kayakersId}`).then((response) => {
+        this.axios.post(DeleteRole(this.kayakersId)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
             this.$message({

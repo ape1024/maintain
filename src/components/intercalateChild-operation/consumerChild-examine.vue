@@ -94,7 +94,7 @@
         <div class="purviewDiv">
           <div class="substance">
             <div class="substanceDiv">
-              <el-input v-model="areas" :disabled="true" placeholder=""></el-input>
+              <el-input size="mini" v-model="areas" :disabled="true" placeholder=""></el-input>
             </div>
             <p class="substanceP">
               建筑范围：
@@ -385,8 +385,7 @@ export default {
       border-left 1px solid #444d5b
       padding-left 6px
   .examine
-    width 240px
-    float right
+    width 420px
     color $color-text-title
     line-height 40px
   .uploaddivIdiv

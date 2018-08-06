@@ -61,7 +61,7 @@ export default {
     }
   },
   methods: {
-    mousedownFn: function (e) {
+    mousedownFn (e) {
       this.mouseMoveStata = true
       this.beginClientX = e.clientX
       //  按下滑块函数
@@ -185,7 +185,7 @@ export default {
     $('body').on('mouseup', (e) => {
       //  鼠标放开
       this.mouseMoveStata = false
-      var width = e.clientX - this.beginClientX
+      let width = e.clientX - this.beginClientX
       if (width < this.maxwidth) {
         $('.handler').css({'left': 0})
         $('.drag_bg').css({'width': 0})
@@ -246,15 +246,15 @@ export default {
   .drag
     position relative
     background-color #e8e8e8
-    width 374px
+    width 100%
     height 34px
     line-height 34px
     text-align center
 
   .handler
     position absolute
-    top 0px
-    left 0px
+    top 0
+    left 0
     width 40px
     height 32px
     border 1px solid #ccc

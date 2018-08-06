@@ -39,9 +39,14 @@ export const appUser = (token, organizationid, usercode, username, pwd, email, t
   const url = `${Test}/users/createUser?token=${token}&organizationid=${organizationid}&usercode=${usercode}&username=${username}&pwd=${pwd}&email=${email}&tel=${tel}&job=${job}&memo=${memo}&roleids=${roleidsStr}&file=${file}`
   return url
 }
+//  getCheckTaskByRepairTaskId
+export const getCheckTaskByRepairTaskId = (repairtaskid) => {
+  const url = `${Test}/repairtasks/getCheckTaskByRepairTaskId?repairtaskid=${repairtaskid}`
+  return url
+}
 //   FindAllRolesByOrgID
 export const FindAllRolesByOrgID = (data) => {
-  const url = `http://172.16.6.181:8920/roles/FindAllRolesByOrgID?orgid=${data}`
+  const url = `${Test}/roles/FindAllRolesByOrgID?orgid=${data}`
   return url
 }
 export const upload = () => {
@@ -128,7 +133,7 @@ export const getCountiesByCityId = (countid) => {
 }
 //  测试当前密码
 export const steganogramCheckOldPwd = (usercode, password) => {
-  const url = `http://172.16.6.181:8920/auth/checkOldPwd?usercode=${usercode}&password=${password}`
+  const url = `${Test}/auth/checkOldPwd?usercode=${usercode}&password=${password}`
   return url
 }
 //  home
@@ -267,7 +272,7 @@ export const maintainRepaircheckTask = (token, repairtaskid, confirmopinion) => 
 }
 //  getAllHigherOrgIDs
 export const getAllHigherOrgIDs = (orgid) => {
-  const url = `http://172.16.6.181:8920/organization/getAllHigherOrgIDs?orgid=${orgid}`
+  const url = `${Test}/organization/getAllHigherOrgIDs?orgid=${orgid}`
   return url
 }
 //  获取故障维修所有分类选项
@@ -348,7 +353,16 @@ export const maintainReporconfirmFeedback = (token, deviceid, feedbackstate) => 
   const url = `${Test}/feedback/confirmFeedback?token=${token}&feedbackid=${deviceid}&feedbackstate=${feedbackstate}`
   return url
 }
-
+//  删除组织机构
+export const organizationDelete = (organizationid) => {
+  const url = `${Test}/organization/delete?organizationid=${organizationid}`
+  return url
+}
+//  DeleteRole
+export const DeleteRole = (kayakersId) => {
+  const url = `${Test}/roles/DeleteRole?roleid=${kayakersId}`
+  return url
+}
 //  计划  maintainArranged
 // 删除计划 deletePlan
 export const maintainArrangeddeletePlan = (checkplanid) => {
@@ -572,7 +586,7 @@ export const increasegetWorkTypes = () => {
 }
 //  获取项目区域 (所有)
 export const findAllRootAreasTree = () => {
-  const url = `http://172.16.6.181:8920/areas/findAllRootAreasTree`
+  const url = `${Test}/areas/findAllRootAreasTree`
   return url
 }
 //  获取服务机构

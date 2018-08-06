@@ -110,8 +110,8 @@
             </li>
           </ul>
           <ul class="table_ul">
-            <li v-for="(item) in tableData" class="table_li" :key="item.deviceid" :id="item.areaid" @click="selectStyle (item)">
-              <ul :id="item.id" class="inline_ul">
+            <li v-for="(item) in tableData" class="table_li" :key="item.deviceid" :id="item.areaid">
+              <ul :id="item.id" class="inline_ul" @click="selectStyle (item)">
                 <li class="header_lithree">{{item.areaname}}</li>
                 <li class="header_li">{{item.alldevcount}}</li>
                 <li class="header_li">{{item.approvedevnum}}</li>
@@ -195,16 +195,18 @@ export default {
     },
     selectStyle (item) {
       this.tableData.forEach((val) => {
-        val.flag = false
+        if (val.areaid !== item.areaid) {
+          val.flag = false
+        }
       })
       let itemAreaid = item.areaid
       this.axios.post(admingetDevListDetailProjects(itemAreaid)).then((response) => {
         console.log(response.data.data)
         if (response.data.code === 0) {
           this.tableChild = response.data.data
+          item.flag = !item.flag
         }
       })
-      item.flag = !item.flag
     },
     examine (item) {
       // 一级审核
