@@ -354,6 +354,8 @@ export default {
         width 100%
         padding 12px 0
         overflow hidden
+        &:hover
+          background #161d28
       .list_data_li
         float left
         text-align center

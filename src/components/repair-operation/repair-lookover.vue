@@ -151,7 +151,7 @@
 </template>
 
 <script>
-import { maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos } from '../../api/user'
+import { maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId } from '../../api/user'
 export default {
   name: 'repair-lookover',
   props: ['examine'],
@@ -217,7 +217,8 @@ export default {
         }
       }
     })
-    this.axios.post(`http://172.16.6.181:8920/repairtasks/getCheckTaskByRepairTaskId?repairtaskid=${this.examine.repairtaskid}`).then((response) => {
+
+    this.axios.post(getCheckTaskByRepairTaskId(this.examine.repairtaskid)).then((response) => {
       console.log(response)
       if (response.data.code === 0) {
         this.inspectUp = response.data.data

@@ -294,7 +294,7 @@ import Jurisdiction from '../intercalateChild-operation/structureChild-jurisdict
 import member from '../intercalateChild-operation/structureChild-member'
 import bluepencil from '../intercalateChild-operation/structureChild-bluepencil'
 import structureCopy from '../intercalateChild-operation/structureChild-copy'
-import {managementAuthority, managementhandleNodeClickOne, managementhandleNodeClickTwo, managementCreatedtree, managementCreatedProvince, managementCreatedcategory, managementCreatedbusiness, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, getCitiesByProvinceId, getCountiesByCityId, getAllHigherOrgIDs} from '../../api/user'
+import {managementAuthority, managementhandleNodeClickOne, managementhandleNodeClickTwo, managementCreatedtree, managementCreatedProvince, managementCreatedcategory, managementCreatedbusiness, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, getCitiesByProvinceId, getCountiesByCityId, getAllHigherOrgIDs, organizationDelete} from '../../api/user'
 export default {
   name: 'intercalateChild-structure',
   components: {
@@ -638,11 +638,14 @@ export default {
       }
     },
     handleNodeClick (data) {
+      console.log('--0-0-0-0-0-0+++=')
+      console.log(data)
       this.amputateStr = false
       this.DataorganizationId = data.organizationId
       this.axios.post(getAllHigherOrgIDs(data.organizationId)).then((response) => {
         this.companyDate = []
         if (response.data.code === 0) {
+          console.log(response.data.data)
           if (response.data.data.length <= 1) {
             this.companyDate = []
           } else {
@@ -780,7 +783,7 @@ export default {
             type: 'warning'
           })
         } else {
-          this.axios.post(`http://172.16.6.181:8920/organization/delete?organizationid=${this.DataorganizationId}`).then((response) => {
+          this.axios.post(organizationDelete(this.DataorganizationId)).then((response) => {
             if (response.data.code === 0) {
               this.$message({
                 message: '删除成功',

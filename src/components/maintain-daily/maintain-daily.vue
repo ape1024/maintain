@@ -67,6 +67,9 @@
           故障问题
         </li>
         <li class="header_litwo">
+          待审核
+        </li>
+        <li class="header_litwo">
           已分配任务项
         </li>
       </ul>
@@ -79,6 +82,9 @@
             <li class="header_litwo">{{item.sum}}</li>
             <li class="header_li_five">{{item.finish}}</li>
             <li class="header_li_six">{{item.error}}</li>
+            <li class="header_li_Seven">
+              {{item.waitapproval}}
+            </li>
             <li class="header_litwo">{{item.assign}}</li>
           </ul>
           <transition enter-active-class="fadeInUp"
@@ -248,7 +254,7 @@ export default {
      margin 12px
      overflow hidden
      position relative
-     background #141e30
+     background rgba(000,000,000, .45)
     .subject_top
         margin 38px 15px 20px 15px
         overflow hidden
@@ -337,7 +343,7 @@ export default {
        height 32px
      .header_litwo
        float left
-       width 15%
+       width 12%
        line-height 32px
        text-align center
        height 32px
@@ -355,14 +361,21 @@ export default {
        -webkit-line-clamp 2
      .header_li_five
        float left
-       width 15%
+       width 12%
        line-height 32px
        height 32px
        text-align center
        color  $color-text-tile-complete
      .header_li_six
        float left
-       width 15%
+       width 12%
+       line-height 32px
+       height 32px
+       text-align center
+       color  $color-text-tile-fault
+     .header_li_Seven
+       float left
+       width 12%
        line-height 32px
        height 32px
        text-align center

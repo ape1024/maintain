@@ -84,7 +84,8 @@
                   {{item.approvalstate}}
                 </li>
                 <li class="matters_litwo">
-                  <img class="photosImg" :key="index" v-for="(item, index) in item.photos" :src="item.path + item" alt="">
+                  照片数量{{item.path.length}}
+                  <img class="photosImg" :key="index" v-for="(data, index) in item.path" :src="data.path + data" alt="">
                 </li>
               </ul>
             </div>
@@ -280,6 +281,7 @@ export default {
       this.$emit('mine', this.examine_Boolean)
     },
     determine (event, checktaskdetailid) {
+      console.log(this.childDate.details)
       let el = event.currentTarget
       $('.content_ul').each(function (index, item) {
         $(item).removeClass('content_ulBack')
@@ -293,7 +295,22 @@ export default {
     }
   },
   created () {
+    console.log('--0-0-0-0')
+    console.log(this.childDate)
+
     this.childDate.details.forEach((val) => {
+      // val.path
+      if (val.path !== '') {
+        if (val.path.indexOf(',') !== -1) {
+          let arr = val.path.split(',')
+          val.path = arr
+        } else {
+          let arr = [val.path]
+          val.path = arr
+        }
+      } else {
+        val.path = []
+      }
       val.fuleco = false
     })
     //  任务审批选项
@@ -422,13 +439,13 @@ export default {
         .content_ul
           cursor pointer
           overflow hidden
-          padding 12px 0
+          height 30px
+          line-height 30px
           transition .2s
-          height 14px
           .matters_li
             float left
             width 10%
-            height 14px
+            height 30px
             overflow hidden
             text-overflow ellipsis
             white-space nowrap
@@ -436,14 +453,12 @@ export default {
             float left
             width 18%
             padding 0 1%
-            height 14px
             overflow hidden
             text-overflow ellipsis
             white-space nowrap
           .matters_lithree
             float left
             padding-left 2%
-            height 14px
             width 8%
             overflow hidden
             text-overflow ellipsis
