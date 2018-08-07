@@ -173,7 +173,7 @@
                  {{fmtDate(item.repairtime)}}
                 </span>
                   <span class="ficationLiDivSpantwo">
-                  {{obtainState(item.repairstatename)}}
+                  {{obtainState(item.repairstate)}}
                 </span>
                 </p>
                 <p class="ficationLiDivPtwo">
@@ -248,7 +248,7 @@
                  {{fmtDate(examine.repairtime)}}
                 </span>
                   <span class="ficationLiDivSpantwo">
-                  {{obtainState(examine.repairstatename)}}
+                  {{obtainState(examine.repairstate)}}
                 </span>
                 </p>
                 <p class="ficationLiDivPtwo">
@@ -280,7 +280,7 @@
                         处理结果:
                       </span>
                       <span class="ficationEnsconceLiSpantwo">
-                        {{obtainState(examine.repairstatename)}}
+                        {{obtainState(examine.repairstate)}}
                       </span>
                     </p>
                   </li>
@@ -436,7 +436,8 @@ export default {
       AuditorsTimer: '',
       Auditorsstate: '',
       Auditorsopinion: '',
-      imgList: []
+      imgList: [],
+      RepairStateItems: [] // 获取所有维修任务状态
     }
   },
   methods: {
@@ -446,13 +447,7 @@ export default {
       let approvalOpinion = this.approvalOpinionInput
       let approvalState = this.approvalradio
       let assignmenttime = this.waatitime
-      console.log('++++=')
-      console.log(approvalOpinion)
-      console.log(approvalState)
-      console.log(assignmenttime)
-
       this.axios.post(maintainRepairapprovalTask(token, repairtaskid, approvalOpinion, approvalState, assignmenttime, this.faulttypeData, this.faultreasonData, this.faultrangeData, this.faultphenomenonData, this.faulttreatmentData)).then((response) => {
-        console.log(response)
         if (response.data.code === 0) {
           this.$message({
             message: '审批成功',
@@ -469,7 +464,6 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       let repairtaskid = this.examine.repairtaskid
       let confirmopinion = ``
-      console.log()
       if (parseInt(this.radio) === 1) {
         confirmopinion += '经确认，故障问题已处理'
       } else {
@@ -477,7 +471,6 @@ export default {
       }
       if (confirmopinion !== '') {
         this.axios.post(maintainRepaircheckTask(token, repairtaskid, confirmopinion)).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             this.$message({
               message: '验证成功',
@@ -568,19 +561,6 @@ export default {
     ficationClick (item, data) {
       item.flag = !item.flag
     },
-    //  获取任务状态
-    obtainState (number) {
-      let arr = ''
-      this.state.forEach((val) => {
-        if (val.value === number) {
-          arr = val.name
-        }
-      })
-      if (arr === '') {
-        return number
-      }
-      return arr
-    },
     //  获取审批状态
     approvalStatus (status) {
       let arr = ''
@@ -608,6 +588,19 @@ export default {
         this.$refs.dialogImg.switchIndex(index)
         this.$refs.dialogImg.open()
       }, 200)
+    },
+    //  获取任务状态
+    obtainState (number) {
+      let arr = ''
+      this.state.forEach((val) => {
+        if (val.value === number) {
+          arr = val.name
+        }
+      })
+      if (arr === '') {
+        return number
+      }
+      return arr
     }
   },
   components: {
@@ -617,7 +610,6 @@ export default {
     if (this.examina !== undefined) {
       this.AuditorsPersonnel = this.examina.approvername
       this.AuditorsTimer = fmtDate(this.examina.approvaltime)
-      console.log(this.examina.approvaltime)
       this.Auditorsstate = this.examina.approvalstate
       this.Auditorsopinion = this.examina.approvalopinion
     } else {

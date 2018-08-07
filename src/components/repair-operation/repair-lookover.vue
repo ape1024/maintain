@@ -57,7 +57,7 @@
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">现场照片：</span>
                     <span>
-                      <img class="ficationEnsconceLitwoSpanThreeImg" :key="index" v-for="(data, index) in examine.beforephotos" :src="data" alt="">
+                      <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(examine.beforephotos), index)" :key="index" v-for="(data, index) in fieldphoto(examine.beforephotos)" :src="data" alt="">
                     </span>
                   </p>
                 </li>
@@ -100,18 +100,18 @@
                   <span class="tlefttoprightLiSpans">{{examine.reason}}</span>
                 </li>
                 <li class="tlefttopli">
-                  <span class="tlefttopHeaderSpan">处理情况：</span>
-                  <span class="tlefttoprightLiSpans">{{examine.treatment}}</span>
+                    <span class="tlefttopHeaderSpan">处理情况：</span>
+                    <span class="tlefttoprightLiSpans">{{examine.treatment}}</span>
+                </li>
+                <li class="tlefttopli">
+                    <span class="tlefttopHeaderSpan">处理结果：</span>
+                    <span class="tlefttoprightLiSpans">{{obtainState(examine.repairstate)}}</span>
                 </li>
                 <li class="tlefttopli">
                   <p class="tlefttopHeaderP">
-                    <span class="tlefttopHeaderSpan">处理结果：</span>
-                    <span class="tlefttoprightLiSpans">{{examine.repairstate}}</span>
-                  </p>
-                  <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">现场照片：</span>
                     <span>
-                      <img :key="index" v-for="(data, index) in examine.afterphotos" :src="data" alt="">
+                      <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(examine.afterphotos), index)"  :key="index" v-for="(data, index) in fieldphoto(examine.afterphotos)" :src="data" alt="">
                     </span>
                   </p>
                 </li>
@@ -147,14 +147,16 @@
         </div>
       </section>
     </section>
+    <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
   </div>
 </template>
 
 <script>
+import DialogImg from 'base/dialog-img/dialog-img'
 import { maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId } from '../../api/user'
 export default {
   name: 'repair-lookover',
-  props: ['examine'],
+  props: ['examine', 'state'],
   data () {
     return {
       options: [],
@@ -167,7 +169,13 @@ export default {
       AuditorsTimer: '',
       Auditorsstate: '',
       Auditorsopinion: '',
-      inspectUp: ''
+      inspectUp: {
+        checktime: '',
+        checkpersonname: '',
+        conclusion: '',
+        workitem: ''
+      },
+      imgList: []
     }
   },
   methods: {
@@ -178,12 +186,49 @@ export default {
       this.$emit('look', this.thisPage)
     },
     fmtDate (obj) {
+      if (!obj) return ''
       let date = new Date(obj)
       let y = 1900 + date.getYear()
       let m = `0` + (date.getMonth() + 1)
       let d = `0` + date.getDate()
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    },
+    //  现场照片
+    fieldphoto (src) {
+      console.log(src)
+      let arr = []
+      if (src === '' || src === null) {
+        return arr
+      } else {
+        src.split(',').forEach((val) => {
+          arr.push(val)
+        })
+        return arr
+      }
+    },
+    selectImg (list, index) {
+      this.imgList = list
+      setTimeout(() => {
+        this.$refs.dialogImg.switchIndex(index)
+        this.$refs.dialogImg.open()
+      }, 200)
+    },
+    //  获取任务状态
+    obtainState (number) {
+      let arr = ''
+      this.state.forEach((val) => {
+        if (val.value === number) {
+          arr = val.name
+        }
+      })
+      if (arr === '') {
+        return number
+      }
+      return arr
     }
+  },
+  components: {
+    DialogImg
   },
   created () {
     function fmtDate (obj) {
@@ -193,7 +238,6 @@ export default {
       let d = `0` + date.getDate()
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     }
-    console.log(maintainRepairfindReworksByTaskid(this.examine.repairtaskid))
     this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
         if (response.data.data.length !== 0) {
@@ -219,8 +263,9 @@ export default {
     })
 
     this.axios.post(getCheckTaskByRepairTaskId(this.examine.repairtaskid)).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
+        console.log(response)
+        if (!response.data.data) return
         this.inspectUp = response.data.data
       }
     })
@@ -292,7 +337,6 @@ export default {
           background #0b111a
           overflow hidden
           margin-bottom 14px
-          font-size $font-size-small
           border 1px solid $color-border-list
           justify-content center
           align-items center
@@ -304,7 +348,6 @@ export default {
           color $color-text
           font-size $font-size-medium
         .tlefttopHeaderP
-          width 50%
           float left
         .tlefttopHeaderSpan
           margin 0 12px
