@@ -64,7 +64,7 @@
             <div class="content">
               <ul class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)">
                 <li class="matters_lithree">
-                  <el-checkbox v-model="item.fuleco"></el-checkbox>
+                  <el-checkbox v-bind:disabled="item.disabled" v-model="item.fuleco"></el-checkbox>
                   {{item.workitem}}
                 </li>
                 <li class="matters_li">
@@ -182,7 +182,7 @@ export default {
     assignment () {
       let arrData = []
       this.equipment.forEach((val) => {
-        if (val.fuleco === false) {
+        if (val.fuleco === false || val.disabled === true) {
           return false
         } else {
           let data = {
@@ -267,11 +267,12 @@ export default {
         let arrData = []
         response.data.data.details.forEach((val) => {
           if (val.path !== '') {
+            let arr = []
             if (val.path.indexOf(',') !== -1) {
-              let arr = val.path.split(',')
+              arr = val.path.split(',')
               val.path = arr
             } else {
-              let arr = [val.path]
+              arr = [val.path]
               val.path = arr
             }
           } else {
@@ -279,9 +280,12 @@ export default {
           }
           val.fuleco = false
           val.pathBoolem = false
-          if (val.conclusionname) {
-            arrData.push(val)
+          if (val.conclusion > 0) {
+            val.disabled = false
+          } else {
+            val.disabled = true
           }
+          arrData.push(val)
         })
         this.equipment = arrData
         this.equipmentData = response.data.data

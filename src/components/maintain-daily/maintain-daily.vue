@@ -90,7 +90,7 @@
           <transition enter-active-class="fadeInUp"
             leave-active-class="fadeOutDown">
           <div v-if="item.flag" class="inline_div">
-              <dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild"></dailytwo>
+              <dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" @examinationApproval="ExaminationApproval"></dailytwo>
           </div>
           </transition>
         </li>
@@ -115,6 +115,25 @@ export default {
     // modify
   },
   methods: {
+    ExaminationApproval (el) {
+      this.axios.post(maintainDailygetCurrentTaskDeviceStat(el)).then((response) => {
+        if (response.data.code === 0) {
+          if (response.data.data.length !== 0) {
+            response.data.data.forEach((val) => {
+              val.judge = false
+              if ((val.error + val.problem) <= 0 && (val.waitapproval > 0)) {
+                val.available = false
+              } else {
+                val.available = true
+              }
+            })
+            this.dailyChild = response.data.data
+          } else {
+            this.dailyChild = response.data.data
+          }
+        }
+      })
+    },
     query () {
       let flag = false
       this.tableDatataskStat.forEach((val) => {
@@ -173,10 +192,10 @@ export default {
             if (response.data.data.length !== 0) {
               response.data.data.forEach((val) => {
                 val.judge = false
-                if ((val.error + val.problem) > 0) {
-                  val.available = true
-                } else {
+                if ((val.error + val.problem) <= 0 && (val.waitapproval > 0)) {
                   val.available = false
+                } else {
+                  val.available = true
                 }
               })
               this.dailyChild = response.data.data

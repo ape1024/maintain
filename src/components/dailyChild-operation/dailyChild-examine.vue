@@ -49,11 +49,14 @@
                   <li class="matters_litwo">
                     工作记录
                   </li>
-                  <li class="matters_litwo">
+                  <li class="matters_li">
                     工作结论
                   </li>
                   <li class="matters_li">
-                    处理状态
+                    审核状态
+                  </li>
+                  <li class="matters_li">
+                    安排状态
                   </li>
                   <li class="matters_litwo">
                     现场照片
@@ -64,7 +67,7 @@
             <div class="content">
               <ul class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)">
                 <li class="matters_lithree">
-                  <el-checkbox v-model="item.fuleco"></el-checkbox>
+                  <el-checkbox v-bind:disabled="item.disabled" v-model="item.fuleco"></el-checkbox>
                   {{item.workitem}}
                 </li>
                 <li class="matters_li">
@@ -77,11 +80,16 @@
                 <li class="matters_litwo">
                   {{item.workrecord}}
                 </li>
-                <li class="matters_litwo">
+                <li class="matters_li">
                   {{item.conclusionname}}
                 </li>
                 <li class="matters_li">
-                  {{item.approvalstate}}
+                  <!--之前的处理状态,-->
+                  <!--{{item.approvalstate}}-->
+                  {{item.isassigned ? '待审核' : '未审核'}}
+                </li>
+                <li class="matters_li">
+                  {{item.iswaitapproval ? '已安排' : '未安排'}}
                 </li>
                 <li class="matters_litwo">
                   <img class="photosImg" :key="index" v-for="(data, index) in item.path" :src="data" alt="">
@@ -216,7 +224,7 @@ export default {
       // this.examine_Boolean = !this.examine_Boolean
       let arrData = []
       this.equipment.forEach((val) => {
-        if (val.fuleco === false) {
+        if (val.fuleco === false || val.disabled === true) {
           return false
         } else {
           let data = {
@@ -300,21 +308,18 @@ export default {
     }
   },
   created () {
-    console.log('-0-0-0----------')
-    console.log(this.examine)
-    console.log(this.examineName)
-    console.log(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode))
     this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
       console.log(response.data.data)
       if (response.data.code === 0) {
         let arrData = []
         response.data.data.details.forEach((val) => {
           if (val.path !== '') {
+            let arr = []
             if (val.path.indexOf(',') !== -1) {
-              let arr = val.path.split(',')
+              arr = val.path.split(',')
               val.path = arr
             } else {
-              let arr = [val.path]
+              arr = [val.path]
               val.path = arr
             }
           } else {
@@ -322,11 +327,12 @@ export default {
           }
           val.fuleco = false
           val.pathBoolem = false
-          console.log('../')
-          console.log(val.conclusionname)
-          if (val.conclusionname) {
-            arrData.push(val)
+          if (val.conclusion > 0) {
+            val.disabled = false
+          } else {
+            val.disabled = true
           }
+          arrData.push(val)
         })
         console.log(arrData)
         this.equipment = arrData

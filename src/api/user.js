@@ -178,6 +178,11 @@ export const maintainDailygetCurrentTaskDeviceStat = (itemAreaid) => {
   const url = `${Test}/task/getCurrentTaskDeviceStat?taskid=${itemAreaid}`
   return url
 }
+//  批量审批
+export const batchApprovalCheckTaskByDeviceids = (token, taskid, deviceids) => {
+  const url = `${Test}/task/batchApprovalCheckTaskByDeviceids?token=${token}&taskid=${taskid}&deviceids=${deviceids}`
+  return url
+}
 //  按条件查询
 export const maintainDailygetCurrentTaskDeviceData = (taskid, areaid, basedevicecode, approvalstates) => {
   const url = `${Test}/task/getCurrentTaskDeviceStat?taskid=${taskid}&areaid=${areaid}&basedevicecode=${basedevicecode}&approvalstates=${approvalstates}`

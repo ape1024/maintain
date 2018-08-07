@@ -2,7 +2,9 @@
   <div class="inline_fill">
     <ul class="list_heder">
       <li @click.stop class="list_heder_litwo">
-        <el-checkbox @change="checkedChange(checked)" v-model="checked"></el-checkbox>
+        <span class="list_data_litwoSpan">
+          <el-checkbox @change="checkedChange(checked)" v-model="checked"></el-checkbox>
+        </span>
         设备名称
       </li>
       <li class="list_heder_li">
@@ -28,10 +30,12 @@
       </li>
     </ul>
     <ul class="inline_list">
-      <li :key="index" v-for="(item,index) in dailyData" class="inline_list_li" @click.stop="">
+      <li :key="index" v-for="(item,index) in dailyData" class="inline_list_li" @click.stop>
         <ul :id="item.id" :class="[item.error + item.problem > 0?'list_dataUl':'list_data']">
           <li class="list_data_litwo">
-            <el-checkbox v-model="item.judge" v-bind:disabled="item.available"></el-checkbox>
+            <span class="list_data_litwoSpan">
+                <el-checkbox v-model="item.judge" v-bind:disabled="item.available"></el-checkbox>
+            </span>
             {{item.deviceName}}
           </li>
           <li class="list_data_li">
@@ -86,7 +90,7 @@ import dailythree from '../dailyChild-three/dailyChild-three'
 import childExamine from '../dailyChild-operation/dailyChild-examine'
 import childArrangethview from '../dailyChild-operation/daily-Arrangetheview'
 import childDistribution from '../dailyChild-operation/dailyChild-distribution'
-import { maintainDailygetRepairTypes } from '../../api/user'
+import { maintainDailygetRepairTypes, batchApprovalCheckTaskByDeviceids } from '../../api/user'
 export default {
   name: 'dailyChild-two',
   props: ['dailyData', 'taskid', 'taskName'],
@@ -125,10 +129,36 @@ export default {
     //   item.active = !item.active
     // },
     batch () {
+      let arr = []
       this.dailyData.forEach((val) => {
-        console.log(val.judge)
+        console.log(val)
         if (val.judge === true) {
-          console.log(val.deviceID)
+          arr.push(val.deviceID)
+        }
+      })
+      if (!arr.length) {
+        this.$message({
+          message: '请选择',
+          type: 'warning'
+        })
+        return false
+      }
+      let token = JSON.parse(window.sessionStorage.token)
+      let taskid = this.taskid
+      let deviceids = arr.join(',')
+      console.log(token)
+      console.log(taskid)
+      console.log(deviceids)
+      this.axios.post(batchApprovalCheckTaskByDeviceids(token, taskid, deviceids)).then((response) => {
+        console.log(response)
+        if (response.data.code === 0) {
+          this.$message({
+            message: '审批成功',
+            type: 'success'
+          })
+          this.$emit('examinationApproval', this.taskid)
+        } else {
+          this.$message.error('审批失败')
         }
       })
     },
@@ -372,7 +402,8 @@ export default {
         overflow hidden
         position relative
         background #354d76
-        padding 12px 0
+        line-height 40px
+        height 40px
         .list_heder_li
           float left
           text-align center
@@ -398,7 +429,7 @@ export default {
         width 100%
         padding 12px 0
         overflow hidden
-        background #4a1c06
+        background #3a271c
       .list_data
         width 100%
         padding 12px 0
@@ -499,7 +530,14 @@ export default {
     overflow hidden
   .list_heder_li_three
     float left
+    cursor pointer
     text-align center
     width 12%
+    background #3279a6
+    transition .2s
     overflow hidden
+    &:hover
+     background #4b92bf
+  .list_data_litwoSpan
+    margin-right 10px
 </style>
