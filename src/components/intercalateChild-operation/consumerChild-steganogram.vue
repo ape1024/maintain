@@ -117,7 +117,7 @@ export default {
       if (this.newcode !== '') {
         if (this.newcode !== this.barbarism) {
           if (this.newcode === this.duplicate) {
-            this.axios.post(modifytheUserPwd(useridCurrent, this.newcode)).then((response) => {
+            this.axios.post(modifytheUserPwd(useridCurrent, this.barbarism, this.newcode)).then((response) => {
               if (response.data.code === 0) {
                 if (userId === useridCurrent) {
                   this.$message({

@@ -97,7 +97,6 @@
               <el-cascader
                 size="mini"
                 :options="organize"
-                :show-all-levels="false"
                 :props="defaultProps"
                 @change="handleChange"
                 v-model="organizeOptions"
@@ -214,7 +213,7 @@ export default {
   },
   watch: {
     organizeOptions (val) {
-      console.log('-09')
+      console.log(val)
       let data = val[val.length - 1]
       console.log(data)
       this.FindAllRolesByOrg(data)
@@ -299,6 +298,8 @@ export default {
           this.thisPage = this.increaseBoolean
           this.thisPage = !this.thisPage
           this.$emit('incr', this.thisPage)
+        } else {
+          this.$message.error(response.data.message)
         }
       })
     },

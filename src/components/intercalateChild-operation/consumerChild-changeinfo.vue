@@ -98,7 +98,6 @@
               <el-cascader
                 size="mini"
                 :options="organize"
-                :show-all-levels="false"
                 :props="defaultProps"
                 @change="handleChange"
                 v-model="organizeOptions"

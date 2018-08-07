@@ -81,7 +81,7 @@
                   </li>
                   <li class="tlefttopli">
                     <span class="tlefttopli__Span">现场照片：</span>
-                    <img class="tlefttopli_Img" :key="index" v-for="(item, index) in srcData" :src="item" alt="">
+                    <img class="tlefttopli_Img" @click="selectImg(srcData, index)" :key="index" v-for="(item, index) in srcData" :src="item" alt="">
                   </li>
                 </ul>
               </div>
@@ -173,12 +173,11 @@
                  {{fmtDate(item.repairtime)}}
                 </span>
                   <span class="ficationLiDivSpantwo">
-                  {{obtainState(item.repairstate)}}
+                  {{obtainState(item.repairstatename)}}
                 </span>
                 </p>
                 <p class="ficationLiDivPtwo">
-                  <i v-show="item.flag" class="el-icon-arrow-down
-"></i>
+                  <i v-show="item.flag" class="el-icon-arrow-down"></i>
                   <i v-show="!item.flag" class="el-icon-arrow-up"></i>
                 </p>
                 <p class="ficationLiDivPthree">
@@ -205,11 +204,11 @@
                       </span>
                     </p>
                     <p class="ficationEnsconceLiPtwo">
-  <span class="ficationEnsconceLiSpan">
+                      <span class="ficationEnsconceLiSpan">
                         处理结果:
                       </span>
                       <span class="ficationEnsconceLiSpantwo">
-                        {{obtainState(item.repairstate)}}
+                        {{obtainState(item.repairstatename)}}
                       </span>
                     </p>
                   </li>
@@ -236,7 +235,7 @@
                         现场照片:
                       </span>
                     <span class="ficationEnsconceLitwoSpanThree">
-                      <img class="ficationEnsconceLitwoSpanThreeImg" :key="index" v-for="(data ,index) in fieldphoto(item.afterphotos)" :src="data" alt="">
+                      <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(item.afterphotos), imgIndex)" :key="imgIndex" v-for="(data , imgIndex) in fieldphoto(item.afterphotos)" :src="data" alt="">
                     </span>
                   </li>
                 </ul>
@@ -249,12 +248,11 @@
                  {{fmtDate(examine.repairtime)}}
                 </span>
                   <span class="ficationLiDivSpantwo">
-                  {{obtainState(examine.repairstate)}}
+                  {{obtainState(examine.repairstatename)}}
                 </span>
                 </p>
                 <p class="ficationLiDivPtwo">
-                  <i v-show="ficationBoolean" class="el-icon-arrow-down
-"></i>
+                  <i v-show="ficationBoolean" class="el-icon-arrow-down"></i>
                   <i v-show="!ficationBoolean" class="el-icon-arrow-up"></i>
                 </p>
               </div>
@@ -278,11 +276,11 @@
                       </span>
                     </p>
                     <p class="ficationEnsconceLiPtwo">
-  <span class="ficationEnsconceLiSpan">
+                      <span class="ficationEnsconceLiSpan">
                         处理结果:
                       </span>
                       <span class="ficationEnsconceLiSpantwo">
-                        {{obtainState(examine.repairstate)}}
+                        {{obtainState(examine.repairstatename)}}
                       </span>
                     </p>
                   </li>
@@ -309,7 +307,7 @@
                         现场照片:
                       </span>
                     <span class="ficationEnsconceLitwoSpanThree">
-                      <img class="ficationEnsconceLitwoSpanThreeImg" v-for="(data ,index) in fieldphoto(examine.afterphotos)" :key="index" :src="data" alt="">
+                      <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(examine.afterphotos), index)" v-for="(data ,index) in fieldphoto(examine.afterphotos)" :key="index" :src="data" alt="">
                       </span>
                   </li>
                 </ul>
@@ -392,10 +390,12 @@
         </div>
         </transition>
       </section>
+      <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </div>
 </template>
 
 <script>
+import DialogImg from 'base/dialog-img/dialog-img'
 import { maintainRepairapprovalTask, maintainRepaircheckTask, maintainRepairgetFaultSelectItems, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindReworksByTaskid } from '../../api/user'
 export default {
   name: 'repair-examine',
@@ -435,7 +435,8 @@ export default {
       AuditorsPersonnel: '',
       AuditorsTimer: '',
       Auditorsstate: '',
-      Auditorsopinion: ''
+      Auditorsopinion: '',
+      imgList: []
     }
   },
   methods: {
@@ -600,11 +601,19 @@ export default {
       let m = `0` + (date.getMonth() + 1)
       let d = `0` + date.getDate()
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    },
+    selectImg (list, index) {
+      this.imgList = list
+      setTimeout(() => {
+        this.$refs.dialogImg.switchIndex(index)
+        this.$refs.dialogImg.open()
+      }, 200)
     }
   },
+  components: {
+    DialogImg
+  },
   created () {
-    console.log('---------')
-    console.log('---------')
     if (this.examina !== undefined) {
       this.AuditorsPersonnel = this.examina.approvername
       this.AuditorsTimer = fmtDate(this.examina.approvaltime)

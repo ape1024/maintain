@@ -97,7 +97,7 @@
               {{item.devicecount}}
             </li>
             <li class="repair_lithree">
-              {{item.repairtype}}
+              {{item.repairtypename}}
             </li>
             <li class="repair_lifour">
               {{item.exception}}
@@ -109,13 +109,13 @@
               {{item.createtime}}
             </li>
             <li class="repair_lithree">
-              {{item.repairperson}}{{item.others}}
+              {{item.repairpersonname}}{{item.others}}
             </li>
             <li class="repair_lithree">
-              {{item.creater}}
+              {{item.repairstatename}}
             </li>
             <li class="repair_lithree">
-              {{approvalStatusfn(item.approvalstate)}}
+              {{approvalStatusfn(item.approvalstatename)}}
             </li>
             <li class="repair_lifive">
               <p v-if="JurisdictionInsert" @click.stop="question(item.repairtaskid, item)" class="header_p_eight threelevel_litwo_p">
@@ -280,6 +280,8 @@ export default {
       // 点击审核
       this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
         if (response.data.code === 0) {
+          console.log('-------------------------------------')
+          console.log(response.data.data)
           this.examineData = response.data.data
           this.axios.post(maintainRepairfindReworksByTaskid(ID)).then((response) => {
             if (response.data.code === 0) {
@@ -394,6 +396,7 @@ export default {
         this.maintenance = response.data.data
       }
     })
+    // 审批状态
     this.axios.post(maintainRepairgetRepariTaskApprovalItem()).then((response) => {
       if (response.data.code === 0) {
         this.approvalStatus = response.data.data
@@ -623,7 +626,7 @@ export default {
     left 0
     width 100%
     height 100%
-    background rgba(000,000,000,.4)
+    background rgba(000,000,000,.9)
     z-index 11
     overflow hidden
   .header_p_eight

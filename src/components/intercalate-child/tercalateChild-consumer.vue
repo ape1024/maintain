@@ -247,7 +247,9 @@ export default {
       console.log(this.Handphone)
 
       let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(findAllBy(this.selectedOptions, this.role, this.Username, this.Handphone, this.pageIndex, this.pageSize, token)).then((response) => {
+      const len = this.selectedOptions.length
+      const selectOptionsData = len === 0 ? '' : this.selectedOptions[(len - 1)]
+      this.axios.post(findAllBy(selectOptionsData, this.role, this.Username, this.Handphone, this.pageIndex, this.pageSize, token)).then((response) => {
         if (response.data.code === 0) {
           console.log(response.data.data)
           this.information = response.data.data.data
@@ -550,7 +552,7 @@ export default {
   .adhibit
     width 100%
     height 100%
-    background rgba(000,000,000,.4)
+    background rgba(000,000,000,.9)
     z-index 111
     position fixed
     left 0

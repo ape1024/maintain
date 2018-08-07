@@ -29,8 +29,8 @@ export const modifytheUser = (userid, organizationid, username, email, tel, user
   return url
 }
 //  修改密码
-export const modifytheUserPwd = (userid, pwd) => {
-  const url = `${Test}/users/updateUser?userid=${userid}&pwd=${pwd}`
+export const modifytheUserPwd = (userid, oldpwd, newpwd) => {
+  const url = `${Test}/users/changePwd?userid=${userid}&oldpwd=${oldpwd}&newpwd=${newpwd}`
   return url
 }
 //  用户设置  添加用户
