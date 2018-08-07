@@ -57,7 +57,7 @@
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">现场照片：</span>
                     <span>
-                      <img class="ficationEnsconceLitwoSpanThreeImg" :key="index" v-for="(data, index) in examine.beforephotos" :src="data" alt="">
+                      <img class="ficationEnsconceLitwoSpanThreeImg" :key="index" v-for="(data, index) in fieldphoto(examine.beforephotos)" :src="data" alt="">
                     </span>
                   </p>
                 </li>
@@ -111,7 +111,7 @@
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">现场照片：</span>
                     <span>
-                      <img :key="index" v-for="(data, index) in examine.afterphotos" :src="data" alt="">
+                      <img  class="ficationEnsconceLitwoSpanThreeImg"  :key="index" v-for="(data, index) in fieldphoto(examine.afterphotos)" :src="data" alt="">
                     </span>
                   </p>
                 </li>
@@ -183,6 +183,18 @@ export default {
       let m = `0` + (date.getMonth() + 1)
       let d = `0` + date.getDate()
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    },
+    //  现场照片
+    fieldphoto (src) {
+      let arr = []
+      if (src === '' || src === null) {
+        return arr
+      } else {
+        src.split(',').forEach((val) => {
+          arr.push(val)
+        })
+        return arr
+      }
     }
   },
   created () {
@@ -304,7 +316,6 @@ export default {
           color $color-text
           font-size $font-size-medium
         .tlefttopHeaderP
-          width 50%
           float left
         .tlefttopHeaderSpan
           margin 0 12px
