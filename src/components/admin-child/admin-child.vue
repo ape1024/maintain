@@ -210,7 +210,6 @@ export default {
     },
     Modify (ev) {
       this.modifyBoolean = ev
-
       this.axios.post(admingetDevListDetailProjects(this.datasetAreaid)).then((response) => {
         if (response.data.code === 0) {
           this.tabChild = response.data.data

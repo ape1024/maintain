@@ -1,103 +1,85 @@
 <template>
-  <div>
-    <div id="chartRight" :style="{width:'500px',height:'280px'}"></div>
+  <div class="charts">
+    <div id="myChart" :style="{width:'300px',height:'300px'}"></div>
   </div>
 </template>
 
 <script>
+import { statDevFaultState } from '../../api/user'
 export default {
   name: 'homeChild-inspectionRight',
+  data () {
+    return {
+      msg: '',
+      equipment: [],
+      equipmentData: []
+    }
+  },
   mounted () {
-    this.drawright()
+    console.log('-0-0')
+    this.axios.post(statDevFaultState()).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response.data.data)
+        let equipment = []
+        let equipmentData = []
+        console.log('lllll')
+        response.data.data.forEach((val) => {
+          let obj = {
+            value: val.Faultdevcount,
+            name: val.Faulttypename
+          }
+          console.log(obj)
+          equipment.push(val.Faulttypename)
+          equipmentData.push(obj)
+        })
+        this.drawLine(equipmentData, equipment)
+      }
+    })
   },
   methods: {
-    drawright () {
-      let Chart = this.$echarts.init(document.getElementById('chartRight'))
-      Chart.setOption({
+    drawLine (equipmentData, equipment) {
+      // 基于准备好的dom，初始化echarts实例
+      let myChart = this.$echarts.init(document.getElementById('myChart'))
+      myChart.setOption({
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
         legend: {
           orient: 'vertical',
-          x: 'left',
-          data: ['直达', '营销广告', '搜索引擎', '邮件营销', '联盟广告', '视频广告', '百度', '谷歌', '必应', '其他']
+          left: 'left',
+          data: equipment,
+          textStyle: {
+            color: '#fff'
+          },
+          y: 'top',
+          x: 'left'
         },
         series: [
           {
-            name: '访问来源',
-            type: 'pie',
-            selectedMode: 'single',
-            radius: [0, '30%'],
-
-            label: {
+            itemStyle: {
               normal: {
-                position: 'inner'
-              }
-            },
-            labelLine: {
-              normal: {
-                show: false
-              }
-            },
-            data: [
-              {value: 335, name: '直达', selected: true},
-              {value: 679, name: '营销广告'},
-              {value: 1548, name: '搜索引擎'}
-            ]
-          },
-          {
-            name: '访问来源',
-            type: 'pie',
-            radius: ['40%', '55%'],
-            label: {
-              normal: {
-                formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
-                backgroundColor: '#eee',
-                borderColor: '#aaa',
-                borderWidth: 1,
-                borderRadius: 4,
-                rich: {
-                  a: {
-                    color: '#999',
-                    lineHeight: 22,
-                    align: 'center'
-                  },
-                  hr: {
-                    borderColor: '#aaa',
-                    width: '100%',
-                    borderWidth: 0.5,
-                    height: 0
-                  },
-                  b: {
-                    fontSize: 16,
-                    lineHeight: 33
-                  },
-                  per: {
-                    color: '#eee',
-                    backgroundColor: '#334455',
-                    padding: [2, 4],
-                    borderRadius: 2
-                  }
+                label: {
+                  show: false
+                },
+                labelLine: {
+                  show: false
                 }
               }
             },
-            data: [
-              {value: 335, name: '直达'},
-              {value: 310, name: '邮件营销'},
-              {value: 234, name: '联盟广告'},
-              {value: 135, name: '视频广告'},
-              {value: 1048, name: '百度'},
-              {value: 251, name: '谷歌'},
-              {value: 147, name: '必应'},
-              {value: 102, name: '其他'}
-            ]
+            name: 'name',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '60%'],
+            data: equipmentData
           }
         ]
       })
+      window.onresize = myChart.resize
     }
   }
 }
+
 </script>
 
 <style scoped>

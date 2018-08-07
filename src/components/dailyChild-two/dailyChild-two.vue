@@ -23,12 +23,12 @@
       <li class="list_heder_li">
         操作
       </li>
-      <li class="list_heder_li_three">
+      <li @click.stop="batch" class="list_heder_li_three">
         批量审批
       </li>
     </ul>
     <ul class="inline_list">
-      <li :key="index" v-for="(item,index) in dailyChild" class="inline_list_li" @click.stop="">
+      <li :key="index" v-for="(item,index) in dailyData" class="inline_list_li" @click.stop="">
         <ul :id="item.id" :class="[item.error + item.problem > 0?'list_dataUl':'list_data']">
           <li class="list_data_litwo">
             <el-checkbox v-model="item.judge" v-bind:disabled="item.available"></el-checkbox>
@@ -86,7 +86,7 @@ import dailythree from '../dailyChild-three/dailyChild-three'
 import childExamine from '../dailyChild-operation/dailyChild-examine'
 import childArrangethview from '../dailyChild-operation/daily-Arrangetheview'
 import childDistribution from '../dailyChild-operation/dailyChild-distribution'
-import { maintainDailygetRepairTypes, maintainDailygetCurrentTaskDeviceStat } from '../../api/user'
+import { maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'dailyChild-two',
   props: ['dailyData', 'taskid', 'taskName'],
@@ -124,6 +124,14 @@ export default {
     //   })
     //   item.active = !item.active
     // },
+    batch () {
+      this.dailyData.forEach((val) => {
+        console.log(val.judge)
+        if (val.judge === true) {
+          console.log(val.deviceID)
+        }
+      })
+    },
     arrangSwitch (ev) {
       this.ArrangetheviewBoolean = ev
     },
@@ -133,13 +141,13 @@ export default {
     },
     checkedChange (data) {
       if (data) {
-        this.dailyChild.forEach((val) => {
+        this.dailyData.forEach((val) => {
           if ((val.error + val.problem) <= 0) {
             val.judge = true
           }
         })
       } else {
-        this.dailyChild.forEach((val) => {
+        this.dailyData.forEach((val) => {
           val.judge = false
         })
       }
@@ -178,26 +186,10 @@ export default {
     }
   },
   created () {
-    console.log('--------')
-    console.log(this.taskid)
-    console.log(this.dailyData)
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'task_xj') {
         this.JurisdictionInsert = val.insert
-      }
-    })
-    this.axios.post(maintainDailygetCurrentTaskDeviceStat(this.taskid)).then((response) => {
-      if (response.data.code === 0) {
-        response.data.data.forEach((val) => {
-          val.judge = false
-          if ((val.error + val.problem) > 0) {
-            val.available = true
-          } else {
-            val.available = false
-          }
-        })
-        this.dailyChild = response.data.data
       }
     })
   }
@@ -426,12 +418,13 @@ export default {
         overflow hidden
         padding-left 2%
       .list_data_li_p
+        display inline-block
         margin 0 auto
         color #3279A6
         cursor pointer
         text-decoration underline
       .list_data_li_ptwo
-        float left
+        display inline-block
         color $color-text-tile-project
         cursor pointer
         text-decoration underline

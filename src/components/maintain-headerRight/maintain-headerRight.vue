@@ -9,7 +9,6 @@
           <div class="headerRight">
             <el-select size="mini" v-model="value"  @change="patternSwitch">
               <el-option
-
                 v-for="item in options"
                 :key="item.projectid"
                 :label="item.projectname"
@@ -46,10 +45,16 @@ export default {
   props: ['name'],
   data () {
     return {
-      portrait: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).icon : this.$store.state.usericon,
-      username: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).username : this.$store.state.username,
+      portrait: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).icon : '',
+      username: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).username : '',
       options: [],
-      value: []
+      value: [],
+      tokenData: this.$store.state.userToken
+    }
+  },
+  watch: {
+    tokenData (vl) {
+      alert(vl)
     }
   },
   methods: {
@@ -58,7 +63,6 @@ export default {
       console.log(window.localStorage.pattern)
     },
     signout () {
-      console.log(window.localStorage.token)
       let signouttoken = JSON.parse(window.sessionStorage.token)
       this.axios.post(secede(signouttoken)).then((response) => {
       //   用户点击退出 清除sessionStorage
@@ -69,56 +73,49 @@ export default {
     }
   },
   created () {
+    console.log('啦啦啦啦啦啦啦')
+    console.log(this.$store.state.userToken)
     if (window.sessionStorage.token === undefined) {
       console.log('%c Hello World', 'color: red;font-size: 24px;font-weight: bold;text-decoration: underline;')
-      if (this.$store.state.userToken === '') {
-        return false
-      } else {
-        let token = this.$store.state.userToken
-        this.axios.post(findUserProjects(token)).then((response) => {
-          if (response.data.code === 0) {
-            this.options = response.data.data
-            if (window.localStorage.pattern !== undefined) {
-              this.value = JSON.parse(window.localStorage.pattern)
-            } else {
-              this.value = response.data.data[0].projectid
-              window.localStorage.pattern = response.data.data[0].projectid
-            }
+      let token = this.$store.state.userToken
+      this.axios.post(findUserProjects(token)).then((response) => {
+        if (response.data.code === 0) {
+          this.options = response.data.data
+          if (window.localStorage.pattern !== undefined) {
+            this.value = JSON.parse(window.localStorage.pattern)
+          } else {
+            this.value = response.data.data[0].projectid
+            window.localStorage.pattern = response.data.data[0].projectid
           }
-        })
-      }
+        }
+      })
     } else {
-      if (window.sessionStorage.token === undefined) {
-        return false
-      } else {
-        let token = JSON.parse(window.sessionStorage.token)
-        this.axios.post(findUserProjects(token)).then((response) => {
-          console.log('===========================')
-          console.log(response)
-          if (response.data.code === 0) {
-            console.log(response.data.data)
-            this.options = response.data.data
-            let pattern = JSON.parse(window.localStorage.pattern)
-            let patternBo = false
-            if (window.localStorage.pattern !== undefined) {
-              response.data.data.forEach((val) => {
-                if (val.projectid === pattern) {
-                  patternBo = true
-                }
-              })
-              if (patternBo) {
-                this.value = pattern
-              } else {
-                this.value = response.data.data[0].projectid
-                window.localStorage.pattern = response.data.data[0].projectid
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(findUserProjects(token)).then((response) => {
+        console.log(response)
+        if (response.data.code === 0) {
+          console.log(response.data.data)
+          this.options = response.data.data
+          let pattern = JSON.parse(window.localStorage.pattern)
+          let patternBo = false
+          if (window.localStorage.pattern !== undefined) {
+            response.data.data.forEach((val) => {
+              if (val.projectid === pattern) {
+                patternBo = true
               }
+            })
+            if (patternBo) {
+              this.value = pattern
             } else {
               this.value = response.data.data[0].projectid
               window.localStorage.pattern = response.data.data[0].projectid
             }
+          } else {
+            this.value = response.data.data[0].projectid
+            window.localStorage.pattern = response.data.data[0].projectid
           }
-        })
-      }
+        }
+      })
     }
   }
 }

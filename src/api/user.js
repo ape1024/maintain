@@ -153,6 +153,10 @@ export const maintainHomeStacked = (projectid) => {
   const url = `${Test}/dev/statDevRunState?projectid=${projectid}`
   return url
 }
+export const statDevFaultState = () => {
+  const url = `${Test}/dev/statDevFaultState`
+  return url
+}
 //  AddDivecemodels
 export const AddDivecemodels = (manufactureId, Deviceid, versionCustom, technicalParameter) => {
   const url = `${Test}/dev/AddDivecemodels?manufactureId=${manufactureId}&baseDeviceId=${Deviceid}&modelName=${versionCustom}&para=${technicalParameter}`
@@ -187,6 +191,10 @@ export const maintainDailyapprovalTaskDetail = (token, taskDetailid, approvalOpi
 //  审批 -> 技术判断
 export const maintainDailygetEquirementjudgments = (checkdetailid) => {
   const url = `${Test}/task/getEquirementjudgments?checkdetailid=${checkdetailid}`
+  return url
+}
+export const maintainDailygetEquirementjudgments2 = (checkdetailid) => {
+  const url = `${Test}/task/getEquirementjudgments2?checkdetailid=${checkdetailid}`
   return url
 }
 //  审批  -> 审批选项

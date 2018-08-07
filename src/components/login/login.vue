@@ -98,13 +98,10 @@ export default {
                 if (data.data.code === 0) {
                   let userinfo = JSON.stringify(response.data.data.userInfo)
                   let token = JSON.stringify(response.data.data.token)
-                  this.$store.state.userToken = token
                   window.sessionStorage.setItem('userInfo', userinfo)
                   window.sessionStorage.setItem('token', token)
-                  let username = JSON.parse(window.sessionStorage.userInfo).username
-                  let usericon = JSON.parse(window.sessionStorage.userInfo).icon
-                  this.$store.state.usericon = usericon
-                  this.$store.state.username = username
+                  // let username = JSON.parse(window.sessionStorage.userInfo).username
+                  // let usericon = JSON.parse(window.sessionStorage.userInfo).icon
                   let newToken = JSON.parse(token)
                   this.axios.post(getUserFuncions(newToken)).then((data) => {
                     data.data.forEach((val) => {
@@ -193,19 +190,6 @@ export default {
     })
   },
   created () {
-    // if (window.sessionStorage.length !== 0) {
-    //   console.log(window.sessionStorage.length)
-    //   let Judgetoken = window.sessionStorage.token
-    //   // let token = judgeToken(Judgetoken)
-    //   judgeToken(Judgetoken).then((res) => {
-    //     if (res === true) {
-    //       this.$router.push('/home')
-    //       return false
-    //     }
-    //   })
-    // } else {
-    //   this.$router.push('/login')
-    // }
   }
 }
 </script>
