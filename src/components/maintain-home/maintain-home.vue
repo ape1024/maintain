@@ -84,7 +84,13 @@ export default {
   name: 'maintain-home',
   data () {
     return {
-      integrityRate: ''
+      integrityRate: '',
+      pattrenData: ''
+    }
+  },
+  watch: {
+    pattrenData (val) {
+      console.log(val)
     }
   },
   computed: {

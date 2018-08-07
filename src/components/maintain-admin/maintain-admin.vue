@@ -174,24 +174,36 @@ export default {
   methods: {
     //  查询
     query () {
-      //  接口 getDevListDetailProjectsTwo
-      // console.log(this.AuditstatusD)
-      // //  区域id
-      // let areaid = this.regionModel.length === 0 ? '' : this.regionModel[this.regionModel.length - 1]
-      // console.log(areaid)
-      // //  设备类型
-      // let equipment = ''
-      // if (this.equipmentDate.length === 0 || !this.equipmentDate[0]) {
-      //   equipment = ''
-      // } else {
-      //   equipment = this.equipmentDate[this.equipmentDate.length - 1]
-      //
-      // }
-      // //  运行状态
-      // let running = this.runningState
-      // //  审核状态
-      // let Auditstatus = this.AuditstatusD
-      //
+      //  console.log(this.manufactorModel)
+      // return
+      // 接口 getDevListDetailProjectsTwo
+      //  区域id
+      let areaid = this.regionModel.length === 0 ? '' : this.regionModel[this.regionModel.length - 1]
+      console.log(areaid)
+      //  设备类型
+      let equipment = ''
+      if (this.equipmentDate.length === 0 || !this.equipmentDate[0]) {
+        equipment = ''
+      } else {
+        equipment = this.equipmentDate[this.equipmentDate.length - 1]
+      }
+      //  厂家 id
+      let anufacturer = ''
+      if (this.manufactorModel === -1 || !this.manufactorModel) {
+        anufacturer = ''
+      } else {
+        anufacturer = this.manufactorModel
+      }
+      //  运行状态
+      let running = this.runningState
+      //  审核状态
+      let Auditstatus = this.AuditstatusD
+      //  厂家
+      this.axios.post(`http://172.16.6.181:8920/dev/getDevListDetailProjects?basedevicecode=${equipment}&devicestate=${running}&approvalstate=${Auditstatus}&areaid=${areaid}&manufacturerid=${anufacturer}`).then((response) => {
+        if (response.data.code === 0) {
+
+        }
+      })
     },
     selectStyle (item) {
       this.tableData.forEach((val) => {

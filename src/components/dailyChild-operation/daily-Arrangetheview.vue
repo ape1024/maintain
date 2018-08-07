@@ -83,11 +83,9 @@
                 <li class="matters_li">
                   {{item.approvalstate}}
                 </li>
-                <li @click.stop="picturedetails(item)" class="matters_litwo">
+                <li class="matters_litwo">
                   <!--<span>照片数量{{item.path.length}}</span>-->
-                  <div @click.stop v-show="item.pathBoolem" class="picturedetails">
-                    <img class="photosImg" :key="index" v-for="(data, index) in item.path" :src="data" alt="">
-                  </div>
+                  <img class="photosImg" :key="index" v-for="(data, index) in item.path" :src="data" alt="">
                 </li>
               </ul>
             </div>
@@ -122,7 +120,7 @@
                         {{item.faulttype}}
                       </li>
                       <li class="opinion_litwo">
-                        {{item.conclusion}}
+                        {{item.conclusionname}}
                       </li>
                     </ul>
                   </li>
@@ -145,7 +143,7 @@
 </template>
 
 <script>
-import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments } from '../../api/user'
+import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments2 } from '../../api/user'
 import $ from 'jquery'
 export default {
   name: 'daily-Arrangetheview',
@@ -251,7 +249,7 @@ export default {
         $(item).removeClass('content_ulBack')
       })
       $(el).addClass('content_ulBack')
-      this.axios.post(maintainDailygetEquirementjudgments(checktaskdetailid)).then((response) => {
+      this.axios.post(maintainDailygetEquirementjudgments2(checktaskdetailid)).then((response) => {
         if (response.data.code === 0) {
           this.determinant = response.data.data
         }
@@ -552,10 +550,10 @@ export default {
         prohibit()
   .photosImg
     display inline-block
-    margin-right 10px
+    margin-right 6px
     cursor pointer
-    width 50px
-    height 50px
+    width 30px
+    height 30px
   .picturedetails
     position absolute
     top 30px

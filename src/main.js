@@ -11,7 +11,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 import Leaflet from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-
+// Vue.prototype.changeData = function () {
+//   return window.localStorage.pattern
+// }
 import axios from 'axios'
 Vue.prototype.axios = axios
 

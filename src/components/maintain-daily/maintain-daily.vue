@@ -105,7 +105,7 @@
 
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
-import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData } from '../../api/user'
+import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 export default {
@@ -126,8 +126,10 @@ export default {
         }
       })
       if (flag === true) {
+        console.log(this.regionModel)
         let clickId = this.click_id
-        let areaid = this.regionModel.length !== 0 ? this.regionModel[this.this.regionModel.length - 1] : ''
+        let areaid = this.regionModel.length !== 0 ? this.regionModel[this.regionModel.length - 1] : ''
+        console.log(areaid)
         let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         basedevicecode = basedevicecode === null ? '' : basedevicecode
         let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
@@ -135,7 +137,20 @@ export default {
         this.axios.post(maintainDailygetCurrentTaskDeviceData(clickId, areaid, basedevicecode, approvalstates)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
-            this.dailyChild = response.data.data
+            if (response.data.data.length !== 0) {
+              response.data.data.forEach((val) => {
+                val.judge = false
+                if ((val.error + val.problem) > 0) {
+                  val.available = true
+                } else {
+                  val.available = false
+                }
+              })
+              this.dailyChild = response.data.data
+            } else {
+              this.dailyChild = response.data.data
+            }
+            console.log(this.dailyChild)
           }
         })
       } else {
@@ -153,7 +168,25 @@ export default {
         })
         let itemAreaid = item.taskID
         this.click_id = itemAreaid
-        item.flag = !item.flag
+        this.axios.post(maintainDailygetCurrentTaskDeviceStat(itemAreaid)).then((response) => {
+          if (response.data.code === 0) {
+            if (response.data.data.length !== 0) {
+              response.data.data.forEach((val) => {
+                val.judge = false
+                if ((val.error + val.problem) > 0) {
+                  val.available = true
+                } else {
+                  val.available = false
+                }
+              })
+              this.dailyChild = response.data.data
+              item.flag = !item.flag
+            } else {
+              this.dailyChild = response.data.data
+              item.flag = !item.flag
+            }
+          }
+        })
       } else {
         item.flag = !item.flag
       }

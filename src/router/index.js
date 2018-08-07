@@ -5,7 +5,9 @@ import login from '../components/login/login'
 //   登陆空白页
 import loginBlank from '../components/login/loginBlank'
 // 首页
-import home from '../components/maintain-home/maintain-home'
+import home from '../components/home/home'
+// 首页
+import maintainHome from '../components/maintain-home/maintain-home'
 // 设备管理
 import admin from '../components/maintain-admin/maintain-admin'
 // 日常巡检
@@ -50,80 +52,91 @@ const routes = [
   {
     // 首页
     path: '/home',
-    component: home
-  },
-  {
-    // 设备管理
-    path: '/admin',
-    component: admin
-  },
-  {
-    // 日常巡检
-    path: '/daily',
-    component: daily
-  },
-  {
-    // 检查测试
-    path: '/inspect',
-    component: inspect
-  },
-  {
-    // 维护保养
-    path: '/maintain',
-    component: maintain
-  },
-  {
-    // 故障维修
-    path: '/repair',
-    component: repair
-  },
-  {
-    //  计划
-    path: '/plan',
-    component: plan
-  },
-  {
-    // 档案
-    path: '/archives',
-    component: archives
-  },
-  {
-    // 上报
-    path: '/report',
-    component: report
-  },
-  {
-    path: '/intercalate',
-    component: intercalate,
-    children: [{
-      path: 'department',
-      component: intercalateDepartment
-    }, {
-      path: 'structure',
-      component: intercalateStructure
-    }, {
-      path: 'karakters',
-      component: intercalateKarakters
-    }, {
-      path: 'consumer',
-      component: tercalateConsumer
-    }, {
-      path: 'project',
-      component: tercalateProject
-    }, {
-      path: '/',
-      component: intercalateStructure,
-      redirect: 'structure'
-    }
+    component: home,
+    children: [
+      {
+        // 设备管理
+        path: 'maintain-home',
+        component: maintainHome
+      },
+      {
+        // 设备管理
+        path: 'admin',
+        component: admin
+      },
+      {
+        // 日常巡检
+        path: 'daily',
+        component: daily
+      },
+      {
+        // 检查测试
+        path: 'inspect',
+        component: inspect
+      },
+      {
+        // 维护保养
+        path: 'maintain',
+        component: maintain
+      },
+      {
+        // 故障维修
+        path: 'repair',
+        component: repair
+      },
+      {
+        //  计划
+        path: 'plan',
+        component: plan
+      },
+      {
+        // 档案
+        path: 'archives',
+        component: archives
+      },
+      {
+        // 上报
+        path: 'report',
+        component: report
+      },
+      {
+        path: 'intercalate',
+        component: intercalate,
+        children: [{
+          path: 'department',
+          component: intercalateDepartment
+        }, {
+          path: 'structure',
+          component: intercalateStructure
+        }, {
+          path: 'karakters',
+          component: intercalateKarakters
+        }, {
+          path: 'consumer',
+          component: tercalateConsumer
+        }, {
+          path: 'project',
+          component: tercalateProject
+        }, {
+          path: '/',
+          component: intercalateStructure,
+          redirect: 'structure'
+        }
+        ]
+      },
+      {
+        path: '/home',
+        redirect: '/home/maintain-home'
+      }
     ]
   },
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/login'
   }
 ]
 
-var router = new Router({
+let router = new Router({
   routes
 })
 
