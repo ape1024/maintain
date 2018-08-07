@@ -143,7 +143,7 @@
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
-      <childLookover :examine="examineData" @look="Onlook"></childLookover>
+      <childLookover :examine="examineData" :state="taskState" @look="Onlook"></childLookover>
     </section>
     <section v-if="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
@@ -271,17 +271,24 @@ export default {
           this.lookoverBoolean = true
         }
       })
+      this.getTaskState()
     },
     modify () {
       // 点击修改
       this.modifyBoolean = true
     },
+    getTaskState () {
+      //  获取维修任务状态
+      this.axios.post(maintainRepairgetRepairStates()).then((response) => {
+        if (response.data.code === 0) {
+          this.taskState = response.data.data
+        }
+      })
+    },
     question (ID, data) {
       // 点击审核
       this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
         if (response.data.code === 0) {
-          console.log('-------------------------------------')
-          console.log(response.data.data)
           this.examineData = response.data.data
           this.axios.post(maintainRepairfindReworksByTaskid(ID)).then((response) => {
             if (response.data.code === 0) {
@@ -290,13 +297,8 @@ export default {
                 if (response.data.code === 0) {
                   // 审批记录  目前 只要第一条,待定
                   this.examination = response.data.data[0]
-                  //  获取维修任务状态
-                  this.axios.post(maintainRepairgetRepairStates()).then((response) => {
-                    if (response.data.code === 0) {
-                      this.taskState = response.data.data
-                      this.examineBoolean = true
-                    }
-                  })
+                  this.getTaskState()
+                  this.examineBoolean = true
                 }
               })
             }
@@ -585,6 +587,7 @@ export default {
   .header_p_seven
     color $color-text
   .header_p_eight
+    cursor pointer
     color $color-background-query
   .header_p_nine
     color #333333
@@ -634,10 +637,12 @@ export default {
     margin-right 20px
     color $color-background-query
   .header_p_ten
+    cursor pointer
     float left
     margin-right 20px
     color $color-background-newly
   .header_p_twelve
+    cursor pointer
     float left
     margin-right 20px
     color $color-background-introduce
@@ -646,6 +651,7 @@ export default {
     margin-right 20px
     color #32a697
   .header_p_eleven
+    cursor pointer
     float left
     margin-right 20px
     color #83292b
