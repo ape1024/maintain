@@ -330,7 +330,7 @@
           <ul class="classificationDDivUl">
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障现象：</span>
-              <el-select v-model="faultphenomenonData" placeholder="请选择">
+              <el-select size="mini" v-model="faultphenomenonData" placeholder="请选择">
                 <el-option
                   v-for="item in faultphenomenon"
                   :key="item.faulttypeid"
@@ -341,7 +341,7 @@
             </li>
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障范围：</span>
-              <el-select v-model="faultrangeData" placeholder="请选择">
+              <el-select size="mini" v-model="faultrangeData" placeholder="请选择">
                 <el-option
                   v-for="item in faultrange"
                   :key="item.faulttypeid"
@@ -352,7 +352,7 @@
             </li>
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障类型：</span>
-              <el-select v-model="faulttypeData" placeholder="请选择">
+              <el-select size="mini" v-model="faulttypeData" placeholder="请选择">
                 <el-option
                   v-for="item in faulttype"
                   :key="item.faulttypeid"
@@ -363,7 +363,7 @@
             </li>
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障原因：</span>
-              <el-select v-model="faultreasonData" placeholder="请选择">
+              <el-select size="mini"  v-model="faultreasonData" placeholder="请选择">
                 <el-option
                   v-for="item in faultreason"
                   :key="item.faulttypeid"
@@ -374,7 +374,7 @@
             </li>
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">处理办法：</span>
-              <el-select v-model="faulttreatmentData" placeholder="请选择">
+              <el-select size="mini" v-model="faulttreatmentData" placeholder="请选择">
                 <el-option
                   v-for="item in faulttreatment"
                   :key="item.faulttypeid"
@@ -384,8 +384,13 @@
               </el-select>
             </li>
           </ul>
-          <div class="classificationDDivUlLiexamine" @click="classificationDDivUlLiexamine">
-            审核
+          <div class="classificationDDivUlLiexamine"
+               @click="classificationDDivUlLiexamine">
+               确定
+          </div>
+          <div @click="closeDialog"
+               class="closeDialog">
+               关闭
           </div>
         </div>
         </transition>
@@ -542,6 +547,10 @@ export default {
     },
     closedown () {
       this.$emit('mine', this.thisPage)
+    },
+    // 关闭对话窗口
+    closeDialog () {
+      this.classificationBoolean = false
     },
     approvalClick () {
       this.ficationBoolean = !this.ficationBoolean
@@ -1079,4 +1088,8 @@ export default {
   .classificationDDivUlLiexamine
     color #fff
     examine()
+  .closeDialog
+    color #fff
+    closedown()
+
 </style>

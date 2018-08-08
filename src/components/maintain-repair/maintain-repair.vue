@@ -118,16 +118,19 @@
               {{approvalStatusfn(item.approvalstatename)}}
             </li>
             <li class="repair_lifive">
-              <p v-if="JurisdictionInsert" @click.stop="question(item.repairtaskid, item)" class="header_p_eight threelevel_litwo_p">
-                审核
+              <p v-if="JurisdictionInsert" @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
+                重新分配
               </p>
               <p v-if="JurisdictionSelect" @click.stop="examine(item.repairtaskid)" class="header_p_ten">查看</p>
-              <p v-if="JurisdictionInsert" @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
-                重新安排
+              <p v-if="JurisdictionInsert" @click.stop="question(item.repairtaskid, item)" class="header_p_eight threelevel_litwo_p">
+                审核
               </p>
               <!--<p @click.stop="modify" class="header_pe_quipment">-->
                 <!--安排-->
               <!--</p>-->
+              <p v-if="JurisdictionInsert" @click.stop="equipment(item.repairtaskid)" class="header_p_thirteen">
+                验证
+              </p>
               <p v-if="JurisdictionDelete" class="header_p_eleven" @click.stop="amputate(index, tabulationData,item.repairtaskid)">删除</p>
             </li>
           </ul>
@@ -411,7 +414,6 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
-    margin 12px
     overflow hidden
     position relative
     background #141e30
@@ -646,6 +648,11 @@ export default {
     float left
     margin-right 20px
     color $color-background-introduce
+  .header_p_thirteen
+    cursor pointer
+    float left
+    margin-right 20px
+    color $color-text-tile-complete
   .header_pe_quipment
     float left
     margin-right 20px
