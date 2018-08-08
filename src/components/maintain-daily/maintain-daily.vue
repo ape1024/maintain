@@ -81,7 +81,7 @@
             <li class="header_li">{{fmtDate(item.endTime)}}</li>
             <li class="header_litwo">{{item.sum}}</li>
             <li class="header_li_five">{{item.finish}}</li>
-            <li class="header_li_six">{{item.error}}</li>
+            <li class="header_li_six">{{item.error + item.problem}}</li>
             <li class="header_li_Seven">
               {{item.waitapproval}}
             </li>

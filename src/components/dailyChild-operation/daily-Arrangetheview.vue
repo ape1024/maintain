@@ -49,11 +49,14 @@
                   <li class="matters_litwo">
                     工作记录
                   </li>
-                  <li class="matters_litwo">
+                  <li class="matters_li">
                     工作结论
                   </li>
                   <li class="matters_li">
-                    处理状态
+                    审核状态
+                  </li>
+                  <li class="matters_li">
+                    安排状态
                   </li>
                   <li class="matters_litwo">
                     现场照片
@@ -77,11 +80,16 @@
                 <li class="matters_litwo">
                   {{item.workrecord}}
                 </li>
-                <li class="matters_litwo">
+                <li class="matters_li">
                   {{item.conclusionname}}
                 </li>
                 <li class="matters_li">
-                  {{item.approvalstate}}
+                  <!--之前的处理状态,-->
+                  <!--{{item.approvalstate}}-->
+                  {{item.iswaitapprovalName}}
+                </li>
+                <li class="matters_li">
+                  {{item.isassignedName}}
                 </li>
                 <li class="matters_litwo">
                   <!--<span>照片数量{{item.path.length}}</span>-->
@@ -182,15 +190,25 @@ export default {
     assignment () {
       let arrData = []
       this.equipment.forEach((val) => {
+        console.log(val)
         if (val.fuleco === false || val.disabled === true) {
           return false
         } else {
+          console.log(val.isassigned)
           let data = {
             matters: val.workitem,
             conclusion: val.conclusionname,
-            checktaskdetailid: val.checktaskdetailid
+            checktaskdetailid: val.checktaskdetailid,
+            isassigned: val.isassigned,
+            conclusionCode: val.conclusion
           }
           arrData.push(data)
+        }
+      })
+      let flga = true
+      arrData.forEach((val) => {
+        if (val.isassigned || val.conclusionCode > 0) {
+          flga = false
         }
       })
       if (arrData.length === 0) {
@@ -199,8 +217,13 @@ export default {
           type: 'warning'
         })
         return false
-      } else {
+      } else if (flga) {
         this.$emit('examineMine', arrData)
+      } else {
+        this.$message({
+          message: '已安排工作项与正常工作项,不能安排!',
+          type: 'warning'
+        })
       }
     },
     preservation () {
@@ -263,6 +286,7 @@ export default {
   },
   created () {
     this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
+      console.log(response.data.data)
       if (response.data.code === 0) {
         let arrData = []
         response.data.data.details.forEach((val) => {
@@ -280,18 +304,32 @@ export default {
           }
           val.fuleco = false
           val.pathBoolem = false
-          if (val.conclusion > 0) {
-            val.disabled = false
+          // if (val.conclusion > 0) {
+          //   val.disabled = false
+          // } else {
+          //   val.disabled = true
+          // }
+          if (!val.iswaitapproval) {
+            if (!val.isapproval) {
+              val.iswaitapprovalName = ''
+            } else {
+              val.iswaitapprovalName = '已审批'
+            }
           } else {
-            val.disabled = true
+            val.iswaitapprovalName = '待审批'
+          }
+          if (val.isassigned) {
+            val.isassignedName = '已安排'
+          } else {
+            val.isassignedName = '未安排'
           }
           arrData.push(val)
         })
+        console.log(arrData)
         this.equipment = arrData
         this.equipmentData = response.data.data
       }
     })
-    //  任务审批选项
   }
 }
 </script>
