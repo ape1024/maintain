@@ -330,28 +330,33 @@
           <ul class="classificationDDivUl">
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障现象：</span>
-              <el-select size="mini" v-model="faultphenomenonData" placeholder="请选择">
-                <el-option
-                  v-for="item in faultphenomenon"
-                  :key="item.faulttypeid"
-                  :label="item.faulttypename"
-                  :value="item.faulttypeid">
-                </el-option>
-              </el-select>
+              <div class="ficationClass">
+                <el-select size="mini" v-model="faultphenomenonData" placeholder="请选择">
+                  <el-option
+                    v-for="item in faultphenomenon"
+                    :key="item.faultphenomenonid"
+                    :label="item.faultphenomenonname"
+                    :value="item.faultphenomenonid">
+                  </el-option>
+                </el-select>
+              </div>
             </li>
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障范围：</span>
+              <div class="ficationClass">
               <el-select size="mini" v-model="faultrangeData" placeholder="请选择">
                 <el-option
                   v-for="item in faultrange"
-                  :key="item.faulttypeid"
-                  :label="item.faulttypename"
-                  :value="item.faulttypeid">
+                  :key="item.faultrangeid"
+                  :label="item.faultrangename"
+                  :value="item.faultrangeid">
                 </el-option>
               </el-select>
+              </div>
             </li>
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障类型：</span>
+              <div class="ficationClass">
               <el-select size="mini" v-model="faulttypeData" placeholder="请选择">
                 <el-option
                   v-for="item in faulttype"
@@ -360,28 +365,33 @@
                   :value="item.faulttypeid">
                 </el-option>
               </el-select>
+              </div>
             </li>
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障原因：</span>
+              <div class="ficationClass">
               <el-select size="mini"  v-model="faultreasonData" placeholder="请选择">
                 <el-option
                   v-for="item in faultreason"
-                  :key="item.faulttypeid"
-                  :label="item.faulttypename"
-                  :value="item.faulttypeid">
+                  :key="item.faultreasonid"
+                  :label="item.faultreasonname"
+                  :value="item.faultreasonid">
                 </el-option>
               </el-select>
+              </div>
             </li>
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">处理办法：</span>
+              <div class="ficationClass">
               <el-select size="mini" v-model="faulttreatmentData" placeholder="请选择">
                 <el-option
                   v-for="item in faulttreatment"
-                  :key="item.faulttypeid"
-                  :label="item.faulttypename"
-                  :value="item.faulttypeid">
+                  :key="item.faulttreatmentid"
+                  :label="item.faulttreatmentname"
+                  :value="item.faulttreatmentid">
                 </el-option>
               </el-select>
+              </div>
             </li>
           </ul>
           <div class="classificationDDivUlLiexamine"
@@ -521,6 +531,7 @@ export default {
           } else {
             this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
               if (response.data.code === 0) {
+                console.log(response.data.data)
                 this.classificationBoolean = true
                 this.faulttreatment = response.data.data.faulttreatment
                 this.faultreason = response.data.data.faultreason
@@ -1091,5 +1102,8 @@ export default {
   .closeDialog
     color #fff
     closedown()
+  .ficationClass
+    width: 210px
+    display: inline-block
 
 </style>
