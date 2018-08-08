@@ -1,7 +1,10 @@
 <template>
   <div class="inline_fill">
     <ul class="list_heder">
-      <li class="list_heder_litwo">
+      <li @click.stop class="list_heder_litwo">
+        <span class="list_data_litwoSpan">
+          <el-checkbox @change="checkedChange(checked)" v-model="checked"></el-checkbox>
+        </span>
         设备名称
       </li>
       <li class="list_heder_li">
@@ -14,16 +17,25 @@
         问题数量
       </li>
       <li class="list_heder_li">
+        待审核
+      </li>
+      <li class="list_heder_li">
         已分配任务项
       </li>
       <li class="list_heder_li">
         操作
       </li>
+      <li @click.stop="batch" class="list_heder_li_three">
+        批量审批
+      </li>
     </ul>
     <ul class="inline_list">
-      <li :key="index" v-for="(item,index) in dailyData" class="inline_list_li" @click.stop="">
+      <li :key="index" v-for="(item,index) in dailyData" class="inline_list_li" @click.stop>
         <ul :id="item.id" :class="[item.error + item.problem > 0?'list_dataUl':'list_data']">
           <li class="list_data_litwo">
+            <span class="list_data_litwoSpan">
+                <el-checkbox v-model="item.judge" v-bind:disabled="item.available"></el-checkbox>
+            </span>
             {{item.deviceName}}
           </li>
           <li class="list_data_li">
@@ -36,11 +48,17 @@
             {{item.error + item.problem}}
           </li>
           <li class="list_data_li">
+            {{item.waitapproval}}
+          </li>
+          <li class="list_data_li">
             {{item.assign}}
           </li>
           <li class="list_data_li">
             <p v-if="JurisdictionInsert" @click.stop="examine(item.deviceID)" class="list_data_li_p">审核</p>
             <!--<p @click.stop="distriBoolean" class="list_data_li_ptwo">快速分配</p>-->
+            <p @click.stop="ArrBoolean(item.deviceID)" class="list_data_li_ptwo">
+              快速分配
+            </p>
           </li>
         </ul>
         <!--第三级，目前不需要了-->
@@ -53,11 +71,15 @@
       </li>
       <section v-if="examineBoolean" @click.stop class="review">
         <!--审核-->
-        <childExamine :examine="examineBoolean" :childDate="examineDate" :examineName="taskName" @examineMine="examineDistribution" @mine="mineSwitch"></childExamine>
+        <childExamine :examine="examineBoolean"  :examineName="taskName" @examineMine="examineDistribution" :taskidCode="taskid" :equipmentCode="equipmentID" @mine="mineSwitch"></childExamine>
       </section>
       <!--安排任务-->
       <section v-if="distributionBoolean" @click.stop class="distribution">
         <childDistribution :getrepairDate="getrepair" :instruction="instructionData" :distriBoolean="distributionBoolean" :equipment="equipmentID"  @dist="Dist"></childDistribution>
+      </section>
+      <!--安排任务查看-->
+      <section v-if="ArrangetheviewBoolean" @click.stop  class="review">
+        <childArrangethview :examine="examineBoolean"  :examineName="taskName" @examineMine="examineDistribution" :taskidCode="taskid" :equipmentCode="equipmentID" @mine="arrangSwitch"></childArrangethview>
       </section>
     </ul>
   </div>
@@ -66,15 +88,17 @@
 <script>
 import dailythree from '../dailyChild-three/dailyChild-three'
 import childExamine from '../dailyChild-operation/dailyChild-examine'
+import childArrangethview from '../dailyChild-operation/daily-Arrangetheview'
 import childDistribution from '../dailyChild-operation/dailyChild-distribution'
-import { maintainDailygetDetailsByDeviceId, maintainDailygetRepairTypes } from '../../api/user'
+import { maintainDailygetRepairTypes, batchApprovalCheckTaskByDeviceids } from '../../api/user'
 export default {
-  name: 'inspectChild-two',
+  name: 'dailyChild-two',
   props: ['dailyData', 'taskid', 'taskName'],
   components: {
     dailythree,
     childExamine,
-    childDistribution
+    childDistribution,
+    childArrangethview
   },
   data () {
     return {
@@ -82,13 +106,16 @@ export default {
       examineBoolean: false,
       // 快速分配
       distributionBoolean: false,
+      ArrangetheviewBoolean: false,
       content: [],
       examineDate: '',
       getrepair: '',
       instructionData: '',
       // 点击哪个设备的id
       equipmentID: '',
-      JurisdictionInsert: ''
+      JurisdictionInsert: '',
+      checked: false,
+      dailyChild: ''
     }
   },
   methods: {
@@ -101,32 +128,83 @@ export default {
     //   })
     //   item.active = !item.active
     // },
+    batch () {
+      let arr = []
+      this.dailyData.forEach((val) => {
+        console.log(val)
+        if (val.judge === true) {
+          arr.push(val.deviceID)
+        }
+      })
+      if (!arr.length) {
+        this.$message({
+          message: '请选择',
+          type: 'warning'
+        })
+        return false
+      }
+      let token = JSON.parse(window.sessionStorage.token)
+      let taskid = this.taskid
+      let deviceids = arr.join(',')
+      console.log(token)
+      console.log(taskid)
+      console.log(deviceids)
+      this.axios.post(batchApprovalCheckTaskByDeviceids(token, taskid, deviceids)).then((response) => {
+        console.log(response)
+        if (response.data.code === 0) {
+          this.$message({
+            message: '审批成功',
+            type: 'success'
+          })
+          this.$emit('examinationApproval', this.taskid)
+        } else {
+          this.$message.error('审批失败')
+        }
+      })
+    },
+    arrangSwitch (ev) {
+      this.ArrangetheviewBoolean = ev
+    },
+    ArrBoolean (deviceID) {
+      this.equipmentID = deviceID
+      this.ArrangetheviewBoolean = true
+    },
+    checkedChange (data) {
+      if (data) {
+        this.dailyData.forEach((val) => {
+          if ((val.error + val.problem) <= 0) {
+            val.judge = true
+          }
+        })
+      } else {
+        this.dailyData.forEach((val) => {
+          val.judge = false
+        })
+      }
+    },
     mineSwitch (ev) {
       this.examineBoolean = ev
     },
     // 开启审核
     examine (deviceID) {
+      console.log(deviceID)
       this.equipmentID = deviceID
-      maintainDailygetDetailsByDeviceId(this.taskid, deviceID)
-      this.axios.post(`http://172.16.6.181:8920/task/getDetailsByDeviceId?taskId=${this.taskid}&deviceId=${deviceID}`).then((response) => {
-        if (response.data.code === 0) {
-          this.examineDate = response.data.data
-          this.examineBoolean = true
-        }
-      })
+      this.examineBoolean = true
     },
     examineDistribution (ev) {
       this.instructionData = ev
+      this.ArrangetheviewBoolean = false
       this.examineBoolean = false
-      this.distributionBoolean = true
       this.axios.post(maintainDailygetRepairTypes()).then((response) => {
         if (response.data.code === 0) {
           this.getrepair = response.data.data
+          this.distributionBoolean = true
         }
       })
     },
     // 快速分配
     distriBoolean () {
+
     },
     // 审核
     Mine (ev) {
@@ -140,7 +218,7 @@ export default {
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'task_wb') {
+      if (val.functioncode === 'task_xj') {
         this.JurisdictionInsert = val.insert
       }
     })
@@ -324,16 +402,17 @@ export default {
         overflow hidden
         position relative
         background #354d76
-        padding 12px 0
+        line-height 40px
+        height 40px
         .list_heder_li
           float left
           text-align center
-          width 16%
+          width 12%
           overflow hidden
         .list_heder_litwo
           float left
           width 14%
-          text-align center
+          text-align left
           overflow hidden
           padding-left 2%
       .inline_list
@@ -350,29 +429,33 @@ export default {
         width 100%
         padding 12px 0
         overflow hidden
-        background #4a1c06
+        background #3a271c
       .list_data
         width 100%
         padding 12px 0
         overflow hidden
+        transition .2s
+        &:hover
+          background #161d28
       .list_data_li
         float left
         text-align center
         overflow hidden
-        width 16%
+        width 12%
       .list_data_litwo
         float left
-        text-align center
+        text-align left
         width 14%
         overflow hidden
         padding-left 2%
       .list_data_li_p
+        display inline-block
         margin 0 auto
         color #3279A6
         cursor pointer
         text-decoration underline
       .list_data_li_ptwo
-        float left
+        display inline-block
         color $color-text-tile-project
         cursor pointer
         text-decoration underline
@@ -445,4 +528,16 @@ export default {
     background transparent
     z-index 11
     overflow hidden
+  .list_heder_li_three
+    float left
+    cursor pointer
+    text-align center
+    width 12%
+    background #3279a6
+    transition .2s
+    overflow hidden
+    &:hover
+      background #4b92bf
+  .list_data_litwoSpan
+    margin-right 10px
 </style>

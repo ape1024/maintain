@@ -22,7 +22,6 @@
               v-model="equipmentDate"
               :options="equipment"
               :props="equipmentProps"
-              change-on-select
             ></el-cascader>
           </div>
         </li>
@@ -68,6 +67,9 @@
           故障问题
         </li>
         <li class="header_litwo">
+          待审核
+        </li>
+        <li class="header_litwo">
           已分配任务项
         </li>
       </ul>
@@ -79,18 +81,22 @@
             <li class="header_li">{{fmtDate(item.endTime)}}</li>
             <li class="header_litwo">{{item.sum}}</li>
             <li class="header_li_five">{{item.finish}}</li>
-            <li class="header_li_six">{{item.error}}</li>
+            <li class="header_li_six">{{item.error + item.problem}}</li>
+            <li class="header_li_Seven">
+              {{item.waitapproval}}
+            </li>
             <li class="header_litwo">{{item.assign}}</li>
           </ul>
           <transition enter-active-class="fadeInUp"
                       leave-active-class="fadeOutDown">
             <div v-if="item.flag" class="inline_div">
-              <maintaintwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild"></maintaintwo>
+              <maintaintwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" @examinationApproval="ExaminationApproval"></maintaintwo>
             </div>
           </transition>
         </li>
       </ul>
     </section>
+    <!--目前不需要修改-->
     <!--<section v-show="modifyBoolean" class="review">-->
     <!--<modify :sag="modifyBoolean" @say="Say"></modify>-->
     <!--</section>-->
@@ -100,18 +106,35 @@
 <script>
 import maintaintwo from '../maintainChild-two/maintainChild-two'
 import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat } from '../../api/user'
-
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 export default {
-  name: 'maintain-maintain',
+  name: 'maintain-daily',
   components: {
     maintaintwo
     // modify
   },
   methods: {
+    ExaminationApproval (el) {
+      this.axios.post(maintainDailygetCurrentTaskDeviceStat(el)).then((response) => {
+        if (response.data.code === 0) {
+          if (response.data.data.length !== 0) {
+            response.data.data.forEach((val) => {
+              val.judge = false
+              if ((val.error + val.problem) <= 0 && (val.waitapproval > 0)) {
+                val.available = false
+              } else {
+                val.available = true
+              }
+            })
+            this.dailyChild = response.data.data
+          } else {
+            this.dailyChild = response.data.data
+          }
+        }
+      })
+    },
     query () {
-      console.log(this.equipmentDate)
       let flag = false
       this.tableDatataskStat.forEach((val) => {
         if (val.flag === true) {
@@ -122,16 +145,31 @@ export default {
         }
       })
       if (flag === true) {
+        console.log(this.regionModel)
         let clickId = this.click_id
-        let areaid = this.regionModel.length !== 0 ? this.regionModel[this.this.regionModel.length - 1] : ''
+        let areaid = this.regionModel.length !== 0 ? this.regionModel[this.regionModel.length - 1] : ''
+        console.log(areaid)
         let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         basedevicecode = basedevicecode === null ? '' : basedevicecode
         let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
-        console.log(maintainDailygetCurrentTaskDeviceData(clickId, areaid, basedevicecode, approvalstates))
+        console.log(clickId)
         this.axios.post(maintainDailygetCurrentTaskDeviceData(clickId, areaid, basedevicecode, approvalstates)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
-            this.dailyChild = response.data.data
+            if (response.data.data.length !== 0) {
+              response.data.data.forEach((val) => {
+                val.judge = false
+                if ((val.error + val.problem) > 0) {
+                  val.available = true
+                } else {
+                  val.available = false
+                }
+              })
+              this.dailyChild = response.data.data
+            } else {
+              this.dailyChild = response.data.data
+            }
+            console.log(this.dailyChild)
           }
         })
       } else {
@@ -149,13 +187,23 @@ export default {
         })
         let itemAreaid = item.taskID
         this.click_id = itemAreaid
-        console.log(itemAreaid)
-
         this.axios.post(maintainDailygetCurrentTaskDeviceStat(itemAreaid)).then((response) => {
           if (response.data.code === 0) {
-            console.log(this.dailyChild)
-            this.dailyChild = response.data.data
-            item.flag = !item.flag
+            if (response.data.data.length !== 0) {
+              response.data.data.forEach((val) => {
+                val.judge = false
+                if ((val.error + val.problem) <= 0 && (val.waitapproval > 0)) {
+                  val.available = false
+                } else {
+                  val.available = true
+                }
+              })
+              this.dailyChild = response.data.data
+              item.flag = !item.flag
+            } else {
+              this.dailyChild = response.data.data
+              item.flag = !item.flag
+            }
           }
         })
       } else {
@@ -196,7 +244,7 @@ export default {
       },
       //  审核状态
       AuditstatusDate: [],
-      Auditstatus: [],
+      Auditstatus: '',
       equipment: [],
       equipmentDate: [],
       modifyBoolean: false,
@@ -209,8 +257,8 @@ export default {
     }
   },
   created () {
-    let projectid = window.localStorage.pattern
     //  获取区域
+    let projectid = window.localStorage.pattern
     this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
@@ -223,10 +271,13 @@ export default {
       }
     })
     //  审核状态
+    console.log('----------------')
+    console.log(getTaskQueryApprovalItems())
     this.axios.post(getTaskQueryApprovalItems()).then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
         response.data.data.forEach((val) => {
+          console.log(val)
           if (val.isdefault === 1) {
             this.Auditstatus.push(val.value)
           }
@@ -237,19 +288,19 @@ export default {
     this.axios.post(maintainDailyCurrentTaskStat(1, projectid)).then((response) => {
       if (response.data.code === 0) {
         this.tableDatataskStat = response.data.data
-        console.log(response)
       }
     })
   }
 }
 </script>
+
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
     margin 12px
     overflow hidden
     position relative
-    background #141e30
+    background rgba(000,000,000, .45)
   .subject_top
     margin 38px 15px 20px 15px
     overflow hidden
@@ -277,6 +328,7 @@ export default {
       float left
       width 167px
       display flex
+
   .button
     display flex
     float right
@@ -337,7 +389,7 @@ export default {
     height 32px
   .header_litwo
     float left
-    width 15%
+    width 12%
     line-height 32px
     text-align center
     height 32px
@@ -355,14 +407,21 @@ export default {
     -webkit-line-clamp 2
   .header_li_five
     float left
-    width 15%
+    width 12%
     line-height 32px
     height 32px
     text-align center
     color  $color-text-tile-complete
   .header_li_six
     float left
-    width 15%
+    width 12%
+    line-height 32px
+    height 32px
+    text-align center
+    color  $color-text-tile-fault
+  .header_li_Seven
+    float left
+    width 12%
     line-height 32px
     height 32px
     text-align center

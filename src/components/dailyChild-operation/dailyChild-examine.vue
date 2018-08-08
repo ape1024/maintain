@@ -86,10 +86,10 @@
                 <li class="matters_li">
                   <!--之前的处理状态,-->
                   <!--{{item.approvalstate}}-->
-                  {{item.isassigned ? '待审核' : '未审核'}}
+                  {{item.iswaitapprovalName}}
                 </li>
                 <li class="matters_li">
-                  {{item.iswaitapproval ? '已安排' : '未安排'}}
+                  {{item.isassignedName}}
                 </li>
                 <li class="matters_litwo">
                   <img class="photosImg" :key="index" v-for="(data, index) in item.path" :src="data" alt="">
@@ -192,7 +192,7 @@ export default {
     return {
       checked: false,
       radio: 0,
-      textarea: '',
+      textarea: '已审核',
       examine_Boolean: false,
       determinant: '',
       approvaloptions: '',
@@ -220,19 +220,27 @@ export default {
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     },
     assignment () {
-      // this.examine_Boolean = this.examine
-      // this.examine_Boolean = !this.examine_Boolean
       let arrData = []
       this.equipment.forEach((val) => {
+        console.log(val)
         if (val.fuleco === false || val.disabled === true) {
           return false
         } else {
+          console.log(val.isassigned)
           let data = {
             matters: val.workitem,
             conclusion: val.conclusionname,
-            checktaskdetailid: val.checktaskdetailid
+            checktaskdetailid: val.checktaskdetailid,
+            isassigned: val.isassigned,
+            conclusionCode: val.conclusion
           }
           arrData.push(data)
+        }
+      })
+      let flga = true
+      arrData.forEach((val) => {
+        if (val.isassigned || val.conclusionCode > 0) {
+          flga = false
         }
       })
       if (arrData.length === 0) {
@@ -241,47 +249,71 @@ export default {
           type: 'warning'
         })
         return false
-      } else {
+      } else if (flga) {
         this.$emit('examineMine', arrData)
+      } else {
+        this.$message({
+          message: '已安排工作项与正常工作项,不能安排!',
+          type: 'warning'
+        })
       }
     },
     preservation () {
       let token = JSON.parse(window.sessionStorage.token)
       let radio = this.radio
       let taskDetailArr = []
+      let flag = true
       let textarea = this.textarea
       this.equipment.forEach((val) => {
         if (val.fuleco === false) {
           return false
-        } else {
+        } else if (!val.isapproval && val.iswaitapproval) {
           taskDetailArr.push(val.checktaskdetailid)
+          console.log(val.isapproval)
+          console.log(val.iswaitapproval)
+        } else {
+          flag = false
         }
       })
-      if (taskDetailArr.length === 0) {
-        this.$message({
-          message: '请选择工作事项',
-          type: 'warning'
-        })
-        return false
-      } else {
-        if (textarea === '') {
+      if (flag) {
+        if (taskDetailArr.length === 0) {
           this.$message({
-            message: '请输入审核意见!',
+            message: '请选择工作事项,只有待审批状态,才可以审批',
             type: 'warning'
           })
           return false
         } else {
-          taskDetailArr.forEach((val) => {
-            this.axios.post(maintainDailyapprovalTaskDetail(token, val, textarea, radio)).then((response) => {
-              if (response.data.code === 0) {
-                this.examine_Boolean = this.examine
-                this.examine_Boolean = !this.examine_Boolean
-                this.$emit('mine', this.examine_Boolean)
-                return false
-              }
+          if (radio === 0) {
+            this.$message({
+              message: '请选择审核结论',
+              type: 'warning'
             })
-          })
+            return false
+          }
+          if (textarea === '') {
+            this.$message({
+              message: '请输入审核意见!',
+              type: 'warning'
+            })
+            return false
+          } else {
+            taskDetailArr.forEach((val) => {
+              this.axios.post(maintainDailyapprovalTaskDetail(token, val, textarea, radio)).then((response) => {
+                if (response.data.code === 0) {
+                  this.examine_Boolean = this.examine
+                  this.examine_Boolean = !this.examine_Boolean
+                  this.$emit('mine', this.examine_Boolean)
+                  return false
+                }
+              })
+            })
+          }
         }
+      } else {
+        this.$message({
+          message: '请选择工作事项,只有待审批状态,才可以审批',
+          type: 'warning'
+        })
       }
     },
     closeup () {
@@ -327,10 +359,24 @@ export default {
           }
           val.fuleco = false
           val.pathBoolem = false
-          if (val.conclusion > 0) {
-            val.disabled = false
+          // if (val.conclusion > 0) {
+          //   val.disabled = false
+          // } else {
+          //   val.disabled = true
+          // }
+          if (!val.iswaitapproval) {
+            if (!val.isapproval) {
+              val.iswaitapprovalName = ''
+            } else {
+              val.iswaitapprovalName = '已审批'
+            }
           } else {
-            val.disabled = true
+            val.iswaitapprovalName = '待审批'
+          }
+          if (val.isassigned) {
+            val.isassignedName = '已安排'
+          } else {
+            val.isassignedName = '未安排'
           }
           arrData.push(val)
         })
