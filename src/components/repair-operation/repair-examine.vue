@@ -63,7 +63,7 @@
                     </div>
                     <div class="tlefttopli__Div">
                       <span class="tlefttopli_Span">审核结论：</span>
-                      <span>{{Auditorsstate}}</span>
+                      <span class="tlefttopli_SpanThree">{{Auditorsstate}}</span>
                     </div>
                   </li>
                   <li class="tlefttopli">
@@ -76,7 +76,7 @@
                       <!--<span class="tlefttopli_Spantwo">-->
                         <!--{{examina.approvalopinion}}-->
                       <!--</span>-->
-                      <span>{{Auditorsopinion}}</span>
+                      <span class="tlefttopli_SpanThree">{{Auditorsopinion}}</span>
                     </div>
                   </li>
                   <li class="tlefttopli">
@@ -316,9 +316,9 @@
           </ul>
           <div class="assortment">
             <div class="fastener">
-              <div class="examine" @click="rescheduling">重新安排</div>
+              <!--<div class="examine" @click="rescheduling">重新安排</div>-->
               <div @click="conserve" class="conserve">审核</div>
-              <div class="verificationdiv" @click="verificationdiv">验证</div>
+              <!--<div class="verificationdiv" @click="verificationdiv">验证</div>-->
               <div @click="closedown" class="closedown">关闭</div>
             </div>
           </div>
@@ -411,7 +411,7 @@
 
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
-import { maintainRepairapprovalTask, maintainRepaircheckTask, maintainRepairgetFaultSelectItems, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindReworksByTaskid } from '../../api/user'
+import { maintainRepairapprovalTask, maintainRepairgetFaultSelectItems, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindReworksByTaskid } from '../../api/user'
 export default {
   name: 'repair-examine',
   props: ['examine', 'rework', 'examina', 'state', 'approval'],
@@ -472,35 +472,36 @@ export default {
         }
       })
     },
-    rescheduling () {
-      this.$emit('newly', this.examine)
-    },
-    verificationdiv () {
-      let token = JSON.parse(window.sessionStorage.token)
-      let repairtaskid = this.examine.repairtaskid
-      let confirmopinion = ``
-      if (parseInt(this.radio) === 1) {
-        confirmopinion += '经确认，故障问题已处理'
-      } else {
-        confirmopinion = this.Otheropinions
-      }
-      if (confirmopinion !== '') {
-        this.axios.post(maintainRepaircheckTask(token, repairtaskid, confirmopinion)).then((response) => {
-          if (response.data.code === 0) {
-            this.$message({
-              message: '验证成功',
-              type: 'success'
-            })
-            this.$emit('mine', this.thisPage)
-          }
-        })
-      } else {
-        this.$message({
-          message: '验证意见不能为空!',
-          type: 'warning'
-        })
-      }
-    },
+    //  重新安排
+    // rescheduling () {
+    //   this.$emit('newly', this.examine)
+    // },
+    // verificationdiv () {
+    //   let token = JSON.parse(window.sessionStorage.token)
+    //   let repairtaskid = this.examine.repairtaskid
+    //   let confirmopinion = ``
+    //   if (parseInt(this.radio) === 1) {
+    //     confirmopinion += '经确认，故障问题已处理'
+    //   } else {
+    //     confirmopinion = this.Otheropinions
+    //   }
+    //   if (confirmopinion !== '') {
+    //     this.axios.post(maintainRepaircheckTask(token, repairtaskid, confirmopinion)).then((response) => {
+    //       if (response.data.code === 0) {
+    //         this.$message({
+    //           message: '验证成功',
+    //           type: 'success'
+    //         })
+    //         this.$emit('mine', this.thisPage)
+    //       }
+    //     })
+    //   } else {
+    //     this.$message({
+    //       message: '验证意见不能为空!',
+    //       type: 'warning'
+    //     })
+    //   }
+    // },
     conserve () {
       // let token = JSON.parse(window.sessionStorage.token)
       // let repairtaskid = this.examine.repairtaskid
@@ -627,12 +628,11 @@ export default {
     DialogImg
   },
   created () {
-    if (this.examina !== undefined) {
+    if (this.examina) {
       this.AuditorsPersonnel = this.examina.approvername
       this.AuditorsTimer = fmtDate(this.examina.approvaltime)
       this.Auditorsstate = this.examina.approvalstate
       this.Auditorsopinion = this.examina.approvalopinion
-    } else {
     }
     function fmtDate (obj) {
       let date = new Date(obj)
@@ -1103,7 +1103,12 @@ export default {
     color #fff
     closedown()
   .ficationClass
-    width: 210px
-    display: inline-block
-
+    width 210px
+    display inline-block
+  .tlefttopli_SpanThree
+     width 460px
+     overflow hidden
+     color #fff
+     display inline-block
+     margin 12px 0
 </style>

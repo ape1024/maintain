@@ -99,16 +99,22 @@ export default {
           let pattern = JSON.parse(window.localStorage.pattern)
           let patternBo = false
           if (window.localStorage.pattern !== undefined) {
-            response.data.data.forEach((val) => {
-              if (val.projectid === pattern) {
-                patternBo = true
-              }
-            })
+            console.log('./')
+            console.log(response.data.data)
+            if (response.data.data) {
+              response.data.data.forEach((val) => {
+                if (val.projectid === pattern) {
+                  patternBo = true
+                }
+              })
+            }
             if (patternBo) {
               this.value = pattern
             } else {
-              this.value = response.data.data[0].projectid
-              window.localStorage.pattern = response.data.data[0].projectid
+              if (response.data.data) {
+                this.value = response.data.data[0].projectid
+                window.localStorage.pattern = response.data.data[0].projectid
+              }
             }
           } else {
             this.value = response.data.data[0].projectid
