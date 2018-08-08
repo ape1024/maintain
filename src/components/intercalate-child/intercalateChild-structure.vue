@@ -34,17 +34,43 @@
                 </div>
               </div>
             </li>
-            <!--单位简称-->
+            <!--组织机构名称-->
             <li class="informationLitwo">
-              <div class="informationDiv">
+              <div>
+                <p class="informationP">
+                  组织机构名称：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="organizationname" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
                 <p class="informationP">
                   单位简称：
                 </p>
                 <div class="content">
-                  <el-input size="mini" v-model="abbreviation" placeholder=""  clearable>></el-input>
+                  <el-input size="mini" v-model="organizationshortname" placeholder=""  clearable>></el-input>
                 </div>
               </div>
+            </li>
+            <!--单位简称-->
+            <li class="informationLitwo">
               <div class="informationDivtwo">
+                <p class="informationP">
+                  组织类别：
+                </p>
+                <div class="content">
+                  <el-select size="mini" v-model="regimentaValue" placeholder="请选择">
+                    <el-option
+                      v-for="item in regimentation"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+              <div class="informationDiv">
                 <p class="informationP">
                   单位编码：
                 </p>
@@ -193,32 +219,7 @@
                 </div>
               </div>
             </li>
-            <!--组织机构名称-->
-            <li class="informationLitwo">
-              <div class="informationDiv">
-                <p class="informationP">
-                  组织类别：
-                </p>
-                <div class="content">
-                  <el-select size="mini" v-model="regimentaValue" placeholder="请选择">
-                    <el-option
-                      v-for="item in regimentation"
-                      :key="item.value"
-                      :label="item.name"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </div>
-              </div>
-              <div v-if="classification" class="informationDivtwo">
-                <p class="informationP">
-                  组织机构名称：
-                </p>
-                <div class="content">
-                  <el-input size="mini" v-model="organization" placeholder=""  clearable>></el-input>
-                </div>
-              </div>
-            </li>
+
             <!--上传图标-->
             <li v-if="classification" class="informationLithree">
               <div class="informationDivthree">
@@ -327,10 +328,10 @@ export default {
       companyDate: [],
       //  单位名称
       projectName: '',
-      //   组织id
+      //  组织id
       organizationId: '',
       //  单位简称
-      abbreviation: '',
+      organizationshortname: '',
       //  单位编码
       encrypt: '',
       //  所在区域
@@ -371,8 +372,8 @@ export default {
       countytownId: '',
       //  展示用户选取的地区
       regionDate: '',
-      //  组织机构
-      organization: '',
+      //  组织机构名称
+      organizationname: '',
       //  设备类别
       regimentation: [],
       regimentaValue: '',
@@ -433,6 +434,7 @@ export default {
       this.amputateStr = false
       this.ormatting()
     },
+    // 新增的确认
     newConserve () {
       // 备注
       let memo = this.textarea
@@ -451,7 +453,7 @@ export default {
       //  *单位编码
       let organizationcode = this.encrypt
       //  *单位名称
-      let organizationname = this.abbreviation
+      let organizationname = this.organizationname
       //  详细地址
       let address = this.address
       //  专业类别
@@ -470,7 +472,7 @@ export default {
       //  联系人手机
       let tel = !this.CellPhone ? '' : this.CellPhone
 
-      // //  图片
+      //  图片
       // let file = this.Headportrait
       //  消防监管机构
       let firebrigadeid = this.superVisionData
@@ -494,9 +496,9 @@ export default {
       //  省
       const province = !this.provinceId ? '' : this.provinceId
       //   组织缩写
-      const shortname = !this.organization ? '' : this.shortname
+      const organizationshortname = !this.organizationshortname ? this.organizationname : this.organizationshortname
       let scope = !this.grading ? '' : this.grading
-      const url = managementAuthority(token, organizationtype, firebrigadeid, firecontrolcategoryid, industrycategoryid, file, organization, parentid, countyid, city, province, organizationcode, organizationname, shortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)
+      const url = managementAuthority(token, organizationtype, firebrigadeid, firecontrolcategoryid, industrycategoryid, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)
       console.log(url)
       if (organizationcode !== '' && organizationname !== '') {
         this.axios.post(url).then((response) => {
@@ -515,7 +517,7 @@ export default {
             //  获取到 对应的数组
           } else if (response.data.code === -1) {
             this.$message({
-              message: '组织机构代码不能重复！',
+              message: response.data.message,
               type: 'warning'
             })
           }
@@ -527,11 +529,12 @@ export default {
         })
       }
     },
+    // 修改确认
     conserve () {
       if (this.JurisdictionUpdate === false) {
         return false
       }
-      //   点击保存
+      //  点击保存
       const token = JSON.parse(window.sessionStorage.token)
       //  组织id
       const organization = this.organizationId
@@ -542,7 +545,7 @@ export default {
         })
         return false
       }
-      //   组织节点parentid
+      //  组织节点parentid
       //  组织类型
       const organizationtype = this.regimentaValue
       if (organizationtype === '') {
@@ -552,7 +555,7 @@ export default {
         })
         return false
       }
-      //   区县
+      //  区县
       const countyid = this.countytownId === undefined ? '' : this.countytownId
       //  城市
       const city = this.conurbationId === undefined ? '' : this.conurbationId
@@ -567,8 +570,8 @@ export default {
         })
         return false
       }
-      //  单位名称
-      const organizationname = this.abbreviation
+      // 单位名称
+      const organizationname = this.organizationname
       if (!organizationname) {
         this.$message({
           message: '请填写单位名称',
@@ -576,8 +579,8 @@ export default {
         })
         return false
       }
-      //   组织缩写
-      const shortname = !this.organization ? '' : this.shortname
+      //  组织缩写
+      const organizationshortname = !this.organizationshortname ? this.organizationname : this.organizationshortname
       //  详细地址
       const address = this.address === undefined ? '' : this.address
       //  专业类别
@@ -605,7 +608,7 @@ export default {
       console.log(parentid)
       //  消防监管机构
       let firebrigadeid = this.superVisionData
-      //   消防单位类别
+      //  消防单位类别
       let firecontrolcategoryid = this.categoryfireFightingData
       //  业务类别
       let industrycategoryid = this.businessCategoryData
@@ -613,7 +616,7 @@ export default {
       let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
       //  备注信息
       // let textarea = this.textarea
-      this.axios.post(managementAuthority(token, organizationtype, firebrigadeid, firecontrolcategoryid, industrycategoryid, file, organization, parentid, countyid, city, province, organizationcode, organizationname, shortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
+      this.axios.post(managementAuthority(token, organizationtype, firebrigadeid, firecontrolcategoryid, industrycategoryid, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '修改成功',
@@ -638,8 +641,6 @@ export default {
       }
     },
     handleNodeClick (data) {
-      console.log('--0-0-0-0-0-0+++=')
-      console.log(data)
       this.amputateStr = false
       this.DataorganizationId = data.organizationId
       this.axios.post(getAllHigherOrgIDs(data.organizationId)).then((response) => {
@@ -651,8 +652,6 @@ export default {
           } else {
             let data = response.data.data
             data.pop()
-            console.log(data)
-            console.log('-0-0分割')
             this.companyDate = data
           }
         }
@@ -678,7 +677,6 @@ export default {
         //  专业类别
         let categoryId = urlDate.professionalcategory
         this.businessOptions = []
-        console.log('-----111-----')
         console.log(categoryId)
         console.log(!urlDate.professionalcategory)
         if (!urlDate.professionalcategory) {
@@ -716,21 +714,22 @@ export default {
       this.axios.post(url).then((response) => {
         let urlData = JSON.parse(response.data.data)
         //  联系人
-        //   图标
+        //  图标
         this.imageUrl = urlData.icon.indexOf('null') === -1 ? urlData.icon : ''
         this.imageUrlTwo = ''
-        //   所在区域
+        //  所在区域
         this.regionDate = urlData.pcc
         console.log('09')
         console.log(urlData)
         //  单位简称
-        this.abbreviation = urlData.organizationname
+        this.organizationshortname = urlData.organizationshortname === 'undefined' ? '' : urlData.organizationshortname
         //  单位编码
         this.encrypt = urlData.organizationcode
-        //   组织机构名称
-        this.organization = urlData.organizationshortname === 'undefined' ? '' : urlData.organizationshortname
+        //  组织机构名称
+        this.organizationname = urlData.organizationname === 'undefined' ? '' : urlData.organizationname
         //  组织类型
         this.regimentaValue = urlData.organizationtype
+        // 判断是否是根节点单位
         //  省份
         this.provinceId = urlData.provinceid
         //  省下的市
