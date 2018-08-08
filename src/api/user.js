@@ -553,10 +553,16 @@ export const getJobList = () => {
   return url
 }
 //  获取组织结构
+// export const getOrganizationTrees = (token) => {
+//   const url = `${Test}/organization/getOrganizationTrees?token=${token}`
+//   return url
+// }
+//  获取组织机构2 by rad 20180808
 export const getOrganizationTrees = (token) => {
-  const url = `${Test}/organization/getOrganizationTrees?token=${token}`
+  const url = `${Test}/organization/getOrganizationTreeByUser2?token=${token}`
   return url
 }
+
 //  根据ID 获取项目详情
 export const findDetailByProjectid = (projectId) => {
   const url = `${Test}/projects/findDetailByProjectid?projectId=${projectId}`
