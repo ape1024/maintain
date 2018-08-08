@@ -477,7 +477,7 @@ export default {
     background #354d76
   .header_li
     float left
-    width 4%
+    width 6%
     height 32px
     text-align center
     padding 0  .5%

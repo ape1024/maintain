@@ -71,7 +71,11 @@
                       <div>{{ node.label }}</div>
                       <div class="tree-checkbox">
                         <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
-                          <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
+                          <el-checkbox :label="item.userid"
+                                       :disabled="proprietorCheckList.length > 0">
+                            <svg class="icon" style="color: lightblue;width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1593"><path d="M717.664 612.195c-52.734 47.461-121.289 79.102-200.391 79.102s-147.656-31.641-205.664-79.102c-131.836 68.555-221.484 158.203-221.484 321.68l843.75 0c0-163.477-89.648-247.852-216.211-321.68zM512 628.016c131.836 0 237.305-110.742 237.305-242.578s-105.469-242.578-237.305-242.578-237.305 110.742-237.305 242.578c0 137.109 110.742 242.578 237.305 242.578z" p-id="1594"></path></svg>
+                            <span class="nodeLabel">{{item.username}}</span>
+                          </el-checkbox>
                         </div>
                       </div>
                     </div>
@@ -94,7 +98,11 @@
                       <div>{{ node.label }}</div>
                       <div class="tree-checkbox">
                         <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
-                          <el-checkbox :label="item.userid" :disabled="proprietorCheckList.length > 0">{{item.username}}</el-checkbox>
+                          <el-checkbox :label="item.userid"
+                                       :disabled="proprietorCheckList.length > 0">
+                            <svg class="icon" style="color: lightblue;width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1593"><path d="M717.664 612.195c-52.734 47.461-121.289 79.102-200.391 79.102s-147.656-31.641-205.664-79.102c-131.836 68.555-221.484 158.203-221.484 321.68l843.75 0c0-163.477-89.648-247.852-216.211-321.68zM512 628.016c131.836 0 237.305-110.742 237.305-242.578s-105.469-242.578-237.305-242.578-237.305 110.742-237.305 242.578c0 137.109 110.742 242.578 237.305 242.578z" p-id="1594"></path></svg>
+                            <span class="nodeLabel">{{item.username}}</span>
+                          </el-checkbox>
                         </div>
                       </div>
                     </div>
@@ -324,7 +332,6 @@ export default {
           position relative
           .personChargeP
             float left
-            font-size $font-size-small
             color $color-border-b-fault
             line-height 20px
             margin-right 6px
@@ -407,10 +414,10 @@ export default {
       align-items flex-start
   .maintenance
     width 50%
+    height 240px
     float right
     overflow-y scroll
     overflow-x hidden
-    max-height 150px
   .tree-wrapper
     float left
     box-sizing border-box
@@ -421,10 +428,9 @@ export default {
   .personnel
     width 100%
     overflow hidden
-    position relative
+    position relativemax-height
     .personChargeP
       float left
-      font-size $font-size-small
       color $color-border-b-fault
       line-height 20px
       margin-right 6px
@@ -444,7 +450,6 @@ export default {
   .distriButionDiv
     overflow hidden
     color $color-border-b-fault
-    font-size $font-size-small
     margin-top 16px
     min-height 60px
   .distriButionDiv_div
@@ -473,7 +478,6 @@ export default {
     position relative
   .personChargeP
     float left
-    font-size $font-size-small
     color $color-border-b-fault
     line-height 20px
     margin-right 6px
@@ -481,7 +485,7 @@ export default {
     float left
     width 450px
     overflow-y scroll
-    height 130px
+    height 240px
   .explainBottom
     init()
     margin-top 50px
