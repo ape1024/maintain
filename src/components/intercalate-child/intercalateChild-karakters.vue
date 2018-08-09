@@ -10,7 +10,7 @@
           <li class="leftBottomLl">
             系统角色
           </li>
-          <li @click="systemroleClick(item.roleid, item)" :key="index" v-for="(item, index) in systemRole" v-bind:class="item.flag ? 'leftBottomLlThree' : 'leftBottomLltwo'">
+          <li v-show="ficationBoolean" @click="systemroleClick(item.roleid, item, true)" :key="index" v-for="(item, index) in systemRole" v-bind:class="item.flag ? 'leftBottomLlThree' : 'leftBottomLltwo'">
             {{item.rolename}}
           </li>
         </ul>
@@ -18,7 +18,7 @@
           <li class="leftBottomLl">
             自定义角色
           </li>
-          <li @click="systemroleClick(item.roleid, item)" :key="index" v-for="(item, index) in customRoles" v-bind:class="item.flag ? 'leftBottomLlThree' : 'leftBottomLltwo'">
+          <li @click="systemroleClick(item.roleid, item, false)" :key="index" v-for="(item, index) in customRoles" v-bind:class="item.flag ? 'leftBottomLlThree' : 'leftBottomLltwo'">
             {{item.rolename}}
           </li>
         </ul>
@@ -29,6 +29,10 @@
       <div class="karakters">
         <div class="jurisdictionBottom">
           <div class="header">
+            <!--角色名称-->
+            <div class="conserveRoleNameDiv" v-show="this.roleName">
+               <span>{{this.roleName}}</span>
+            </div>
             <div v-if="JurisdictionUpdate" class="conserveDiv" @click="conserve">
               保 存
             </div>
@@ -58,19 +62,19 @@
                      {{item.first}}
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox @change="definitionExamine(item, item.examine,0)" v-model="item.examine"></el-checkbox>
+                     <el-checkbox :indeterminate="item.examinePart" @change="definitionExamine(item, item.examine,0)" :disabled="checkedFlag" v-model="item.examine"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox @change="definitionExamine(item, item.added,1)" v-model="item.added"></el-checkbox>
+                     <el-checkbox :indeterminate="item.addPart" @change="definitionExamine(item, item.added,1)" :disabled="checkedFlag" v-model="item.added"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox @change="definitionExamine(item, item.modify,2)" v-model="item.modify"></el-checkbox>
+                     <el-checkbox :indeterminate="item.modifyPart" @change="definitionExamine(item, item.modify,2)" :disabled="checkedFlag" v-model="item.modify"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox @change="definitionExamine(item, item.delete,3)" v-model="item.delete"></el-checkbox>
+                     <el-checkbox :indeterminate="item.deletePart" @change="definitionExamine(item, item.delete,3)" :disabled="checkedFlag" v-model="item.delete"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox @change="definitionExamine(item, item.insert,4)" v-model="item.insert"></el-checkbox>
+                     <el-checkbox :indeterminate="item.insertPart" @change="definitionExamine(item, item.insert,4)" :disabled="checkedFlag" v-model="item.insert"></el-checkbox>
                    </li>
                  </ul>
                </div>
@@ -81,19 +85,19 @@
                        {{data.functionname}}
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-if="data.select === 1" v-model="data.selectBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'examinePart', 'examine', 'second', 'selectBoolean')" v-if="data.select === 1" :disabled="checkedFlag" v-model="data.selectBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-if="data.approval === 1" v-model="data.approvalBoolean"></el-checkbox>
+                       <el-checkbox v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-if="data.update === 1" v-model="data.updateBoolean"></el-checkbox>
+                       <el-checkbox v-if="data.update === 1" :disabled="checkedFlag" v-model="data.updateBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-if="data.delete === 1" v-model="data.deleteBoolean"></el-checkbox>
+                       <el-checkbox v-if="data.delete === 1" :disabled="checkedFlag" v-model="data.deleteBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-if="data.insert === 1" v-model="data.insertBoolean"></el-checkbox>
+                       <el-checkbox v-if="data.insert === 1" :disabled="checkedFlag" v-model="data.insertBoolean"></el-checkbox>
                      </li>
                    </ul>
                  </li>
@@ -138,7 +142,10 @@ export default {
       // 点击左侧获取其id值
       kayakersId: '',
       JurisdictionApproval: true,
-      JurisdictionUpdate: true
+      JurisdictionUpdate: true,
+      roleName: '', // 角色名称
+      checkedFlag: false,
+      ficationBoolean: false  // 系统角色是否展开
     }
   },
   methods: {
@@ -150,7 +157,6 @@ export default {
         })
       } else {
         this.axios.post(DeleteRole(this.kayakersId)).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             this.$message({
               message: '删除成功',
@@ -162,10 +168,8 @@ export default {
               if (response.data.code === 0) {
                 this.systemRole = []
                 this.customRoles = []
-                console.log(response.data.data)
                 response.data.data.forEach((val) => {
                   val.flag = false
-                  console.log(val)
                   if (val.issystem === 1) {
                     this.systemRole.push(val)
                   } else {
@@ -191,7 +195,6 @@ export default {
           this.customRoles = []
           response.data.data.forEach((val) => {
             val.flag = false
-            console.log(val)
             if (val.issystem === 1) {
               this.systemRole.push(val)
             } else {
@@ -247,22 +250,31 @@ export default {
           })
         }
       } else if (number === 4) {
-        console.log('===4')
         if (flag === true) {
           data.second.forEach((val) => {
             val.insertBoolean = true
           })
         } else {
-          console.log(data, flag, number)
           data.second.forEach((val) => {
             val.insertBoolean = false
           })
         }
       }
     },
+    definitionExamineChild (data, part, parentFlag, currentFlag, childFlag) {
+      let flag = true
+      let len = 0
+      data[currentFlag].forEach(t => {
+        flag = flag && t[childFlag]
+        if (t[childFlag]) {
+          len += 1
+        }
+      })
+      data[part] = len > 0 && len < data[currentFlag].length
+      data[parentFlag] = flag
+    },
     conserve () {
       if (this.kayakersId !== '') {
-        console.log('1')
         let roleid = this.kayakersId
         let data = []
         this.fullFunctionality.forEach((val) => {
@@ -283,11 +295,9 @@ export default {
             data.push(obj)
           })
         })
-        console.log(data)
         // return
         this.axios.post(karaktersSetRoleFunctions(roleid), data).then((response) => {
           if (response.data.code === 0) {
-            console.log(response)
             this.$message({
               message: '保存成功',
               type: 'success'
@@ -307,7 +317,9 @@ export default {
         })
       }
     },
-    systemroleClick (roleid, data) {
+    systemroleClick (roleid, data, visFlag) {
+      this.roleName = data.rolename
+      this.checkedFlag = visFlag
       data.flag = true
       this.systemRole.forEach((val) => {
         if (val.roleid !== data.roleid) {
@@ -320,12 +332,17 @@ export default {
         }
       })
       this.fullFunctionality.forEach((val) => {
-        console.log(val)
         val.added = false
         val.delete = false
         val.examine = false
         val.insert = false
         val.modify = false
+
+        val.examinePart = false
+        val.addPart = false
+        val.modifyPart = false
+        val.deletePart = false
+        val.insertPart = false
         val.second.forEach((data) => {
           data.approvalBoolean = false
           data.deleteBoolean = false
@@ -356,6 +373,42 @@ export default {
               })
             })
           }
+          this.fullFunctionality.forEach((val) => {
+            let examinePart = 0
+            let addPart = 0
+            let modifyPart = 0
+            let deletePart = 0
+            let insertPart = 0
+            const len = val.second.length
+            val.second.forEach((data) => {
+              if (data.selectBoolean) {
+                examinePart += 1
+              }
+              if (data.approvalBoolean) {
+                addPart += 1
+              }
+              if (data.updateBoolean) {
+                modifyPart += 1
+              }
+              if (data.deleteBoolean) {
+                deletePart += 1
+              }
+              if (data.insertBoolean) {
+                insertPart += 1
+              }
+            })
+            val.examinePart = examinePart > 0 && examinePart < len
+            val.addPart = addPart > 0 && addPart < len
+            val.modifyPart = modifyPart > 0 && modifyPart < len
+            val.deletePart = deletePart > 0 && deletePart < len
+            val.insertPart = insertPart > 0 && insertPart < len
+
+            val.added = addPart === len
+            val.delete = deletePart === len
+            val.examine = examinePart === len
+            val.insert = insertPart === len
+            val.modify = modifyPart === len
+          })
         }
       })
     }
@@ -369,7 +422,6 @@ export default {
       }
     })
     let token = JSON.parse(window.sessionStorage.token)
-    console.log(token)
     this.axios.post(karaktersFindAllFunctions(token)).then((response) => {
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
@@ -377,14 +429,19 @@ export default {
           val.flag = false
           //  查看
           val.examine = false
+          val.examinePart = false
           //  新增
           val.added = false
+          val.addPart = false
           //  修改
           val.modify = false
+          val.modifyPart = false
           // 删除
           val.delete = false
+          val.deletePart = false
           //  审核
           val.insert = false
+          val.insertPart = false
           val.second.forEach((val) => {
             //  添加
             val.approvalBoolean = false
@@ -399,15 +456,12 @@ export default {
           })
         })
         this.fullFunctionality = response.data.data
-        console.log(this.fullFunctionality)
       }
     })
     this.axios.post(karaktersFindAllRoles(token)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data.data)
         response.data.data.forEach((val) => {
           val.flag = false
-          console.log(val)
           if (val.issystem === 1) {
             this.systemRole.push(val)
           } else {
@@ -597,6 +651,19 @@ export default {
   .conserveDiv
     float right
     conserve()
+  .conserveRoleNameDiv
+    float left
+    display inline-block
+    min-width 100px
+    border-radius 5px
+    height 36px
+    padding-left 4px
+    padding-right 4px
+    text-align center
+    line-height 36px
+    background $color-text-tile-project
+    transition .2s
+    color $color-text
   .leftBottomLlThree
     text-indent 2em
     cursor pointer
