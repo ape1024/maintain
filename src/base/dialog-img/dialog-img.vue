@@ -1,7 +1,7 @@
 <template>
   <div class="dialog-img" @click="close" v-show="state">
     <div class="wrapper" @click.stop>
-      <el-carousel ref="carousel" :autoplay="false" trigger="click" class="carousel">
+      <el-carousel :interval="interval" ref="carousel" :autoplay="false" trigger="click" class="carousel">
         <el-carousel-item v-for="(item, index) in list" :key="index">
           <div class="item">
             <img :src="item">
@@ -24,7 +24,8 @@ export default {
   },
   data () {
     return {
-      state: false
+      state: false,
+      interval: 3000
     }
   },
   methods: {

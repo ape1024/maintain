@@ -7,6 +7,7 @@
           <div class="div_input">
             <el-cascader
               size="mini"
+              clearable
               :options="regionDate"
               v-model="regionModel"
               :props="regionProps"
@@ -19,6 +20,8 @@
           <div class="div_input">
             <el-cascader
               size="mini"
+              clearable
+              change-on-select
               v-model="equipmentDate"
               :options="equipment"
               :props="equipmentProps"
@@ -28,7 +31,7 @@
         <li class="li_input">
           <p class="div_p">审核状态：</p>
           <div class="div_inputTwo">
-            <el-select size="small" v-model="Auditstatus" multiple placeholder="">
+            <el-select clearable size="small" v-model="Auditstatus" multiple placeholder="">
               <el-option
                 v-for="item in AuditstatusDate"
                 :key="item.value"

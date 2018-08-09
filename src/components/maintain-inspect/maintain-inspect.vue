@@ -7,6 +7,7 @@
           <div class="div_input">
             <el-cascader
               size="mini"
+              clearable
               :options="regionDate"
               v-model="regionModel"
               :props="regionProps"
@@ -19,6 +20,8 @@
           <div class="div_input">
             <el-cascader
               size="mini"
+              clearable
+              change-on-select
               v-model="equipmentDate"
               :options="equipment"
               :props="equipmentProps"
