@@ -7,6 +7,7 @@
           <div class="div_input">
             <el-cascader
               size="mini"
+              clearable
               :options="regionDate"
               v-model="regionModel"
               :props="regionProps"
@@ -17,7 +18,7 @@
         <li class="li_input">
           <p class="div_p">维修状态：</p>
           <div class="div_input">
-            <el-select size="mini" v-model="maintenanceData" placeholder="">
+            <el-select clearable size="mini" v-model="maintenanceData" placeholder="">
               <el-option
                 v-for="item in maintenance"
                 :key="item.value"
@@ -30,7 +31,7 @@
         <li class="li_input">
           <p class="div_p">审批状态：</p>
           <div class="div_input">
-            <el-select size="mini" v-model="Auditstatus" placeholder="">
+            <el-select clearable size="mini" v-model="Auditstatus" placeholder="">
               <el-option
                 v-for="item in AuditstatusDate"
                 :key="item.value"
@@ -118,27 +119,27 @@
               {{approvalStatusfn(item.approvalstatename)}}
             </li>
             <li class="repair_lifive">
-              <p v-if="JurisdictionInsert && !item.repairBoolean" @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
+              <p v-if="JurisdictionInsert && item.repairBoolean" @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
                 重新分配
               </p>
-              <p v-if="JurisdictionInsert && item.repairBoolean" class="header_p_twelve threelevel_litwo_ptwo">
+              <p v-if="JurisdictionInsert && !item.repairBoolean" class="header_p_twelve threelevel_litwo_ptwo">
                 重新分配
               </p>
               <p v-if="JurisdictionSelect" @click.stop="examine(item.repairtaskid)" class="header_p_ten">查看</p>
-              <p v-if="JurisdictionInsert && !item.approvalBoolean" @click.stop="question(item.repairtaskid)" class="header_p_eight threelevel_litwo_p">
+              <p v-if="JurisdictionInsert && item.approvalBoolean" @click.stop="question(item.repairtaskid)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
-              <p v-if="JurisdictionInsert && item.approvalBoolean" class="header_p_eight threelevel_litwo_p threelevel_litwo_ptwo">
+              <p v-if="JurisdictionInsert && !item.approvalBoolean" class="header_p_eight threelevel_litwo_p threelevel_litwo_ptwo">
                 审核
               </p>
-              <p v-if="JurisdictionInsert && !item.repairBoolean" @click.stop="verification(item.repairtaskid)" class="header_p_thirteen">
+              <p v-if="JurisdictionInsert && item.JurisdictionBoolean" @click.stop="verification(item.repairtaskid)" class="header_p_thirteen">
                 验证
               </p>
-              <p v-if="JurisdictionInsert && item.repairBoolean" class="header_p_thirteen threelevel_litwo_ptwo">
+              <p v-if="JurisdictionInsert && !item.JurisdictionBoolean" class="header_p_thirteen threelevel_litwo_ptwo">
                 验证
               </p>
-              <p v-if="JurisdictionDelete && !item.repairBoolean" class="header_p_eleven" @click.stop="amputate(index, tabulationData,item.repairtaskid)">删除</p>
-              <p v-if="JurisdictionDelete && item.repairBoolean" class="header_p_eleven threelevel_litwo_ptwo" >删除</p>
+              <p v-if="JurisdictionDelete && item.repairBoolean" class="header_p_eleven" @click.stop="amputate(index, tabulationData,item.repairtaskid)">删除</p>
+              <p v-if="JurisdictionDelete && !item.repairBoolean" class="header_p_eleven threelevel_litwo_ptwo" >删除</p>
             </li>
           </ul>
         </li>
@@ -213,7 +214,33 @@ export default {
       }
       this.axios.post(maintainRepairmaintainRepairfindRepairTasksTwo(projectid, regionModel, this.maintenanceData, this.Auditstatus)).then((response) => {
         if (response.data.code === 0) {
+          response.data.data.forEach((val) => {
+            if (val.approvalstate) {
+              if (val.approvalstate === 5) {
+                val.approvalBoolean = true
+              } else {
+                val.approvalBoolean = false
+              }
+            } else {
+              val.approvalBoolean = false
+            }
+            if (val.repairstate) {
+              if (val.repairstate === -5) {
+                val.repairBoolean = true
+              } else {
+                val.repairBoolean = false
+              }
+              if (val.repairstate === 100) {
+                val.JurisdictionBoolean = true
+              } else {
+                val.JurisdictionBoolean = false
+              }
+            } else {
+              val.repairBoolean = false
+            }
+          })
           this.tabulationData = response.data.data
+          console.log(this.tabulationData)
         }
       })
     },
@@ -318,6 +345,37 @@ export default {
               })
             }
           })
+        }
+      })
+      this.axios.post(maintainRepairfindRepairTasks(ID)).then((response) => {
+        if (response.data.code === 0) {
+          response.data.data.forEach((val) => {
+            if (val.approvalstate) {
+              if (val.approvalstate === 5) {
+                val.approvalBoolean = true
+              } else {
+                val.approvalBoolean = false
+              }
+            } else {
+              val.approvalBoolean = false
+            }
+            if (val.repairstate) {
+              if (val.repairstate === -5) {
+                val.repairBoolean = true
+              } else {
+                val.repairBoolean = false
+              }
+              if (val.repairstate === 100) {
+                val.JurisdictionBoolean = true
+              } else {
+                val.JurisdictionBoolean = false
+              }
+            } else {
+              val.repairBoolean = false
+            }
+          })
+          this.tabulationData = response.data.data
+          console.log(this.tabulationData)
         }
       })
     },
@@ -439,10 +497,15 @@ export default {
             val.approvalBoolean = false
           }
           if (val.repairstate) {
-            if (val.repairstate === 100) {
+            if (val.repairstate === -5) {
               val.repairBoolean = true
             } else {
               val.repairBoolean = false
+            }
+            if (val.repairstate === 100) {
+              val.JurisdictionBoolean = true
+            } else {
+              val.JurisdictionBoolean = false
             }
           } else {
             val.repairBoolean = false

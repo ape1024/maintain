@@ -42,19 +42,19 @@
               </div>
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderP">
+                  <p class="">
                     <span class="tlefttopHeaderSpan">检查项目：</span>
                     <span class="tlefttoprightLiSpans">{{inspectUp.conclusion}}</span>
                   </p>
                 </li>
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderP">
+                  <p class="">
                     <span class="tlefttopHeaderSpan">检查记录：</span>
                     <span class="tlefttoprightLiSpans">{{inspectUp.workitem}}</span>
                   </p>
                 </li>
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderP">
+                  <p class="tlefttopHeaderImg">
                     <span class="tlefttopHeaderSpan">现场照片：</span>
                     <span>
                       <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(examine.beforephotos), index)" :key="index" v-for="(data, index) in fieldphoto(examine.beforephotos)" :src="data" alt="">
@@ -96,19 +96,21 @@
               </div>
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
-                  <span class="tlefttopHeaderSpan">问题原因：</span>
-                  <span class="tlefttoprightLiSpans">{{examine.reason}}</span>
-                </li>
-                <li class="tlefttopli">
+                  <p class="tlefttopHeaderP">
+                    <span class="tlefttopHeaderSpan">问题原因：</span>
+                    <span class="tlefttoprightLiSpans">{{examine.reason}}</span>
+                  </p>
+                  <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">处理情况：</span>
                     <span class="tlefttoprightLiSpans">{{examine.treatment}}</span>
+                  </p>
                 </li>
                 <li class="tlefttopli">
                     <span class="tlefttopHeaderSpan">处理结果：</span>
-                    <span class="tlefttoprightLiSpans">{{obtainState(examine.repairstate)}}</span>
+                    <span class="tlefttoprightLiSpans">{{examine.repairpersonname}}</span>
                 </li>
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderP">
+                  <p class="tlefttopHeaderImg">
                     <span class="tlefttopHeaderSpan">现场照片：</span>
                     <span>
                       <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(examine.afterphotos), index)"  :key="index" v-for="(data, index) in fieldphoto(examine.afterphotos)" :src="data" alt="">
@@ -138,6 +140,160 @@
           </div>
         </div>
       </div>
+      <section class="classification">
+        <header class="ficationHeader">
+          <p class="ficationHeaderP">维修记录</p>
+        </header>
+        <ul class="ficationUl">
+          <li :key="index" v-for="(item ,index) in reworkData" class="ficationLi">
+            <div @click.stop="ficationClick(item, reworkData)" class="ficationLiDiv">
+              <p class="ficationLiDivP">
+                    <span class="ficationLiDivSpan">
+                 {{fmtDate(item.repairtime)}}
+                </span>
+                <span class="ficationLiDivSpantwo">
+                  {{obtainState(item.repairstate)}}
+                </span>
+              </p>
+              <p class="ficationLiDivPtwo">
+                <i v-show="item.flag" class="el-icon-arrow-down"></i>
+                <i v-show="!item.flag" class="el-icon-arrow-up"></i>
+              </p>
+              <p class="ficationLiDivPthree">
+                返工
+              </p>
+            </div>
+            <div v-show="item.flag" class="ficationEnsconce">
+              <ul class="ficationEnsconceUl">
+                <li class="ficationEnsconceLi">
+                  <p class="ficationEnsconceLiP">
+                      <span class="ficationEnsconceLiSpan">
+                        处理时间:
+                      </span>
+                    <span class="ficationEnsconceLiSpantwo">
+                        {{fmtDate(item.repairtime)}}
+                      </span>
+                  </p>
+                  <p class="ficationEnsconceLiPtwo">
+                      <span class="ficationEnsconceLiSpan">
+                        处理人员:
+                      </span>
+                    <span class="ficationEnsconceLiSpantwo">
+                        {{item.repairpersonname}}
+                      </span>
+                  </p>
+                  <p class="ficationEnsconceLiPtwo">
+                      <span class="ficationEnsconceLiSpan">
+                        处理结果:
+                      </span>
+                    <span class="ficationEnsconceLiSpantwo">
+                        {{obtainState(item.repairstatename)}}
+                      </span>
+                  </p>
+                </li>
+                <li class="ficationEnsconceLitwo">
+                  <div class="ficationEnsconceLitwoDiv">
+                      <span class="ficationEnsconceLitwoSpan">
+                        问题原因:
+                      </span>
+                    <span class="ficationEnsconceLitwoSpantwo">
+                        {{item.reason}}
+                      </span>
+                  </div>
+                  <div class="ficationEnsconceLitwoDiv">
+                      <span class="ficationEnsconceLitwoSpan">
+                        处理情况:
+                      </span>
+                    <span class="ficationEnsconceLitwoSpantwo">
+                        {{item.treatment}}
+                      </span>
+                  </div>
+                </li>
+                <li class="ficationEnsconceLitwo">
+                      <span class="ficationEnsconceLitwoSpan">
+                        现场照片:
+                      </span>
+                  <span class="ficationEnsconceLitwoSpanThree">
+                      <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(item.afterphotos), imgIndex)" :key="imgIndex" v-for="(data , imgIndex) in fieldphoto(item.afterphotos)" :src="data" alt="">
+                    </span>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="ficationLi">
+            <div @click="approvalClick" class="ficationLiDiv">
+              <p class="ficationLiDivP">
+                    <span class="ficationLiDivSpan">
+                 {{fmtDate(examine.repairtime)}}
+                </span>
+                <span class="ficationLiDivSpantwo">
+                  {{obtainState(examine.repairstate)}}
+                </span>
+              </p>
+              <p class="ficationLiDivPtwo">
+                <i v-show="ficationBoolean" class="el-icon-arrow-down"></i>
+                <i v-show="!ficationBoolean" class="el-icon-arrow-up"></i>
+              </p>
+            </div>
+            <div v-show="ficationBoolean" class="ficationEnsconce">
+              <ul class="ficationEnsconceUl">
+                <li class="ficationEnsconceLi">
+                  <p class="ficationEnsconceLiP">
+                      <span class="ficationEnsconceLiSpan">
+                        处理时间:
+                      </span>
+                    <span class="ficationEnsconceLiSpantwo">
+                        {{fmtDate(examine.repairtime)}}
+                      </span>
+                  </p>
+                  <p class="ficationEnsconceLiPtwo">
+                      <span class="ficationEnsconceLiSpan">
+                        处理人员:
+                      </span>
+                    <span class="ficationEnsconceLiSpantwo">
+                        {{examine.repairpersonname}}
+                      </span>
+                  </p>
+                  <p class="ficationEnsconceLiPtwo">
+                      <span class="ficationEnsconceLiSpan">
+                        处理结果:
+                      </span>
+                    <span class="ficationEnsconceLiSpantwo">
+                        {{obtainState(examine.repairstate)}}
+                      </span>
+                  </p>
+                </li>
+                <li class="ficationEnsconceLitwo">
+                  <div class="ficationEnsconceLitwoDiv">
+                      <span class="ficationEnsconceLitwoSpan">
+                        问题原因:
+                      </span>
+                    <span class="ficationEnsconceLitwoSpantwo">
+                        {{examine.reason}}
+                      </span>
+                  </div>
+                  <div class="ficationEnsconceLitwoDiv">
+                      <span class="ficationEnsconceLitwoSpan">
+                        处理情况:
+                      </span>
+                    <span class="ficationEnsconceLitwoSpantwo">
+                        {{examine.treatment}}
+                      </span>
+                  </div>
+                </li>
+                <li class="ficationEnsconceLitwo">
+                      <span class="ficationEnsconceLitwoSpan">
+                        现场照片:
+                      </span>
+                  <span class="ficationEnsconceLitwoSpanThree">
+                      <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(examine.afterphotos), index)" v-for="(data ,index) in fieldphoto(examine.afterphotos)" :key="index" :src="data" alt="">
+                      </span>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </section>
       <section class="classification">
         <div class="assortment">
           <div class="fastener">
@@ -179,6 +335,12 @@ export default {
     }
   },
   methods: {
+    approvalClick () {
+      this.ficationBoolean = !this.ficationBoolean
+    },
+    ficationClick (item, data) {
+      item.flag = !item.flag
+    },
     conserve () {
       this.$emit('look', this.thisPage)
     },
@@ -231,6 +393,7 @@ export default {
     DialogImg
   },
   created () {
+    console.log(this.examine)
     function fmtDate (obj) {
       let date = new Date(obj)
       let y = 1900 + date.getYear()
@@ -261,12 +424,24 @@ export default {
         }
       }
     })
-
     this.axios.post(getCheckTaskByRepairTaskId(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
         console.log(response)
         if (!response.data.data) return
         this.inspectUp = response.data.data
+      }
+    })
+    this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {
+      if (response.data.code === 0) {
+        if (response.data.data.length !== 0) {
+          response.data.data.forEach((val) => {
+            val.flag = false
+          })
+          response.data.data[0].flag = true
+          this.reworkData = response.data.data
+        } else {
+          this.ficationBoolean = true
+        }
       }
     })
   }
@@ -279,9 +454,9 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin-top 100px
+    margin-top 50px
     background #111a28
-    padding 40px 0
+    padding 30px 0
     .content
       overflow hidden
       position relative
@@ -349,6 +524,10 @@ export default {
           font-size $font-size-medium
         .tlefttopHeaderP
           float left
+          width 50%
+          overflow hidden
+          text-overflow ellipsis
+          white-space nowrap
         .tlefttopHeaderSpan
           margin 0 12px
           color $color-border-b-fault
@@ -402,8 +581,7 @@ export default {
       .assortment
         overflow hidden
         position relative
-        margin-left 40px
-        margin-top 40px
+        margin-top 20px
         .assortmentUl
           init()
           margin-bottom 30px
@@ -442,4 +620,208 @@ export default {
     margin-right 20px
     width 40px
     height 40px
+    cursor pointer
+  .tlefttopHeaderImg
+    min-height 40px
+    overflow hidden
+    position relative
+  .ficationUl
+    overflow hidden
+    position relative
+    height: 250px
+    overflow-y: scroll
+    margin-left 40px
+  .ficationLi
+    width 100%
+    margin-bottom 10px
+    position relative
+    overflow hidden
+    .ficationLiDiv
+      overflow hidden
+      height 30px
+      cursor pointer
+      line-height 30px
+      font-size 14px
+      background #1c273a
+      position relative
+      width 100%
+    .ficationLiDivP
+      float left
+    .ficationLiDivSpan
+      color #fff
+      margin 0 60px 0 15px
+  .ficationLiDivPtwo
+    float right
+    color #fff
+    font-size 18px
+    cursor pointer
+    margin-right 20px
+  .ficationEnsconce
+    margin-top 10px
+    border 1px solid $color-border-list
+    position relative
+    overflow hidden
+  .ficationEnsconceUl
+    width 100%
+    background #0b111a
+    position relative
+    overflow hidden
+  .ficationEnsconceLi
+    border-bottom 1px solid $color-border-list
+    height 40px
+    line-height 40px
+    width 100%
+  .ficationEnsconceLiP
+    float left
+    overflow hidden
+    width 33%
+    padding-left 1%
+  .ficationEnsconceLiSpan
+    color #999
+    margin-right 10px
+  .ficationEnsconceLiSpantwo
+    color #fff
+  .ficationEnsconceLiPtwo
+    float left
+    overflow hidden
+    width 33%
+  .ficationEnsconceLitwo
+    border-bottom 1px solid $color-border-list
+    height 80px
+    width 100%
+  .ficationEnsconceLitwoDiv
+    float left
+    position relative
+    overflow hidden
+    width 50%
+  .ficationEnsconceLitwoSpan
+    float left
+    margin 0 15px 0
+    line-height 40px
+    color #999
+  .ficationEnsconceLitwoSpantwo
+    float left
+    color #fff
+    width 460px
+    padding 10px 0
+    word-break break-all
+    word-wrap break-word
+  .ficationEnsconceLitwoSpanThree
+    float left
+    color #fff
+    width 1030px
+    margin-top 12px
+    word-break break-all
+    word-wrap break-word
+  .tlefttopli__Div
+    float left
+    width 49%
+    position relative
+    overflow hidden
+    padding-left 1%
+  .tlefttopli_Img
+    width 40px
+    height 40px
+    display inline-block
+    margin-top 22px
+    margin-right 20px
+  .tlefttopli__Span
+    float left
+    color #999
+    padding-left 1%
+    line-height 80px
+  .ficationLiDivSpantwo
+    color #fff
+  .differingOpinion
+    width 350px
+    display inline-block
+  .ficationEnsconceLitwoSpanThreeImg
+    display inline-block
+    margin-right 20px
+    width 40px
+    height 40px
+  .ficationLiDivPthree
+    float right
+    margin-right 20px
+    color #cf763a
+  .classificationLeft
+    overflow hidden
+    position relative
+  .classificationRight
+    float right
+    overflow hidden
+    position relative
+    width 49%
+  .classificationDiv
+    margin-left 40px
+    overflow hidden
+    position relative
+  .verificationLithreeDivPP
+    width 50%
+    overflow hidden
+    float left
+  .verificationLithreeDivPPtwo
+    width 50%
+    float right
+  .verificationLithreeDiv_Spantwo
+    margin-right 12px
+  .verificationdiv
+    width 107px
+    border-radius 5px
+    height 36px
+    text-align center
+    line-height 36px
+    background #3292a6
+    -webkit-transition 0.2s
+    transition 0.2s
+    cursor pointer
+    color #fff
+    margin-right 30px
+    display inline-block
+  .verificationdiv:hover
+    background #44a7bb
+  .classificationDDiv
+    position fixed
+    top 200px
+    left 50%
+    margin-left -450px
+    background #111a28
+    text-align center
+    padding 20px 40px 40px
+    border 1px solid #444d5b
+    width 820px
+  .classificationDDivH4
+    font-size 20px
+    margin-bottom 40px
+    text-align left
+    color #eee
+  .classificationDDivUl
+    margin-bottom 20px
+    init()
+  .classificationDDivUlLi
+    width 50%
+    overflow hidden
+    position relative
+    margin-bottom 20px
+    float left
+  .classificationDDivUlLiSpan
+    line-height 48px
+    margin-right 10px
+    color #999
+  .classificationDDivUlLiexamine
+    color #fff
+    examine()
+    margin-right 30px
+  .closeDialog
+    color #fff
+    closedown()
+  .ficationClass
+    width 210px
+    display inline-block
+  .tlefttopli_SpanThree
+    width 460px
+    overflow hidden
+    color #fff
+    display inline-block
+    margin 12px 0
 </style>

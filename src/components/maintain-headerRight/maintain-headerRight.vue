@@ -6,7 +6,7 @@
         </h4>
         <div class="headerRight_bottom">
           <img class="project" src="../../common/img/project.png" alt="">
-          <div class="headerRight">
+          <div class="headerRight headerRightMaintain">
             <el-select size="mini" v-model="value"  @change="patternSwitch">
               <el-option
                 v-for="item in options"
@@ -182,4 +182,9 @@ export default {
                display inline-block
                margin-top -2px
                vertical-align middle
+</style>
+<style lang="stylus" rel="stylesheet/stylus">
+  .headerRightMaintain .el-input--suffix .el-input__inner
+    background transparent!important
+    border-color transparent!important
 </style>

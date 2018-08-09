@@ -496,5 +496,6 @@ export default {
       margin-right 110px
      .closedown
        closedown()
-
+  ::-webkit-scrollbar
+    display none
 </style>

@@ -525,7 +525,7 @@ export default {
     float left
     height 32px
     line-height 32px
-    width 15%
+    width 12%
   .header_p_one
     color $color-text-tile-state
   .header_p_two

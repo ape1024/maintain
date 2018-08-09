@@ -99,8 +99,8 @@
                 <li class="verificationLifour">
                   <div class="verificationLithreeDiv">
                     <span>审核结论：</span>
-                    <el-radio-group v-model="approvalradio">
-                      <el-radio :key="index" v-for="(item, index) in approvaloptions" :label="item.value">{{item.name}}</el-radio>
+                    <el-radio-group  v-model="approvalradio">
+                      <el-radio @change="approvalradioChange(approvalradio)" :key="index" v-for="(item, index) in approvaloptions" :label="item.value">{{item.name}}</el-radio>
                     </el-radio-group>
                   </div>
                   <div class="verificationLithreeDivtwo">
@@ -112,47 +112,13 @@
                     <span class="verificationLithreeDiv_Span">
                       <el-date-picker
                         size="mini"
+                        :disabled="waatitimeBoolean"
                         v-model="waatitime"
                         value-format="yyyy-MM-dd"
                         type="date"
                         placeholder="选择日期">
                     </el-date-picker>
                     </span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="classificationRight">
-              <header class="ficationHeader">
-                <p class="ficationHeaderP">故障维修验证</p>
-                <p class="ficationHeaderX"></p>
-              </header>
-              <ul class="verificationUl">
-                <li class="verificationLithree">
-                  <div class="verificationLithreeDiv">
-                    <p class="verificationLithreeDivPP">
-                      <span>验证人员：</span>
-                      <span class="verificationLithreeDivSpan">{{examine.checktime}}</span>
-                    </p>
-                    <p class="verificationLithreeDivPPtwo">
-                      <span>验证时间：</span>
-                      <span class="verificationLithreeDivSpan">
-                      {{examine.checkpersonname}}
-                    </span>
-                    </p>
-                  </div>
-                  <div class="verificationLitwoDiv">
-                    <p class="verificationLiP">
-                      <el-radio v-model="radio" label="1">经确认，故障问题已处理</el-radio>
-                    </p>
-                    <p class="verificationLiP">
-                      <el-radio v-model="radio" label="2">
-                        其他意见
-                        <div class="inputDiv">
-                          <el-input size="mini" v-model="Otheropinions" placeholder="请输入内容"></el-input>
-                        </div>
-                      </el-radio>
-                    </p>
                   </div>
                 </li>
               </ul>
@@ -452,16 +418,29 @@ export default {
       Auditorsstate: '',
       Auditorsopinion: '',
       imgList: [],
-      RepairStateItems: [] // 获取所有维修任务状态
+      RepairStateItems: [], // 获取所有维修任务状态,
+      waatitimeBoolean: true
     }
   },
   methods: {
+    approvalradioChange (data) {
+      if (data === 30) {
+        this.waatitimeBoolean = false
+      } else {
+        this.waatitimeBoolean = true
+      }
+    },
     classificationDDivUlLiexamine () {
       let token = JSON.parse(window.sessionStorage.token)
       let repairtaskid = this.examine.repairtaskid
       let approvalOpinion = this.approvalOpinionInput
       let approvalState = this.approvalradio
       let assignmenttime = this.waatitime
+      console.log(maintainRepairapprovalTask(token, repairtaskid, approvalOpinion, approvalState, assignmenttime, this.faulttypeData, this.faultreasonData, this.faultrangeData, this.faultphenomenonData, this.faulttreatmentData))
+      console.log(repairtaskid)
+      console.log(approvalOpinion)
+      console.log(approvalState)
+      console.log(assignmenttime)
       this.axios.post(maintainRepairapprovalTask(token, repairtaskid, approvalOpinion, approvalState, assignmenttime, this.faulttypeData, this.faultreasonData, this.faultrangeData, this.faultphenomenonData, this.faulttreatmentData)).then((response) => {
         if (response.data.code === 0) {
           this.$message({
@@ -508,18 +487,33 @@ export default {
       let approvalOpinion = this.approvalOpinionInput
       let approvalState = this.approvalradio
       let assignmenttime = this.waatitime
-      if (approvalOpinion !== '') {
-        if (approvalState !== '') {
-          if (approvalState === 30) {
-            if (assignmenttime !== '' && assignmenttime !== null) {
+      let myDate = new Date()
+      if (approvalOpinion) {
+        if (approvalState) {
+          if (approvalState !== 30) {
+            this.waatitime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`
+            console.log(this.waatitime)
+            this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
+              if (response.data.code === 0) {
+                this.faulttreatment = response.data.data.faulttreatment
+                this.faultreason = response.data.data.faultreason
+                this.faultrange = response.data.data.faultrange
+                this.faulttype = response.data.data.faulttype
+                this.faultphenomenon = response.data.data.faultphenomenon
+                this.classificationBoolean = true
+              }
+            })
+          } else {
+            if (assignmenttime) {
               this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
                 if (response.data.code === 0) {
+                  console.log(response.data.data)
+                  this.classificationBoolean = true
                   this.faulttreatment = response.data.data.faulttreatment
                   this.faultreason = response.data.data.faultreason
                   this.faultrange = response.data.data.faultrange
                   this.faulttype = response.data.data.faulttype
                   this.faultphenomenon = response.data.data.faultphenomenon
-                  this.classificationBoolean = true
                 }
               })
             } else {
@@ -527,20 +521,7 @@ export default {
                 message: '返工时间不能为空!',
                 type: 'warning'
               })
-              return false
             }
-          } else {
-            this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
-              if (response.data.code === 0) {
-                console.log(response.data.data)
-                this.classificationBoolean = true
-                this.faulttreatment = response.data.data.faulttreatment
-                this.faultreason = response.data.data.faultreason
-                this.faultrange = response.data.data.faultrange
-                this.faulttype = response.data.data.faulttype
-                this.faultphenomenon = response.data.data.faultphenomenon
-              }
-            })
           }
         } else {
           this.$message({
@@ -996,6 +977,7 @@ export default {
     float left
     color #fff
     width 1030px
+    margin-top 12px
     word-break break-all
     word-wrap break-word
   .tlefttopli__Div
@@ -1030,11 +1012,8 @@ export default {
     margin-right 20px
     color #cf763a
   .classificationLeft
-    float left
     overflow hidden
     position relative
-    margin-right 2%
-    width 49%
   .classificationRight
     float right
     overflow hidden
@@ -1099,6 +1078,7 @@ export default {
   .classificationDDivUlLiexamine
     color #fff
     examine()
+    margin-right 30px
   .closeDialog
     color #fff
     closedown()
