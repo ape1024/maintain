@@ -145,7 +145,8 @@ export default {
       JurisdictionUpdate: true,
       roleName: '', // 角色名称
       checkedFlag: false,
-      ficationBoolean: false  // 系统角色是否展开
+      // 系统角色是否展开
+      ficationBoolean: false
     }
   },
   methods: {

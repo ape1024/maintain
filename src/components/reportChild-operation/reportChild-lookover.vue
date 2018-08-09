@@ -81,7 +81,9 @@ export default {
     },
     selectImg (index) {
       this.$refs.dialogImg.switchIndex(index)
-      this.$refs.dialogImg.open()
+      setTimeout(() => {
+        this.$refs.dialogImg.open()
+      }, 300)
     }
   },
   components: {
