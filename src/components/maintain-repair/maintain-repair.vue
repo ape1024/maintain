@@ -118,20 +118,27 @@
               {{approvalStatusfn(item.approvalstatename)}}
             </li>
             <li class="repair_lifive">
-              <p v-if="JurisdictionInsert" @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
+              <p v-if="JurisdictionInsert && !item.repairBoolean" @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
+                重新分配
+              </p>
+              <p v-if="JurisdictionInsert && item.repairBoolean" class="header_p_twelve threelevel_litwo_ptwo">
                 重新分配
               </p>
               <p v-if="JurisdictionSelect" @click.stop="examine(item.repairtaskid)" class="header_p_ten">查看</p>
-              <p v-if="JurisdictionInsert" @click.stop="question(item.repairtaskid, item)" class="header_p_eight threelevel_litwo_p">
+              <p v-if="JurisdictionInsert && !item.approvalBoolean" @click.stop="question(item.repairtaskid)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
-              <!--<p @click.stop="modify" class="header_pe_quipment">-->
-                <!--安排-->
-              <!--</p>-->
-              <p v-if="JurisdictionInsert" @click.stop="equipment(item.repairtaskid)" class="header_p_thirteen">
+              <p v-if="JurisdictionInsert && item.approvalBoolean" class="header_p_eight threelevel_litwo_p threelevel_litwo_ptwo">
+                审核
+              </p>
+              <p v-if="JurisdictionInsert && !item.repairBoolean" @click.stop="verification(item.repairtaskid)" class="header_p_thirteen">
                 验证
               </p>
-              <p v-if="JurisdictionDelete" class="header_p_eleven" @click.stop="amputate(index, tabulationData,item.repairtaskid)">删除</p>
+              <p v-if="JurisdictionInsert && item.repairBoolean" class="header_p_thirteen threelevel_litwo_ptwo">
+                验证
+              </p>
+              <p v-if="JurisdictionDelete && !item.repairBoolean" class="header_p_eleven" @click.stop="amputate(index, tabulationData,item.repairtaskid)">删除</p>
+              <p v-if="JurisdictionDelete && item.repairBoolean" class="header_p_eleven threelevel_litwo_ptwo" >删除</p>
             </li>
           </ul>
         </li>
@@ -152,6 +159,9 @@
       <!--更换设备-->
       <childquipment v-if="quipmentBoolean" :msg="quipmentData" @quipment="Quipment"></childquipment>
     </section>
+    <section v-if="verificationBoolean" class="review" @click.stop>
+      <childVerification :examine="examineData" :rework="reworkData" :examina="examination"  :approval="approvalStatus" :state="taskState" @mine="Mine" @newly="Newly"></childVerification>
+    </section>
   </div>
 </template>
 
@@ -162,6 +172,7 @@ import childLookover from '../repair-operation/repair-lookover'
 import childModify from '../repair-operation/repair-arrange'
 import childExamine from '../repair-operation/repair-examine'
 import childquipment from '../repair-operation/repair-rescheduling'
+import childVerification from '../repair-operation/repair-Verification'
 import { getTaskQueryApprovalItems, findAreasTreeByProjectid, maintainRepairgetRepairStates, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindRepairTasks, maintainRepairmaintainRepairfindRepairTasksTwo, maintainRepairfindTaskByTaskid, maintainRepairremoveRepairtasks, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos } from '../../api/user'
 export default {
   name: 'maintain-repair',
@@ -171,7 +182,8 @@ export default {
     childLookover,
     childModify,
     childExamine,
-    childquipment
+    childquipment,
+    childVerification
   },
   methods: {
     approvalStatusfn (status) {
@@ -288,7 +300,7 @@ export default {
         }
       })
     },
-    question (ID, data) {
+    question (ID) {
       // 点击审核
       this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
         if (response.data.code === 0) {
@@ -309,9 +321,32 @@ export default {
         }
       })
     },
+    verification (ID) {
+      this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
+        if (response.data.code === 0) {
+          this.examineData = response.data.data
+          this.axios.post(maintainRepairfindReworksByTaskid(ID)).then((response) => {
+            if (response.data.code === 0) {
+              this.reworkData = response.data.data
+              this.axios.post(maintainRepairgetApprovalInfos(ID)).then((response) => {
+                if (response.data.code === 0) {
+                  // 审批记录  目前 只要第一条,待定
+                  console.log('./////')
+                  console.log(response.data.data)
+                  this.examination = response.data.data[0]
+                  this.getTaskState()
+                  this.verificationBoolean = true
+                }
+              })
+            }
+          })
+        }
+      })
+    },
     Mine (ev) {
       // 审核 传递的参数
       this.examineBoolean = ev
+      this.verificationBoolean = false
     },
     Onlook (ev) {
       this.lookoverBoolean = ev
@@ -351,6 +386,7 @@ export default {
       lookoverBoolean: false,
       modifyBoolean: false,
       quipmentBoolean: false,
+      verificationBoolean: false,
       examineData: '',
       reworkData: '',
       examination: '',
@@ -392,7 +428,28 @@ export default {
     //  获取列表
     this.axios.post(maintainRepairfindRepairTasks(projectid)).then((response) => {
       if (response.data.code === 0) {
+        response.data.data.forEach((val) => {
+          if (val.approvalstate) {
+            if (val.approvalstate === 5) {
+              val.approvalBoolean = true
+            } else {
+              val.approvalBoolean = false
+            }
+          } else {
+            val.approvalBoolean = false
+          }
+          if (val.repairstate) {
+            if (val.repairstate === 100) {
+              val.repairBoolean = true
+            } else {
+              val.repairBoolean = false
+            }
+          } else {
+            val.repairBoolean = false
+          }
+        })
         this.tabulationData = response.data.data
+        console.log(this.tabulationData)
       }
     })
     //  获取维修状态
@@ -666,5 +723,7 @@ export default {
     margin 15px
     position relative
     overflow hidden
-
+  .threelevel_litwo_ptwo
+    color #999
+    cursor initial
 </style>
