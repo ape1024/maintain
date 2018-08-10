@@ -6,20 +6,12 @@
         <p class="subjectP">角色管理</p>
       </header>
       <div class="leftBottom">
-        <ul class="leftBottomUl">
-          <li class="leftBottomLl">
-            系统角色
+        <ul class="leftBottomUl" :key="index" v-for="(item ,index) in customRoles" >
+          <li>
+            <div @click="ficationClick(item)" class="leftBottomLl">{{item.organizationname}}</div>
           </li>
-          <li v-show="ficationBoolean" @click="systemroleClick(item.roleid, item, true)" :key="index" v-for="(item, index) in systemRole" v-bind:class="item.flag ? 'leftBottomLlThree' : 'leftBottomLltwo'">
-            {{item.rolename}}
-          </li>
-        </ul>
-        <ul class="leftBottomUl">
-          <li class="leftBottomLl">
-            自定义角色
-          </li>
-          <li @click="systemroleClick(item.roleid, item, false)" :key="index" v-for="(item, index) in customRoles" v-bind:class="item.flag ? 'leftBottomLlThree' : 'leftBottomLltwo'">
-            {{item.rolename}}
+          <li v-show="item.visflag"  @click="systemroleClick(iteminfo.roleid, iteminfo, false)" :key="indexinfo" v-for="(iteminfo, indexinfo) in item.roles" v-bind:class="seletedFlag === iteminfo.roleid ? 'leftBottomLlThree' : 'leftBottomLltwo'">
+            {{iteminfo.rolename}}
           </li>
         </ul>
       </div>
@@ -124,7 +116,6 @@ export default {
   },
   data () {
     return {
-      systemRole: [],
       customRoles: [],
       basis: false,
       value: '',
@@ -145,7 +136,7 @@ export default {
       JurisdictionUpdate: true,
       roleName: '', // 角色名称
       checkedFlag: false,
-      ficationBoolean: false  // 系统角色是否展开
+      seletedFlag: false
     }
   },
   methods: {
@@ -166,15 +157,10 @@ export default {
             let token = JSON.parse(window.sessionStorage.token)
             this.axios.post(karaktersFindAllRoles(token)).then((response) => {
               if (response.data.code === 0) {
-                this.systemRole = []
                 this.customRoles = []
                 response.data.data.forEach((val) => {
                   val.flag = false
-                  if (val.issystem === 1) {
-                    this.systemRole.push(val)
-                  } else {
-                    this.customRoles.push(val)
-                  }
+                  this.customRoles.push(val)
                 })
               }
             })
@@ -191,15 +177,10 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(karaktersFindAllRoles(token)).then((response) => {
         if (response.data.code === 0) {
-          this.systemRole = []
           this.customRoles = []
           response.data.data.forEach((val) => {
             val.flag = false
-            if (val.issystem === 1) {
-              this.systemRole.push(val)
-            } else {
-              this.customRoles.push(val)
-            }
+            this.customRoles.push(val)
           })
           this.basis = ev
         }
@@ -321,11 +302,7 @@ export default {
       this.roleName = data.rolename
       this.checkedFlag = visFlag
       data.flag = true
-      this.systemRole.forEach((val) => {
-        if (val.roleid !== data.roleid) {
-          val.flag = false
-        }
-      })
+      this.seletedFlag = roleid
       this.customRoles.forEach((val) => {
         if (val.roleid !== data.roleid) {
           val.flag = false
@@ -411,6 +388,9 @@ export default {
           })
         }
       })
+    },
+    ficationClick (item) {
+      item.visflag = !item.visflag
     }
   },
   created () {
@@ -460,13 +440,11 @@ export default {
     })
     this.axios.post(karaktersFindAllRoles(token)).then((response) => {
       if (response.data.code === 0) {
+        console.log(response)
         response.data.data.forEach((val) => {
           val.flag = false
-          if (val.issystem === 1) {
-            this.systemRole.push(val)
-          } else {
-            this.customRoles.push(val)
-          }
+          val.visflag = false
+          this.customRoles.push(val)
         })
       }
     })
