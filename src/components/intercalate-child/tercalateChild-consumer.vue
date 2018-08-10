@@ -31,14 +31,14 @@
               角 色
             </p>
             <div class="headerDiv">
-              <el-select size="mini" v-model="role" placeholder="请选择" clearable>
-                <el-option
-                  v-for="item in roleData"
-                  :key="item.roleid"
-                  :label="item.rolename"
-                  :value="item.roleid">
-                </el-option>
-              </el-select>
+              <el-cascader
+                size="mini"
+                clearable
+                :options="roleData"
+                :props="selectedRole"
+                :show-all-levels="false"
+                v-model="role">
+              </el-cascader>
             </div>
           </li>
           <li class="headerLi">
@@ -204,7 +204,7 @@ export default {
       //  用户名
       Username: '',
       //  角色
-      role: '',
+      role: [],
       //  手机
       Handphone: '',
       information: [],
@@ -222,6 +222,11 @@ export default {
         label: 'organizationName',
         value: 'organizationId',
         children: 'subOrgnizations'
+      },
+      selectedRole: {
+        label: 'organizationname',
+        value: 'organizationid',
+        children: 'roles'
       },
       JurisdictionSelect: true,
       JurisdictionInsert: true,
@@ -244,17 +249,15 @@ export default {
       // this.role
       //  手机号
       // this.Handphone
-      console.log(this.Handphone)
 
       let token = JSON.parse(window.sessionStorage.token)
       const len = this.selectedOptions.length
       const selectOptionsData = len === 0 ? '' : this.selectedOptions[(len - 1)]
-      this.axios.post(findAllBy(selectOptionsData, this.role, this.Username, this.Handphone, this.pageIndex, this.pageSize, token)).then((response) => {
+      const selectRoleId = this.role.length === 0 ? '' : this.role[1]
+      this.axios.post(findAllBy(selectOptionsData, selectRoleId, this.Username, this.Handphone, this.pageIndex, this.pageSize, token)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response.data.data)
           this.information = response.data.data.data
           this.totalPage = response.data.data.pageTotal
-          console.log(this.totalPage)
         }
       })
     },
@@ -272,11 +275,9 @@ export default {
       return y + '-' + m.substring(m.length - 2, m.length) + '-' + d.substring(d.length - 2, d.length)
     },
     Acredit (ev) {
-      console.log(ev)
       this.accreditBBoolean = ev
     },
     authorization (data) {
-      console.log(data)
       this.authorizationUserid = data
       this.accreditBBoolean = true
     },
@@ -313,7 +314,6 @@ export default {
       this.inforBoolean = ev
     },
     infor (item) {
-      console.log(item)
       this.itemUserId = item
       this.inforBoolean = true
     },
@@ -329,7 +329,6 @@ export default {
         type: 'warning'
       }).then(() => {
         let Userid = JSON.parse(window.sessionStorage.userInfo).userid
-        console.log(Userid)
         this.axios.post(consumerdelUser(userId)).then((response) => {
           if (response.data.code === 0) {
             this.$message({
@@ -337,7 +336,6 @@ export default {
               message: '删除成功!'
             })
             content.splice([$index], 1)
-            console.log(response)
             if (userId === Userid) {
               sessionStorage.clear()
               this.$router.push({path: '/login'})
@@ -358,7 +356,6 @@ export default {
   created () {
     let token = JSON.parse(window.sessionStorage.token)
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
-    console.log(window.sessionStorage)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'device') {
         this.JurisdictionSelect = val.select
@@ -366,20 +363,24 @@ export default {
         this.JurisdictionDelete = val.delete
         this.JurisdictionApproval = val.approval
         this.JurisdictionUpdate = val.update
-        console.log(val.select)
-        console.log(val.insert)
-        console.log(val.delete)
-        console.log(val.approval)
-        console.log(val.update)
       }
     })
     this.axios.post(karaktersFindAllRoles(token)).then((response) => {
       if (response.data.code === 0) {
-        this.roleData = response.data.data
+        this.roleData = response.data.data.map(t => {
+          return {
+            ...t,
+            roles: t.roles.map(m => {
+              return {
+                ...m,
+                organizationid: m.roleid,
+                organizationname: `${m.organizationname}-${m.rolename}`
+              }
+            })
+          }
+        })
       }
     })
-
-    console.log(token)
     this.axios.post(getOrganizationTreeByUser(token)).then((response) => {
       if (response.data.code === 0) {
         this.options = response.data.data
