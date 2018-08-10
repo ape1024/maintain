@@ -44,6 +44,8 @@
                 <li class="definitionHeaderlitwo">修改</li>
                 <li class="definitionHeaderlitwo">删除</li>
                 <li class="definitionHeaderlitwo">审批</li>
+                <li class="definitionHeaderlitwo">分配</li>
+                <li class="definitionHeaderlitwo">检验</li>
               </ul>
             </div>
             <div class="content">
@@ -68,6 +70,12 @@
                    <li class="definitionHeaderlitwo">
                      <el-checkbox :indeterminate="item.insertPart" @change="definitionExamine(item, item.insert,4)" :disabled="checkedFlag" v-model="item.insert"></el-checkbox>
                    </li>
+                   <li class="definitionHeaderlitwo">
+                     <el-checkbox :indeterminate="item.assignPart" @change="definitionExamine(item, item.assign,5)" :disabled="checkedFlag" v-model="item.assign"></el-checkbox>
+                   </li>
+                   <li class="definitionHeaderlitwo">
+                     <el-checkbox :indeterminate="item.checkPart" @change="definitionExamine(item, item.check,6)" :disabled="checkedFlag" v-model="item.check"></el-checkbox>
+                   </li>
                  </ul>
                </div>
                <ul v-show="item.flag" class="contentDivthree">
@@ -80,16 +88,22 @@
                        <el-checkbox @change="definitionExamineChild(item, 'examinePart', 'examine', 'second', 'selectBoolean')" v-if="data.select === 1" :disabled="checkedFlag" v-model="data.selectBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'approvalPart', 'approval', 'second', 'approvalBoolean')" v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-if="data.update === 1" :disabled="checkedFlag" v-model="data.updateBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'updatePart', 'update', 'second', 'updateBoolean')" v-if="data.update === 1" :disabled="checkedFlag" v-model="data.updateBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-if="data.delete === 1" :disabled="checkedFlag" v-model="data.deleteBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'deletePart', 'delete', 'second', 'deleteBoolean')" v-if="data.delete === 1" :disabled="checkedFlag" v-model="data.deleteBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox v-if="data.insert === 1" :disabled="checkedFlag" v-model="data.insertBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" :disabled="checkedFlag" v-model="data.insertBoolean"></el-checkbox>
+                     </li>
+                     <li class="definitionHeaderlitwo">
+                       <el-checkbox @change="definitionExamineChild(item, 'assignPart', 'assign', 'second', 'assignBoolean')" v-if="data.assign === 1" :disabled="checkedFlag" v-model="data.assignBoolean"></el-checkbox>
+                     </li>
+                     <li class="definitionHeaderlitwo">
+                       <el-checkbox @change="definitionExamineChild(item, 'checkPart', 'check', 'second', 'checkBoolean')" v-if="data.check === 1" :disabled="checkedFlag" v-model="data.checkBoolean"></el-checkbox>
                      </li>
                    </ul>
                  </li>
@@ -161,6 +175,7 @@ export default {
               if (response.data.code === 0) {
                 this.customRoles = []
                 response.data.data.forEach((val) => {
+                  val.visflag = false
                   val.flag = false
                   this.customRoles.push(val)
                 })
@@ -181,6 +196,7 @@ export default {
         if (response.data.code === 0) {
           this.customRoles = []
           response.data.data.forEach((val) => {
+            val.visflag = false
             val.flag = false
             this.customRoles.push(val)
           })
@@ -242,6 +258,26 @@ export default {
             val.insertBoolean = false
           })
         }
+      } else if (number === 5) {
+        if (flag === true) {
+          data.second.forEach((val) => {
+            val.assignBoolean = true
+          })
+        } else {
+          data.second.forEach((val) => {
+            val.assignBoolean = false
+          })
+        }
+      } else if (number === 6) {
+        if (flag === true) {
+          data.second.forEach((val) => {
+            val.checkBoolean = true
+          })
+        } else {
+          data.second.forEach((val) => {
+            val.checkBoolean = false
+          })
+        }
       }
     },
     definitionExamineChild (data, part, parentFlag, currentFlag, childFlag) {
@@ -273,8 +309,12 @@ export default {
             obj.select = item.selectBoolean
             //  修改
             obj.update = item.updateBoolean
-            // 审批
+            //  审批
             obj.insert = item.insertBoolean
+            //  分配
+            obj.assign = item.assignBoolean
+            //  检验
+            obj.check = item.checkBoolean
             data.push(obj)
           })
         })
@@ -316,18 +356,24 @@ export default {
         val.examine = false
         val.insert = false
         val.modify = false
+        val.assign = false
+        val.check = false
 
         val.examinePart = false
         val.addPart = false
         val.modifyPart = false
         val.deletePart = false
         val.insertPart = false
+        val.assignPart = false
+        val.checkPart = false
         val.second.forEach((data) => {
           data.approvalBoolean = false
           data.deleteBoolean = false
           data.insertBoolean = false
           data.selectBoolean = false
           data.updateBoolean = false
+          data.assignBoolean = false
+          data.checkBoolean = false
         })
       })
       this.kayakersId = roleid
@@ -348,6 +394,10 @@ export default {
                   data.deleteBoolean = response.data.data[i].delete
                   //  审批
                   data.insertBoolean = response.data.data[i].insert
+                  //  分配
+                  data.assignBoolean = response.data.data[i].assign
+                  //  检验
+                  data.checkBoolean = response.data.data[i].check
                 }
               })
             })
@@ -358,6 +408,8 @@ export default {
             let modifyPart = 0
             let deletePart = 0
             let insertPart = 0
+            let assignPart = 0
+            let checkPart = 0
             const len = val.second.length
             val.second.forEach((data) => {
               if (data.selectBoolean) {
@@ -375,18 +427,28 @@ export default {
               if (data.insertBoolean) {
                 insertPart += 1
               }
+              if (data.assignBoolean) {
+                assignPart += 1
+              }
+              if (data.checkBoolean) {
+                checkPart += 1
+              }
             })
             val.examinePart = examinePart > 0 && examinePart < len
             val.addPart = addPart > 0 && addPart < len
             val.modifyPart = modifyPart > 0 && modifyPart < len
             val.deletePart = deletePart > 0 && deletePart < len
             val.insertPart = insertPart > 0 && insertPart < len
+            val.assignPart = assignPart > 0 && assignPart < len
+            val.checkPart = checkPart > 0 && checkPart < len
 
             val.added = addPart === len
             val.delete = deletePart === len
             val.examine = examinePart === len
             val.insert = insertPart === len
             val.modify = modifyPart === len
+            val.assign = assignPart === len
+            val.check = checkPart === len
           })
         }
       })
@@ -406,7 +468,8 @@ export default {
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(karaktersFindAllFunctions(token)).then((response) => {
       if (response.data.code === 0) {
-        response.data.data.forEach((val) => {
+        let data = response.data.data
+        data.forEach((val) => {
           //  二级开关
           val.flag = false
           //  查看
@@ -418,12 +481,18 @@ export default {
           //  修改
           val.modify = false
           val.modifyPart = false
-          // 删除
+          //  删除
           val.delete = false
           val.deletePart = false
           //  审核
           val.insert = false
           val.insertPart = false
+          //  分配
+          val.assign = false
+          val.assignPart = false
+          //  检验
+          val.check = false
+          val.checkPart = false
           val.second.forEach((val) => {
             //  添加
             val.approvalBoolean = false
@@ -435,14 +504,18 @@ export default {
             val.selectBoolean = false
             //  审核
             val.insertBoolean = false
+            //  分配
+            val.assignBoolean = false
+            //  检验
+            val.checkBoolean = false
           })
         })
-        this.fullFunctionality = response.data.data
+        console.log(data)
+        this.fullFunctionality = data
       }
     })
     this.axios.post(karaktersFindAllRoles(token)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         response.data.data.forEach((val) => {
           val.flag = false
           val.visflag = false
@@ -549,7 +622,7 @@ export default {
     position fixed
     top 0
     left 0
-    background rgba(000, 000, 000, .4)
+    background rgba(000, 000, 000, .9)
     z-index 11
     width 100%
     height 100%
@@ -601,7 +674,7 @@ export default {
       position relative
       text-align center
       height 31px
-      width 10%
+      width 8.5%
   .contentDiv
     overflow hidden
   .contentDivthree
