@@ -8,7 +8,8 @@ const state = {
   floorPlansAreaId: '',
   username: '',
   usericon: '',
-  userToken: ''
+  userToken: '',
+  maintainProject: window.localStorage.pattern ? window.localStorage.pattern : ''
 }
 
 export default state

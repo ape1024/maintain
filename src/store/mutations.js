@@ -12,6 +12,9 @@ const mutations = {
   },
   [types.UPDATE_FLOOR_PLANS_AREA_ID] (state, data) {
     state.floorPlansAreaId = data
+  },
+  [types.UPDATE_MAINTAIN_PROJECT] (state, data) {
+    state.maintainProject = data
   }
 }
 

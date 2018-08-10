@@ -40,6 +40,7 @@
 <script>
 // import $ from 'jquery'
 import { secede, findUserProjects } from '../../api/user'
+import { mapActions } from 'vuex'
 export default {
   name: 'maintain-headerRight',
   props: ['name'],
@@ -49,18 +50,21 @@ export default {
       username: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).username : '',
       options: [],
       value: [],
-      tokenData: this.$store.state.userToken
+      tokenData: this.$store.state.userToken,
+      maintainProject: this.GLOBAL.maintainProject
     }
   },
   watch: {
     tokenData (vl) {
       alert(vl)
+    },
+    maintainProject (val) {
+      console.log(val)
     }
   },
   methods: {
     patternSwitch (ev) {
-      window.localStorage.pattern = ev
-      console.log(window.localStorage.pattern)
+      this.updateProjectAndUpdateLocal(ev)
     },
     signout () {
       let signouttoken = JSON.parse(window.sessionStorage.token)
@@ -70,7 +74,10 @@ export default {
         sessionStorage.clear()
         this.$router.push({path: '/login'})
       })
-    }
+    },
+    ...mapActions([
+      'updateProjectAndUpdateLocal'
+    ])
   },
   created () {
     console.log('啦啦啦啦啦啦啦')

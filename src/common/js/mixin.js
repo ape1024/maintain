@@ -2,6 +2,7 @@ import { layer, stateCode, iconUrl, polygonState, iconTypeStyle, errorUrl, state
 import { osmUrl } from 'api/config'
 import { IconAlarmList, createFloorData, createFactoryData, createBuildingData } from 'common/js/map'
 import { findMap } from 'api/map'
+import { mapGetters } from 'vuex'
 
 /* global L:true */
 export const mapMixin = {
@@ -453,6 +454,19 @@ export const mapMixin = {
         x: (pos.left + pos.width / 2),
         y: (pos.top + pos.height / 2)
       }
+    }
+  }
+}
+
+export const projectMixin = {
+  computed: {
+    ...mapGetters([
+      'maintainProject'
+    ])
+  },
+  watch: {
+    maintainProject () {
+      this.init()
     }
   }
 }
