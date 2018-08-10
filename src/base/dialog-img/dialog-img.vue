@@ -1,7 +1,7 @@
 <template>
   <div class="dialog-img" @click="close" v-show="state">
-    <div class="wrapper" @click.stop>
-      <el-carousel :interval="interval" ref="carousel" :autoplay="false" trigger="click" class="carousel">
+    <div class="wrapper" @click.stop v-if="state">
+      <el-carousel ref="carousel" :initial-index="initialIndex" :autoplay="false" trigger="click" class="carousel">
         <el-carousel-item v-for="(item, index) in list" :key="index">
           <div class="item">
             <img :src="item">
@@ -25,7 +25,7 @@ export default {
   data () {
     return {
       state: false,
-      interval: 3000
+      initialIndex: 0
     }
   },
   methods: {
@@ -37,7 +37,7 @@ export default {
     },
     switchIndex (index) {
       if (index > (this.list.length - 1)) return
-      this.$refs.carousel.setActiveItem(index)
+      this.initialIndex = index
     }
   }
 }
