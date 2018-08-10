@@ -167,12 +167,6 @@ export default {
     adminchild,
     increase
   },
-  watch: {
-    equipmentDate (val) {
-      console.log('分割线')
-      console.log(val)
-    }
-  },
   methods: {
     init () {
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
@@ -184,19 +178,15 @@ export default {
           this.axios.post(CalcDevCount(regionId, 1, 20)).then((data) => {
             if (data.data.code === 0) {
               this.tableData = data.data.data.datas
-              console.log(this.tableData)
             }
           })
         }
       })
     },
     query () {
-      //  console.log(this.manufactorModel)
-      // return
       // 接口 getDevListDetailProjectsTwo
       //  区域id
       let areaid = this.regionModel.length === 0 ? '' : this.regionModel[this.regionModel.length - 1]
-      console.log(areaid)
       //  设备类型
       let equipment = ''
       if (this.equipmentDate.length === 0 || !this.equipmentDate[0]) {
@@ -230,7 +220,6 @@ export default {
       })
       let itemAreaid = item.areaid
       this.axios.post(admingetDevListDetailProjects(itemAreaid)).then((response) => {
-        console.log(response.data.data)
         if (response.data.code === 0) {
           this.tableChild = response.data.data
           item.flag = !item.flag
@@ -318,17 +307,12 @@ export default {
   },
   created () {
     //  权限
-    console.log(JSON.parse(window.sessionStorage.Jurisdiction))
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      console.log(val)
       if (val.functioncode === 'device') {
         this.JurisdictionApproval = val.approval
       }
     })
-    const token = JSON.parse(window.sessionStorage.token)
-    console.log(token)
-
     //  获取区域
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
@@ -339,7 +323,6 @@ export default {
         this.axios.post(CalcDevCount(regionId, 1, 20)).then((data) => {
           if (data.data.code === 0) {
             this.tableData = data.data.data.datas
-            console.log(this.tableData)
           }
         })
       }
@@ -348,7 +331,6 @@ export default {
     this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
         this.equipment = response.data.data
-        console.log(response.data.data)
       }
     })
     //  获取运行状态
@@ -361,8 +343,6 @@ export default {
     this.axios.post(FindDevAllApprovalstate()).then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
-        console.log('-adad')
-        console.log(this.AuditstatusDate)
       }
     })
   }

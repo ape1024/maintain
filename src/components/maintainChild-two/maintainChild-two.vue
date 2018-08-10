@@ -132,7 +132,7 @@ export default {
       let arr = []
       this.dailyData.forEach((val) => {
         console.log(val)
-        if (val.judge === true) {
+        if (val.judge === true && val.available === false) {
           arr.push(val.deviceID)
         }
       })

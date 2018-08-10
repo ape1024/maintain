@@ -19,7 +19,7 @@
           <div @click="signin($event)" class="fastenerDiv">
             登 录
           </div>
-          <span>1.5Bate</span>
+          <span>1.6Bate</span>
         </div>
       </div>
     </div>
@@ -152,7 +152,6 @@ export default {
                   this.axios.post(findUserProjects(JSON.parse(token))).then((data) => {
                     if (data.data.code === 0) {
                       if (!window.localStorage.pattern) {
-                        console.log(data.data.data[0].projectid)
                         let projects = ''
                         if (data.data.data.length) {
                           projects = data.data.data[0].projectid

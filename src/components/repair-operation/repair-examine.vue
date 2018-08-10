@@ -436,11 +436,6 @@ export default {
       let approvalOpinion = this.approvalOpinionInput
       let approvalState = this.approvalradio
       let assignmenttime = this.waatitime
-      console.log(maintainRepairapprovalTask(token, repairtaskid, approvalOpinion, approvalState, assignmenttime, this.faulttypeData, this.faultreasonData, this.faultrangeData, this.faultphenomenonData, this.faulttreatmentData))
-      console.log(repairtaskid)
-      console.log(approvalOpinion)
-      console.log(approvalState)
-      console.log(assignmenttime)
       this.axios.post(maintainRepairapprovalTask(token, repairtaskid, approvalOpinion, approvalState, assignmenttime, this.faulttypeData, this.faultreasonData, this.faultrangeData, this.faultphenomenonData, this.faulttreatmentData)).then((response) => {
         if (response.data.code === 0) {
           this.$message({
@@ -492,7 +487,6 @@ export default {
         if (approvalState) {
           if (approvalState !== 30) {
             this.waatitime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`
-            console.log(this.waatitime)
             this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
               if (response.data.code === 0) {
                 this.faulttreatment = response.data.data.faulttreatment
@@ -507,7 +501,6 @@ export default {
             if (assignmenttime) {
               this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
                 if (response.data.code === 0) {
-                  console.log(response.data.data)
                   this.classificationBoolean = true
                   this.faulttreatment = response.data.data.faulttreatment
                   this.faultreason = response.data.data.faultreason

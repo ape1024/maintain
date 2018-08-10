@@ -106,11 +106,9 @@ export default {
       this.lookoverBoolean = ev
     },
     fn (data) {
-      var item = data
-      console.log(item)
     },
     fnnf () {
-      console.log('123')
+
     }
   },
   data () {

@@ -80,9 +80,7 @@ export const managementCreatedorganization = (token) => {
 }
 //  组织结构权限管理 点击新增保存
 export const managementAuthority = (token, organizationtype, firebrigadeid, firecontrolcategoryid, industrycategoryid, file, organization, parentid, countyid, city, province, organizationcode, organizationname, shortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo) => {
-  console.log(file)
   const url = `${Test}/organization/update?token=${token}&organizationtype=${organizationtype}&firebrigadeid=${firebrigadeid}&firecontrolcategoryid=${firecontrolcategoryid}&industrycategoryid=${industrycategoryid}&file=${file}&organizationid=${organization}&parentid=${parentid}&countyid=${countyid}&cityid=${city}&provinceid=${province}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&address=${address}&professionalcategory=${professionalcategory}&scope=${scope}&level=${level}&qualificationnumber=${qualificationnumber}&linkman=${linkman}&tel=${tel}&memo=${memo}`
-  console.log(url)
   return url
 }
 //  组织结构权限管理  点击左边树状获取数据-one

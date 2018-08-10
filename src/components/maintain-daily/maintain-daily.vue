@@ -117,7 +117,6 @@ export default {
   name: 'maintain-daily',
   components: {
     dailytwo
-    // modify
   },
   methods: {
     init () {
@@ -164,16 +163,12 @@ export default {
         }
       })
       if (flag === true) {
-        console.log(this.regionModel)
         let clickId = this.click_id
         let areaid = this.regionModel.length !== 0 ? this.regionModel[this.regionModel.length - 1] : ''
-        console.log(areaid)
         let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         basedevicecode = basedevicecode === null ? '' : basedevicecode
         let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
-        console.log(clickId)
         this.axios.post(maintainDailygetCurrentTaskDeviceData(clickId, areaid, basedevicecode, approvalstates)).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             if (response.data.data.length !== 0) {
               response.data.data.forEach((val) => {
@@ -188,7 +183,6 @@ export default {
             } else {
               this.dailyChild = response.data.data
             }
-            console.log(this.dailyChild)
           }
         })
       } else {
@@ -200,7 +194,6 @@ export default {
     },
     selectStyle (item, index, tableData, $event) {
       if (item.flag === false) {
-        console.log(item)
         this.tableDatataskStat.forEach((val) => {
           val.flag = false
         })
@@ -275,12 +268,6 @@ export default {
       dailyChild: ''
     }
   },
-  watch: {
-    maintainProject (val) {
-      console.log(val)
-      console.log('../')
-    }
-  },
   created () {
     //  获取区域
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
@@ -295,13 +282,10 @@ export default {
       }
     })
     //  审核状态
-    console.log('----------------')
-    console.log(getTaskQueryApprovalItems())
     this.axios.post(getTaskQueryApprovalItems()).then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
         response.data.data.forEach((val) => {
-          console.log(val)
           if (val.isdefault === 1) {
             this.Auditstatus.push(val.value)
           }

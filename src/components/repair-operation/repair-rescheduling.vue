@@ -209,9 +209,7 @@ export default {
         })
         return false
       }
-
       this.axios.post(maintainRepairreAssignedTask(token, repairid, desc, disposeopinion, faultTypeId), users).then((response) => {
-        console.log(response)
         if (response.data.code === 0) {
           this.$message({
             showClose: true,
@@ -235,8 +233,6 @@ export default {
     }
   },
   created () {
-    console.log(this.msg)
-    console.log(this.msg.deviceid)
     this.abnormalCondition += `情况说明: ${this.msg.exception === null ? ' ' : this.msg.exception}\n处理情况:${this.msg.treatment === null ? ' ' : this.msg.treatment}`
     this.axios.post(maintainDailygetRepairTypes()).then((response) => {
       if (response.data.code === 0) {

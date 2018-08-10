@@ -223,7 +223,6 @@ export default {
             }
           })
           this.tabulationData = response.data.data
-          console.log(this.tabulationData)
         }
       })
     },
@@ -274,7 +273,6 @@ export default {
             }
           })
           this.tabulationData = response.data.data
-          console.log(this.tabulationData)
         }
       })
     },
@@ -409,7 +407,6 @@ export default {
             }
           })
           this.tabulationData = response.data.data
-          console.log(this.tabulationData)
         }
       })
     },
@@ -423,8 +420,6 @@ export default {
               this.axios.post(maintainRepairgetApprovalInfos(ID)).then((response) => {
                 if (response.data.code === 0) {
                   // 审批记录  目前 只要第一条,待定
-                  console.log('./////')
-                  console.log(response.data.data)
                   this.examination = response.data.data[0]
                   this.getTaskState()
                   this.verificationBoolean = true
@@ -437,8 +432,38 @@ export default {
     },
     Mine (ev) {
       // 审核 传递的参数
-      this.examineBoolean = ev
-      this.verificationBoolean = false
+      this.axios.post(maintainRepairfindRepairTasks(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          response.data.data.forEach((val) => {
+            if (val.approvalstate) {
+              if (val.approvalstate === 5) {
+                val.approvalBoolean = true
+              } else {
+                val.approvalBoolean = false
+              }
+            } else {
+              val.approvalBoolean = false
+            }
+            if (val.repairstate) {
+              if (val.repairstate === -5) {
+                val.repairBoolean = true
+              } else {
+                val.repairBoolean = false
+              }
+              if (val.repairstate === 100) {
+                val.JurisdictionBoolean = true
+              } else {
+                val.JurisdictionBoolean = false
+              }
+            } else {
+              val.repairBoolean = false
+            }
+          })
+          this.tabulationData = response.data.data
+          this.examineBoolean = ev
+          this.verificationBoolean = false
+        }
+      })
     },
     Onlook (ev) {
       this.lookoverBoolean = ev
@@ -545,7 +570,6 @@ export default {
           }
         })
         this.tabulationData = response.data.data
-        console.log(this.tabulationData)
       }
     })
     //  获取维修状态

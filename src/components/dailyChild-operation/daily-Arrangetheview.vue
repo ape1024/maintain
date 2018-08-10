@@ -426,8 +426,7 @@ export default {
         width 100%
         max-height 120px
         min-height 120px
-        overflow-y scroll
-        overflow-x hidden
+        overflow auto
         position relative
         background #0c121b
         color $color-header-b-normal
@@ -530,7 +529,7 @@ export default {
           width 100%
           max-height 120px
           min-height 120px
-          overflow-y scroll
+          overflow auto
           color $color-header-b-normal
       .title_li
         width 100%

@@ -187,7 +187,6 @@ export default {
       this.axios.post(maintainReportfindFeedback(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.exhibition = response.data.data
-          console.log(this.exhibition)
         }
       })
       //  获取区域
@@ -225,7 +224,6 @@ export default {
     // },
     preservation (item) {
       // 一级 审核 保存
-      console.log(item.value)
       item.admin_show = !item.admin_show
       item.auditin = !item.auditin
     },
@@ -240,11 +238,9 @@ export default {
     },
     examine (ID) {
       // 点击查看
-      console.log(ID)
       this.axios.post(maintainReportfindFeedbacksByFeedbackid(ID)).then((response) => {
         if (response.data.code === 0) {
           this.examineData = response.data.data
-          console.log(response.data.data)
           this.lookoverBoolean = true
         }
       })
@@ -254,7 +250,6 @@ export default {
       this.axios.post(maintainReportfindFeedbacksByFeedbackid(Id)).then((response) => {
         if (response.data.code === 0) {
           this.arrangeData = response.data.data
-          console.log(response.data.data)
           this.modifyBoolean = true
         }
       })
@@ -380,7 +375,6 @@ export default {
     this.axios.post(maintainReportfindFeedback(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.exhibition = response.data.data
-        console.log(this.exhibition)
       }
     })
     //  获取区域

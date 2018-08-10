@@ -347,7 +347,6 @@ export default {
     },
     focus (event) {
       let region = this.categoryDate
-      console.log(region)
       if (region.length === 0) {
         this.$message({
           message: '设备类型！',
@@ -355,10 +354,7 @@ export default {
         })
         return false
       } else if (region[0] === null) {
-        console.log(this.manufactor)
         let result = this.manufactor.find(val => val.manufacturerid === '-9999')
-        console.log('212')
-        console.log(result)
         if (result === undefined) {
           this.manufactor.push({
             name: '自定义',
@@ -415,7 +411,6 @@ export default {
     },
     categoryChange () {
       let organizationId = this.categoryDate[this.categoryDate.length - 1]
-      console.log(organizationId)
       let result = null
       let findData = (data) => {
         let flag = true
@@ -429,22 +424,17 @@ export default {
         })
       }
       findData(this.category)
-      console.log(result)
       this.basedevicecode = result
     },
     preser () {
-      console.log(this.productionValue1)
-      console.log(this.validity)
       // 保存
       // this.lyaddedShow = this.msg
       // this.lyaddedShow = !this.lyaddedShow
       // this.$emit('say', this.lyaddedShow)
       //  批量编码 个数
       let rowcount = this.num ? this.num : 1
-      console.log(rowcount + '编码个数')
       //  token
       let token = JSON.parse(window.sessionStorage.token)
-      console.log(token + 'token')
       //  厂家id
       let manufacturerid = ''
       //  型号
@@ -456,37 +446,26 @@ export default {
       }
       //  位置
       let position = this.regionDate ? `${this.regionDate} ${this.specific}` : ' '
-      console.log(position + '位置')
       //  数量
       let devicecount = this.quantum ? this.quantum : ' '
-      console.log(devicecount + '数量')
       //  设备参数
       let parameters = this.technicalParameter ? this.technicalParameter : ' '
-      console.log(parameters + '参数')
       // 备注
       let memo = this.textarea ? this.textarea : ' '
-      console.log(memo + '备注')
       //  生产日期
       let madedate = this.productionValue1 ? this.productionValue1 : ' '
-      console.log(madedate + '生产日期')
       //  有效日期
       let effectivedate = this.validity ? this.validity : ' '
-      console.log(effectivedate + '有效日期s')
       //  地址编码
       let mac = this.encoded ? this.encoded : ' '
       if (this.categoryDate.length !== 0) {
         //  设备id
-        console.log('1')
         let devicetypeid = this.categoryDate[this.categoryDate.length - 1]
         if (this.customManufacturer === true) {
-          console.log('2')
-
           this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
-            console.log(response)
             if (response.data.code === 0) {
               // 厂家id
               manufacturerid = response.data.data.manufacturerid
-
               this.axios.post(maintainReportAddDevice(rowcount, token, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, position, devicecount, parameters, memo, madedate, effectivedate, mac)).then((response) => {
                 if (response.data.code === 0) {
                   this.$message({
@@ -546,7 +525,6 @@ export default {
         this.axios.post(getCitiesByProvinceId(provinceid)).then((response) => {
           if (response.data.code === 0) {
             this.conurbation = response.data.data
-            console.log(response.data.data)
           }
         })
       }
@@ -589,7 +567,6 @@ export default {
       let city = cityDate.cityname
       let url = `${cout} ${city}`
       this.regionDate = url
-      console.log()
       //  省份id
       this.conurbationId = cityDate.cityid
       //  城市ID
@@ -600,9 +577,6 @@ export default {
       let city = $(event.currentTarget).parents('.regionliul_li').children('.countSpen').text()
       let url = `${cout} ${city} ${coundata.countyname}`
       this.regionDate = url
-      console.log($(event.currentTarget).parents('.region_li').attr('id'))
-      console.log(coundata.cityid)
-      console.log(coundata.countyid)
       //  省份ID
       this.provinceId = $(event.currentTarget).parents('.region_li').attr('id')
       //  城市ID
@@ -623,12 +597,9 @@ export default {
         this.versionManufacturer = false
         let region = this.categoryDate
         region = region[region.length - 1]
-
         this.axios.post(maintainReportfindDivecemodels(region, this.manufactorModel)).then((response) => {
           if (response.data.code === 0) {
-            console.log(response)
             this.version = response.data.data
-            console.log(response.data.data)
             this.version.push({
               divecemodelname: '自定义',
               divecemodelid: '-9999'

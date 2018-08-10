@@ -131,7 +131,6 @@ export default {
     batch () {
       let arr = []
       this.dailyData.forEach((val) => {
-        console.log(val)
         if (val.judge === true) {
           arr.push(val.deviceID)
         }
@@ -146,11 +145,7 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       let taskid = this.taskid
       let deviceids = arr.join(',')
-      console.log(token)
-      console.log(taskid)
-      console.log(deviceids)
       this.axios.post(batchApprovalCheckTaskByDeviceids(token, taskid, deviceids)).then((response) => {
-        console.log(response)
         if (response.data.code === 0) {
           this.$message({
             message: '审批成功',
@@ -187,7 +182,6 @@ export default {
     },
     // 开启审核
     examine (deviceID) {
-      console.log(deviceID)
       this.equipmentID = deviceID
       this.examineBoolean = true
     },

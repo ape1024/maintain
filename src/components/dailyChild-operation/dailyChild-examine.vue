@@ -75,7 +75,7 @@
                   {{item.others}}
                 </li>
                 <li class="matters_li">
-                  {{fmtDate(item.checktime)}}
+                  {{!item.checktime ? '' : fmtDate(item.checktime)}}
                 </li>
                 <li class="matters_litwo">
                   {{item.workrecord}}
@@ -192,7 +192,7 @@ export default {
     return {
       checked: false,
       radio: 0,
-      textarea: '已审核',
+      textarea: '同意归档',
       examine_Boolean: false,
       determinant: '',
       approvaloptions: '',
@@ -489,8 +489,7 @@ export default {
           width 100%
           max-height 120px
           min-height 120px
-          overflow-y scroll
-          overflow-x hidden
+          overflow auto
           position relative
           background #0c121b
           color $color-header-b-normal
@@ -593,7 +592,7 @@ export default {
               width 100%
               max-height 120px
               min-height 120px
-              overflow-y scroll
+              overflow auto
               color $color-header-b-normal
            .title_li
                width 100%
