@@ -175,7 +175,9 @@ import childExamine from '../repair-operation/repair-examine'
 import childquipment from '../repair-operation/repair-rescheduling'
 import childVerification from '../repair-operation/repair-Verification'
 import { getTaskQueryApprovalItems, findAreasTreeByProjectid, maintainRepairgetRepairStates, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindRepairTasks, maintainRepairmaintainRepairfindRepairTasksTwo, maintainRepairfindTaskByTaskid, maintainRepairremoveRepairtasks, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [projectMixin],
   name: 'maintain-repair',
   components: {
     repairchild,
@@ -187,6 +189,44 @@ export default {
     childVerification
   },
   methods: {
+    init () {
+      this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.regionDate = response.data.data
+        }
+      })
+      this.axios.post(maintainRepairfindRepairTasks(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          response.data.data.forEach((val) => {
+            if (val.approvalstate) {
+              if (val.approvalstate === 5) {
+                val.approvalBoolean = true
+              } else {
+                val.approvalBoolean = false
+              }
+            } else {
+              val.approvalBoolean = false
+            }
+            if (val.repairstate) {
+              if (val.repairstate === -5) {
+                val.repairBoolean = true
+              } else {
+                val.repairBoolean = false
+              }
+              if (val.repairstate === 100) {
+                val.JurisdictionBoolean = true
+              } else {
+                val.JurisdictionBoolean = false
+              }
+            } else {
+              val.repairBoolean = false
+            }
+          })
+          this.tabulationData = response.data.data
+          console.log(this.tabulationData)
+        }
+      })
+    },
     approvalStatusfn (status) {
       let arr = ''
       this.approvalStatus.forEach((val) => {
@@ -201,13 +241,12 @@ export default {
     },
     query () {
       let regionModel = ''
-      let projectid = window.localStorage.pattern
       if (this.regionModel.length !== 0) {
         regionModel = this.regionModel[this.regionModel.length - 1]
       } else {
         regionModel = ''
       }
-      this.axios.post(maintainRepairmaintainRepairfindRepairTasksTwo(projectid, regionModel, this.maintenanceData, this.Auditstatus)).then((response) => {
+      this.axios.post(maintainRepairmaintainRepairfindRepairTasksTwo(this.maintainProject, regionModel, this.maintenanceData, this.Auditstatus)).then((response) => {
         if (response.data.code === 0) {
           response.data.data.forEach((val) => {
             if (val.approvalstate) {
@@ -466,8 +505,7 @@ export default {
       }
     })
     //  获取区域
-    let projectid = window.localStorage.pattern
-    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
+    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
       }
@@ -479,7 +517,7 @@ export default {
       }
     })
     //  获取列表
-    this.axios.post(maintainRepairfindRepairTasks(projectid)).then((response) => {
+    this.axios.post(maintainRepairfindRepairTasks(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
           if (val.approvalstate) {

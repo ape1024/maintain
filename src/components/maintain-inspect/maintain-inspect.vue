@@ -111,13 +111,27 @@ import inspecttwo from '../inspect-child/inspectChild-two'
 import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [projectMixin],
   name: 'maintain-daily',
   components: {
     inspecttwo
     // modify
   },
   methods: {
+    init () {
+      this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.tableDatataskStat = response.data.data
+        }
+      })
+      this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.regionDate = response.data.data
+        }
+      })
+    },
     ExaminationApproval (el) {
       this.axios.post(maintainDailygetCurrentTaskDeviceStat(el)).then((response) => {
         if (response.data.code === 0) {
@@ -261,8 +275,7 @@ export default {
   },
   created () {
     //  获取区域
-    let projectid = window.localStorage.pattern
-    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
+    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
       }
@@ -288,7 +301,7 @@ export default {
       }
     })
     //  展示任务
-    this.axios.post(maintainDailyCurrentTaskStat(2, projectid)).then((response) => {
+    this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.tableDatataskStat = response.data.data
       }

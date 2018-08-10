@@ -1,6 +1,6 @@
 <template>
   <div class="charts">
-    <div id="myChart" :style="{width:'300px',height:'300px'}"></div>
+    <div id="myChartFour" :style="{width:'300px',height:'300px'}"></div>
   </div>
 </template>
 
@@ -16,13 +16,11 @@ export default {
     }
   },
   mounted () {
-    console.log('-0-0')
     this.axios.post(statDevFaultState()).then((response) => {
       if (response.data.code === 0) {
         console.log(response.data.data)
         let equipment = []
         let equipmentData = []
-        console.log('lllll')
         response.data.data.forEach((val) => {
           let obj = {
             value: val.Faultdevcount,
@@ -39,7 +37,7 @@ export default {
   methods: {
     drawLine (equipmentData, equipment) {
       // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(document.getElementById('myChart'))
+      let myChart = this.$echarts.init(document.getElementById('myChartFour'))
       myChart.setOption({
         tooltip: {
           trigger: 'item',

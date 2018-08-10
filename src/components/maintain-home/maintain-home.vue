@@ -80,7 +80,9 @@ import inspection from '../homeChild-stacked/homeChild-inspection'
 import inspectionRight from '../homeChild-stacked/homeChild-inspectionRight'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { maintainHomeRightTop } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [projectMixin],
   name: 'maintain-home',
   data () {
     return {
@@ -99,6 +101,24 @@ export default {
     ])
   },
   methods: {
+    init () {
+      this.axios.post(maintainHomeRightTop(this.maintainProject)).then((response) => {
+        console.log(response.data.data)
+        if (response.data.code === 0) {
+          let colorData = ['#61a0a8', '#91c7ae', '#d48265']
+          response.data.data.forEach((val, index) => {
+            val.value = val.value * 100
+            val.color = colorData[index]
+            // for (let i = 0; i < colorData.length; i++) {
+            //   val.color = color[i]
+            // }
+          })
+          this.integrityRate = response.data.data
+          console.log('-----')
+          console.log(this.integrityRate)
+        }
+      })
+    },
     ...mapActions([
       'updateMap'
     ]),
@@ -129,14 +149,15 @@ export default {
     inspectionRight
   },
   created () {
+    console.log('home')
+    console.log(this.maintainProject)
+    console.log('home')
     if (window.sessionStorage.length === 0) {
       this.$router.replace('/login')
       return false
     }
-    let projectid = window.localStorage.pattern
-    console.log(projectid)
     //  设备完好率
-    this.axios.post(maintainHomeRightTop(projectid)).then((response) => {
+    this.axios.post(maintainHomeRightTop(this.maintainProject)).then((response) => {
       console.log(response.data.data)
       if (response.data.code === 0) {
         let colorData = ['#61a0a8', '#91c7ae', '#d48265']

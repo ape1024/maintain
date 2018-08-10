@@ -171,7 +171,9 @@ import childLookover from '../reportChild-operation/reportChild-lookover'
 import childModify from '../reportChild-operation/reportChild-modify'
 import childExamine from '../reportChild-operation/reportChild-examine'
 import { findAllDeviceType, maintainReportgetFeedbackstateStates, maintainReportgetConfrimStates, findAreasTreeByProjectid, maintainReportfindFeedback, maintainReportfindFeedbackTwo, maintainReportfindFeedbacksByFeedbackid, maintainReportremoveFeedbacks } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [projectMixin],
   name: 'maintain-admin',
   components: {
     reportchild,
@@ -181,6 +183,20 @@ export default {
     childExamine
   },
   methods: {
+    init () {
+      this.axios.post(maintainReportfindFeedback(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.exhibition = response.data.data
+          console.log(this.exhibition)
+        }
+      })
+      //  获取区域
+      this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.regionDate = response.data.data
+        }
+      })
+    },
     amputate (ID, index, data) {
       this.$confirm('是否删除此任务?', '提示', {
         confirmButtonText: '确定',
@@ -275,10 +291,9 @@ export default {
       } else {
         basedevicecode = ''
       }
-      let projectid = window.localStorage.pattern
       let areaid = this.regionModel.length !== 0 ? this.regionModel[this.regionModel.length - 1] : ''
       // let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
-      this.axios.post(maintainReportfindFeedbackTwo(projectid, areaid, basedevicecode, this.dispose, this.identification)).then((response) => {
+      this.axios.post(maintainReportfindFeedbackTwo(this.maintainProject, areaid, basedevicecode, this.dispose, this.identification)).then((response) => {
         if (response.data.code === 0) {
           this.exhibition = response.data.data
         }
@@ -362,16 +377,14 @@ export default {
         this.JurisdictionDelete = val.delete
       }
     })
-    let projectid = window.localStorage.pattern
-    console.log(projectid)
-    this.axios.post(maintainReportfindFeedback(projectid)).then((response) => {
+    this.axios.post(maintainReportfindFeedback(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.exhibition = response.data.data
         console.log(this.exhibition)
       }
     })
     //  获取区域
-    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
+    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
       }

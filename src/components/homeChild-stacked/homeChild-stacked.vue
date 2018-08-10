@@ -1,12 +1,14 @@
 <template>
   <div class="charts">
-     <div id="myChart" :style="{width:'300px',height:'300px'}"></div>
+     <div id="myChartTwo" :style="{width:'300px',height:'300px'}"></div>
   </div>
 </template>
 
 <script>
 import { maintainHomeStacked } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [projectMixin],
   name: 'homeChild-stacked',
   data () {
     return {
@@ -16,11 +18,10 @@ export default {
     }
   },
   mounted () {
-    let pattern = window.localStorage.pattern
-    this.axios.post(maintainHomeStacked(pattern)).then((response) => {
+    this.axios.post(maintainHomeStacked(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
-        const equipment = []
-        const equipmentData = []
+        let equipment = []
+        let equipmentData = []
         response.data.data.forEach((val) => {
           let obj = {
             value: val.count,
@@ -35,12 +36,31 @@ export default {
     })
   },
   methods: {
+    init () {
+      this.axios.post(maintainHomeStacked(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          let equipment = []
+          let equipmentData = []
+          response.data.data.forEach((val) => {
+            let obj = {
+              value: val.count,
+              name: val.faulttypename
+            }
+            equipment.push(val.faulttypename)
+            equipmentData.push(obj)
+          })
+          this.drawLine(equipmentData, equipment)
+          console.log('----')
+          console.log(response)
+          console.log(equipment)
+          console.log(equipmentData)
+          console.log('----')
+        }
+      })
+    },
     drawLine (equipmentData, equipment) {
       // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(document.getElementById('myChart'))
-      console.log('啦啦啦')
-      console.log(equipmentData)
-      console.log(equipment)
+      let myChart = this.$echarts.init(document.getElementById('myChartTwo'))
       myChart.setOption({
         tooltip: {
           trigger: 'item',

@@ -71,7 +71,6 @@ export default {
   },
   created () {
     console.log('啦啦啦啦啦啦啦')
-    console.log(JSON.parse(window.sessionStorage.token))
     console.log('%c Hello World', 'color: red;font-size: 24px;font-weight: bold;text-decoration: underline;')
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(findUserProjects(token)).then((response) => {
@@ -79,13 +78,24 @@ export default {
       console.log(response)
       if (response.data.code === 0) {
         console.log('--------5')
+        console.log(window.localStorage.pattern)
+        if (!window.localStorage.pattern) {
+          console.log('1')
+        } else {
+          console.log('2')
+        }
         this.options = response.data.data
-        let pattern = JSON.parse(window.localStorage.pattern)
         let patternBo = false
-        if (window.localStorage.pattern) {
+        if (!window.localStorage.pattern) {
+          this.value = response.data.data[0].projectid
+          window.localStorage.pattern = response.data.data[0].projectid
+          console.log(this.value)
           console.log('--------4')
           console.log('./')
           console.log(response.data.data)
+        } else {
+          console.log('--------3')
+          let pattern = JSON.parse(window.localStorage.pattern)
           if (response.data.data) {
             response.data.data.forEach((val) => {
               if (val.projectid === pattern) {
@@ -102,11 +112,6 @@ export default {
             this.value = response.data.data[0].projectid
             window.localStorage.pattern = this.value
           }
-        } else {
-          console.log('--------3')
-          this.value = response.data.data[0].projectid
-          window.localStorage.pattern = response.data.data[0].projectid
-          console.log(this.value)
         }
       }
     })

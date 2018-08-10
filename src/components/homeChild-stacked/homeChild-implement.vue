@@ -31,7 +31,9 @@
 
 <script>
 import { maintainHomeRightBottom } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [projectMixin],
   name: 'homeChild-implement',
   data () {
     return {
@@ -48,9 +50,38 @@ export default {
       troubleshooting: ''
     }
   },
+  methods: {
+    init () {
+      console.log('.................1111.....')
+      // this.maintenance = ''
+      // this.inspection = ''
+      // this.checkTest = ''
+      // this.problemHandling = ''
+      // this.troubleshooting = ''
+      this.implement = []
+      console.log(maintainHomeRightBottom(this.maintainProject))
+      this.axios.post(maintainHomeRightBottom(this.maintainProject)).then((response) => {
+        console.log('/...///')
+        console.log(response)
+        if (response.data.code === 0) {
+          let color = ['#53dcad', '#ad65d6', '#fc9e7d', '#f78540', '#69d4e2']
+          response.data.data.forEach((val, index) => {
+            val.rate = val.rate * 100
+            val.color = color[index]
+            this.implement.push(val)
+          })
+          console.log(this.implement)
+          this.maintenance = this.implement[0]
+          this.inspection = this.implement[1]
+          this.checkTest = this.implement[2]
+          this.problemHandling = this.implement[3]
+          this.troubleshooting = this.implement[4]
+        }
+      })
+    }
+  },
   created () {
-    let pattern = JSON.parse(window.localStorage.pattern)
-    this.axios.post(maintainHomeRightBottom(pattern)).then((response) => {
+    this.axios.post(maintainHomeRightBottom(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         let color = ['#53dcad', '#ad65d6', '#fc9e7d', '#f78540', '#69d4e2']
         response.data.data.forEach((val, index) => {

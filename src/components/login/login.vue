@@ -28,7 +28,8 @@
 
 <script>
 import $ from 'jquery'
-import { userLogin, getUserFuncions } from '../../api/user'
+import { mapActions } from 'vuex'
+import { userLogin, getUserFuncions, findUserProjects } from '../../api/user'
 export default {
   name: 'login',
   components: {},
@@ -101,8 +102,6 @@ export default {
                   let token = JSON.stringify(response.data.data.token)
                   window.sessionStorage.setItem('userInfo', userinfo)
                   window.sessionStorage.setItem('token', token)
-                  // let username = JSON.parse(window.sessionStorage.userInfo).username
-                  // let usericon = JSON.parse(window.sessionStorage.userInfo).icon
                   let newToken = JSON.parse(token)
                   this.axios.post(getUserFuncions(newToken)).then((data) => {
                     data.data.forEach((val) => {
@@ -150,7 +149,36 @@ export default {
                     window.sessionStorage.setItem('Jurisdiction', authority)
                   })
                   // let dom = e.target
-                  this.$router.push('/loginBlank')
+                  this.axios.post(findUserProjects(JSON.parse(token))).then((data) => {
+                    if (data.data.code === 0) {
+                      if (!window.localStorage.pattern) {
+                        console.log(data.data.data[0].projectid)
+                        let projects = ''
+                        if (data.data.data.length) {
+                          projects = data.data.data[0].projectid
+                          this.updateProjectAndUpdateLocal(projects)
+                        } else {
+                          this.updateProjectAndUpdateLocal(projects)
+                        }
+                      } else {
+                        let pattern = window.localStorage.pattern
+                        let patternBoolean = false
+                        if (data.data.data.length) {
+                          data.data.data.forEach((val) => {
+                            if (val.projectid === pattern) {
+                              patternBoolean = true
+                            }
+                          })
+                          if (patternBoolean) {
+                            this.updateProjectAndUpdateLocal(pattern)
+                          } else {
+                            this.updateProjectAndUpdateLocal(data.data.data[0].projectid)
+                          }
+                        }
+                      }
+                    }
+                    this.$router.push('/loginBlank')
+                  })
                 } else {
                   this.$message.error('登录失败')
                 }
@@ -166,7 +194,10 @@ export default {
           type: 'warning'
         })
       }
-    }
+    },
+    ...mapActions([
+      'updateProjectAndUpdateLocal'
+    ])
   },
   mounted () {
     $('body').on('mousemove', (e) => {
