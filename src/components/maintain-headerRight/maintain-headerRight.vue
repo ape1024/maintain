@@ -49,13 +49,7 @@ export default {
       portrait: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).icon : '',
       username: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).username : '',
       options: [],
-      value: [],
-      tokenData: this.$store.state.userToken
-    }
-  },
-  watch: {
-    tokenData (vl) {
-      alert(vl)
+      value: []
     }
   },
   methods: {
@@ -77,55 +71,45 @@ export default {
   },
   created () {
     console.log('啦啦啦啦啦啦啦')
-    console.log(this.$store.state.userToken)
-    if (window.sessionStorage.token === undefined) {
-      console.log('%c Hello World', 'color: red;font-size: 24px;font-weight: bold;text-decoration: underline;')
-      let token = this.$store.state.userToken
-      this.axios.post(findUserProjects(token)).then((response) => {
-        if (response.data.code === 0) {
-          this.options = response.data.data
-          if (window.localStorage.pattern !== undefined) {
-            this.value = JSON.parse(window.localStorage.pattern)
-          } else {
-            this.value = response.data.data[0].projectid
-            window.localStorage.pattern = response.data.data[0].projectid
-          }
-        }
-      })
-    } else {
-      let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(findUserProjects(token)).then((response) => {
-        console.log(response)
-        if (response.data.code === 0) {
+    console.log(JSON.parse(window.sessionStorage.token))
+    console.log('%c Hello World', 'color: red;font-size: 24px;font-weight: bold;text-decoration: underline;')
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(findUserProjects(token)).then((response) => {
+      console.log('------------6')
+      console.log(response)
+      if (response.data.code === 0) {
+        console.log('--------5')
+        this.options = response.data.data
+        let pattern = JSON.parse(window.localStorage.pattern)
+        let patternBo = false
+        if (window.localStorage.pattern) {
+          console.log('--------4')
+          console.log('./')
           console.log(response.data.data)
-          this.options = response.data.data
-          let pattern = JSON.parse(window.localStorage.pattern)
-          let patternBo = false
-          if (window.localStorage.pattern !== undefined) {
-            console.log('./')
-            console.log(response.data.data)
-            if (response.data.data) {
-              response.data.data.forEach((val) => {
-                if (val.projectid === pattern) {
-                  patternBo = true
-                }
-              })
-            }
-            if (patternBo) {
-              this.value = pattern
-            } else {
-              if (response.data.data) {
-                this.value = response.data.data[0].projectid
-                window.localStorage.pattern = response.data.data[0].projectid
+          if (response.data.data) {
+            response.data.data.forEach((val) => {
+              if (val.projectid === pattern) {
+                patternBo = true
               }
-            }
+            })
+          } else {
+            return false
+          }
+          console.log(patternBo)
+          if (patternBo) {
+            this.value = pattern
           } else {
             this.value = response.data.data[0].projectid
-            window.localStorage.pattern = response.data.data[0].projectid
+            window.localStorage.pattern = this.value
           }
+        } else {
+          console.log('--------3')
+          this.value = response.data.data[0].projectid
+          window.localStorage.pattern = response.data.data[0].projectid
+          console.log(this.value)
         }
-      })
-    }
+      }
+    })
   }
 }
 </script>
