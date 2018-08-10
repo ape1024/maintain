@@ -159,7 +159,9 @@
 import adminchild from '../admin-child/admin-child'
 import increase from '../admin-child/adminChild-review'
 import { admingetDevListDetailProjects, maintainReportfindManufactures, findAreasTreeByProjectid, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [projectMixin],
   name: 'maintain-admin',
   components: {
     adminchild,
@@ -172,7 +174,22 @@ export default {
     }
   },
   methods: {
-    //  查询
+    init () {
+      this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.regionDate = response.data.data
+          this.regionModel.push((this.regionDate)[0].areaid)
+          //  获取 列表数据 默认第一页 20个
+          let regionId = (this.regionModel).shift()
+          this.axios.post(CalcDevCount(regionId, 1, 20)).then((data) => {
+            if (data.data.code === 0) {
+              this.tableData = data.data.data.datas
+              console.log(this.tableData)
+            }
+          })
+        }
+      })
+    },
     query () {
       //  console.log(this.manufactorModel)
       // return

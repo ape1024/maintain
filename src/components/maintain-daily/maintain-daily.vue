@@ -111,7 +111,7 @@ import dailytwo from '../dailyChild-two/dailyChild-two'
 import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
-import projectMixin from 'common/js/mixin'
+import { projectMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin],
   name: 'maintain-daily',
@@ -125,6 +125,12 @@ export default {
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.regionDate = response.data.data
+        }
+      })
+      //  展示任务
+      this.axios.post(maintainDailyCurrentTaskStat(2, (this.maintainProject))).then((response) => {
+        if (response.data.code === 0) {
+          this.tableDatataskStat = response.data.data
         }
       })
     },

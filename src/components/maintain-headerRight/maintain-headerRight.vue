@@ -50,16 +50,12 @@ export default {
       username: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).username : '',
       options: [],
       value: [],
-      tokenData: this.$store.state.userToken,
-      maintainProject: this.GLOBAL.maintainProject
+      tokenData: this.$store.state.userToken
     }
   },
   watch: {
     tokenData (vl) {
       alert(vl)
-    },
-    maintainProject (val) {
-      console.log(val)
     }
   },
   methods: {
