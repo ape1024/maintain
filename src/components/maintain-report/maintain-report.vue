@@ -265,9 +265,19 @@ export default {
       this.query()
     },
     query () {
+      let basedevicecode = ''
+      if (this.equipmentDate.length) {
+        if (this.equipmentDate[this.equipmentDate.length - 1]) {
+          basedevicecode = this.equipmentDate[this.equipmentDate.length - 1]
+        } else {
+          basedevicecode = ''
+        }
+      } else {
+        basedevicecode = ''
+      }
       let projectid = window.localStorage.pattern
       let areaid = this.regionModel.length !== 0 ? this.regionModel[this.regionModel.length - 1] : ''
-      let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+      // let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
       this.axios.post(maintainReportfindFeedbackTwo(projectid, areaid, basedevicecode, this.dispose, this.identification)).then((response) => {
         if (response.data.code === 0) {
           this.exhibition = response.data.data

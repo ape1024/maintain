@@ -205,12 +205,7 @@ export default {
       if (this.regionModel.length !== 0) {
         regionModel = this.regionModel[this.regionModel.length - 1]
       } else {
-        this.$message({
-          showClose: true,
-          message: '请选择区域!',
-          type: 'warning'
-        })
-        return false
+        regionModel = ''
       }
       this.axios.post(maintainRepairmaintainRepairfindRepairTasksTwo(projectid, regionModel, this.maintenanceData, this.Auditstatus)).then((response) => {
         if (response.data.code === 0) {

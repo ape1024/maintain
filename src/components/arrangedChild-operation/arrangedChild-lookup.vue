@@ -612,6 +612,7 @@ export default {
       this.defaultCheckedFacilities.push(`${val.areaid},${this.timeStamp}`)
     })
     let projectid = window.localStorage.pattern
+    console.log(projectid)
     // 维保单位 this.equipment
     // maintainDailygetRepairOrgTreeByDeviceId   Update 20180803 By rad
     // this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.Checkplanid)).then((response) => {

@@ -186,5 +186,10 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus">
   .headerRightMaintain .el-input--suffix .el-input__inner
     background transparent!important
-    border-color transparent!important
+    border-bottom 1px solid #3f4856
+    border-left none
+    border-right none
+    border-top none
+    border-radius 0
+    color #eee
 </style>
