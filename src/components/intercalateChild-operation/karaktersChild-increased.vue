@@ -38,6 +38,8 @@
                   <li class="definitionHeaderlitwo">修改</li>
                   <li class="definitionHeaderlitwo">删除</li>
                   <li class="definitionHeaderlitwo">审批</li>
+                  <li class="definitionHeaderlitwo">分配</li>
+                  <li class="definitionHeaderlitwo">检验</li>
                 </ul>
               </div>
               <div class="content">
@@ -59,7 +61,6 @@
                       <li class="definitionHeaderlitwo">
                         <el-checkbox @change="definitionExamine(item, item.delete,3)" v-model="item.delete"></el-checkbox>
                       </li>
-
                       <li class="definitionHeaderlitwo">
                         <el-checkbox @change="definitionExamine(item, item.insert,4)" v-model="item.insert"></el-checkbox>
                       </li>
@@ -146,8 +147,6 @@ export default {
         })
       })
       // roleFunctions = JSON.stringify(roleFunctions)
-      console.log(token)
-      console.log(roleFunctions)
       if (organizationinfoid === '') {
         this.$message({
           message: '请选择组织机构',
@@ -161,10 +160,6 @@ export default {
         })
         return false
       }
-      console.log(roleName)
-      console.log(organizationinfoid)
-      console.log(token)
-      console.log(roleFunctions)
 
       this.axios.post(increasedCreaterole(roleName, organizationinfoid, token), roleFunctions).then((response) => {
         if (response.data.code === 0) {
@@ -242,9 +237,7 @@ export default {
   },
   created () {
     let token = JSON.parse(window.sessionStorage.token)
-    console.log(token)
     this.axios.post(karaktersFindAllFunctions(token)).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
           //  二级开关
@@ -277,10 +270,7 @@ export default {
     })
     this.axios.post(getRoleOrganizations(token)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data.data)
         this.organizationData = response.data.data
-        console.log('==================')
-        console.log(this.organizationData)
       }
     })
   }
@@ -457,7 +447,7 @@ export default {
       position relative
       text-align center
       height 31px
-      width 10%
+      width 8.5%
   .contentDiv
     overflow hidden
   .contentDivthree
