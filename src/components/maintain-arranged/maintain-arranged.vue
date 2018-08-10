@@ -225,13 +225,10 @@ export default {
     }
   },
   created () {
-    console.log(document.documentElement.clientHeight)
-    // let projectid = window.localStorage.pattern
     this.axios.post(maintainArrangegetAllPlans()).then((response) => {
       console.log(response)
       if (response.data.code === 0) {
         this.arrangedData = response.data.data
-        console.log(this.arrangedData)
       }
     })
     this.axios.post(maintainArranggetAllPlanTypes()).then((response) => {

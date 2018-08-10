@@ -229,8 +229,10 @@
 </template>
 
 <script>
+import { projectMixin } from 'common/js/mixin'
 import { createPlan, maintainArranggetWorkModesByWorkType, getRepairOrgTreeByProjectId, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
 export default {
+  mixins: [projectMixin],
   name: 'arrangedChild-newlybuild',
   data () {
     return {
@@ -295,7 +297,7 @@ export default {
       console.log(this.frequencyradio)
       let token = JSON.parse(window.sessionStorage.token)
       let worktypeid = this.scheduleData
-      let projectid = JSON.parse(window.localStorage.pattern)
+      let projectid = this.maintainProject
       let planName = this.planName
       let planCode = this.planCode
       let planDesc = this.planDescription
@@ -538,15 +540,13 @@ export default {
   created () {
     //  维保单位 this.equipment
     // maintainDailygetRepairOrgTreeByDeviceId
-    let projectid = window.localStorage.pattern
-    this.axios.post(getRepairOrgTreeByProjectId(projectid)).then((response) => {
+    this.axios.post(getRepairOrgTreeByProjectId(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }
     })
-    console.log(projectid)
     //  获取巡检范围
-    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
+    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.purview = response.data.data
       }
@@ -554,7 +554,6 @@ export default {
     //  获取消防设施
     this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
-        console.log('122333')
         response.data.data.splice(0, 1)
         let recursion = (data) => {
           data.forEach((val) => {

@@ -330,8 +330,7 @@ export default {
     console.log(token)
 
     //  获取区域
-    let projectid = window.localStorage.pattern
-    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
+    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
         this.regionModel.push((this.regionDate)[0].areaid)

@@ -283,8 +283,7 @@ export default {
   },
   created () {
     //  获取区域
-    let projectid = window.localStorage.pattern
-    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
+    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
       }
@@ -310,7 +309,7 @@ export default {
       }
     })
     //  展示任务
-    this.axios.post(maintainDailyCurrentTaskStat(2, projectid)).then((response) => {
+    this.axios.post(maintainDailyCurrentTaskStat(2, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.tableDatataskStat = response.data.data
       }

@@ -233,8 +233,10 @@
   </div>
 </template>
 <script>
+import { projectMixin } from 'common/js/mixin'
 import { maintainArrangupdatePlan, maintainArranggetWorkModesByWorkType, getRepairOrgTreeByProjectId, maintainArranggetCheckPlan, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
 export default {
+  mixins: [projectMixin],
   name: 'arrangedChild-lookup',
   props: ['checkplan', 'Checkplanid'],
   data () {
@@ -566,8 +568,6 @@ export default {
     }
   },
   created () {
-    console.log('3000000000000000000000')
-    console.log(this.Checkplanid)
     //  时间戳
     this.timeStamp = Date.parse(new Date())
     let PlanworkmodesData = []
@@ -611,25 +611,16 @@ export default {
     this.Plandevices.forEach((val) => {
       this.defaultCheckedFacilities.push(`${val.areaid},${this.timeStamp}`)
     })
-    let projectid = window.localStorage.pattern
-    console.log(projectid)
-    // 维保单位 this.equipment
-    // maintainDailygetRepairOrgTreeByDeviceId   Update 20180803 By rad
-    // this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.Checkplanid)).then((response) => {
-    this.axios.post(getRepairOrgTreeByProjectId(projectid)).then((response) => {
+    this.axios.post(getRepairOrgTreeByProjectId(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }
     })
     //  获取巡检范围
 
-    this.axios.post(findAreasTreeByProjectid(projectid)).then((response) => {
-      console.log('++++++++')
-      console.log(response)
+    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.purview = response.data.data
-        console.log('111111111')
-        console.log(this.purview)
       }
     })
     //  获取消防设施
