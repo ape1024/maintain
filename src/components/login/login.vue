@@ -80,8 +80,8 @@ export default {
     },
     signin (e) {
       if (this.confirmSuccess) {
-        let account = 100080101 // this.account
-        let password = 1234567 // this.password
+        let account = this.account
+        let password = this.password
         //  获取登录 url
         let pstDate = userLogin(account, password)
         this.axios.post(pstDate).then((response) => {
