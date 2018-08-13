@@ -25,12 +25,16 @@
         <h4 class="popu_h4">
           日巡查总览
         </h4>
+        <h4 class="popu_h4" style="margin-left:580px;">
+          上报故障设备总览
+        </h4>
         <div class="middle_bottom_div">
           <div class="middle_bottom_left">
             <!--日巡查总览-->
             <inspection></inspection>
           </div>
           <div class="middle_bottom_right">
+
             <!--上报故障-->
             <inspectionRight></inspectionRight>
           </div>
@@ -38,6 +42,7 @@
       </div>
     </div>
     <div :style="{ background: 'url(static/img/population_right.png) no-repeat'}" class="population_right">
+
       <section class="right_top">
         <div :key="index" v-for="(item, index) in integrityRate" class="right_title">
           <h4 class="right_h4">
@@ -183,8 +188,8 @@ export default {
       margin  8px 8px 26px
       font-size $font-size-medium-x
       color $color-text-title
-
-    .popu_top
+      display inline-block
+   .popu_top
       margin 0 20px 8px
       overflow hidden
       height 260px
@@ -298,4 +303,7 @@ export default {
      background-color #202f49!important
   .el-progress-bar
      padding-right 0
+  .el-progress-bar__innerText
+    position absolute
+    top 0px
 </style>
