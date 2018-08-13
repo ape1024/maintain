@@ -136,8 +136,9 @@
               <div @click.stop="ficationClick(item, reworkData)" class="ficationLiDiv">
                 <p class="ficationLiDivP">
                     <span class="ficationLiDivSpan">
+                      <!--fmtDate-->
                  {{fmtDate(item.repairtime)}}
-                </span>
+                 </span>
                   <span class="ficationLiDivSpantwo">
                   {{obtainState(item.repairstate)}}
                 </span>
