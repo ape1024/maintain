@@ -117,25 +117,6 @@
                 <li class="header_li">{{item.approvedevnum}}</li>
                 <li class="header_li">{{item.statedevnum}}</li>
                 <li class="header_li">
-                  <!--<div v-show="item.auditin" @click.stop="examine(item)"  class="examine">审 核</div>-->
-                  <!--<div class="admin_show" v-show="item.admin_show">-->
-                    <!--<div class="admin_selve">-->
-                      <!--<el-select v-model="item.value" placeholder="">-->
-                        <!--<el-option-->
-                          <!--v-for="data in item.child"-->
-                          <!--:key="data.value"-->
-                          <!--:label="data.label"-->
-                          <!--:value="data.label">-->
-                        <!--</el-option>-->
-                      <!--</el-select>-->
-                    <!--</div>-->
-                    <!--<div @click.stop="preservation(item)" class="admin_preservation">-->
-                      <!--保存-->
-                    <!--</div>-->
-                    <!--<div @click.stop="cancel(item)" class="cancel">-->
-                      <!--取消-->
-                    <!--</div>-->
-                  <!--</div>-->
                 </li>
               </ul>
               <transition enter-active-class="fadeInUp"
@@ -186,33 +167,43 @@ export default {
     query () {
       // 接口 getDevListDetailProjectsTwo
       //  区域id
-      let areaid = this.regionModel.length === 0 ? '' : this.regionModel[this.regionModel.length - 1]
-      //  设备类型
-      let equipment = ''
-      if (this.equipmentDate.length === 0 || !this.equipmentDate[0]) {
-        equipment = ''
+      if (!this.adminAreaid) {
+        return false
       } else {
-        equipment = this.equipmentDate[this.equipmentDate.length - 1]
-      }
-      //  厂家 id
-      let anufacturer = ''
-      if (this.manufactorModel === -1 || !this.manufactorModel) {
-        anufacturer = ''
-      } else {
-        anufacturer = this.manufactorModel
-      }
-      //  运行状态
-      let running = this.runningState
-      //  审核状态
-      let Auditstatus = this.AuditstatusD
-      //  厂家
-      this.axios.post(`http://172.16.6.181:8920/dev/getDevListDetailProjects?basedevicecode=${equipment}&devicestate=${running}&approvalstate=${Auditstatus}&areaid=${areaid}&manufacturerid=${anufacturer}`).then((response) => {
-        if (response.data.code === 0) {
-
+        let areaid = this.adminAreaid
+        //  设备类型
+        let equipment = ''
+        if (this.equipmentDate.length === 0 || !this.equipmentDate[0]) {
+          equipment = ''
+        } else {
+          equipment = this.equipmentDate[this.equipmentDate.length - 1]
         }
-      })
+        //  厂家 id
+        let anufacturer = ''
+        if (this.manufactorModel === -1 || !this.manufactorModel) {
+          anufacturer = ''
+        } else {
+          anufacturer = this.manufactorModel
+        }
+        //  运行状态
+        let running = this.runningState
+        //  审核状态
+        let Auditstatus = this.AuditstatusD
+        //  厂家
+        console.log(areaid)
+        console.log(equipment)
+        console.log(anufacturer)
+        console.log(running)
+        console.log(Auditstatus)
+        this.axios.post(`http://172.16.6.181:8920/dev/getDevListDetailProjects?basedevicecode=${equipment}&devicestate=${running}&approvalstate=${Auditstatus}&areaid=${areaid}&manufacturerid=${anufacturer}`).then((response) => {
+          if (response.data.code === 0) {
+
+          }
+        })
+      }
     },
     selectStyle (item) {
+      this.adminAreaid = item.areaid
       this.tableData.forEach((val) => {
         if (val.areaid !== item.areaid) {
           val.flag = false
@@ -302,7 +293,8 @@ export default {
       // 获取点击的id
       click_id: '',
       tableData: [],
-      JurisdictionApproval: ''
+      JurisdictionApproval: '',
+      adminAreaid: ''
     }
   },
   created () {

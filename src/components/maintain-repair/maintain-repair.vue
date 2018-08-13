@@ -30,8 +30,8 @@
         </li>
         <li class="li_input">
           <p class="div_p">审批状态：</p>
-          <div class="div_input">
-            <el-select clearable size="mini" v-model="Auditstatus" placeholder="">
+          <div class="div_inputTwo">
+            <el-select clearable size="mini" v-model="Auditstatus" placeholder="" multiple>
               <el-option
                 v-for="item in AuditstatusDate"
                 :key="item.value"
@@ -132,10 +132,10 @@
               <p v-if="JurisdictionInsert && !item.approvalBoolean" class="header_p_eight threelevel_litwo_p threelevel_litwo_ptwo">
                 审核
               </p>
-              <p v-if="JurisdictionInsert && item.JurisdictionBoolean" @click.stop="verification(item.repairtaskid)" class="header_p_thirteen">
+              <p v-if="item.approvalstate === 100 ? true : false" @click.stop="verification(item.repairtaskid)" class="header_p_thirteen">
                 验证
               </p>
-              <p v-if="JurisdictionInsert && !item.JurisdictionBoolean" class="header_p_thirteen threelevel_litwo_ptwo">
+              <p v-if="item.approvalstate === 100 ? false : true" class="header_p_thirteen threelevel_litwo_ptwo">
                 验证
               </p>
               <p v-if="JurisdictionDelete && item.repairBoolean" class="header_p_eleven" @click.stop="amputate(index, tabulationData,item.repairtaskid)">删除</p>
@@ -240,12 +240,13 @@ export default {
     },
     query () {
       let regionModel = ''
+      let approvalStates = this.Auditstatus.length ? this.Auditstatus.join() : ''
       if (this.regionModel.length !== 0) {
         regionModel = this.regionModel[this.regionModel.length - 1]
       } else {
         regionModel = ''
       }
-      this.axios.post(maintainRepairmaintainRepairfindRepairTasksTwo(this.maintainProject, regionModel, this.maintenanceData, this.Auditstatus)).then((response) => {
+      this.axios.post(maintainRepairmaintainRepairfindRepairTasksTwo(this.maintainProject, regionModel, this.maintenanceData, approvalStates)).then((response) => {
         if (response.data.code === 0) {
           response.data.data.forEach((val) => {
             if (val.approvalstate) {
@@ -846,4 +847,9 @@ export default {
   .threelevel_litwo_ptwo
     color #999
     cursor initial
+  .div_inputTwo
+    float left
+    width 300px
+    line-height 36px
+    display flex
 </style>
