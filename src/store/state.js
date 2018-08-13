@@ -9,6 +9,7 @@ const state = {
   username: '',
   usericon: '',
   userToken: '',
+  loading: false,
   maintainProject: window.localStorage.pattern ? window.localStorage.pattern : ''
 }
 

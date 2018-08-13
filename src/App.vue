@@ -1,14 +1,18 @@
 <template>
   <div id="app">
+    <main-loading></main-loading>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-
+import MainLoading from 'base/main-loading/main-loading'
 export default {
   name: 'App',
   created () {
+  },
+  components: {
+    MainLoading
   }
 }
 </script>

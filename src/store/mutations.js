@@ -15,6 +15,9 @@ const mutations = {
   },
   [types.UPDATE_MAINTAIN_PROJECT] (state, data) {
     state.maintainProject = data
+  },
+  [types.UPDATE_LOADING_STATE] (state, data) {
+    state.loading = data
   }
 }
 

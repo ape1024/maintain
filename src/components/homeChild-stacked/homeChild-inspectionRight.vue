@@ -1,6 +1,6 @@
 <template>
   <div class="charts">
-    <div id="myChartFour" :style="{width:'300px',height:'300px'}"></div>
+    <div id="myChartFour" :style="{width:'400px',height:'300px'}"></div>
   </div>
 </template>
 
@@ -44,7 +44,7 @@ export default {
           formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
         legend: {
-          orient: 'vertical',
+          // orient: 'vertical',
           left: 'left',
           data: equipment,
           textStyle: {

@@ -573,6 +573,7 @@ export default {
           float left
           background #111a28
           padding-right 40px
+          margin-bottom 7px
         .ficationHeaderX
           height 1px
           width 100%
@@ -647,7 +648,7 @@ export default {
       width 100%
     .ficationLiDivP
       float left
-    .ficationLiDivSpan
+  .ficationLiDivSpan
       color #fff
       margin 0 60px 0 15px
   .ficationLiDivPtwo

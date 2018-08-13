@@ -140,7 +140,12 @@ export default {
           containLabel: true
         },
         xAxis: {
-          type: 'value'
+          type: 'value',
+          axisLine: {
+            lineStyle: {
+              color: '#fff'
+            }
+          }
         },
         yAxis: {
           type: 'category',
