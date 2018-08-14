@@ -79,7 +79,7 @@
       <ul class="table_ul">
         <li v-for="(item,$index) in tableDatataskStat" class="table_li" :key="item.id" @click="selectStyle (item, $index, tableDatataskStat, $event)">
           <ul class="inline_ul">
-            <li class="header_lithree">{{item.taskName}}</li>
+            <li :title="item.taskName" class="header_lithree">{{item.taskName}}</li>
             <li class="header_li">{{fmtDate(item.startTime)}}</li>
             <li class="header_li">{{fmtDate(item.endTime)}}</li>
             <li class="header_litwo">{{item.sum}}</li>
@@ -89,6 +89,11 @@
               {{item.waitapproval}}
             </li>
             <li class="header_litwo">{{item.assign}}</li>
+            <li class="header_litwo">
+              <div v-if="timestamp > item.endTime ? true : false" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
+                归 档
+              </div>
+            </li>
           </ul>
           <transition enter-active-class="fadeInUp"
             leave-active-class="fadeOutDown">
@@ -108,7 +113,7 @@
 
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
-import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat } from '../../api/user'
+import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat, SetCheckTaskFiled } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
@@ -120,6 +125,37 @@ export default {
     dailytwo
   },
   methods: {
+    pigeonhole (taskID) {
+      this.$confirm('此操作将归档此任务,归档后将不能查看 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.post(SetCheckTaskFiled(taskID)).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '归档成功!'
+            })
+            this.axios.post(maintainDailyCurrentTaskStat(2, this.maintainProject)).then((response) => {
+              if (response.data.code === 0) {
+                this.tableDatataskStat = response.data.data
+              }
+            })
+          } else {
+            this.$message({
+              type: 'info',
+              message: '归档失败'
+            })
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
     init () {
       //  获取区域
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
@@ -272,10 +308,14 @@ export default {
       // 获取点击的id
       click_id: '',
       tableDatataskStat: [],
-      dailyChild: ''
+      dailyChild: '',
+      timestamp: ''
     }
   },
   created () {
+    //  归档时间判断  + 86400  延迟一天
+    let timestamp = Date.parse(new Date()) + 86400
+    this.timestamp = timestamp
     //  获取区域
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
@@ -404,7 +444,7 @@ export default {
        height 32px
      .header_litwo
        float left
-       width 12%
+       width 10%
        line-height 32px
        text-align center
        height 32px
@@ -422,21 +462,21 @@ export default {
        -webkit-line-clamp 2
      .header_li_five
        float left
-       width 12%
+       width 10%
        line-height 32px
        height 32px
        text-align center
        color  $color-text-tile-complete
      .header_li_six
        float left
-       width 12%
+       width 10%
        line-height 32px
        height 32px
        text-align center
        color  $color-text-tile-fault
      .header_li_Seven
        float left
-       width 12%
+       width 10%
        line-height 32px
        height 32px
        text-align center
@@ -625,4 +665,10 @@ export default {
     display flex
     .el-select
      width 100%
+  .pigeonhole
+    conserve()
+    -webkit-user-select none
+    -moz-user-select none
+    -ms-user-select none
+    user-select none
 </style>

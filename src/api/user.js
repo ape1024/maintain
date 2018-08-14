@@ -636,3 +636,7 @@ export const getIndustrycategory = () => {
   const url = `${Test}/organization/getIndustrycategory`
   return url
 }
+export const SetCheckTaskFiled = (taskID) => {
+  const url = `${Test}/task/SetCheckTaskFiled?checktaskid=${taskID}`
+  return url
+}
