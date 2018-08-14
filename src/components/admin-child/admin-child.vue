@@ -151,10 +151,10 @@ import childExamine from '../adminChild-operation/adminChild-examine'
 import childquipment from '../adminChild-operation/adminChild-quipment'
 import {stateData, examineDate} from '../../common/js/utils'
 import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
-import { projectMixin } from 'common/js/mixin'
+import { projectMixin, loadingMixin } from 'common/js/mixin'
 import { mapMutations } from 'vuex'
 export default {
-  mixins: [projectMixin],
+  mixins: [projectMixi, loadingMixin ],
   name: 'admin-child',
   props: ['adminid'],
   components: {
@@ -369,23 +369,20 @@ export default {
       } else {
         return examineDate[data].color
       }
-    },
-    ...mapMutations({
-      updateLoadingState: 'UPDATE_LOADING_STATE'
-    })
+    }
   },
   created () {
     this.axios.post(admingetDevListDetailProjects(this.adminid)).then((response) => {
       if (!response) {
         // 请求失败关闭加载
-        this.updateLoadingState(false)
+        this.closeLoadingDialog()
         return
       }
       if (response.data.code === 0) {
         this.tabChild = response.data.data
       }
       // 请求成功关闭数据加载
-      this.updateLoadingState(false)
+      this.closeLoadingDialog()
     })
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {

@@ -88,10 +88,10 @@
 import adminchild from '../admin-child/admin-child'
 import increase from '../admin-child/adminChild-review'
 import { maintainReportfindManufactures, findAreasTreeByProjectid, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
-import { projectMixin, loadingMixin } from 'common/js/mixin'
+import { projectMixin } from 'common/js/mixin'
 
 export default {
-  mixins: [projectMixin, loadingMixin],
+  mixins: [projectMixin],
   name: 'maintain-admin',
   components: {
     adminchild,
@@ -138,6 +138,7 @@ export default {
     selectStyle (item) {
       console.log(item)
       this.adminAreaid = item.areaid
+     this.openLoadingDialog()
       if (item.flag) {
         item.flag = false
       } else {
