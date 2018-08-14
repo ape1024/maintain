@@ -5,7 +5,18 @@
         设施编码
       </li>
       <li class="threelevel_lithree">
-        设备名称
+        设备名称 <i class="el-icon-caret-bottom"></i>
+        <div class="threelevel_ensconce">
+          <el-cascader
+            size="mini"
+            clearable
+            @change="ensconce(equipmentDate)"
+            v-model="equipmentDate"
+            :options="equipmentinformation"
+            :props="equipmentProps"
+            change-on-select
+          ></el-cascader>
+        </div>
       </li>
       <li class="threelevel_lithree">
         设备位置
@@ -14,7 +25,17 @@
         数量
       </li>
       <li class="threelevel_lithree">
-        生产厂家
+        生产厂家 <i class="el-icon-caret-bottom"></i>
+        <div class="threelevel_ensconce">
+          <el-select @change="manufactorChange(manufactorModel)" @focus="focus" size="mini" v-model="manufactorModel" placeholder=""  multiple collapse-tags>
+            <el-option
+              v-for="item in manufactor"
+              :key="item.manufacturerid"
+              :label="item.name"
+              :value="item.manufacturerid">
+            </el-option>
+          </el-select>
+        </div>
       </li>
       <li class="threelevel_lithree">
         规格型号
@@ -23,10 +44,30 @@
         生产时间
       </li>
       <li class="threelevel_lithree">
-        运行状态
+        运行状态 <i class="el-icon-caret-bottom"></i>
+        <div class="threelevel_ensconce">
+          <el-select @change="runningChange" v-model="runningState" size="mini" placeholder="">
+            <el-option
+              v-for="item in runningstateDate"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
       </li>
       <li class="threelevel_lithree">
-        审核状态
+        审核状态 <i class="el-icon-caret-bottom"></i>
+        <div class="threelevel_ensconce">
+          <el-select @change="AuditstatusChang" v-model="AuditstatusD" size="mini" placeholder="">
+            <el-option
+              v-for="item in AuditstatusDate"
+              :key="item.value"
+              :label="item.name"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
       </li>
       <li class="threelevel_litwo">
         操作
@@ -38,10 +79,10 @@
           <li class="threelevel_lithree">
             {{dataset.basedevicecode}}
           </li>
-          <li class="threelevel_lithree">
+          <li :title="dataset.devicename" class="threelevel_lithree">
             {{dataset.devicename}}
           </li>
-          <li class="threelevel_lithree">
+          <li :title="dataset.position" class="threelevel_lithree">
             {{dataset.position}}
           </li>
           <li class="threelevel_lithree">
@@ -109,10 +150,13 @@ import childModify from '../adminChild-operation/adminChild-modify'
 import childExamine from '../adminChild-operation/adminChild-examine'
 import childquipment from '../adminChild-operation/adminChild-quipment'
 import {stateData, examineDate} from '../../common/js/utils'
-import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects } from '../../api/user'
+import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
+import { mapMutations } from 'vuex'
 export default {
+  mixins: [projectMixin],
   name: 'admin-child',
-  props: ['tabChild'],
+  props: ['adminid'],
   components: {
     childLookover,
     childModify,
@@ -135,10 +179,86 @@ export default {
       JurisdictionInsert: '',
       JurisdictionDelete: '',
       JurisdictionApproval: '',
-      JurisdictionUpdate: ''
+      JurisdictionUpdate: '',
+      equipmentinformation: [],
+      equipmentDate: [],
+      equipmentProps: {
+        children: 'children',
+        label: 'name',
+        value: 'code'
+      },
+      manufactorModel: '',
+      manufactor: [],
+      runningstateDate: [],
+      runningState: '',
+      //  审核状态
+      AuditstatusDate: [],
+      AuditstatusD: '',
+      tabChild: ''
     }
   },
   methods: {
+    AuditstatusChang () {
+      this.jueryCurrent(this.equipmentDate, this.manufactorModel, this.runningState, this.AuditstatusD)
+    },
+    runningChange () {
+      this.jueryCurrent(this.equipmentDate, this.manufactorModel, this.runningState, this.AuditstatusD)
+    },
+    manufactorChange () {
+      this.jueryCurrent(this.equipmentDate, this.manufactorModel, this.runningState, this.AuditstatusD)
+    },
+    jueryCurrent (equipmentDate, manufactorModel, runningState, AuditstatusD) {
+      //  basedevicecode  设备名称
+      //  devicestate  运行状态
+      //  approvalstate  审核状态
+      //  areaid  区域id
+      //  manufacturerid  厂家id
+      let equipmentdata = ''
+      console.log(equipmentDate)
+      if (equipmentDate.length) {
+        if (equipmentDate[equipmentDate.length - 1]) {
+          equipmentdata = equipmentDate[equipmentDate.length - 1]
+        } else {
+          equipmentdata = ''
+        }
+      } else {
+        equipmentdata = ''
+      }
+      console.log(manufactorModel)
+      manufactorModel = manufactorModel.length && manufactorModel[manufactorModel.length - 1] !== -1 ? manufactorModel : ''
+      runningState = typeof runningState === 'number' ? runningState : ''
+      AuditstatusD = AuditstatusD && AuditstatusD !== -1 ? AuditstatusD : ''
+      this.axios.post(`http://172.16.6.181:8920/dev/getDevListDetailProjects?basedevicecode=${equipmentdata}&devicestate=${runningState}&approvalstate=${AuditstatusD}&areaid=${this.adminid}&manufacturerid=${manufactorModel}`).then((response) => {
+        if (response.data.code === 0) {
+          this.tabChild = response.data.data
+        }
+      })
+    },
+    focus (event) {
+      let region = this.equipmentDate
+      if (region.length === 0) {
+        this.$message({
+          message: '设备类型！',
+          type: 'warning'
+        })
+        return false
+      } else if (region[region.length - 1]) {
+        region = region[region.length - 1]
+        this.axios.post(maintainReportfindManufactures(region)).then((response) => {
+          if (response.data.code === 0) {
+            this.manufactor = response.data.data
+          }
+        })
+      } else {
+        this.$message({
+          message: '不可以选择全部！',
+          type: 'warning'
+        })
+      }
+    },
+    ensconce (item) {
+      this.jueryCurrent(this.equipmentDate, this.manufactorModel, this.runningState, this.AuditstatusD)
+    },
     amputate ($index, content, deviceid) {
       // 删除
       this.$confirm('此操作将删除该内容, 是否继续?', '提示', {
@@ -249,9 +369,24 @@ export default {
       } else {
         return examineDate[data].color
       }
-    }
+    },
+    ...mapMutations({
+      updateLoadingState: 'UPDATE_LOADING_STATE'
+    })
   },
   created () {
+    this.axios.post(admingetDevListDetailProjects(this.adminid)).then((response) => {
+      if (!response) {
+        // 请求失败关闭加载
+        this.updateLoadingState(false)
+        return
+      }
+      if (response.data.code === 0) {
+        this.tabChild = response.data.data
+      }
+      // 请求成功关闭数据加载
+      this.updateLoadingState(false)
+    })
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'device') {
@@ -260,6 +395,23 @@ export default {
         this.JurisdictionDelete = val.delete
         this.JurisdictionApproval = val.approval
         this.JurisdictionUpdate = val.update
+      }
+    })
+    //  获取设备类别
+    this.axios.post(findAllDeviceType()).then((response) => {
+      if (response.data.code === 0) {
+        this.equipmentinformation = response.data.data
+      }
+    })
+    //  获取运行状态
+    this.axios.post(FindDevAllstate()).then((response) => {
+      if (response.data.code === 0) {
+        this.runningstateDate = response.data.data
+      }
+    })
+    this.axios.post(FindDevAllApprovalstate()).then((response) => {
+      if (response.data.code === 0) {
+        this.AuditstatusDate = response.data.data
       }
     })
   }
@@ -361,6 +513,7 @@ export default {
        float left
        width 7.5%
        padding-left 1%
+       position relative
   .threelevel_list
       margin: 4px;
       overflow: hidden;
@@ -411,5 +564,13 @@ export default {
     background rgba(000,000,000,.4)
     z-index 11
     overflow hidden
-
+  .threelevel_ensconce
+    overflow hidden
+    z-index 1111
+    position absolute
+    top 0
+    height 100%
+    width 100%
+    left 0
+    opacity 0
 </style>
