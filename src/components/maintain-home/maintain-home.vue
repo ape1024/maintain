@@ -239,6 +239,7 @@ export default {
     width 100%
     overflow hidden
     position relative
+    bottom 10px
     .middle_bottom_left
        width 500px
        float left
@@ -305,5 +306,5 @@ export default {
      padding-right 0
   .el-progress-bar__innerText
     position absolute
-    top 0px
+    top 0
 </style>

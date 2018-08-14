@@ -88,10 +88,10 @@
 import adminchild from '../admin-child/admin-child'
 import increase from '../admin-child/adminChild-review'
 import { maintainReportfindManufactures, findAreasTreeByProjectid, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
-import { projectMixin } from 'common/js/mixin'
-import { mapMutations } from 'vuex'
+import { projectMixin, loadingMixin } from 'common/js/mixin'
+
 export default {
-  mixins: [projectMixin],
+  mixins: [projectMixin, loadingMixin],
   name: 'maintain-admin',
   components: {
     adminchild,
@@ -138,36 +138,6 @@ export default {
     selectStyle (item) {
       console.log(item)
       this.adminAreaid = item.areaid
-      //
-      if (!item.flag) {
-        // item.flag = !item.flag
-        this.tableData.forEach((val) => {
-          if (val.areaid !== item.areaid) {
-            val.flag = false
-          } else {
-            val.flag = true
-          }
-        })
-        // 打开页面加载数据
-        this.updateLoadingState(true)
-      } else {
-        item.flag = false
-      }
-
-      // let itemAreaid = item.areaid
-
-      // this.axios.post(admingetDevListDetailProjects(itemAreaid)).then((response) => {
-      //   if (!response) {
-      //     // 请求失败关闭加载
-      //     this.updateLoadingState(false)
-      //     return
-      //   }
-      //   if (response.data.code === 0) {
-      //     this.tableChild = response.data.data
-      //   }
-      //   // 请求成功关闭数据加载
-      //   this.updateLoadingState(false)
-      // })
     },
     examine (item) {
       // 一级审核
@@ -208,10 +178,7 @@ export default {
           }
         })
       }
-    },
-    ...mapMutations({
-      updateLoadingState: 'UPDATE_LOADING_STATE'
-    })
+    }
   },
   data () {
     return {
