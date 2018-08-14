@@ -206,7 +206,7 @@ export default {
         this.click_id = itemAreaid
         this.openLoadingDialog()
         this.axios.post(maintainDailygetCurrentTaskDeviceStat(itemAreaid)).then((response) => {
-          if (!response){
+          if (!response) {
             this.closeLoadingDialog()
             return
           }
