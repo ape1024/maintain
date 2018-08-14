@@ -111,9 +111,9 @@ import maintaintwo from '../maintainChild-two/maintainChild-two'
 import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
-import { projectMixin } from 'common/js/mixin'
+import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
-  mixins: [projectMixin],
+  mixins: [ projectMixin, loadingMixin ],
   name: 'maintain-daily',
   components: {
     maintaintwo
@@ -204,7 +204,12 @@ export default {
         })
         let itemAreaid = item.taskID
         this.click_id = itemAreaid
+        this.openLoadingDialog()
         this.axios.post(maintainDailygetCurrentTaskDeviceStat(itemAreaid)).then((response) => {
+          if (!response){
+            this.closeLoadingDialog()
+            return
+          }
           if (response.data.code === 0) {
             if (response.data.data.length !== 0) {
               response.data.data.forEach((val) => {
@@ -222,6 +227,7 @@ export default {
               item.flag = !item.flag
             }
           }
+          this.closeLoadingDialog()
         })
       } else {
         item.flag = !item.flag

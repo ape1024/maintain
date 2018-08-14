@@ -159,10 +159,10 @@
 import adminchild from '../admin-child/admin-child'
 import increase from '../admin-child/adminChild-review'
 import { admingetDevListDetailProjects, maintainReportfindManufactures, findAreasTreeByProjectid, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
-import { projectMixin } from 'common/js/mixin'
-import { mapMutations } from 'vuex'
+import { projectMixin, loadingMixin } from 'common/js/mixin'
+
 export default {
-  mixins: [projectMixin],
+  mixins: [projectMixin, loadingMixin],
   name: 'maintain-admin',
   components: {
     adminchild,
@@ -221,11 +221,11 @@ export default {
       })
       let itemAreaid = item.areaid
       // 打开页面加载数据
-      this.updateLoadingState(true)
+      this.openLoadingDialog()
       this.axios.post(admingetDevListDetailProjects(itemAreaid)).then((response) => {
         if (!response) {
           // 请求失败关闭加载
-          this.updateLoadingState(false)
+          this.closeLoadingDialog()
           return
         }
         if (response.data.code === 0) {
@@ -233,7 +233,7 @@ export default {
           item.flag = !item.flag
         }
         // 请求成功关闭数据加载
-        this.updateLoadingState(false)
+        this.closeLoadingDialog()
       })
     },
     examine (item) {
@@ -275,10 +275,7 @@ export default {
           }
         })
       }
-    },
-    ...mapMutations({
-      updateLoadingState: 'UPDATE_LOADING_STATE'
-    })
+    }
   },
   data () {
     return {

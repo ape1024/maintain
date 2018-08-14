@@ -2,8 +2,7 @@ import { layer, stateCode, iconUrl, polygonState, iconTypeStyle, errorUrl, state
 import { osmUrl } from 'api/config'
 import { IconAlarmList, createFloorData, createFactoryData, createBuildingData } from 'common/js/map'
 import { findMap } from 'api/map'
-import { mapGetters } from 'vuex'
-
+import { mapGetters, mapMutations } from 'vuex'
 /* global L:true */
 export const mapMixin = {
   data () {
@@ -468,5 +467,19 @@ export const projectMixin = {
     maintainProject () {
       this.init()
     }
+  }
+}
+
+export const loadingMixin = {
+  methods: {
+    openLoadingDialog () {
+      this.updateLoadingState(true)
+    },
+    closeLoadingDialog () {
+      this.updateLoadingState(false)
+    },
+    ...mapMutations({
+      updateLoadingState: 'UPDATE_LOADING_STATE'
+    })
   }
 }
