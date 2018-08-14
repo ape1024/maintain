@@ -152,9 +152,8 @@ import childquipment from '../adminChild-operation/adminChild-quipment'
 import {stateData, examineDate} from '../../common/js/utils'
 import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
-import { mapMutations } from 'vuex'
 export default {
-  mixins: [projectMixi, loadingMixin ],
+  mixins: [projectMixin, loadingMixin],
   name: 'admin-child',
   props: ['adminid'],
   components: {
