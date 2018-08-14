@@ -66,7 +66,7 @@
             </div>
             <div class="content">
               <ul class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)">
-                <li class="matters_lithree">
+                <li class="matters_lithree" :title="item.workitem">
                   <el-checkbox v-bind:disabled="item.disabled" v-model="item.fuleco"></el-checkbox>
                   {{item.workitem}}
                 </li>
@@ -77,7 +77,7 @@
                 <li class="matters_li">
                   {{!item.checktime ? '' : fmtDate(item.checktime)}}
                 </li>
-                <li class="matters_litwo">
+                <li class="matters_litwo" :title="item.workrecord">
                   {{item.workrecord}}
                 </li>
                 <li class="matters_li">
@@ -93,6 +93,9 @@
                 </li>
                 <li class="matters_litwo">
                   <img class="photosImg" :key="index" v-for="(data, index) in item.path" :src="data" alt="">
+                </li>
+                <li class="matters_lifour">
+                  <i @click.stop="amputatematters(item.checktaskdetailid)" v-if="!item.refid ? false : true" class="el-icon-close"></i>
                 </li>
               </ul>
             </div>
@@ -165,6 +168,45 @@
               </div>
             </div>
           </div>
+          <div class="opinion">
+            <div class="opinion_left">
+              <div class="left_header">
+                <p class="left_hederP">检测项</p>
+                <p class="left_hederPtwo"></p>
+              </div>
+              <div class="opinion_title">
+                <div class="opinion_ulDiv">
+                  <ul class="opinion__ul">
+                    <li class="opinion_li">
+                      检测名称
+                    </li>
+                    <li class="opinion_litwo">
+                      检测范围
+                    </li>
+                    <li class="opinion_litwo">
+                      检测值
+                    </li>
+                  </ul>
+                </div>
+                <ul class="title_ul">
+                  <li class="title_li" v-for="(item ,index) in Testing" :key="index">
+                    <ul class="title_li_ul">
+                      <li class="opinion_li">
+                        {{item.paramname}}
+                      </li>
+                      <li class="opinion_litwo">
+                        {{item.minvalue ? item.minvalue : ''}} -
+                        {{item.maxvalue ? item.maxvalue : ''}}
+                      </li>
+                      <li class="opinion_litwo">
+                        {{item.checkstandardid}}{{item.unit ? item.unit : ''}}
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="arrange">
           <div @click="assignment" class="assignment">
@@ -197,10 +239,63 @@ export default {
       determinant: '',
       approvaloptions: '',
       equipment: '',
-      equipmentData: ''
+      equipmentData: '',
+      Testing: ''
     }
   },
   methods: {
+    amputatematters (checktaskdetailid) {
+      this.axios.post(`http://172.16.6.181:8920/task/deleteTaskDetail?taskDetailId=${checktaskdetailid}`).then((response) => {
+        console.log(response)
+        if (response.data.code === 0) {
+          this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
+            console.log(response.data.data)
+            if (response.data.code === 0) {
+              let arrData = []
+              response.data.data.details.forEach((val) => {
+                if (val.path !== '') {
+                  let arr = []
+                  if (val.path.indexOf(',') !== -1) {
+                    arr = val.path.split(',')
+                    val.path = arr
+                  } else {
+                    arr = [val.path]
+                    val.path = arr
+                  }
+                } else {
+                  val.path = []
+                }
+                val.fuleco = false
+                val.pathBoolem = false
+                // if (val.conclusion > 0) {
+                //   val.disabled = false
+                // } else {
+                //   val.disabled = true
+                // }
+                if (!val.iswaitapproval) {
+                  if (!val.isapproval) {
+                    val.iswaitapprovalName = ''
+                  } else {
+                    val.iswaitapprovalName = '已审批'
+                  }
+                } else {
+                  val.iswaitapprovalName = '待审批'
+                }
+                if (val.isassigned) {
+                  val.isassignedName = '已安排'
+                } else {
+                  val.isassignedName = '未安排'
+                }
+                arrData.push(val)
+              })
+              console.log(arrData)
+              this.equipment = arrData
+              this.equipmentData = response.data.data
+            }
+          })
+        }
+      })
+    },
     checkedChang () {
       if (this.checked === true) {
         this.equipment.forEach((val) => {
@@ -332,6 +427,11 @@ export default {
           this.determinant = response.data.data
         }
       })
+      this.axios.post(`http://172.16.6.181:8920/task/getTaskParams?detailID=${checktaskdetailid}`).then((response) => {
+        if (response.data.code === 0) {
+          this.Testing = response.data.data
+        }
+      })
     },
     picturedetails (item) {
       console.log(item.pathBoolem)
@@ -383,8 +483,6 @@ export default {
         console.log(arrData)
         this.equipment = arrData
         this.equipmentData = response.data.data
-        console.log('lkalklklklklklklklkl')
-        console.log(this.equipment)
       }
     })
     //  任务审批选项
@@ -400,7 +498,7 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .newlyadded
-    margin 90px 0 0
+    margin 50px 0 0
     width 100%
     overflow hidden
     background #111a28
@@ -443,8 +541,6 @@ export default {
           color $color-border-b-fault
      .proceeding
        width 100%
-       min-height 400px
-       max-height 400px
        height calc(100% - 50px)
        overflow-y auto
        overflow-x hidden
@@ -502,7 +598,7 @@ export default {
             width 10%
           .matters_litwo
             float left
-            width 18%
+            width 16%
             position relative
             padding 0 1%
           .matters_lithree
@@ -523,7 +619,7 @@ export default {
           .matters_litwo
             position relative
             float left
-            width 18%
+            width 16%
             height 30px
             padding 0 1%
             text-overflow ellipsis
@@ -621,7 +717,8 @@ export default {
         width 100%
         text-align center
         overflow hidden
-        margin-bottom: 20px;
+        margin-top 40px
+        margin-bottom 20px
         .assignment
           display inline-block
           cursor pointer
@@ -668,4 +765,19 @@ export default {
     border-radius 5px
     z-index 1
     padding 20px 10px 20px 20px
+  .matters_lifour
+    float left
+    overflow hidden
+    width 2%
+  .opinion__li
+    float left
+    padding-left 5%
+    width 35%
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+  .opinion__ul
+    background #202f49
+    overflow hidden
+    padding 5px 0
 </style>

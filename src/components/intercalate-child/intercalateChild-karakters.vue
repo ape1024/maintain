@@ -298,6 +298,7 @@ export default {
         let data = []
         this.fullFunctionality.forEach((val) => {
           val.second.forEach((item) => {
+            console.log(item)
             let obj = {}
             //  id
             obj.functionid = item.functionid

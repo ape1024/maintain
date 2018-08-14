@@ -70,7 +70,6 @@ export default {
     ])
   },
   created () {
-    console.log('啦啦啦啦啦啦啦')
     console.log('%c Hello World', 'color: red;font-size: 24px;font-weight: bold;text-decoration: underline;')
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(findUserProjects(token)).then((response) => {

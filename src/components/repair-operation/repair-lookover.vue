@@ -77,7 +77,7 @@
                 </li>
                 <li class="tlefttoprightLi">
                   <span class="tlefttoprightliSpan">处理意见：</span>
-                  <span class="tlefttoprightLiSpans">{{examine.creater}}</span>
+                  <span class="tlefttoprightLiSpans">{{examine.disposeopinion}}</span>
                 </li>
               </ul>
             </div>
