@@ -17,58 +17,6 @@
                 </el-cascader>
               </div>
             </li>
-            <li class="li_input">
-              <p class="div_p">设备类型：</p>
-              <div class="div_input">
-                <el-cascader
-                  size="mini"
-                  clearable
-                  v-model="equipmentDate"
-                  :options="equipment"
-                  :props="equipmentProps"
-                  change-on-select
-                ></el-cascader>
-              </div>
-            </li>
-            <li class="li_input">
-              <p class="div_p">厂家：</p>
-              <div class="div_input">
-                <el-select @focus="focus" size="mini" v-model="manufactorModel" placeholder="" clearable>
-                  <el-option
-                    v-for="item in manufactor"
-                    :key="item.manufacturerid"
-                    :label="item.name"
-                    :value="item.manufacturerid">
-                  </el-option>
-                </el-select>
-              </div>
-            </li>
-            <li class="li_input">
-              <p class="div_p">运行状态：</p>
-              <div class="div_input">
-                <el-select v-model="runningState" size="mini" placeholder="" clearable>
-                  <el-option
-                    v-for="item in runningstateDate"
-                    :key="item.value"
-                    :label="item.name"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </div>
-            </li>
-            <li class="li_input">
-              <p class="div_p">审核状态：</p>
-              <div class="div_input">
-                <el-select v-model="AuditstatusD" size="mini" placeholder="" clearable>
-                  <el-option
-                    v-for="item in AuditstatusDate"
-                    :key="item.value"
-                    :label="item.name"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-              </div>
-            </li>
           </ul>
           <div class="button">
             <!--查询-->
@@ -121,15 +69,15 @@
               </ul>
               <transition enter-active-class="fadeInUp"
                           leave-active-class="fadeOutDown">
-                <div v-show="item.flag" class="inline_div">
-                  <adminchild :tabChild="tableChild"></adminchild>
+                <div v-if="item.flag" class="inline_div">
+                  <adminchild :adminid="adminAreaid" :tabChild="tableChild"></adminchild>
                 </div>
               </transition>
             </li>
           </ul>
         </section>
         <section v-if="review_boolean" @click.stop class="review">
-          <increase :msg="review_boolean" @say="onSay"></increase>
+          <increase v-if="review_boolean" :msg="review_boolean" @say="onSay" ></increase>
         </section>
       </el-main>
     </div>
@@ -139,7 +87,7 @@
 <script>
 import adminchild from '../admin-child/admin-child'
 import increase from '../admin-child/adminChild-review'
-import { admingetDevListDetailProjects, maintainReportfindManufactures, findAreasTreeByProjectid, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
+import { maintainReportfindManufactures, findAreasTreeByProjectid, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 
 export default {
@@ -168,64 +116,28 @@ export default {
     query () {
       // 接口 getDevListDetailProjectsTwo
       //  区域id
-      if (!this.adminAreaid) {
+      console.log(this.regionModel)
+      if (!this.regionModel.length) {
+        this.$message({
+          message: '请选择区域',
+          type: 'warning'
+        })
         return false
       } else {
-        let areaid = this.adminAreaid
-        //  设备类型
-        let equipment = ''
-        if (this.equipmentDate.length === 0 || !this.equipmentDate[0]) {
-          equipment = ''
-        } else {
-          equipment = this.equipmentDate[this.equipmentDate.length - 1]
-        }
-        //  厂家 id
-        let anufacturer = ''
-        if (this.manufactorModel === -1 || !this.manufactorModel) {
-          anufacturer = ''
-        } else {
-          anufacturer = this.manufactorModel
-        }
-        //  运行状态
-        let running = this.runningState
-        //  审核状态
-        let Auditstatus = this.AuditstatusD
-        //  厂家
+        let areaid = this.regionModel[this.regionModel.length - 1]
         console.log(areaid)
-        console.log(equipment)
-        console.log(anufacturer)
-        console.log(running)
-        console.log(Auditstatus)
-        this.axios.post(`http://172.16.6.181:8920/dev/getDevListDetailProjects?basedevicecode=${equipment}&devicestate=${running}&approvalstate=${Auditstatus}&areaid=${areaid}&manufacturerid=${anufacturer}`).then((response) => {
+        this.axios.post(CalcDevCount(areaid, 1, 30)).then((response) => {
+          console.log(response)
           if (response.data.code === 0) {
-
+            this.tableData = response.data.data.datas
+            console.log(response.data.data.datas)
           }
         })
       }
     },
     selectStyle (item) {
+      console.log(item)
       this.adminAreaid = item.areaid
-      this.tableData.forEach((val) => {
-        if (val.areaid !== item.areaid) {
-          val.flag = false
-        }
-      })
-      let itemAreaid = item.areaid
-      // 打开页面加载数据
-      this.openLoadingDialog()
-      this.axios.post(admingetDevListDetailProjects(itemAreaid)).then((response) => {
-        if (!response) {
-          // 请求失败关闭加载
-          this.closeLoadingDialog()
-          return
-        }
-        if (response.data.code === 0) {
-          this.tableChild = response.data.data
-          item.flag = !item.flag
-        }
-        // 请求成功关闭数据加载
-        this.closeLoadingDialog()
-      })
     },
     examine (item) {
       // 一级审核
@@ -398,7 +310,7 @@ export default {
       border-radius 5px
       text-align center
       display inline-block
-      margin-right 6%
+      margin-right 20px
       background $color-background-query
       cursor pointer
       transition .2s
@@ -410,7 +322,7 @@ export default {
       border-radius 5px
       text-align center
       display inline-block
-      margin-right 6%
+      margin-right 20px
       background $color-background-newly
       cursor pointer
       transition .2s
