@@ -138,7 +138,6 @@ export default {
     selectStyle (item) {
       console.log(item)
       this.adminAreaid = item.areaid
-      this.openLoadingDialog()
       if (item.flag) {
         item.flag = false
       } else {

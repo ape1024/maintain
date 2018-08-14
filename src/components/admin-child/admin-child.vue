@@ -371,6 +371,7 @@ export default {
     }
   },
   created () {
+    this.openLoadingDialog()
     this.axios.post(admingetDevListDetailProjects(this.adminid)).then((response) => {
       if (!response) {
         // 请求失败关闭加载
