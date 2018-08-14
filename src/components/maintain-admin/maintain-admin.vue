@@ -138,6 +138,16 @@ export default {
     selectStyle (item) {
       console.log(item)
       this.adminAreaid = item.areaid
+      if (item.flag) {
+        item.flag = false
+      } else {
+        this.tableData.forEach((val) => {
+          if (val.areaid !== item.areaid) {
+            val.flag = false
+          }
+        })
+        item.flag = true
+      }
     },
     examine (item) {
       // 一级审核
