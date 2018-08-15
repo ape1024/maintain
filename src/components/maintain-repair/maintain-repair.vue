@@ -86,12 +86,13 @@
         </li>
       </ul>
       <ul class="table_ul">
-        <li :key="index" v-for="(item, index) in tabulationData" class="table_li">
+        <li :key="index" v-for="(item, index) in tabulationData" class="table_li" :class="[!item.refid ? '' : 'table_liRepeat']">
           <ul class="inline_ul">
-            <li class="repair_li">
+            <li :title="item.devicename" class="repair_li">
+              {{item.refid}}
               {{item.devicename}}
             </li>
-            <li class="repair_litwo">
+            <li :title="item.areaname + item.position" class="repair_litwo">
               {{item.areaname}}{{item.position}}
             </li>
             <li class="repair_lithree">
@@ -100,7 +101,7 @@
             <li class="repair_lithree">
               {{item.repairtypename}}
             </li>
-            <li class="repair_lifour">
+            <li :title="item.exception" class="repair_lifour">
               {{item.exception}}
             </li>
             <li class="repair_lithree">
@@ -852,4 +853,6 @@ export default {
     width 300px
     line-height 36px
     display flex
+  .table_liRepeat
+    background yellowgreen
 </style>

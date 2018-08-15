@@ -166,7 +166,6 @@ export default {
     }
   },
   created () {
-    console.log(this.information)
     this.axios.post(getProprietorOrganization()).then((response) => {
       if (response.data.code === 0) {
         this.Organization = (response.data.data)[0].organizationname

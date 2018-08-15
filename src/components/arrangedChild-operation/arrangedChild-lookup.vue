@@ -312,7 +312,6 @@ export default {
   },
   methods: {
     conserve () {
-      console.log(this.checkplan)
       let worktypeid = this.scheduleData
       let planName = this.planName
       let planCode = this.planCode
@@ -417,8 +416,6 @@ export default {
           newArr.push(obj)
         })
       }
-      console.log('消防设施')
-      console.log(newArr)
       // newArr = this.handleCheckData.filter((val) => wipeOff.indexOf(val) === -1)
       //  执行人
       let users = []
@@ -505,8 +502,6 @@ export default {
       }
       //  频次
       let checkFrequency = this.frequencyradio
-
-      console.log('------------------------------' + this.Checlplanid + '----------------------------------------')
       this.axios.post(maintainArrangupdatePlan(this.Checkplanid, planName, planCode, worktypeid, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime), param).then((response) => {
         if (response.data.code === 0) {
           this.$message({
@@ -516,7 +511,6 @@ export default {
           this.$emit('lookup', false)
           return false
         } else {
-          console.log(response)
           this.$message.error('创建失败')
         }
       })
@@ -684,11 +678,9 @@ export default {
         } else {
           let string = this.PlanData.interval.substr(this.PlanData.interval.length - 1, 1)
           if (string === 'b') {
-            console.log('--------')
             this.frequencyradio = 5
             this.dayShift = false
             this.manyClasses = this.PlanData.interval.substr(0, this.PlanData.interval.length - 1)
-            console.log(this.PlanData.interval)
           } else if (string === 'd') {
             this.frequencyradio = 1
           } else if (string === 'w') {

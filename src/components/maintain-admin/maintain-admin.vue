@@ -116,7 +116,6 @@ export default {
     query () {
       // 接口 getDevListDetailProjectsTwo
       //  区域id
-      console.log(this.regionModel)
       if (!this.regionModel.length) {
         this.$message({
           message: '请选择区域',
@@ -125,18 +124,14 @@ export default {
         return false
       } else {
         let areaid = this.regionModel[this.regionModel.length - 1]
-        console.log(areaid)
         this.axios.post(CalcDevCount(areaid, 1, 30)).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             this.tableData = response.data.data.datas
-            console.log(response.data.data.datas)
           }
         })
       }
     },
     selectStyle (item) {
-      console.log(item)
       this.adminAreaid = item.areaid
       if (item.flag) {
         item.flag = false

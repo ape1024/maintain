@@ -80,7 +80,7 @@
             <el-upload
               size="mini"
               class="avatar-uploader"
-              action="http://172.16.6.181:8920/upload/upload"
+              :action="uploadUrlData"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload">
@@ -149,7 +149,7 @@
 </template>
 
 <script>
-import { modifytheUser, getRolesList, getJobList, getOrganizationTrees, FindAllRolesByOrgID } from '../../api/user'
+import { modifytheUser, getRolesList, getJobList, getOrganizationTrees, FindAllRolesByOrgID, upload } from '../../api/user'
 export default {
   name: 'consumerChild-changeinfo',
   props: ['communication'],
@@ -192,7 +192,8 @@ export default {
         value: 'organizationId'
       },
       organizeOptions: [],
-      imageUrlTwo: ''
+      imageUrlTwo: '',
+      uploadUrlData: upload()
     }
   },
   watch: {

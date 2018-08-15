@@ -237,7 +237,6 @@ export default {
     this.axios.post(maintainDailygetRepairTypes()).then((response) => {
       if (response.data.code === 0) {
         this.getrepairDate = response.data.data
-        console.log(this.getrepairDate)
       }
     })
     //  业主单位

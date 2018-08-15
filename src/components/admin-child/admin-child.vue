@@ -150,7 +150,7 @@ import childModify from '../adminChild-operation/adminChild-modify'
 import childExamine from '../adminChild-operation/adminChild-examine'
 import childquipment from '../adminChild-operation/adminChild-quipment'
 import {stateData, examineDate} from '../../common/js/utils'
-import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, FindDevAllApprovalstate } from '../../api/user'
+import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, FindDevAllApprovalstate, getDevListDetailProjectsThree } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin, loadingMixin],
@@ -213,7 +213,6 @@ export default {
       //  areaid  区域id
       //  manufacturerid  厂家id
       let equipmentdata = ''
-      console.log(equipmentDate)
       if (equipmentDate.length) {
         if (equipmentDate[equipmentDate.length - 1]) {
           equipmentdata = equipmentDate[equipmentDate.length - 1]
@@ -223,11 +222,11 @@ export default {
       } else {
         equipmentdata = ''
       }
-      console.log(manufactorModel)
       manufactorModel = manufactorModel.length && manufactorModel[manufactorModel.length - 1] !== -1 ? manufactorModel : ''
       runningState = typeof runningState === 'number' ? runningState : ''
       AuditstatusD = AuditstatusD && AuditstatusD !== -1 ? AuditstatusD : ''
-      this.axios.post(`http://172.16.6.181:8920/dev/getDevListDetailProjects?basedevicecode=${equipmentdata}&devicestate=${runningState}&approvalstate=${AuditstatusD}&areaid=${this.adminid}&manufacturerid=${manufactorModel}`).then((response) => {
+
+      this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel)).then((response) => {
         if (response.data.code === 0) {
           this.tabChild = response.data.data
         }

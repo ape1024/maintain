@@ -60,7 +60,6 @@ export default {
       let signouttoken = JSON.parse(window.sessionStorage.token)
       this.axios.post(secede(signouttoken)).then((response) => {
       //   用户点击退出 清除sessionStorage
-        console.log(response)
         sessionStorage.clear()
         this.$router.push({path: '/login'})
       })
@@ -73,27 +72,16 @@ export default {
     console.log('%c Hello World', 'color: red;font-size: 24px;font-weight: bold;text-decoration: underline;')
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(findUserProjects(token)).then((response) => {
-      console.log('------------6')
-      console.log(response)
       if (response.data.code === 0) {
-        console.log('--------5')
-        console.log(window.localStorage.pattern)
         if (!window.localStorage.pattern) {
-          console.log('1')
         } else {
-          console.log('2')
         }
         this.options = response.data.data
         let patternBo = false
         if (!window.localStorage.pattern) {
           this.value = response.data.data[0].projectid
           window.localStorage.pattern = response.data.data[0].projectid
-          console.log(this.value)
-          console.log('--------4')
-          console.log('./')
-          console.log(response.data.data)
         } else {
-          console.log('--------3')
           let pattern = JSON.parse(window.localStorage.pattern)
           if (response.data.data) {
             response.data.data.forEach((val) => {
@@ -104,7 +92,6 @@ export default {
           } else {
             return false
           }
-          console.log(patternBo)
           if (patternBo) {
             this.value = pattern
           } else {

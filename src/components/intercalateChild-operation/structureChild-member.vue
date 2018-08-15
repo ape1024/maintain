@@ -151,7 +151,6 @@ export default {
   },
   methods: {
     handleNodeClick (data) {
-      console.log(data)
     },
     conserve () {
       this.oneself = this.menBer

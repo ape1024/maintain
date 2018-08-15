@@ -236,7 +236,7 @@
         <div class="uploadDiv">
           <el-upload
             class="upload-demo"
-            action="http://172.16.6.16:8920/upload/upload"
+            :action="uploadUrl"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :on-success="handlesuccess"
@@ -257,7 +257,7 @@
 
 <script>
 import $ from 'jquery'
-import { getProjectDevices, increasefindAllDevType, increasegetWorkTypes, getProprietorOrganization, getRootOrganizationsNotProprietor, managementCreatedProvince, getCountiesByCityId, getCitiesByProvinceId, createOrUpdateProject, findAllRootAreasTree } from '../../api/user'
+import { getProjectDevices, increasefindAllDevType, increasegetWorkTypes, getProprietorOrganization, getRootOrganizationsNotProprietor, managementCreatedProvince, getCountiesByCityId, getCitiesByProvinceId, createOrUpdateProject, findAllRootAreasTree, upload } from '../../api/user'
 export default {
   name: 'consumerChild-editproject',
   props: ['edit', 'project'],
@@ -334,13 +334,8 @@ export default {
       formData: [],
       fileList: [],
       documentPapers: [],
-      arrayAddresses: []
-    }
-  },
-  watch: {
-    firecontrolDate: function (val) {
-      console.log('1111')
-      console.log(val)
+      arrayAddresses: [],
+      uploadUrl: upload()
     }
   },
   methods: {
@@ -358,14 +353,12 @@ export default {
       })
     },
     handlePreview (file) {
-      console.log(file)
     },
     beforeRemove (file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
     },
 
     firecontrolClick () {
-      console.log('00000')
       this.buildscopeBoolean = !this.buildscopeBoolean
     },
     purviewCheckbox (item) {
@@ -411,7 +404,6 @@ export default {
         let token = window.JSON.parse(window.sessionStorage.token)
         let getCheckedNodes = this.$refs.one.getCheckedNodes()
         let areas = []
-        console.log(areas)
         getCheckedNodes.forEach((val) => {
           let obj = {
             areacode: val.areacode,
@@ -468,7 +460,6 @@ export default {
           'worktypes': worktypes
         }
         this.axios.post(createOrUpdateProject(token), rp).then((response) => {
-          console.log('------')
           if (response.data.code === 0) {
             this.fullscreenLoading = false
             this.$message({
@@ -569,8 +560,6 @@ export default {
   },
   created () {
     //  获取项目设备
-    console.log('-0-0-0-0-0-0-0-0-0-0-0-0-0')
-    console.log(this.edit.areaids)
     this.buildscopeDate = this.edit.areaids
     this.projectDate = this.edit.workTypeids
     //  服务机构
@@ -602,8 +591,6 @@ export default {
         this.fileList.push(obj)
       })
     }
-    console.log('=--=---!11')
-    console.log(this.edit.devtypes)
     if (this.edit.devtypes) {
       this.edit.devtypes.forEach((val) => {
         val.children.forEach((data) => {
@@ -611,10 +598,6 @@ export default {
         })
       })
     }
-    console.log('----1')
-    console.log(this.firecontrolDate)
-    console.log('**')
-
     this.axios.post(getProjectDevices(this.project.projectid)).then((response) => {
       if (response.data.code === 0) {
         let data = response.data.data
@@ -626,16 +609,12 @@ export default {
     //  获取范围 默认值
     this.axios.post(findAllRootAreasTree()).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         this.purview = response.data.data
-        console.log(this.purview)
       }
     })
 
     this.axios.post(increasefindAllDevType()).then((response) => {
-      console.log('--------------')
       this.firecontrol = response.data
-      console.log(response.data)
       // response.data.forEach((val) => {
       //   val.children.forEach((data) => {
       //     for (let i = 0; i < this.firecontrolDate.length; i++) {

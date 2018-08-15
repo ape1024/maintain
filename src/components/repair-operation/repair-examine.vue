@@ -119,6 +119,7 @@
                         placeholder="选择日期">
                     </el-date-picker>
                     </span>
+                    <span class="waatitimeSpan" v-if="waatitimeBoolean">*审核结论为返工,才可以设置返工时间</span>
                   </div>
                 </li>
               </ul>
@@ -1085,4 +1086,7 @@ export default {
      color #fff
      display inline-block
      margin 12px 0
+  .waatitimeSpan
+    margin-left 20px
+    color #83292b
 </style>

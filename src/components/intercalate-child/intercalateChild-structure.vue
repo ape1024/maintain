@@ -229,7 +229,7 @@
                 <div class="contenttwo">
                   <el-upload
                     class="avatar-uploader"
-                    action="http://172.16.6.181:8920/upload/upload"
+                    :action="uploadUrlData"
                     :show-file-list="false"
                     :on-success="handleAvatarSuccess"
                     :before-upload="beforeAvatarUpload">
@@ -295,7 +295,7 @@ import Jurisdiction from '../intercalateChild-operation/structureChild-jurisdict
 import member from '../intercalateChild-operation/structureChild-member'
 import bluepencil from '../intercalateChild-operation/structureChild-bluepencil'
 import structureCopy from '../intercalateChild-operation/structureChild-copy'
-import {managementAuthority, managementhandleNodeClickOne, managementhandleNodeClickTwo, managementCreatedtree, managementCreatedProvince, managementCreatedcategory, managementCreatedbusiness, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, getCitiesByProvinceId, getCountiesByCityId, getAllHigherOrgIDs, organizationDelete} from '../../api/user'
+import {managementAuthority, managementhandleNodeClickOne, managementhandleNodeClickTwo, managementCreatedtree, managementCreatedProvince, managementCreatedcategory, managementCreatedbusiness, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, getCitiesByProvinceId, getCountiesByCityId, getAllHigherOrgIDs, organizationDelete, upload} from '../../api/user'
 export default {
   name: 'intercalateChild-structure',
   components: {
@@ -399,7 +399,8 @@ export default {
       businessCategoryData: '',
       JurisdictionApproval: '',
       JurisdictionUpdate: '',
-      DataorganizationId: ''
+      DataorganizationId: '',
+      uploadUrlData: upload()
     }
   },
   watch: {
@@ -426,8 +427,6 @@ export default {
     handleAvatarSuccess (response, file, fileList) {
       this.imageUrl = URL.createObjectURL(file.raw)
       this.imageUrlTwo = response.data
-      console.log(this.imageUrl)
-      console.log(this.imageUrlTwo)
     },
     subjectpCreate () {
       //  点击新增
@@ -440,7 +439,6 @@ export default {
       let memo = this.textarea
       //  点击新增保存
       let token = JSON.parse(window.sessionStorage.token)
-      console.log(token)
       //  类型
       let organizationtype = this.regimentaValue
       if (organizationtype === '') {
@@ -487,8 +485,6 @@ export default {
       let organization = ''
       //  父级组织id 为空
       let parentid = this.companyDate.length !== 0 ? this.companyDate[this.companyDate.length - 1] : ''
-      console.log(parentid)
-      console.log(this.companyDate)
       //  区县
       const countyid = !this.countytownId ? '' : this.countytownId
       //  城市
@@ -499,7 +495,6 @@ export default {
       const organizationshortname = !this.organizationshortname ? this.organizationname : this.organizationshortname
       let scope = !this.grading ? '' : this.grading
       const url = managementAuthority(token, organizationtype, firebrigadeid, firecontrolcategoryid, industrycategoryid, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)
-      console.log(url)
       if (organizationcode !== '' && organizationname !== '') {
         this.axios.post(url).then((response) => {
           if (response.data.code === 0) {
@@ -599,13 +594,11 @@ export default {
       const memo = !this.textarea ? '' : this.textarea
       //  父级的id
       let parentid = ''
-      console.log(this.companyDate)
       if (this.companyDate.length === 0) {
         parentid = ''
       } else {
         parentid = this.companyDate[this.companyDate.length - 1]
       }
-      console.log(parentid)
       //  消防监管机构
       let firebrigadeid = this.superVisionData
       //  消防单位类别
@@ -646,7 +639,6 @@ export default {
       this.axios.post(getAllHigherOrgIDs(data.organizationId)).then((response) => {
         this.companyDate = []
         if (response.data.code === 0) {
-          console.log(response.data.data)
           if (response.data.data.length <= 1) {
             this.companyDate = []
           } else {
@@ -662,7 +654,6 @@ export default {
       const url = managementhandleNodeClickOne(organization)
       const urltwo = managementhandleNodeClickTwo(organization)
       this.axios.post(urltwo).then((response) => {
-        // console.log(response.data.data)
         let urlDate = response.data.data
         if (!urlDate) {
           this.address = ''
@@ -675,24 +666,18 @@ export default {
           return false
         }
         //  专业类别
-        let categoryId = urlDate.professionalcategory
+        // let categoryId = urlDate.professionalcategory
         this.businessOptions = []
-        console.log(categoryId)
-        console.log(!urlDate.professionalcategory)
         if (!urlDate.professionalcategory) {
           this.businessOptions = []
         } else {
           this.businessOptions.push(urlDate.professionalcategory)
         }
-        console.log(this.businessOptions)
-        console.log(urlDate)
         this.linkman = urlDate.linkman
         //  上级主管单位
         this.selectedOptions = []
         this.selectedOptions.push(urlDate.level)
         //  所在地址
-        console.log('***')
-        console.log(urlDate.memo)
         this.address = urlDate.address
         //  备注信息
         this.textarea = !urlDate.memo ? '' : urlDate.memo
@@ -719,8 +704,6 @@ export default {
         this.imageUrlTwo = ''
         //  所在区域
         this.regionDate = urlData.pcc
-        console.log('09')
-        console.log(urlData)
         //  单位简称
         this.organizationshortname = urlData.organizationshortname === 'undefined' ? '' : urlData.organizationshortname
         //  单位编码
@@ -837,7 +820,6 @@ export default {
         this.axios.post(getCitiesByProvinceId(provinceid)).then((response) => {
           if (response.data.code === 0) {
             this.conurbation = response.data.data
-            console.log(response.data.data)
           }
         })
       }
@@ -928,7 +910,6 @@ export default {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'system') {
-        console.log(val)
         this.JurisdictionApproval = val.approval
         this.JurisdictionUpdate = val.update
       }

@@ -11,12 +11,15 @@ import 'element-ui/lib/theme-chalk/index.css'
 
 import Leaflet from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+
+import { interceptors, interceptorsResponse } from 'api/axios-interceptors'
 import axios from 'axios'
 Vue.prototype.axios = axios
 
 Vue.use(ElementUI)
 Vue.use(Leaflet)
-
+interceptors(router)
+interceptorsResponse(router)
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 

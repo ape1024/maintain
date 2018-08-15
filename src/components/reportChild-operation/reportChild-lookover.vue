@@ -89,9 +89,6 @@ export default {
   },
   created () {
     this.photograph = this.msg.photos !== '' ? this.msg.photos.split(',') : ''
-    console.log('1111')
-    console.log(this.msg.photos)
-    console.log(this.msg)
     //  确认状态
     let confirm = []
     let confirmName = this.msg.comfirmstate
@@ -100,7 +97,6 @@ export default {
       confirm.forEach((val) => {
         if (val.value === confirmName) {
           this.confirmExhibition = val.name
-          console.log(val)
         }
       })
     })
@@ -109,7 +105,6 @@ export default {
     let disposeName = this.msg.feedbackstate
     this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
       dispose = response.data
-      console.log(dispose)
       dispose.forEach((val) => {
         if (val.value === disposeName) {
           this.disposeExhibition = val.name

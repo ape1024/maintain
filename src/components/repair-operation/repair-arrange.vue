@@ -167,13 +167,11 @@ export default {
   },
   methods: {
     conserve () {
-      console.log(this.msg)
       this.thispage = this.msg
       this.thispage = !this.thispage
       this.$emit('say', this.thispage)
     },
     handleNodeClick (data) {
-      console.log(data)
     }
   }
 }

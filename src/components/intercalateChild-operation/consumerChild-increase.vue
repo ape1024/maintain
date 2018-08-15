@@ -234,7 +234,7 @@
         <div class="uploadDiv">
           <el-upload
             class="upload-demo"
-            action="http://172.16.6.16:8920/upload/upload"
+            :action="uploadUrl"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :on-success="handlesuccess"
@@ -255,7 +255,7 @@
 
 <script>
 import $ from 'jquery'
-import { createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree } from '../../api/user'
+import { createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload } from '../../api/user'
 export default {
   name: 'consumerChild-increase',
   props: ['edit', 'project'],
@@ -333,21 +333,18 @@ export default {
       formData: [],
       fileList: [],
       documentPapers: [],
-      arrayAddresses: []
+      arrayAddresses: [],
+      uploadUrl: upload()
     }
   },
   methods: {
     handlesuccess (response, file, fileList) {
-      console.log(response.data)
-      console.log(file)
-      console.log(fileList)
       this.documentPapers.push({
         'name': `${file.name}`,
         'url': `${response.data}`
       })
     },
     handleRemove (file) {
-      console.log(file.name)
       this.documentPapers.forEach((val, index) => {
         if (val.name === file.name) {
           this.documentPapers.splice(index, 1)
@@ -355,7 +352,6 @@ export default {
       })
     },
     handlePreview (file) {
-      console.log(file)
     },
     beforeRemove (file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
@@ -401,7 +397,6 @@ export default {
         let token = window.JSON.parse(window.sessionStorage.token)
         let getCheckedNodes = this.$refs.one.getCheckedNodes()
         let areas = []
-        console.log(areas)
         getCheckedNodes.forEach((val) => {
           let obj = {
             areacode: val.areacode,
@@ -457,7 +452,6 @@ export default {
           'worktypes': worktypes
         }
         this.axios.post(createOrUpdateProject(token), rp).then((response) => {
-          console.log('------')
           if (response.data.code === 0) {
             this.fullscreenLoading = false
             this.$message({
@@ -495,7 +489,6 @@ export default {
         this.axios.post(getCitiesByProvinceId(provinceid)).then((response) => {
           if (response.data.code === 0) {
             this.conurbation = response.data.data
-            console.log(response.data.data)
           }
         })
       }
@@ -535,7 +528,6 @@ export default {
       let city = cityDate.cityname
       let url = `${cout} ${city}`
       this.regionDate = url
-      console.log()
       //  省份id
       this.conurbationId = cityDate.cityid
       //  城市ID
@@ -546,9 +538,6 @@ export default {
       let city = $(event.currentTarget).parents('.regionliul_li').children('.countSpen').text()
       let url = `${cout} ${city} ${coundata.countyname}`
       this.regionDate = url
-      console.log($(event.currentTarget).parents('.region_li').attr('id'))
-      console.log(coundata.cityid)
-      console.log(coundata.countyid)
       //  省份ID
       this.provinceId = $(event.currentTarget).parents('.region_li').attr('id')
       //  城市ID
@@ -563,7 +552,6 @@ export default {
   },
   created () {
     this.axios.post(increasefindAllDevType()).then((response) => {
-      console.log(response.data)
       this.firecontrol = response.data
     })
     //  这个接口有问题  没有这个接口
@@ -573,21 +561,18 @@ export default {
       }
     })
     this.axios.post(increasegetWorkTypes()).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         this.projectType = response.data.data
       }
     })
     //  服务机构
     this.axios.post(getRootOrganizationsNotProprietor()).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         this.proprietorName = response.data.data
       }
     })
     //  获取业主单位
     this.axios.post(getProprietorOrganization()).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         this.proprieTorDate = response.data.data
       }

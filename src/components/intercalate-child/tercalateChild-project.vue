@@ -109,7 +109,6 @@ export default {
       this.axios.post(findDetailByProjectid(itemId)).then((response) => {
         if (response.data.code === 0) {
           this.exaMineDate = response.data.data
-          console.log(response.data.data)
           this.examineBoolean = true
         }
       })
@@ -122,10 +121,7 @@ export default {
     },
     modify (project) {
       //  修改
-      console.log(findDetailByProjectid(project.projectid))
       this.axios.post(findDetailByProjectid(project.projectid)).then((response) => {
-        console.log('---=++=')
-        console.log(response)
         if (response.data.code === 0) {
           this.modifyDate = response.data.data
           this.projectDate = project
@@ -140,7 +136,6 @@ export default {
       this.adhibitBoolean = ev
     },
     amputate (index, content, projectId) {
-      console.log(projectId)
       this.axios.post(removeProjectById(projectId)).then((response) => {
         if (response.data.code === 0) {
           content.splice([index], 1)
@@ -162,7 +157,6 @@ export default {
     this.axios.post(findAllProjects()).then((response) => {
       if (response.data.code === 0) {
         this.contentliDate = response.data.data
-        console.log(response)
       }
     })
     this.axios.post(FindDevAllstate()).then((response) => {

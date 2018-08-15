@@ -357,7 +357,6 @@ export default {
     },
     //  现场照片
     fieldphoto (src) {
-      console.log(src)
       let arr = []
       if (src === '' || src === null) {
         return arr
@@ -393,7 +392,6 @@ export default {
     DialogImg
   },
   created () {
-    console.log(this.examine)
     function fmtDate (obj) {
       let date = new Date(obj)
       let y = 1900 + date.getYear()
@@ -426,7 +424,6 @@ export default {
     })
     this.axios.post(getCheckTaskByRepairTaskId(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         if (!response.data.data) return
         this.inspectUp = response.data.data
       }

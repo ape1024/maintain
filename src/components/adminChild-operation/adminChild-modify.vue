@@ -240,7 +240,6 @@ export default {
       this.productionValue1 = val
     },
     conserve () {
-      console.log(this.versionValue)
       // token
       let token = JSON.parse(window.sessionStorage.token)
       //   设备 id
@@ -286,7 +285,6 @@ export default {
                   this.axios.post(AddDivecemodels(manufacturerid, Deviceid, this.versionCustom, this.technicalParameter)).then((response) => {
                     if (response.data.code === 0) {
                       devicemodel = response.data.data.divecemodelid
-                      console.log(devicemodel)
                       this.axios.post(updateDevice(token, Deviceid, devicetypeid, manufacturerid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
                         if (response.data.code === 0) {
                           this.$message({
@@ -526,10 +524,7 @@ export default {
         this.axios.post(maintainReportfindManufactures(region)).then((data) => {
           if (data.data.code === 0) {
             let arr = data.data.data
-            console.log('1')
-            console.log(region)
             arr.forEach(val => {
-              console.log(val.manufacturerid)
               if (val.manufacturerid === (this.modify).manufacturerid) {
                 this.manufactorModel = val.name
               }

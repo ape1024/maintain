@@ -294,7 +294,6 @@ export default {
   },
   methods: {
     conserve () {
-      console.log(this.frequencyradio)
       let token = JSON.parse(window.sessionStorage.token)
       let worktypeid = this.scheduleData
       let projectid = this.maintainProject
@@ -390,15 +389,11 @@ export default {
         })
         return false
       }
-      console.log('newArr')
-      console.log('消防设施')
-      console.log(newArr)
       // newArr = this.handleCheckData.filter((val) => wipeOff.indexOf(val) === -1)
       //  执行人
       let users = []
       if (this.maintenanceList.length !== 0) {
         this.maintenanceList.forEach((val) => {
-          console.log(val)
           let data = {
             userid: val
           }
@@ -437,11 +432,7 @@ export default {
       //  制定创建时间  createTaskTime
       let interval = ''
       let createTaskTime = ''
-      console.log('00000000')
-      console.log(this.frequencyradio)
-      console.log('00000000')
       if (this.groupBoolean) {
-        console.log(this.frequencyradio)
         if (this.frequencyradio === 1) {
           interval = '1d'
           createTaskTime = 'd1'
@@ -455,7 +446,6 @@ export default {
           interval = `${this.manyClasses}b`
           createTaskTime = `b${this.manyClasses}`
         }
-        console.log(interval)
       } else {
         interval = `1m`
         createTaskTime = `m${this.numbers}`
@@ -510,30 +500,23 @@ export default {
       this.$emit('build', false)
     },
     handleCheckChange (data, checked, indeterminate) {
-      console.log(data, checked, indeterminate)
       this.handleCheckData = checked.checkedNodes
     },
     frequencyChange (data) {
-      console.log(data)
       if (data.value === 5) {
         this.dayShift = false
-        console.log('1')
         this.monthsNumber = true
         return false
       } if (data.value === 3) {
         this.monthsNumber = false
-        console.log('2')
         return false
       } else {
         this.dayShift = true
         this.monthsNumber = true
-        console.log('3')
       }
     },
     handleChange (value) {
-      console.log(value)
       let num = 24 / value
-      console.log(num)
       this.classesGrades = num.toFixed(2)
     }
   },

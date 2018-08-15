@@ -31,7 +31,6 @@ export default {
           equipmentData.push(obj)
         })
         this.drawLine(equipmentData, equipment)
-        console.log('----')
       }
     })
   },
@@ -50,11 +49,6 @@ export default {
             equipmentData.push(obj)
           })
           this.drawLine(equipmentData, equipment)
-          console.log('----')
-          console.log(response)
-          console.log(equipment)
-          console.log(equipmentData)
-          console.log('----')
         }
       })
     },

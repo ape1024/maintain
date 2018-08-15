@@ -92,10 +92,7 @@ export default {
     cryptogramBlur (item) {
       let usercode = JSON.parse(window.sessionStorage.userInfo).usercode
       let password = item
-      console.log(usercode)
-      console.log(password)
       this.axios.post(steganogramCheckOldPwd(usercode, password)).then((response) => {
-        console.log(response)
         if (response.data.data === true) {
           this.showState = !this.showState
         } else {
@@ -113,7 +110,6 @@ export default {
       //  判断 新密码和重复密码是否一样
       let userId = JSON.parse(window.sessionStorage.userInfo).userid
       let useridCurrent = this.UserId
-      console.log(useridCurrent)
       if (this.newcode !== '') {
         if (this.newcode !== this.barbarism) {
           if (this.newcode === this.duplicate) {

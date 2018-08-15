@@ -114,7 +114,6 @@ export default {
         type: 'warning'
       }).then(() => {
         this.axios.post(maintainArrangeddeletePlan(checkplanid)).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             this.$message({
               type: 'success',
@@ -139,7 +138,6 @@ export default {
     },
     Build (ev) {
       this.axios.post(maintainArrangegetAllPlans()).then((response) => {
-        console.log(response)
         if (response.data.code === 0) {
           this.arrangedData = response.data.data
           this.newlybuildBoolean = false
@@ -148,7 +146,6 @@ export default {
     },
     Lookup (ev) {
       this.axios.post(maintainArrangegetAllPlans()).then((response) => {
-        console.log(response)
         if (response.data.code === 0) {
           this.arrangedData = response.data.data
           this.review_boolean = false
@@ -156,7 +153,6 @@ export default {
       })
     },
     examine (checkplanid) {
-      console.log(checkplanid)
       this.CheckPlanid = checkplanid
       this.axios.post(maintainArranggetCheckPlan(checkplanid)).then((response) => {
         if (response.data.code === 0) {
@@ -226,7 +222,6 @@ export default {
   },
   created () {
     this.axios.post(maintainArrangegetAllPlans()).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         this.arrangedData = response.data.data
       }

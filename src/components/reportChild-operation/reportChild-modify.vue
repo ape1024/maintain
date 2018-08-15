@@ -183,12 +183,9 @@ export default {
     conserve () {
       let token = JSON.parse(window.sessionStorage.token)
       let deviceid = this.examine.feedbackid
-      console.log(this.examine)
       let feedbackstate = this.processingsdisplay
-
       this.axios.post(maintainReporconfirmFeedback(token, deviceid, feedbackstate)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response.data.data)
           this.$emit('say', this.examineBoolean)
         }
       })
@@ -210,7 +207,6 @@ export default {
       this.Confirmationsdisplay = this.examine.comfirmstate
     })
     this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
-      console.log(response)
       this.processingstate = response.data
       this.processingsdisplay = this.examine.feedbackstate
     })
@@ -221,7 +217,6 @@ export default {
     this.axios.post(maintainDailygetRepairTypes()).then((response) => {
       if (response.data.code === 0) {
         this.choiceData = response.data.data
-        console.log(this.choiceData)
       }
     })
   }

@@ -613,7 +613,6 @@ export default {
     //  设备类型
     this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data.data)
         this.category = response.data.data
       }
     })

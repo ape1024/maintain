@@ -49,6 +49,12 @@ export const FindAllRolesByOrgID = (data) => {
   const url = `${Test}/roles/FindAllRolesByOrgID?orgid=${data}`
   return url
 }
+//  getTaskParams
+export const getTaskParams = (checktaskdetailid) => {
+  const url = `${Test}/task/getTaskParams?detailID=${checktaskdetailid}`
+  return url
+}
+
 export const upload = () => {
   const url = `${Test}/upload/upload`
   return url
@@ -56,6 +62,11 @@ export const upload = () => {
 //  组织结构权限管理  获取左边的树状结构
 export const managementCreatedtree = (token) => {
   const url = `${Test}/organization/getOrganizationTreeByUser?token=${token}`
+  return url
+}
+//  deleteTaskDetail
+export const deleteTaskDetail = (checktaskdetailid) => {
+  const url = `${Test}/task/deleteTaskDetail?taskDetailId=${checktaskdetailid}`
   return url
 }
 //  组织结构权限管理 省份
@@ -453,6 +464,10 @@ export const admingetDevListDetailProjects = (areaid) => {
 //  getDevListDetailProjectsTwo
 export const getDevListDetailProjectsTwo = (basedevicecode, areaid) => {
   const url = `${Test}/dev/getDevListDetailProjects?basedevicecode=${basedevicecode}&areaid=${areaid}`
+  return url
+}
+export const getDevListDetailProjectsThree = (equipmentdata, runningState, AuditstatusD, adminid, manufactorModel) => {
+  const url = `${Test}/dev/getDevListDetailProjects?basedevicecode=${equipmentdata}&devicestate=${runningState}&approvalstate=${AuditstatusD}&areaid=${adminid}&manufacturerid=${manufactorModel}`
   return url
 }
 //  getApprovalItems

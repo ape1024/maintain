@@ -45,10 +45,6 @@ export default {
       let checkPlanId = this.Checkplaniddata
       let approvalOpinion = this.textarea
       let approvalState = this.radio
-      console.log(token)
-      console.log(checkPlanId)
-      console.log(approvalOpinion)
-      console.log(approvalState)
       if (approvalState === '') {
         this.$message({
           message: '请选择审核结论!',
@@ -62,7 +58,6 @@ export default {
         })
       } else {
         this.axios.post(approvalCheckPlan(token, checkPlanId, approvalOpinion, approvalState)).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             this.$emit('closeup', false)
             this.$message({

@@ -65,7 +65,7 @@
               </header>
             </div>
             <div class="content">
-              <ul class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)">
+              <ul class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)" :class="[!item.refid ? '' : 'content_repeat']">
                 <li class="matters_lithree" :title="item.workitem">
                   <el-checkbox v-bind:disabled="item.disabled" v-model="item.fuleco"></el-checkbox>
                   {{item.workitem}}
@@ -80,7 +80,7 @@
                 <li class="matters_litwo" :title="item.workrecord">
                   {{item.workrecord}}
                 </li>
-                <li class="matters_li">
+                <li class="matters_li" :class="[item.conclusion === 1 ? 'martters_normal' : 'matters_problem']">
                   {{item.conclusionname}}
                 </li>
                 <li class="matters_li">
@@ -225,7 +225,7 @@
 </template>
 
 <script>
-import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments2, maintainDailygetTaskApprovalItems } from '../../api/user'
+import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments2, maintainDailygetTaskApprovalItems, deleteTaskDetail, getTaskParams } from '../../api/user'
 import $ from 'jquery'
 export default {
   name: 'dailyChild-examine',
@@ -245,11 +245,9 @@ export default {
   },
   methods: {
     amputatematters (checktaskdetailid) {
-      this.axios.post(`http://172.16.6.181:8920/task/deleteTaskDetail?taskDetailId=${checktaskdetailid}`).then((response) => {
-        console.log(response)
+      this.axios.post(deleteTaskDetail(checktaskdetailid)).then((response) => {
         if (response.data.code === 0) {
           this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
-            console.log(response.data.data)
             if (response.data.code === 0) {
               let arrData = []
               response.data.data.details.forEach((val) => {
@@ -267,11 +265,15 @@ export default {
                 }
                 val.fuleco = false
                 val.pathBoolem = false
-                // if (val.conclusion > 0) {
-                //   val.disabled = false
-                // } else {
-                //   val.disabled = true
-                // }
+                if (val.conclusion) {
+                  if (!val.refid) {
+                    val.disabled = false
+                  } else {
+                    val.disabled = true
+                  }
+                } else {
+                  val.disabled = true
+                }
                 if (!val.iswaitapproval) {
                   if (!val.isapproval) {
                     val.iswaitapprovalName = ''
@@ -288,7 +290,6 @@ export default {
                 }
                 arrData.push(val)
               })
-              console.log(arrData)
               this.equipment = arrData
               this.equipmentData = response.data.data
             }
@@ -317,11 +318,9 @@ export default {
     assignment () {
       let arrData = []
       this.equipment.forEach((val) => {
-        console.log(val)
         if (val.fuleco === false || val.disabled === true) {
           return false
         } else {
-          console.log(val.isassigned)
           let data = {
             matters: val.workitem,
             conclusion: val.conclusionname,
@@ -364,8 +363,6 @@ export default {
           return false
         } else if (!val.isapproval && val.iswaitapproval) {
           taskDetailArr.push(val.checktaskdetailid)
-          console.log(val.isapproval)
-          console.log(val.iswaitapproval)
         } else {
           flag = false
         }
@@ -397,6 +394,10 @@ export default {
                 if (response.data.code === 0) {
                   this.examine_Boolean = this.examine
                   this.examine_Boolean = !this.examine_Boolean
+                  this.$message({
+                    message: '审批成功',
+                    type: 'success'
+                  })
                   this.$emit('mine', this.examine_Boolean)
                   return false
                 }
@@ -427,21 +428,19 @@ export default {
           this.determinant = response.data.data
         }
       })
-      this.axios.post(`http://172.16.6.181:8920/task/getTaskParams?detailID=${checktaskdetailid}`).then((response) => {
+
+      this.axios.post(getTaskParams(checktaskdetailid)).then((response) => {
         if (response.data.code === 0) {
           this.Testing = response.data.data
         }
       })
     },
     picturedetails (item) {
-      console.log(item.pathBoolem)
       item.pathBoolem = !item.pathBoolem
-      console.log('-0-0-0-0-0-0-0-')
     }
   },
   created () {
     this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
-      console.log(response.data.data)
       if (response.data.code === 0) {
         let arrData = []
         response.data.data.details.forEach((val) => {
@@ -459,11 +458,15 @@ export default {
           }
           val.fuleco = false
           val.pathBoolem = false
-          // if (val.conclusion > 0) {
-          //   val.disabled = false
-          // } else {
-          //   val.disabled = true
-          // }
+          if (val.conclusion) {
+            if (!val.refid) {
+              val.disabled = false
+            } else {
+              val.disabled = true
+            }
+          } else {
+            val.disabled = true
+          }
           if (!val.iswaitapproval) {
             if (!val.isapproval) {
               val.iswaitapprovalName = ''
@@ -480,7 +483,6 @@ export default {
           }
           arrData.push(val)
         })
-        console.log(arrData)
         this.equipment = arrData
         this.equipmentData = response.data.data
       }
@@ -780,4 +782,10 @@ export default {
     background #202f49
     overflow hidden
     padding 5px 0
+  .matters_problem
+    color #cfb53a
+  .martters_normal
+     color #3acf76
+  .content_repeat
+    background #3a271c!important
 </style>
