@@ -29,6 +29,7 @@
 <script>
 import $ from 'jquery'
 import { mapActions } from 'vuex'
+import { TOKEN_STATE_TRUE } from 'api/config'
 import { userLogin, getUserFuncions, findUserProjects } from '../../api/user'
 export default {
   name: 'login',
@@ -85,6 +86,8 @@ export default {
         let password = this.password
         //  获取登录 url
         let pstDate = userLogin(account, password)
+        // 登陆时重置token状态
+        window.sessionStorage.setItem('tokenState', JSON.stringify(TOKEN_STATE_TRUE))
         this.axios.post(pstDate).then((response) => {
           let data = response.data
           if (data.code === 0) {

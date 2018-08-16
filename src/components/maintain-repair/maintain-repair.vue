@@ -11,7 +11,7 @@
               :options="regionDate"
               v-model="regionModel"
               :props="regionProps"
-              change-on-select>>
+              change-on-select>
             </el-cascader>
           </div>
         </li>
@@ -86,10 +86,9 @@
         </li>
       </ul>
       <ul class="table_ul">
-        <li :key="index" v-for="(item, index) in tabulationData" class="table_li" :class="[!item.refid ? '' : 'table_liRepeat']">
+        <li :key="index" v-for="(item, index) in tabulationData" class="table_li" :class="!item.refid ? '' : 'table_liRepeat'">
           <ul class="inline_ul">
             <li :title="item.devicename" class="repair_li">
-              {{item.refid}}
               {{item.devicename}}
             </li>
             <li :title="item.areaname + item.position" class="repair_litwo">
@@ -133,14 +132,14 @@
               <p v-if="JurisdictionInsert && !item.approvalBoolean" class="header_p_eight threelevel_litwo_p threelevel_litwo_ptwo">
                 审核
               </p>
-              <p v-if="item.approvalstate === 100 ? true : false" @click.stop="verification(item.repairtaskid)" class="header_p_thirteen">
+              <p v-if="item.verification" @click.stop="verification(item.repairtaskid)" class="header_p_thirteen">
                 验证
               </p>
-              <p v-if="item.approvalstate === 100 ? false : true" class="header_p_thirteen threelevel_litwo_ptwo">
+              <p v-if="!item.verification" class="header_p_thirteen threelevel_litwo_ptwo">
                 验证
               </p>
-              <p v-if="JurisdictionDelete && item.repairBoolean" class="header_p_eleven" @click.stop="amputate(index, tabulationData,item.repairtaskid)">删除</p>
-              <p v-if="JurisdictionDelete && !item.repairBoolean" class="header_p_eleven threelevel_litwo_ptwo" >删除</p>
+              <p v-if="JurisdictionDelete && item.amputate" class="header_p_eleven" @click.stop="amputate(index, tabulationData,item.repairtaskid)">删除</p>
+              <p v-if="JurisdictionDelete && !item.amputate" class="header_p_eleven threelevel_litwo_ptwo" >删除</p>
             </li>
           </ul>
         </li>
@@ -198,31 +197,7 @@ export default {
       })
       this.axios.post(maintainRepairfindRepairTasks(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
-          response.data.data.forEach((val) => {
-            if (val.approvalstate) {
-              if (val.approvalstate === 5) {
-                val.approvalBoolean = true
-              } else {
-                val.approvalBoolean = false
-              }
-            } else {
-              val.approvalBoolean = false
-            }
-            if (val.repairstate) {
-              if (val.repairstate === -5) {
-                val.repairBoolean = true
-              } else {
-                val.repairBoolean = false
-              }
-              if (val.repairstate === 100) {
-                val.JurisdictionBoolean = true
-              } else {
-                val.JurisdictionBoolean = false
-              }
-            } else {
-              val.repairBoolean = false
-            }
-          })
+          this.functionalJudgment(response.data.data)
           this.tabulationData = response.data.data
         }
       })
@@ -249,31 +224,7 @@ export default {
       }
       this.axios.post(maintainRepairmaintainRepairfindRepairTasksTwo(this.maintainProject, regionModel, this.maintenanceData, approvalStates)).then((response) => {
         if (response.data.code === 0) {
-          response.data.data.forEach((val) => {
-            if (val.approvalstate) {
-              if (val.approvalstate === 5) {
-                val.approvalBoolean = true
-              } else {
-                val.approvalBoolean = false
-              }
-            } else {
-              val.approvalBoolean = false
-            }
-            if (val.repairstate) {
-              if (val.repairstate === -5) {
-                val.repairBoolean = true
-              } else {
-                val.repairBoolean = false
-              }
-              if (val.repairstate === 100) {
-                val.JurisdictionBoolean = true
-              } else {
-                val.JurisdictionBoolean = false
-              }
-            } else {
-              val.repairBoolean = false
-            }
-          })
+          this.functionalJudgment(response.data.data)
           this.tabulationData = response.data.data
         }
       })
@@ -383,31 +334,7 @@ export default {
       })
       this.axios.post(maintainRepairfindRepairTasks(ID)).then((response) => {
         if (response.data.code === 0) {
-          response.data.data.forEach((val) => {
-            if (val.approvalstate) {
-              if (val.approvalstate === 5) {
-                val.approvalBoolean = true
-              } else {
-                val.approvalBoolean = false
-              }
-            } else {
-              val.approvalBoolean = false
-            }
-            if (val.repairstate) {
-              if (val.repairstate === -5) {
-                val.repairBoolean = true
-              } else {
-                val.repairBoolean = false
-              }
-              if (val.repairstate === 100) {
-                val.JurisdictionBoolean = true
-              } else {
-                val.JurisdictionBoolean = false
-              }
-            } else {
-              val.repairBoolean = false
-            }
-          })
+          this.functionalJudgment(response.data.data)
           this.tabulationData = response.data.data
         }
       })
@@ -436,31 +363,7 @@ export default {
       // 审核 传递的参数
       this.axios.post(maintainRepairfindRepairTasks(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
-          response.data.data.forEach((val) => {
-            if (val.approvalstate) {
-              if (val.approvalstate === 5) {
-                val.approvalBoolean = true
-              } else {
-                val.approvalBoolean = false
-              }
-            } else {
-              val.approvalBoolean = false
-            }
-            if (val.repairstate) {
-              if (val.repairstate === -5) {
-                val.repairBoolean = true
-              } else {
-                val.repairBoolean = false
-              }
-              if (val.repairstate === 100) {
-                val.JurisdictionBoolean = true
-              } else {
-                val.JurisdictionBoolean = false
-              }
-            } else {
-              val.repairBoolean = false
-            }
-          })
+          this.functionalJudgment(response.data.data)
           this.tabulationData = response.data.data
           this.examineBoolean = ev
           this.verificationBoolean = false
@@ -483,6 +386,51 @@ export default {
     },
     Quipment (ev) {
       this.quipmentBoolean = ev
+    },
+    //  功能判断
+    functionalJudgment (data) {
+      data.forEach((val) => {
+        //  重新分配
+        if (!val.refid && val.repairstate) {
+          if (val.repairstate === -5) {
+            val.repairBoolean = true
+          } else {
+            val.repairBoolean = false
+          }
+        } else {
+          val.repairBoolean = false
+        }
+        //  审核
+        if (!val.refid && val.approvalstate) {
+          if (val.approvalstate === 5) {
+            val.approvalBoolean = true
+          } else {
+            val.approvalBoolean = false
+          }
+        } else {
+          val.approvalBoolean = false
+        }
+        //  验证
+        if (!val.refid && val.approvalstate) {
+          if (val.approvalstate === 100) {
+            val.verification = true
+          } else {
+            val.verification = false
+          }
+        } else {
+          val.verification = false
+        }
+        //  删除
+        if (val.refid) {
+          val.amputate = true
+        } else {
+          if (val.repairstate === -5) {
+            val.amputate = true
+          } else {
+            val.amputate = false
+          }
+        }
+      })
     }
   },
   data () {
@@ -546,31 +494,7 @@ export default {
     //  获取列表
     this.axios.post(maintainRepairfindRepairTasks(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
-        response.data.data.forEach((val) => {
-          if (val.approvalstate) {
-            if (val.approvalstate === 5) {
-              val.approvalBoolean = true
-            } else {
-              val.approvalBoolean = false
-            }
-          } else {
-            val.approvalBoolean = false
-          }
-          if (val.repairstate) {
-            if (val.repairstate === -5) {
-              val.repairBoolean = true
-            } else {
-              val.repairBoolean = false
-            }
-            if (val.repairstate === 100) {
-              val.JurisdictionBoolean = true
-            } else {
-              val.JurisdictionBoolean = false
-            }
-          } else {
-            val.repairBoolean = false
-          }
-        })
+        this.functionalJudgment(response.data.data)
         this.tabulationData = response.data.data
       }
     })
@@ -854,5 +778,5 @@ export default {
     line-height 36px
     display flex
   .table_liRepeat
-    background yellowgreen
+    background #3a271c!important
 </style>

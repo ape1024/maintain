@@ -18,7 +18,7 @@ Vue.prototype.axios = axios
 
 Vue.use(ElementUI)
 Vue.use(Leaflet)
-interceptors(router)
+interceptors()
 interceptorsResponse(router)
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false

@@ -11,3 +11,6 @@ export const URL = debug ? debugUrl : projectUrl
 
 export const USER_LOGIN_OK = 0
 export const USER_EXIT_OK = 1
+
+export const TOKEN_STATE_FALSE = '0'
+export const TOKEN_STATE_TRUE = '1'

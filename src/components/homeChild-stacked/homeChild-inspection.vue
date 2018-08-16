@@ -13,8 +13,6 @@ export default {
   mounted () {
     this.axios.post(maintainHomeInspection(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
-        console.log('=-====')
-        console.log(response)
         let nameData = []
         let stateData = ['未开始', '问题', '错误', '完好']
         let seriesData = []

@@ -101,7 +101,7 @@
             <li class="header_li">{{item.devicecount}}</li>
             <li class="header_litwo">{{item.feedbackinfo}}</li>
             <li class="header_litwo">{{item.feedbackorgname}}</li>
-            <li class="header_li"></li>
+            <li class="header_li">{{item.creatername}}</li>
             <li class="header_li">{{item.createtime}}</li>
             <li class="header_li">{{item.feedbackstatename}}</li>
             <li class="header_li">{{item.comfirmstatename}}</li>

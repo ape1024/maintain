@@ -63,6 +63,8 @@
                 </li>
               </ul>
             </div>
+          </div>
+          <div class="tabulationRight">
             <div class="tleftBottom">
               <ul class="tlefttopRight">
                 <li class="tlefttoprightLi">
@@ -81,44 +83,6 @@
                 </li>
               </ul>
             </div>
-          </div>
-          <div class="tabulationRight">
-            <div class="tleftTop">
-              <div class="tlefttopHeader">
-                <p class="tlefttopHeaderP">
-                  <span class="tlefttopHeaderSpan">处理时间：</span>
-                  <span>{{fmtDate(examine.repairtime)}}</span>
-                </p>
-                <p class="tlefttopHeaderP">
-                  <span class="tlefttopHeaderSpan">检查人员：</span>
-                  <span>{{examine.repairpersonname}}</span>
-                </p>
-              </div>
-              <ul class="tlefttopUl">
-                <li class="tlefttopli">
-                  <p class="tlefttopHeaderP">
-                    <span class="tlefttopHeaderSpan">问题原因：</span>
-                    <span class="tlefttoprightLiSpans">{{examine.reason}}</span>
-                  </p>
-                  <p class="tlefttopHeaderP">
-                    <span class="tlefttopHeaderSpan">处理情况：</span>
-                    <span class="tlefttoprightLiSpans">{{examine.treatment}}</span>
-                  </p>
-                </li>
-                <li class="tlefttopli">
-                    <span class="tlefttopHeaderSpan">处理结果：</span>
-                    <span class="tlefttoprightLiSpans">{{examine.repairpersonname}}</span>
-                </li>
-                <li class="tlefttopli">
-                  <p class="tlefttopHeaderImg">
-                    <span class="tlefttopHeaderSpan">现场照片：</span>
-                    <span>
-                      <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(examine.afterphotos), index)"  :key="index" v-for="(data, index) in fieldphoto(examine.afterphotos)" :src="data" alt="">
-                    </span>
-                  </p>
-                </li>
-              </ul>
-            </div>
             <div class="tleftBottom">
               <ul class="tlefttopRight">
                 <li class="tlefttoprightLi">
@@ -133,7 +97,7 @@
                 </li>
                 <li class="tlefttoprightLi">
                   <span class="tlefttoprightliSpan">审核结论：</span>
-                  <span>{{Auditorsstate}}</span>
+                  <span class="tlefttoprightLiSPan">{{Auditorsstate}}</span>
                 </li>
               </ul>
             </div>
@@ -392,6 +356,7 @@ export default {
     DialogImg
   },
   created () {
+    console.log(this.examine)
     function fmtDate (obj) {
       let date = new Date(obj)
       let y = 1900 + date.getYear()
@@ -413,12 +378,12 @@ export default {
     })
     this.axios.post(maintainRepairgetApprovalInfos(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
+        console.log(response)
         this.getApprovalInfos = response.data.data
         if (this.getApprovalInfos !== undefined) {
-          this.AuditorsPersonnel = this.getApprovalInfos.approvername
-          this.AuditorsTimer = this.getApprovalInfos.approvaltime === undefined ? '' : fmtDate(this.getApprovalInfos.approvaltime)
-          this.Auditorsstate = this.getApprovalInfos.approvalstate
-          this.Auditorsopinion = this.getApprovalInfos.approvalopinion
+          this.AuditorsPersonnel = this.getApprovalInfos[0].approvername
+          this.AuditorsTimer = this.getApprovalInfos[0].approvaltime === undefined ? '' : fmtDate(this.getApprovalInfos[0].approvaltime)
+          this.Auditorsstate = this.getApprovalInfos[0].approvalopinion
         }
       }
     })
@@ -822,4 +787,6 @@ export default {
     color #fff
     display inline-block
     margin 12px 0
+  .tlefttoprightLiSPan
+    color #fff
 </style>

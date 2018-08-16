@@ -1,23 +1,12 @@
 import axios from 'axios'
-const tokenJson = window.sessionStorage.token
-const token = tokenJson ? JSON.parse(tokenJson) : ''
-// const CancelToken = axios.CancelToken
+import { TOKEN_STATE_FALSE, TOKEN_STATE_TRUE } from './config'
 
-export const interceptors = function (router) {
+export const interceptors = function () {
   axios.interceptors.request.use(function (config) {
+    const tokenJson = window.sessionStorage.token
+    const token = tokenJson ? JSON.parse(tokenJson) : ''
     // Do something before request is sent
-    console.log('////')
-    console.log(config)
     if (token) {
-      // 验证token
-      // 回调
-      // router.push({path: '/123123'})
-      // return {
-      //   ...config,
-      //   cancelToken: new CancelToken(function (cancel) {
-      //     cancel('')
-      //   })
-      // }
       if (config.url.indexOf('token') === -1) {
         if (config.url.indexOf('?') === -1) {
         } else {
@@ -31,18 +20,30 @@ export const interceptors = function (router) {
     return Promise.reject(error)
   })
 }
+
 export const interceptorsResponse = function (router) {
   axios.interceptors.response.use(
     response => {
-      switch (response.status) {
-        case 401:
+      // token已经失效的处理
+      const tokenJson = window.sessionStorage.tokenState
+      const tokenState = tokenJson ? JSON.parse(tokenJson) : TOKEN_STATE_TRUE
+      if (tokenState === TOKEN_STATE_FALSE) {
+        throw new Error('token失效')
+      }
+      // token在不确定失效的处理
+      switch (response.data.code) {
+        // 返回数据token失效状态
+        case -10:
           // 这里写清除token的代码
-          sessionStorage.clear()
+          window.sessionStorage.clear()
+          window.sessionStorage.setItem('tokenState', JSON.stringify(TOKEN_STATE_FALSE))
           router.replace({
             path: '/login'
           })
+          throw new Error('token失效')
+        default:
+          return response
       }
-      return response
     },
     error => {
       return Promise.reject(error.response.data)
