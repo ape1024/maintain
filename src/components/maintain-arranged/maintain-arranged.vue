@@ -244,13 +244,12 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
-    overflow hidden
     min-height 760px
     max-height 750px
     position relative
     padding-bottom 70px
     background #141e30
-    overflow-y scroll
+    overflow auto
   .subject_top
     margin 38px 15px 20px 15px
     overflow hidden

@@ -190,12 +190,11 @@ export default {
     assignment () {
       let arrData = []
       this.equipment.forEach((val) => {
-        console.log(val)
         if (val.fuleco === false || val.disabled === true) {
           return false
         } else {
-          console.log(val.isassigned)
           let data = {
+            problem: val.conclusion,
             matters: val.workitem,
             conclusion: val.conclusionname,
             checktaskdetailid: val.checktaskdetailid,
@@ -221,7 +220,7 @@ export default {
         this.$emit('examineMine', arrData)
       } else {
         this.$message({
-          message: '已安排工作项与正常工作项,不能安排!',
+          message: '已安排工作项,正常工作项,不能安排!',
           type: 'warning'
         })
       }
@@ -304,11 +303,11 @@ export default {
           }
           val.fuleco = false
           val.pathBoolem = false
-          // if (val.conclusion > 0) {
-          //   val.disabled = false
-          // } else {
-          //   val.disabled = true
-          // }
+          if (val.conclusion === -1) {
+            val.disabled = false
+          } else {
+            val.disabled = true
+          }
           if (!val.iswaitapproval) {
             if (!val.isapproval) {
               val.iswaitapprovalName = ''

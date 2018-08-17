@@ -79,7 +79,7 @@
             </p>
             <el-upload
               class="avatar-uploader"
-              action="http://172.16.6.181:8920/upload/upload"
+              :action="uploadUrl"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload">
@@ -171,7 +171,7 @@ export default {
       fileList: [],
       condition: true,
       // upload
-      upload: upload(),
+      uploadUrl: upload(),
       //  登陆名
       nameoflanding: '',
       //  用户姓名

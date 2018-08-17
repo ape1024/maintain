@@ -92,7 +92,8 @@
                   {{item.isassignedName}}
                 </li>
                 <li class="matters_litwo">
-                  <img class="photosImg" :key="index" v-for="(data, index) in item.path" :src="data" alt="">
+                  <!--{{item.photosArr}}-->
+                  <img class="photosImg" @click="selectImg(fieldphoto(data, item.path), index)" :key="index" v-for="(data, index) in item.photosArr" :src="`${item.path}${data}`" alt="">
                 </li>
                 <li class="matters_lifour">
                   <i @click.stop="amputatematters(item.checktaskdetailid)" v-if="!item.refid ? false : true" class="el-icon-close"></i>
@@ -199,7 +200,7 @@
                         {{item.maxvalue ? item.maxvalue : ''}}
                       </li>
                       <li class="opinion_litwo">
-                        {{item.checkstandardid}}{{item.unit ? item.unit : ''}}
+                        {{item.Testvalue}}
                       </li>
                     </ul>
                   </li>
@@ -220,12 +221,14 @@
           </div>
         </div>
       </section>
+      <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </section>
   </div>
 </template>
 
 <script>
 import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments2, maintainDailygetTaskApprovalItems, deleteTaskDetail, getTaskParams } from '../../api/user'
+import DialogImg from 'base/dialog-img/dialog-img'
 import $ from 'jquery'
 export default {
   name: 'dailyChild-examine',
@@ -240,10 +243,30 @@ export default {
       approvaloptions: '',
       equipment: '',
       equipmentData: '',
-      Testing: ''
+      Testing: '',
+      imgList: []
     }
   },
   methods: {
+    fieldphoto (src, path) {
+      console.log(src)
+      let arr = []
+      if (src === '' || src === null) {
+        return arr
+      } else {
+        src.split(',').forEach((val) => {
+          arr.push(`${path}${val}`)
+        })
+        return arr
+      }
+    },
+    selectImg (list, index) {
+      this.imgList = list
+      setTimeout(() => {
+        this.$refs.dialogImg.switchIndex(index)
+        this.$refs.dialogImg.open()
+      }, 200)
+    },
     amputatematters (checktaskdetailid) {
       this.axios.post(deleteTaskDetail(checktaskdetailid)).then((response) => {
         if (response.data.code === 0) {
@@ -289,6 +312,15 @@ export default {
                   val.isassignedName = '未安排'
                 }
                 arrData.push(val)
+                if (val.photos) {
+                  val.photosArr = []
+                  if (val.photos.indexOf(',') !== -1) {
+                    let arr = val.photos.split(',')
+                    val.photosArr = arr
+                  } else {
+                    val.photosArr.push(val.photos)
+                  }
+                }
               })
               this.equipment = arrData
               this.equipmentData = response.data.data
@@ -425,6 +457,15 @@ export default {
       $(el).addClass('content_ulBack')
       this.axios.post(maintainDailygetEquirementjudgments2(checktaskdetailid)).then((response) => {
         if (response.data.code === 0) {
+          if (response.data.data.length !== 0) {
+            response.data.data.forEach((val) => {
+              if (!val.checkvalue) {
+                val.Testvalue = ``
+              } else {
+                val.Testvalue = `${val.checkvalue}${val.unit}`
+              }
+            })
+          }
           this.determinant = response.data.data
         }
       })
@@ -438,6 +479,9 @@ export default {
     picturedetails (item) {
       item.pathBoolem = !item.pathBoolem
     }
+  },
+  components: {
+    DialogImg
   },
   created () {
     this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
@@ -482,6 +526,15 @@ export default {
             val.isassignedName = '未安排'
           }
           arrData.push(val)
+          if (val.photos) {
+            val.photosArr = []
+            if (val.photos.indexOf(',') !== -1) {
+              let arr = val.photos.split(',')
+              val.photosArr = arr
+            } else {
+              val.photosArr.push(val.photos)
+            }
+          }
         })
         this.equipment = arrData
         this.equipmentData = response.data.data

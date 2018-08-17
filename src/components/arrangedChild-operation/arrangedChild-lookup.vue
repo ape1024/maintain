@@ -421,8 +421,10 @@ export default {
       let users = []
       if (this.maintenanceList.length !== 0) {
         this.maintenanceList.forEach((val) => {
+          let arr = val.split(',')
           let data = {
-            userid: val
+            userid: arr[0],
+            organizationid: arr[1]
           }
           users.push(data)
         })

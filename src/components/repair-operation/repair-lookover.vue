@@ -101,6 +101,14 @@
                 </li>
               </ul>
             </div>
+            <div class="tleftBottom">
+              <ul class="tlefttopRight">
+                <li class="tlefttoprightLi">
+                  <span class="tlefttoprightliSpan">维修人员：</span>
+                  <span class="tlefttoprightLiSPan">{{repairtasks}}</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -276,7 +284,7 @@ import DialogImg from 'base/dialog-img/dialog-img'
 import { maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId } from '../../api/user'
 export default {
   name: 'repair-lookover',
-  props: ['examine', 'state'],
+  props: ['examine', 'state', 'repairtasks'],
   data () {
     return {
       options: [],
@@ -380,7 +388,7 @@ export default {
       if (response.data.code === 0) {
         console.log(response)
         this.getApprovalInfos = response.data.data
-        if (this.getApprovalInfos !== undefined) {
+        if (this.getApprovalInfos.length !== 0) {
           this.AuditorsPersonnel = this.getApprovalInfos[0].approvername
           this.AuditorsTimer = this.getApprovalInfos[0].approvaltime === undefined ? '' : fmtDate(this.getApprovalInfos[0].approvaltime)
           this.Auditorsstate = this.getApprovalInfos[0].approvalopinion
@@ -473,7 +481,6 @@ export default {
           width 543px
           background #0b111a
           overflow hidden
-          margin-bottom 14px
           border 1px solid $color-border-list
           justify-content center
           align-items center

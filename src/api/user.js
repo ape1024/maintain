@@ -216,6 +216,10 @@ export const maintainDailygetTaskApprovalItems = () => {
   const url = `${Test}/task/getTaskApprovalItems`
   return url
 }
+export const getRepairUsers = (id) => {
+  const url = `${Test}/repairtasks/getRepairUsers?repairid=${id}`
+  return url
+}
 //  安排任务 -> 业主单位
 export const maintainDailygetProprietorOrgTree = () => {
   const url = `${Test}/organization/getProprietorOrgTree`

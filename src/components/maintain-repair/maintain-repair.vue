@@ -52,6 +52,9 @@
     <section class="subject_bottomDIv">
       <ul class="header_ul">
         <li class="repair_li">
+          维修编号
+        </li>
+        <li class="repair_lifvie">
           设施名称
         </li>
         <li class="repair_litwo">
@@ -79,6 +82,9 @@
           处理结果
         </li>
         <li class="repair_lithree">
+          结束时间
+        </li>
+        <li class="repair_lithree">
           审核状态
         </li>
         <li class="repair_litwo">
@@ -88,14 +94,17 @@
       <ul class="table_ul">
         <li :key="index" v-for="(item, index) in tabulationData" class="table_li" :class="!item.refid ? '' : 'table_liRepeat'">
           <ul class="inline_ul">
-            <li :title="item.devicename" class="repair_li">
+            <li class="repair_li">
+              {{item.repairtaskid}}
+            </li>
+            <li :title="item.devicename" class="repair_lifvie">
               {{item.devicename}}
             </li>
             <li :title="item.areaname + item.position" class="repair_litwo">
               {{item.areaname}}{{item.position}}
             </li>
             <li class="repair_lithree">
-              {{item.devicecount}}
+              {{item.devicecount}} {{item.unit}}
             </li>
             <li class="repair_lithree">
               {{item.repairtypename}}
@@ -114,6 +123,9 @@
             </li>
             <li class="repair_lithree">
               {{item.repairstatename}}
+            </li>
+            <li class="repair_lithree">
+              {{item.repairtime}}
             </li>
             <li class="repair_lithree">
               {{approvalStatusfn(item.approvalstatename)}}
@@ -154,7 +166,7 @@
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
-      <childLookover :examine="examineData" :state="taskState" @look="Onlook"></childLookover>
+      <childLookover :examine="examineData" :state="taskState" :repairtasks="repairtasksName" @look="Onlook"></childLookover>
     </section>
     <section v-if="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
@@ -174,7 +186,7 @@ import childModify from '../repair-operation/repair-arrange'
 import childExamine from '../repair-operation/repair-examine'
 import childquipment from '../repair-operation/repair-rescheduling'
 import childVerification from '../repair-operation/repair-Verification'
-import { getTaskQueryApprovalItems, findAreasTreeByProjectid, maintainRepairgetRepairStates, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindRepairTasks, maintainRepairmaintainRepairfindRepairTasksTwo, maintainRepairfindTaskByTaskid, maintainRepairremoveRepairtasks, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos } from '../../api/user'
+import { getTaskQueryApprovalItems, findAreasTreeByProjectid, maintainRepairgetRepairStates, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindRepairTasks, maintainRepairmaintainRepairfindRepairTasksTwo, maintainRepairfindTaskByTaskid, maintainRepairremoveRepairtasks, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getRepairUsers } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin],
@@ -294,8 +306,17 @@ export default {
       // 点击查看
       this.axios.post(maintainRepairfindTaskByTaskid(id)).then((response) => {
         if (response.data.code === 0) {
-          this.examineData = response.data.data
-          this.lookoverBoolean = true
+          this.axios.post(getRepairUsers(id)).then((data) => {
+            if (data.data.length !== 0) {
+              let arr = []
+              data.data.forEach((val) => {
+                arr.push(val.username)
+              })
+              this.repairtasksName = arr.join(',')
+            }
+            this.examineData = response.data.data
+            this.lookoverBoolean = true
+          })
         }
       })
       this.getTaskState()
@@ -392,7 +413,7 @@ export default {
       data.forEach((val) => {
         //  重新分配
         if (!val.refid && val.repairstate) {
-          if (val.repairstate === -5) {
+          if (val.repairstate === 0 || val.repairstate === -5) {
             val.repairBoolean = true
           } else {
             val.repairBoolean = false
@@ -424,7 +445,7 @@ export default {
         if (val.refid) {
           val.amputate = true
         } else {
-          if (val.repairstate === -5) {
+          if (val.repairstate === 0) {
             val.amputate = true
           } else {
             val.amputate = false
@@ -465,7 +486,8 @@ export default {
       JurisdictionSelect: true,
       JurisdictionInsert: true,
       JurisdictionDelete: true,
-      JurisdictionApproval: true
+      JurisdictionApproval: true,
+      repairtasksName: ''
     }
   },
   created () {
@@ -648,13 +670,18 @@ export default {
     height 32px
     padding-left 1%
   .repair_li
-    width 11%
+    width 6%
     padding-left 1%
     height 32px
     float left
     text-align left
+  .repair_lifvie
+    width 5%
+    height 32px
+    float left
+    text-align left
   .repair_litwo
-    width 14%
+    width 10%
     height 32px
     float left
     overflow hidden
@@ -667,7 +694,7 @@ export default {
     float left
     text-align center
   .repair_lifour
-    width 16%
+    width 14%
     float left
     overflow hidden
     text-overflow ellipsis
