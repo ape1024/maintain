@@ -19,7 +19,7 @@
           <div @click="signin($event)" class="fastenerDiv">
             登 录
           </div>
-          <span>2.1Bate</span>
+          <span>2.2Bate</span>
         </div>
       </div>
     </div>

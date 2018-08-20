@@ -1,6 +1,9 @@
 <template>
   <div class="headerRight">
      <div class="headerRight_left">
+       <p class="headerRight_left__p">
+         <img class="headerRight_left__img" src="../../common/img/headerRight_left_h4.png" alt=""> 红塔集团
+       </p>
         <h4 class="headerRight_left_h4">
           维护管理系统
         </h4>
@@ -114,10 +117,14 @@ export default {
        float left
        position relative
        overflow hidden
+    .headerRight_left__p
+      margin-top 10px
+      font-size 14px
+      color #d5d5d5
     .headerRight_left_h4
-      font-size $font-size-large-x
+      font-size 24px
       color $color-text
-      margin 14px 0
+      margin 4px 0
     .headerRight_bottom
        overflow hidden
     .project
@@ -160,6 +167,9 @@ export default {
                display inline-block
                margin-top -2px
                vertical-align middle
+  .headerRight_left__img
+    vertical-align middle
+    margin-right 6px
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .headerRightMaintain .el-input--suffix .el-input__inner

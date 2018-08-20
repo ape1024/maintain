@@ -144,10 +144,10 @@
               <p v-if="JurisdictionInsert && !item.approvalBoolean" class="header_p_eight threelevel_litwo_p threelevel_litwo_ptwo">
                 审核
               </p>
-              <p v-if="item.verification" @click.stop="verification(item.repairtaskid)" class="header_p_thirteen">
+              <p v-if="item.verification && JurisdictionCheck" @click.stop="verification(item.repairtaskid)" class="header_p_thirteen">
                 验证
               </p>
-              <p v-if="!item.verification" class="header_p_thirteen threelevel_litwo_ptwo">
+              <p v-if="!item.verification && JurisdictionCheck" class="header_p_thirteen threelevel_litwo_ptwo">
                 验证
               </p>
               <p v-if="JurisdictionDelete && item.amputate" class="header_p_eleven" @click.stop="amputate(index, tabulationData,item.repairtaskid)">删除</p>
@@ -414,8 +414,6 @@ export default {
         //  重新分配
         if (!val.refid && val.repairstate !== null) {
           if (val.repairstate === 0 || val.repairstate === -5) {
-            console.log('2')
-            console.log(val)
             val.repairBoolean = true
           } else {
             val.repairBoolean = false
@@ -485,10 +483,11 @@ export default {
       quipmentData: '',
       maintenance: '',
       maintenanceData: '',
-      JurisdictionSelect: true,
-      JurisdictionInsert: true,
-      JurisdictionDelete: true,
-      JurisdictionApproval: true,
+      JurisdictionSelect: '',
+      JurisdictionInsert: '',
+      JurisdictionDelete: '',
+      JurisdictionApproval: '',
+      JurisdictionCheck: '',
       repairtasksName: ''
     }
   },
@@ -501,6 +500,7 @@ export default {
         this.JurisdictionInsert = val.insert
         this.JurisdictionDelete = val.delete
         this.JurisdictionApproval = val.approval
+        this.JurisdictionCheck = val.check
       }
     })
     //  获取区域
@@ -541,9 +541,10 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
+    margin 12px
     overflow hidden
     position relative
-    background #141e30
+    background rgba(000, 000, 000,.8)
   .subject_top
     margin 38px 15px 20px 15px
     overflow hidden
