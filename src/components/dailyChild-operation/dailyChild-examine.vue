@@ -93,7 +93,7 @@
                 </li>
                 <li class="matters_litwo">
                   <!--{{item.photosArr}}-->
-                  <img class="photosImg" @click="selectImg(fieldphoto(data, item.path), index)" :key="index" v-for="(data, index) in item.photosArr" :src="`${item.path}${data}`" alt="">
+                  <img class="photosImg" @click="selectImg(fieldphoto(item.photosArr, item.path), index)" :key="index" v-for="(data, index) in item.photosArr" :src="`${item.path}${data}`" alt="">
                 </li>
                 <li class="matters_lifour">
                   <i @click.stop="amputatematters(item.checktaskdetailid)" v-if="!item.refid ? false : true" class="el-icon-close"></i>
@@ -249,12 +249,11 @@ export default {
   },
   methods: {
     fieldphoto (src, path) {
-      console.log(src)
       let arr = []
-      if (src === '' || src === null) {
+      if (!src) {
         return arr
       } else {
-        src.split(',').forEach((val) => {
+        src.forEach((val) => {
           arr.push(`${path}${val}`)
         })
         return arr

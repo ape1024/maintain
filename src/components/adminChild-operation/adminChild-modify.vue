@@ -36,7 +36,7 @@
                 </el-select>
               </div>
               <div class="modify_lidivRight">
-                <el-input v-show="customManufacturer" v-model="customManufacturerDate" placeholder="请输入厂家"></el-input>
+                <el-input size="mini" v-show="customManufacturer" v-model="customManufacturerDate" placeholder="请输入厂家"></el-input>
               </div>
             </div>
             <div class="modify_liDiv">
@@ -52,7 +52,7 @@
                 </el-select>
               </div>
               <div class="modify_lidivRight">
-                <el-input v-show="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
+                <el-input size="mini" v-show="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
               </div>
             </div>
             <div class="modify_liDivtwo">

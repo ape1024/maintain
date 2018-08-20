@@ -412,8 +412,10 @@ export default {
     functionalJudgment (data) {
       data.forEach((val) => {
         //  重新分配
-        if (!val.refid && val.repairstate) {
+        if (!val.refid && val.repairstate !== null) {
           if (val.repairstate === 0 || val.repairstate === -5) {
+            console.log('2')
+            console.log(val)
             val.repairBoolean = true
           } else {
             val.repairBoolean = false

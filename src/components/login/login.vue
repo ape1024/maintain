@@ -19,7 +19,7 @@
           <div @click="signin($event)" class="fastenerDiv">
             登 录
           </div>
-          <span>2.0Bate</span>
+          <span>2.1Bate</span>
         </div>
       </div>
     </div>
@@ -113,6 +113,8 @@ export default {
                       let insertData = ''
                       let selectData = ''
                       let updateData = ''
+                      let assignData = ''
+                      let checkData = ''
                       if (val.approval === 0) {
                         approval = false
                       } else {
@@ -138,13 +140,25 @@ export default {
                       } else {
                         updateData = true
                       }
+                      if (val.assign === 0) {
+                        assignData = false
+                      } else {
+                        assignData = true
+                      }
+                      if (val.check === 0) {
+                        checkData = false
+                      } else {
+                        checkData = true
+                      }
                       let obj = {
                         functioncode: val.functioncode,
                         approval: approval,
                         delete: deleteData,
                         insert: insertData,
                         select: selectData,
-                        update: updateData
+                        update: updateData,
+                        assign: assignData,
+                        check: checkData
                       }
                       this.authority.push(obj)
                     })

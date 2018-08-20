@@ -9,6 +9,7 @@ export const interceptors = function () {
     if (token) {
       if (config.url.indexOf('token') === -1) {
         if (config.url.indexOf('?') === -1) {
+          config.url = `${config.url}?token=${token}`
         } else {
           config.url = `${config.url}&token=${token}`
         }

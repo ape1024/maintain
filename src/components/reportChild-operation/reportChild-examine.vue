@@ -41,7 +41,7 @@
               <div class="tlefttopHeader">
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">反馈时间：</span>
-                  <span class="tlefttopli_Span">{{examine.createtime}}</span>
+                  <span class="tlefttopli_Span">{{fmtDate(examine.createtime)}}</span>
                 </p>
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">反馈人员：</span>
@@ -103,7 +103,7 @@
                     <span class="tlefttopHeaderSpan">确认状态：</span>
                   </p>
                   <div class="tlefttopHeaderPDiv">
-                    <el-select size="mini" v-model="Confirmationsdisplay" placeholder="请选择">
+                    <el-select disabled size="mini" v-model="Confirmationsdisplay" placeholder="请选择">
                       <el-option
                         v-for="item in Confirmationstate"
                         :key="item.value"
@@ -116,7 +116,7 @@
                 <li class="tlefttoplitwo tlefttoplitwoSpan">
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">确认时间：</span>
-                    <span class="tlefttopli_Span">{{examine.confirmpertime}}</span>
+                    <span class="tlefttopli_Span">{{fmtDate(examine.confirmpertime)}}</span>
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">确认人员：</span>
@@ -287,6 +287,13 @@ export default {
     }
   },
   methods: {
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = `0` + (date.getMonth() + 1)
+      let d = `0` + date.getDate()
+      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    },
     conserve () {
       let token = JSON.parse(window.sessionStorage.token)
       //  执行人员
@@ -391,7 +398,7 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin-top 100px
+    margin-top 40px
     background #111a28
     padding 40px 0
     .content
@@ -585,13 +592,15 @@ export default {
       width 50%
       max-height 285px
       min-height 285px
-      overflow-y scroll
+      overflow auto
   .assortmentLi_divtwo
     float left
     width 44%
+    max-height 285px
+    min-height 285px
     margin-right 6%
     margin-bottom 10px
-    overflow hidden
+    overflow auto
   .tree-wrapper
     overflow hidden
   .assortmentLitwo

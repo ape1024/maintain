@@ -34,7 +34,7 @@
         <ul :id="item.id" :class="[item.error + item.problem > 0?'list_dataUl':'list_data']">
           <li class="list_data_litwo">
             <span class="list_data_litwoSpan">
-                <el-checkbox v-model="item.judge" v-bind:disabled="item.available"></el-checkbox>
+                <el-checkbox v-model="item.judge" v-bind:disabled="item.available && item.repeat === 0"></el-checkbox>
             </span>
             {{item.deviceName}}
           </li>
@@ -56,7 +56,7 @@
           <li class="list_data_li">
             <p v-if="JurisdictionInsert" @click.stop="examine(item.deviceID)" class="list_data_li_p">审核</p>
             <!--<p @click.stop="distriBoolean" class="list_data_li_ptwo">快速分配</p>-->
-            <p @click.stop="ArrBoolean(item.deviceID)" class="list_data_li_ptwo">
+            <p v-if="JurisdictionAssign" @click.stop="ArrBoolean(item.deviceID)" class="list_data_li_ptwo">
               快速分配
             </p>
           </li>
@@ -114,6 +114,7 @@ export default {
       // 点击哪个设备的id
       equipmentID: '',
       JurisdictionInsert: '',
+      JurisdictionAssign: '',
       checked: false,
       dailyChild: ''
     }
@@ -159,6 +160,7 @@ export default {
     },
     arrangSwitch (ev) {
       this.ArrangetheviewBoolean = ev
+      this.$emit('examinationApproval', this.taskid)
     },
     ArrBoolean (deviceID) {
       this.equipmentID = deviceID
@@ -179,6 +181,7 @@ export default {
     },
     mineSwitch (ev) {
       this.examineBoolean = ev
+      this.$emit('examinationApproval', this.taskid)
     },
     // 开启审核
     examine (deviceID) {
@@ -203,17 +206,21 @@ export default {
     // 审核
     Mine (ev) {
       this.examineBoolean = ev
+      this.$emit('examinationApproval', this.taskid)
     },
     // 快速分配
     Dist (ev) {
       this.distributionBoolean = ev
+      this.$emit('examinationApproval', this.taskid)
     }
   },
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    console.log(Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'task_xj') {
         this.JurisdictionInsert = val.insert
+        this.JurisdictionAssign = val.assign
       }
     })
   }
