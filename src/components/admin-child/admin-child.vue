@@ -551,6 +551,8 @@ export default {
             margin-right 35px
             text-decoration underline
             cursor pointer
+  .threelevel_list_ul:hover
+    background #253147
   .review
     position fixed
     top 0

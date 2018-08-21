@@ -364,7 +364,6 @@ export default {
     DialogImg
   },
   created () {
-    console.log(this.examine)
     function fmtDate (obj) {
       let date = new Date(obj)
       let y = 1900 + date.getYear()
@@ -386,7 +385,6 @@ export default {
     })
     this.axios.post(maintainRepairgetApprovalInfos(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         this.getApprovalInfos = response.data.data
         if (this.getApprovalInfos.length !== 0) {
           this.AuditorsPersonnel = this.getApprovalInfos[0].approvername

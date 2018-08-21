@@ -417,7 +417,7 @@ export const maintainArranggetAllApprovalItems = () => {
 }
 //  修改计划
 export const maintainArrangupdatePlan = (checkPlanId, planName, planCode, worktypeid, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime) => {
-  const url = `${Test}/plan/updatePlan?checkPlanId=${this.Checkplanid}&planName=${planName}&planCode=${planCode}&worktype=${worktypeid}&planDesc=${planDesc}&startDate=${startDate}&endDate=${endDate}&checkFrequency=${checkFrequency}&interval=${interval}&createTaskTime=${createTaskTime}`
+  const url = `${Test}/plan/updatePlan?checkPlanId=${checkPlanId}&planName=${planName}&planCode=${planCode}&worktype=${worktypeid}&planDesc=${planDesc}&startDate=${startDate}&endDate=${endDate}&checkFrequency=${checkFrequency}&interval=${interval}&createTaskTime=${createTaskTime}`
   return url
 }
 //  根据工作类型获取工作模式

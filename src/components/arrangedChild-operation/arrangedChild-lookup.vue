@@ -100,7 +100,7 @@
                           <div class="nodeLabel">{{ node.label }}</div>
                           <div class="tree-checkbox">
                             <div :key="index" class="tree-checkbox-item" v-for="(item, index) in (data.users ? data.users : [])">
-                              <el-checkbox :label="item.userid"
+                              <el-checkbox :label="`${item.userid},${item.organizationid}`"
                                            :disabled="proprietorCheckList.length > 0">
                                 <svg class="icon" style="color: lightblue;width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1593"><path d="M717.664 612.195c-52.734 47.461-121.289 79.102-200.391 79.102s-147.656-31.641-205.664-79.102c-131.836 68.555-221.484 158.203-221.484 321.68l843.75 0c0-163.477-89.648-247.852-216.211-321.68zM512 628.016c131.836 0 237.305-110.742 237.305-242.578s-105.469-242.578-237.305-242.578-237.305 110.742-237.305 242.578c0 137.109 110.742 242.578 237.305 242.578z" p-id="1594"></path></svg>
                                 <span class="nodeLabel">{{item.username}}</span>
@@ -389,9 +389,9 @@ export default {
             if (val.hierarchy === 2) {
               let valId = (val.id.split(','))[0]
               let obj = {
-                code: val.code,
-                id: valId,
-                name: val.name
+                basedevicecode: val.code,
+                basedeviceid: valId,
+                basedevicename: val.name
               }
               newArr.push(obj)
             } else {
@@ -409,9 +409,9 @@ export default {
       } else {
         this.checkplan.Plandevices.forEach((val) => {
           let obj = {
-            code: val.areacode,
-            id: val.areaid,
-            name: val.areaname
+            basedevicecode: val.areacode,
+            basedeviceid: val.areaid,
+            basedevicename: val.areaname
           }
           newArr.push(obj)
         })
@@ -596,7 +596,7 @@ export default {
     //   执行人
     // this.defaultCheckedPeople
     this.Planusers.forEach((val) => {
-      this.maintenanceList.push(val.userid)
+      this.maintenanceList.push(`${val.userid},${val.organizationid}`)
     })
 
     //  选择巡检范围  this.defaultCheckedRange
@@ -605,7 +605,7 @@ export default {
     })
     //  消防设施
     this.Plandevices.forEach((val) => {
-      this.defaultCheckedFacilities.push(`${val.areaid},${this.timeStamp}`)
+      this.defaultCheckedFacilities.push(val.basedeviceid)
     })
     this.axios.post(getRepairOrgTreeByProjectId(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {

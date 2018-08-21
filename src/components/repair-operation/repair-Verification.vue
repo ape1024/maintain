@@ -531,7 +531,6 @@ export default {
     //       } else {
     //         this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
     //           if (response.data.code === 0) {
-    //             console.log(response.data.data)
     //             this.classificationBoolean = true
     //             this.faulttreatment = response.data.data.faulttreatment
     //             this.faultreason = response.data.data.faultreason
@@ -654,7 +653,6 @@ export default {
     this.axios.post(maintainRepairgetRepariTaskApprovalItem()).then((response) => {
       if (response.data.code === 0) {
         this.approvaloptions = response.data.data
-        console.log(this.approvalradio)
       }
     })
     this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {

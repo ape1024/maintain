@@ -16,7 +16,7 @@
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">设备类型</p>
+          <p class="div_p">设备类型：</p>
           <div class="div_input">
             <el-cascader
               size="mini"
@@ -357,10 +357,10 @@ export default {
      position relative
      background rgba(000,000,000, .45)
     .subject_top
-        margin 38px 15px 20px 15px
+        margin 10px
         overflow hidden
         background #111a28
-        padding 38px 0 58px
+        padding 20px 0
         display flex
       .ul_input
          margin-left 30px
@@ -545,7 +545,6 @@ export default {
      width 100%
      overflow hidden
      position relative
-     background #0b111a
      .inline_fill
        margin 6px 10px
        overflow hidden
@@ -606,11 +605,11 @@ export default {
      color $color-text-title
      font-size $font-size-medium
      .threelevel_header
-       margin: 4px;
-       overflow: hidden;
-       position: relative;
-       padding: 12px 0;
-       background: #354d76;
+       margin 4px
+       overflow hidden
+       position relative
+       padding 12px 0
+       background #354d76
        .threelevel_li
          float left
          width 11%
@@ -623,9 +622,9 @@ export default {
          width 9%
          padding-left 2%
      .threelevel_list
-       margin: 4px;
-       overflow: hidden;
-       position: relative;
+       margin 4px
+       overflow hidden
+       position relative
        .threelevel_list_li
          width 100%
          overflow hidden
@@ -633,7 +632,7 @@ export default {
          .threelevel_list_ul
            width 100%
            overflow hidden
-           padding: 12px 0;
+           padding 12px 0
            .threelevel_li
              float left
              width 11%

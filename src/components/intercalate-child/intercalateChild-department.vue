@@ -172,7 +172,6 @@ export default {
       let array = []
       // let Dom = ''
       let nodeDate = node.label
-      console.log(node.childNodes)
       this.dataChildren = node.childNodes
       if (node.parent.parent !== null) {
         // 如不是第一级 走这里，
@@ -190,7 +189,6 @@ export default {
       // 点击 左侧 子级数据渲染到input里，实现编辑
       if (data.children !== undefined) {
         let childrenIndex = data.children.length
-        console.log(data.children)
         // 首先把所有的input框清空
         for (let i = 0; i < this.amoutItem.length; i++) {
           this.amoutItem[i].input = ''
@@ -205,7 +203,6 @@ export default {
           this.amoutItem[i].input = ''
         }
       }
-      console.log()
     },
     remove (node, data) {
       const parent = node.parent
@@ -225,27 +222,21 @@ export default {
         </span>)
     },
     superinduce (data, node) {
-      console.log(data)
       data.judge = false
       var superindeuceDate = {input: '', judge: true}
       this.amoutItem.push(superindeuceDate)
-      console.log(this.amoutItem)
     },
     // 保存 目前没有解决
     preservation (node, data) {
-      console.log()
-      console.log(node)
       // let arrAy = []
       // for (let i = 0; i<data.length; i++){
       //   if (this.amoutItem[i].input !==''){
       //     arrAy.push(this.amoutItem[i].input)
       //   }
       // }
-      // console.log(arrAy)
     },
     Mine (ev) {
       this.editBoolean = ev
-      console.log(ev)
     }
   }
 }

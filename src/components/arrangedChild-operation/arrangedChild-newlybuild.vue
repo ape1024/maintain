@@ -372,9 +372,9 @@ export default {
         this.handleCheckData.forEach((val) => {
           if (val.hierarchy === 2) {
             let obj = {
-              areacode: val.code,
-              areaid: val.id,
-              areaname: val.name
+              basedevicecode: val.code,
+              basedeviceid: val.id,
+              basedevicename: val.name
             }
             newArr.push(obj)
           } else {
@@ -409,7 +409,6 @@ export default {
         })
         return false
       }
-      console.log(users)
       //   巡检范围
       let scopeInspection = []
       if (this.lookupchooseData.length !== 0) {
@@ -453,7 +452,6 @@ export default {
         interval = `1m`
         createTaskTime = `m${this.numbers}`
       }
-
       //  巡检范围  scopeInspection
       //  消防设施  checkplandetails
       //  执行人   users
@@ -466,7 +464,6 @@ export default {
       }
       //  频次
       let checkFrequency = this.frequencyradio
-
       this.axios.post(createPlan(token, worktypeid, projectid, planName, planCode, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime), param).then((response) => {
         if (response.data.code === 0) {
           this.$message({

@@ -108,7 +108,6 @@ export default {
     conserve () {
       this.pageBoolean = this.pBoolean
       this.pageBoolean = !this.pageBoolean
-      // console.log(this.pageBoolean)
       this.$emit('say', this.pageBoolean)
     }
   }

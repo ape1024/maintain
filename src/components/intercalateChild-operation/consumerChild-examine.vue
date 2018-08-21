@@ -213,7 +213,6 @@ export default {
   },
   methods: {
     fullopen ($index) {
-      console.log((this.exaDate.fullnames)[$index])
       // window.open((this.exaDate.fullnames)[$index])
     },
     closedown () {
@@ -236,7 +235,6 @@ export default {
     this.content = this.exaDate.projectsinfosviewdetail.content
     this.requirement = this.exaDate.projectsinfosviewdetail.requirement
     this.comment = this.exaDate.projectsinfosviewdetail.comment
-    console.log(this.exaDate)
     this.areas = this.exaDate.projectsinfosviewdetail.areas
   }
 }

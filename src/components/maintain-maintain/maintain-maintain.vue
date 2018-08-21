@@ -16,7 +16,7 @@
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">设备类型</p>
+          <p class="div_p">设备类型：</p>
           <div class="div_input">
             <el-cascader
               size="mini"
@@ -355,10 +355,10 @@ export default {
     position relative
     background rgba(000,000,000, .45)
   .subject_top
-    margin 38px 15px 20px 15px
+    margin 10px
     overflow hidden
     background #111a28
-    padding 38px 0 58px
+    padding 20px 0
     display flex
   .ul_input
     margin-left 30px
@@ -542,7 +542,6 @@ export default {
     width 100%
     overflow hidden
     position relative
-    background #0b111a
     .inline_fill
       margin 6px 10px
       overflow hidden
@@ -664,6 +663,9 @@ export default {
       width 100%
   .pigeonhole
     conserve()
+    width 70px
+    line-height 30px
+    height 30px
     -webkit-user-select none
     -moz-user-select none
     -ms-user-select none

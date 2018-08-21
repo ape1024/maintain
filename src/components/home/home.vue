@@ -41,7 +41,7 @@
               </li>
             </router-link>
             <router-link to="/home/archives">
-              <li>
+              <li v-if="false">
                 <i class="headerArchives"></i>
                 工作档案管理
               </li>

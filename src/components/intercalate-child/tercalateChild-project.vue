@@ -244,20 +244,17 @@ export default {
        width 33%
        color $color-background-query
        cursor pointer
-       text-decoration underline
        font-size $font-size-medium
     .contentLi_ulPtwo
        float left
        width 33%
        font-size $font-size-medium
        cursor pointer
-       text-decoration underline
        color $color-background-newly
     .contentLi_ulPthree
        float left
        width 33%
        cursor pointer
-       text-decoration underline
        font-size $font-size-medium
        color #a63232
     .subject_bottom

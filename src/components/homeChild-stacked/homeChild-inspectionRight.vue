@@ -18,7 +18,6 @@ export default {
   mounted () {
     this.axios.post(statDevFaultState()).then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data.data)
         let equipment = []
         let equipmentData = []
         response.data.data.forEach((val) => {
@@ -26,7 +25,6 @@ export default {
             value: val.Faultdevcount,
             name: val.Faulttypename
           }
-          console.log(obj)
           equipment.push(val.Faulttypename)
           equipmentData.push(obj)
         })

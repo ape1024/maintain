@@ -213,9 +213,7 @@ export default {
   },
   watch: {
     organizeOptions (val) {
-      console.log(val)
       let data = val[val.length - 1]
-      console.log(data)
       this.FindAllRolesByOrg(data)
     }
   },
@@ -223,7 +221,6 @@ export default {
     FindAllRolesByOrg (data) {
       this.axios.post(FindAllRolesByOrgID(data)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response.data.data)
           this.roleSelect = response.data.data
         }
       })
@@ -292,7 +289,6 @@ export default {
         return false
       }
       let url = appUser(urltoken, organizationid, usercode, username, Userpwd, email, tel, job, memo, roleids, headportrait)
-      console.log(url)
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {
           this.thisPage = this.increaseBoolean
@@ -326,13 +322,10 @@ export default {
     }
   },
   created () {
-    console.log('000000')
-    console.log(this.upload)
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(getRolesList(token)).then((response) => {
       if (response.data.code === 0) {
         this.roleSelect = response.data.data
-        console.log(this.roleSelect)
         return false
       } else {
         alert('请求失败')
@@ -349,7 +342,6 @@ export default {
     this.axios.post(getOrganizationTrees(token)).then((response) => {
       if (response.data.code === 0) {
         this.organize = (response.data.data)
-        console.log(this.organize)
       }
     })
   }

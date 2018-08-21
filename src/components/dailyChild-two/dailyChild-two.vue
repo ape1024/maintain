@@ -216,7 +216,7 @@ export default {
   },
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
-    console.log(Jurisdiction)
+
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'task_xj') {
         this.JurisdictionInsert = val.insert
@@ -437,7 +437,7 @@ export default {
         overflow hidden
         transition .2s
         &:hover
-          background #161d28
+          background #253147
       .list_data_li
         float left
         text-align center

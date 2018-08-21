@@ -198,7 +198,6 @@ export default {
   },
   watch: {
     organizeOptions (val) {
-      console.log('-09')
       let data = val[val.length - 1]
       this.FindAllRolesByOrg(data)
     }
@@ -207,7 +206,6 @@ export default {
     FindAllRolesByOrg (data) {
       this.axios.post(FindAllRolesByOrgID(data)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response.data.data)
           this.roleSelect = response.data.data
         }
       })
@@ -253,11 +251,9 @@ export default {
       let memo = this.textarea !== null ? this.textarea : ''
       //  角色信息
       let roleids = this.userstate.length !== 0 ? this.userstate : []
-      console.log(roleids)
       //  获取上传图片
       let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
       this.axios.post(modifytheUser(userid, organizationid, username, email, tel, userstate, job, memo, roleids, file)).then((response) => {
-        console.log(response)
         if (response.data.code === 0) {
           this.$emit('informa', false)
         }
@@ -278,17 +274,11 @@ export default {
   created () {
     if (this.communication.allorgid.length !== 0) {
       this.organizeOptions = this.communication.allorgid
-      console.log('----')
-      console.log(this.communication.allorgid)
     }
-    console.log(this.communication.job)
-    console.log(typeof this.communication.roleid)
     this.businesspostCode = this.communication.job
     // this.organizeOptions.push(this.communication)
     if (this.communication.roleid !== '') {
       let roleid = this.communication.roleid.split(';')
-      console.log(roleid)
-      console.log('090909090909090')
       // this.userstate = roleid
       roleid.forEach((val) => {
         this.userstate.push(parseInt(val))
@@ -303,8 +293,6 @@ export default {
     this.axios.post(getRolesList(token)).then((response) => {
       if (response.data.code === 0) {
         this.roleSelect = response.data.data
-        console.log('=-===')
-        console.log(this.roleSelect)
         return false
       } else {
         alert('请求失败')

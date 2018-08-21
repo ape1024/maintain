@@ -364,8 +364,10 @@ export default {
       })
       let flga = true
       arrData.forEach((val) => {
-        if (val.isassigned || val.conclusionCode > 0) {
-          flga = false
+        if (!val.isassigned || val.conclusionCode > 0) {
+          if (!val.isapproval && !val.iswaitapproval) {
+            flga = false
+          }
         }
       })
       if (arrData.length === 0) {

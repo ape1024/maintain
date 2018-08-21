@@ -11,14 +11,14 @@
               :options="regionDate"
               v-model="regionModel"
               :props="regionProps"
-              change-on-select>
+              change-on-select>>
             </el-cascader>
           </div>
         </li>
         <li class="li_input">
           <p class="div_p">维修状态：</p>
           <div class="div_input">
-            <el-select clearable size="mini" v-model="maintenanceData" placeholder="">
+            <el-select clearable size="mini" v-model="maintenanceData" placeholder="请选择">
               <el-option
                 v-for="item in maintenance"
                 :key="item.value"
@@ -44,7 +44,7 @@
       </ul>
       <div class="button">
         <!--查询-->
-        <div @click="query" class="query">
+        <div @click.stop="query" class="query">
           查 询
         </div>
       </div>
@@ -137,7 +137,7 @@
               <p v-if="JurisdictionInsert && !item.repairBoolean" class="header_p_twelve threelevel_litwo_ptwo">
                 重新分配
               </p>
-              <p v-if="JurisdictionSelect" @click.stop="examine(item.repairtaskid)" class="header_p_ten">查看</p>
+              <p v-if="JurisdictionSelect" @click.stop="examine(item)" class="header_p_ten">查看</p>
               <p v-if="JurisdictionInsert && item.approvalBoolean" @click.stop="question(item.repairtaskid)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
@@ -293,6 +293,12 @@ export default {
               message: '删除成功',
               type: 'success'
             })
+            this.axios.post(maintainRepairfindRepairTasks(this.maintainProject)).then((response) => {
+              if (response.data.code === 0) {
+                this.functionalJudgment(response.data.data)
+                this.tabulationData = response.data.data
+              }
+            })
           }
         })
       }).catch(() => {
@@ -302,8 +308,9 @@ export default {
         })
       })
     },
-    examine (id) {
+    examine (item) {
       // 点击查看
+      let id = !item.refid ? item.repairtaskid : item.refid
       this.axios.post(maintainRepairfindTaskByTaskid(id)).then((response) => {
         if (response.data.code === 0) {
           this.axios.post(getRepairUsers(id)).then((data) => {
@@ -544,15 +551,16 @@ export default {
     margin 12px
     overflow hidden
     position relative
-    background rgba(000, 000, 000,.8)
+    background rgba(0,0,0,0.45)
   .subject_top
-    margin 38px 15px 20px 15px
+    margin 10px
     overflow hidden
     background #111a28
-    padding 38px 0 58px
+    padding 18px 0
     display flex
   .ul_input
-    margin-left 30px
+    padding-left 10px
+    margin-top 3px
     overflow hidden
     float left
     position relative
@@ -561,17 +569,16 @@ export default {
     display flex
     float left
     overflow hidden
-    margin-right 20px
+    margin-left 20px
     .div_p
       float left
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height: 40px;
+      line-height 30px
     .div_input
       float left
       width 167px
-      margin-top 5px
   .button
     display flex
     float right
@@ -780,7 +787,7 @@ export default {
     cursor pointer
     float left
     margin-right 20px
-    color $color-background-introduce
+    color #3279a6
   .header_p_thirteen
     cursor pointer
     float left
@@ -800,13 +807,16 @@ export default {
     position relative
     overflow hidden
   .threelevel_litwo_ptwo
-    color #999
+    color #444
     cursor initial
   .div_inputTwo
     float left
     width 300px
-    line-height 36px
+    line-height 26px
     display flex
   .table_liRepeat
     background #3a271c!important
+  .el-input--mini .el-input__inner
+    height 32px
+    line-height 32px
 </style>

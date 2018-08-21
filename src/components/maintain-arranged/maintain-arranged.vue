@@ -447,7 +447,7 @@ export default {
   .header_p_fourteen
     float left
     margin-right 20px
-    color $color-text-tile-handle
+    color $color-text-tile-false
   .header_pe_quipment
     float left
     margin-right 20px

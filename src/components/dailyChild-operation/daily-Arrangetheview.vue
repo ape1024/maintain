@@ -278,14 +278,11 @@ export default {
       })
     },
     picturedetails (item) {
-      console.log(item.pathBoolem)
       item.pathBoolem = !item.pathBoolem
-      console.log('-0-0-0-0-0-0-0-')
     }
   },
   created () {
     this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
-      console.log(response.data.data)
       if (response.data.code === 0) {
         let arrData = []
         response.data.data.details.forEach((val) => {
@@ -324,7 +321,6 @@ export default {
           }
           arrData.push(val)
         })
-        console.log(arrData)
         this.equipment = arrData
         this.equipmentData = response.data.data
       }

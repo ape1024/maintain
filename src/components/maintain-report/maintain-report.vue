@@ -15,7 +15,7 @@
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">设备类型</p>
+          <p class="div_p">设备类型：</p>
           <div class="div_input">
             <el-cascader
               size="mini"
@@ -409,13 +409,13 @@ export default {
     position relative
     background #141e30
   .subject_top
-    margin 38px 15px 20px 15px
+    margin 10px
     overflow hidden
     background #111a28
-    padding 38px 0 58px
+    padding 20px 0
     display flex
   .ul_input
-    margin-left 30px
+    padding-left 10px
     overflow hidden
     float left
     position relative
@@ -424,13 +424,13 @@ export default {
     display flex
     float left
     overflow hidden
-    margin-right 20px
+    margin-left 20px
     .div_p
       float left
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height 30px
+      line-height 28px
     .div_input
       float left
       width 167px
@@ -439,11 +439,12 @@ export default {
     float right
     overflow hidden
     position relative
-    margin-left 60px
+    margin-left 90px
     text-align center
     line-height 36px
     font-size $font-size-medium
     color $color-text-title
+    margin-top -6px
     .query
       width 106px
       height 36px
@@ -637,12 +638,7 @@ export default {
   .header_p_fourteen
     float left
     margin-right 20px
-    color $color-text-tile-handle
+    color $color-text-tile-false
   .header_li p
     cursor pointer
-</style>
-<style lang="stylus" rel="stylesheet/stylus">
-  .div_input .el-select
-    height 40px
-    line-height 40px
 </style>

@@ -33,7 +33,7 @@ export default {
       position relative
       padding 15px 0
       margin 10px 10px
-      background rgba(000, 000, 000,.6)
+      background rgba(000, 000, 000,.47)
       .headerUl
         border-radius 5px
         overflow hidden

@@ -29,7 +29,6 @@ export default {
   },
   methods: {
     conserve () {
-      console.log(this.userid)
       let roles = []
       this.sectionLi.forEach((val) => {
         if (val.flag === true) {
@@ -51,10 +50,7 @@ export default {
     }
   },
   created () {
-    console.log(window.sessionStorage)
     let token = JSON.parse(window.sessionStorage.token)
-    console.log(token)
-    console.log('+-+')
     let getUserRolesData = []
 
     this.axios.post(getRolesList(token)).then((response) => {

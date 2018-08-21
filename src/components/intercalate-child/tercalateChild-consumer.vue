@@ -514,32 +514,27 @@ export default {
            height 36px
     .examine
       float left
-      text-decoration underline
       margin-right 16px
       cursor pointer
       color $color-background-query
     .modify
       float left
-      text-decoration underline
       margin-right 16px
       cursor pointer
       color $color-background-newly
     .authorization
       float left
-      text-decoration underline
       margin-right 16px
       cursor pointer
       color #32a697
     .password
       float left
-      text-decoration underline
       margin-right 16px
       cursor pointer
       color $color-background-introduce
     .amputate
       float left
       cursor pointer
-      text-decoration underline
       margin-right 35px
       color #a63232
     .entryList .listLi:nth-child(even)

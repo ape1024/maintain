@@ -1,8 +1,8 @@
 <template>
   <el-container>
     <div class="subject">
-      <el-header>
-        <section class="subject_top">
+      <section class="subject_top">
+        <div class="subject_top__div">
           <ul class="ul_input">
             <li class="li_input">
               <p class="div_p">区 域：</p>
@@ -39,8 +39,8 @@
             </div>
 
           </div>
-        </section>
-      </el-header>
+        </div>
+      </section>
       <el-main>
         <section class="subject_bottom">
           <ul class="header_ul">
@@ -273,11 +273,13 @@ export default {
     width 100%
     overflow hidden
     position relative
-    background #141e30
+    background rgba(000,000,000,.47)
   .subject_top
     overflow hidden
     background #111a28
     position relative
+    margin 10px
+    height 76px
   .ul_input
     margin-left 30px
     float left
@@ -286,7 +288,7 @@ export default {
   .li_input
     float left
     overflow hidden
-    margin-right 20px
+    margin-right 90px
     .div_p
       float left
       font-size $color-text-title
@@ -454,11 +456,13 @@ export default {
     background rgba(000,000,000,.4)
     z-index 11
     overflow hidden
-.el-header
-  padding 38px 20px 58px
-  margin-bottom 20px
+.subject_top__div
+  margin-top 20px
+  overflow hidden
 .el-container
   margin 12px 12px 0
 .el-main
   padding 10px
+.subject_bottom
+  background rgba(000,000,000,.35)
 </style>

@@ -980,6 +980,7 @@ export default {
       float left
       width 368px
       position relative
+      margin-right 30px
       /*margin-right 56px*/
       .leftHeader
         width 100%
@@ -1014,8 +1015,12 @@ export default {
         overflow-y auto
         overflow-x hidden
     .subjectRight
+      height 740px
+      background rgba(000,000,000,.47)
       overflow hidden
       position relative
+      padding-right 59px
+      padding-left 50px
       .rightHeader
         init()
         background #354d76

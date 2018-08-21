@@ -179,10 +179,10 @@ export default {
        display flex
     .population_left
         float left
-        width 430px
+        width 23%
         height 858px
         overflow hidden
-        margin 0 12px 0 16px
+        margin 0 .5%
         background-size cover
     .popu_h4
       margin  8px 8px 26px
@@ -216,7 +216,7 @@ export default {
          position relative
   .population_middle
     float left
-    width 1110px
+    width 58%
     overflow hidden
     position relative
     .middle_top
@@ -248,16 +248,16 @@ export default {
       overflow hidden
       float right
   .population_right
-    margin-left 12px
-    width 300px
+    margin 0 .5%
+    width 17%
     height 858px
     background-size cover
     margin-right 16px
    .progress_bar
-     overflow: hidden;
-     margin: 0 2px 16px 12px;
+     overflow: hidden
+     margin: 0 2px 16px 12px
      .progress_left
-       width: 224px;
+       width: 224px
        float left
      .integrityrate
        float right
