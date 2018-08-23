@@ -57,6 +57,7 @@ export default {
   },
   methods: {
     patternSwitch (ev) {
+      console.log(ev)
       this.updateProjectAndUpdateLocal(ev)
     },
     signout () {
@@ -75,9 +76,6 @@ export default {
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(findUserProjects(token)).then((response) => {
       if (response.data.code === 0) {
-        if (!window.localStorage.pattern) {
-        } else {
-        }
         this.options = response.data.data
         let patternBo = false
         if (!window.localStorage.pattern) {

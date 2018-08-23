@@ -376,10 +376,11 @@ export default {
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height: 30px;
+      line-height 40px
     .div_input
       float left
       width 167px
+      margin-top 5px
       display flex
 
   .button
@@ -660,6 +661,7 @@ export default {
     width 300px
     display flex
     .el-select
+      margin-top 5px
       width 100%
   .pigeonhole
     conserve()
@@ -670,4 +672,7 @@ export default {
     -moz-user-select none
     -ms-user-select none
     user-select none
+  .subject_bottom
+    background rgba(0,0,0,0.35)
+    margin 10px
 </style>

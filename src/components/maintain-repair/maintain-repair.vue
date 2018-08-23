@@ -575,9 +575,10 @@ export default {
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height 30px
+      line-height 40px
     .div_input
       float left
+      margin-top 5px
       width 167px
   .button
     display flex
@@ -803,7 +804,7 @@ export default {
     margin-right 20px
     color #83292b
   .subject_bottomDIv
-    margin 15px
+    margin 10px
     position relative
     overflow hidden
   .threelevel_litwo_ptwo
@@ -813,6 +814,7 @@ export default {
     float left
     width 300px
     line-height 26px
+    margin-top 5px
     display flex
   .table_liRepeat
     background #3a271c!important

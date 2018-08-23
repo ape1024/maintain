@@ -27,7 +27,7 @@
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">处理状态</p>
+          <p class="div_p">处理状态：</p>
           <div class="div_input">
             <el-select size="mini" v-model="dispose" placeholder="请选择">
               <el-option
@@ -40,7 +40,7 @@
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">确认状态</p>
+          <p class="div_p">确认状态：</p>
           <div class="div_input">
             <el-select size="mini" v-model="identification" placeholder="请选择">
               <el-option
@@ -407,7 +407,7 @@ export default {
     margin 12px
     overflow hidden
     position relative
-    background #141e30
+    background rgba(0,0,0,0.45)
   .subject_top
     margin 10px
     overflow hidden
@@ -430,9 +430,10 @@ export default {
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height 28px
+      line-height 40px
     .div_input
       float left
+      margin-top 5px
       width 167px
   .button
     display flex
@@ -641,4 +642,8 @@ export default {
     color $color-text-tile-false
   .header_li p
     cursor pointer
+  .subject_bottom
+    margin 10px
+    background rgba(0,0,0,0.35)
+    overflow hidden
 </style>

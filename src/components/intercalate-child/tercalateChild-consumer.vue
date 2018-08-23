@@ -469,6 +469,7 @@ export default {
            &:hover
              background #bb4d4d
     .entry
+      min-height 550px
       margin 0 10px
       overflow hidden
       .entryHeader

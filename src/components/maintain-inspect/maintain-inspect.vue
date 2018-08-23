@@ -372,9 +372,10 @@ export default {
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height: 30px;
+      line-height 40px
     .div_input
       float left
+      margin-top 5px
       width 167px
       display flex
 
@@ -655,6 +656,7 @@ export default {
   .div_inputTwo
     float left
     width 300px
+    margin-top 5px
     display flex
     .el-select
       width 100%
@@ -664,4 +666,7 @@ export default {
     -moz-user-select none
     -ms-user-select none
     user-select none
+  .subject_bottom
+    background rgba(0,0,0,0.35)
+    margin 10px
 </style>

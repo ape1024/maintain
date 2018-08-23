@@ -248,7 +248,7 @@ export default {
     max-height 750px
     position relative
     padding-bottom 70px
-    background rgba(000, 000, 000, .8)
+    background rgba(000, 000, 000, .35)
     margin 12px
     overflow auto
   .subject_top

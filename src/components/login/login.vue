@@ -1,5 +1,5 @@
 <template>
-  <div v-if="false" :style="{ background: 'url(static/img/weblogin.png) no-repeat top' }" class="subject">
+  <div v-if="true" :style="{ background: 'url(static/img/weblogin.png) no-repeat top' }" class="subject">
     <div class="subjectDiv">
       <div class="content">
         <el-input size="mini" v-model="account" placeholder="请输入账号"></el-input>
@@ -238,125 +238,125 @@ export default {
     })
   },
   created () {
-    let account = 1006
-    let password = 123456
-    let pstDate = userLogin(account, password)
-    this.axios.post(pstDate).then((response) => {
-      let data = response.data
-      if (data.code === 0) {
-        if (data.data.code === -1) {
-          alert('账号错误，请重新登录！')
-          return false
-        } else {
-          //  用户已登录
-          if (data.data.code === -3) {
-            alert('密码错误，请重新登录！')
-            return false
-          } else {
-            if (data.data.code === 0) {
-              let userinfo = JSON.stringify(response.data.data.userInfo)
-              let token = JSON.stringify(response.data.data.token)
-              window.sessionStorage.setItem('userInfo', userinfo)
-              window.sessionStorage.setItem('token', token)
-              let newToken = JSON.parse(token)
-              this.axios.post(getUserFuncions(newToken)).then((data) => {
-                data.data.forEach((val) => {
-                  let approval = ''
-                  let deleteData = ''
-                  let insertData = ''
-                  let selectData = ''
-                  let updateData = ''
-                  let assignData = ''
-                  let checkData = ''
-                  if (val.approval === 0) {
-                    approval = false
-                  } else {
-                    approval = true
-                  }
-                  if (val.delete === 0) {
-                    deleteData = false
-                  } else {
-                    deleteData = true
-                  }
-                  if (val.insert === 0) {
-                    insertData = false
-                  } else {
-                    insertData = true
-                  }
-                  if (val.select === 0) {
-                    selectData = false
-                  } else {
-                    selectData = true
-                  }
-                  if (val.update === 0) {
-                    updateData = false
-                  } else {
-                    updateData = true
-                  }
-                  if (val.assign === 0) {
-                    assignData = false
-                  } else {
-                    assignData = true
-                  }
-                  if (val.check === 0) {
-                    checkData = false
-                  } else {
-                    checkData = true
-                  }
-                  let obj = {
-                    functioncode: val.functioncode,
-                    approval: approval,
-                    delete: deleteData,
-                    insert: insertData,
-                    select: selectData,
-                    update: updateData,
-                    assign: assignData,
-                    check: checkData
-                  }
-                  this.authority.push(obj)
-                })
-                let authority = JSON.stringify(this.authority)
-                window.sessionStorage.setItem('Jurisdiction', authority)
-              })
-              // let dom = e.target
-              this.axios.post(findUserProjects(JSON.parse(token))).then((data) => {
-                if (data.data.code === 0) {
-                  if (!window.localStorage.pattern) {
-                    let projects = ''
-                    if (data.data.data.length) {
-                      projects = data.data.data[0].projectid
-                      this.updateProjectAndUpdateLocal(projects)
-                    } else {
-                      this.updateProjectAndUpdateLocal(projects)
-                    }
-                  } else {
-                    let pattern = window.localStorage.pattern
-                    let patternBoolean = false
-                    if (data.data.data.length) {
-                      data.data.data.forEach((val) => {
-                        if (val.projectid === pattern) {
-                          patternBoolean = true
-                        }
-                      })
-                      if (patternBoolean) {
-                        this.updateProjectAndUpdateLocal(pattern)
-                      } else {
-                        this.updateProjectAndUpdateLocal(data.data.data[0].projectid)
-                      }
-                    }
-                  }
-                }
-                this.$router.push('/loginBlank')
-              })
-            } else {
-              this.$message.error('登录失败')
-            }
-          }
-        }
-      } else {
-        this.$message.error('请求失败，请刷新，重新输入！')
-      }
-    })
+    // let account = 1006
+    // let password = 123456
+    // let pstDate = userLogin(account, password)
+    // this.axios.post(pstDate).then((response) => {
+    //   let data = response.data
+    //   if (data.code === 0) {
+    //     if (data.data.code === -1) {
+    //       alert('账号错误，请重新登录！')
+    //       return false
+    //     } else {
+    //       //  用户已登录
+    //       if (data.data.code === -3) {
+    //         alert('密码错误，请重新登录！')
+    //         return false
+    //       } else {
+    //         if (data.data.code === 0) {
+    //           let userinfo = JSON.stringify(response.data.data.userInfo)
+    //           let token = JSON.stringify(response.data.data.token)
+    //           window.sessionStorage.setItem('userInfo', userinfo)
+    //           window.sessionStorage.setItem('token', token)
+    //           let newToken = JSON.parse(token)
+    //           this.axios.post(getUserFuncions(newToken)).then((data) => {
+    //             data.data.forEach((val) => {
+    //               let approval = ''
+    //               let deleteData = ''
+    //               let insertData = ''
+    //               let selectData = ''
+    //               let updateData = ''
+    //               let assignData = ''
+    //               let checkData = ''
+    //               if (val.approval === 0) {
+    //                 approval = false
+    //               } else {
+    //                 approval = true
+    //               }
+    //               if (val.delete === 0) {
+    //                 deleteData = false
+    //               } else {
+    //                 deleteData = true
+    //               }
+    //               if (val.insert === 0) {
+    //                 insertData = false
+    //               } else {
+    //                 insertData = true
+    //               }
+    //               if (val.select === 0) {
+    //                 selectData = false
+    //               } else {
+    //                 selectData = true
+    //               }
+    //               if (val.update === 0) {
+    //                 updateData = false
+    //               } else {
+    //                 updateData = true
+    //               }
+    //               if (val.assign === 0) {
+    //                 assignData = false
+    //               } else {
+    //                 assignData = true
+    //               }
+    //               if (val.check === 0) {
+    //                 checkData = false
+    //               } else {
+    //                 checkData = true
+    //               }
+    //               let obj = {
+    //                 functioncode: val.functioncode,
+    //                 approval: approval,
+    //                 delete: deleteData,
+    //                 insert: insertData,
+    //                 select: selectData,
+    //                 update: updateData,
+    //                 assign: assignData,
+    //                 check: checkData
+    //               }
+    //               this.authority.push(obj)
+    //             })
+    //             let authority = JSON.stringify(this.authority)
+    //             window.sessionStorage.setItem('Jurisdiction', authority)
+    //           })
+    //           // let dom = e.target
+    //           this.axios.post(findUserProjects(JSON.parse(token))).then((data) => {
+    //             if (data.data.code === 0) {
+    //               if (!window.localStorage.pattern) {
+    //                 let projects = ''
+    //                 if (data.data.data.length) {
+    //                   projects = data.data.data[0].projectid
+    //                   this.updateProjectAndUpdateLocal(projects)
+    //                 } else {
+    //                   this.updateProjectAndUpdateLocal(projects)
+    //                 }
+    //               } else {
+    //                 let pattern = window.localStorage.pattern
+    //                 let patternBoolean = false
+    //                 if (data.data.data.length) {
+    //                   data.data.data.forEach((val) => {
+    //                     if (val.projectid === pattern) {
+    //                       patternBoolean = true
+    //                     }
+    //                   })
+    //                   if (patternBoolean) {
+    //                     this.updateProjectAndUpdateLocal(pattern)
+    //                   } else {
+    //                     this.updateProjectAndUpdateLocal(data.data.data[0].projectid)
+    //                   }
+    //                 }
+    //               }
+    //             }
+    //             this.$router.push('/loginBlank')
+    //           })
+    //         } else {
+    //           this.$message.error('登录失败')
+    //         }
+    //       }
+    //     }
+    //   } else {
+    //     this.$message.error('请求失败，请刷新，重新输入！')
+    //   }
+    // })
   }
 }
 </script>

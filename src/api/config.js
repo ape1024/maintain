@@ -1,7 +1,7 @@
 const debug = process.env.NODE_ENV !== 'production'
 
 const debugOsmUrl = 'http://172.16.5.34:8080'
-const projectOsmUrl = 'http://172.16.5.34:8080'
+const projectOsmUrl = window.osmUrlConfig
 export const osmUrl = debug ? debugOsmUrl : projectOsmUrl
 
 // const debugUrl = 'http://172.16.6.99:8910'

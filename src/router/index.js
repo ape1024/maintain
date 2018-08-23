@@ -36,6 +36,8 @@ import intercalateKarakters from '../components/intercalate-child/intercalateChi
 import tercalateConsumer from '../components/intercalate-child/tercalateChild-consumer'
 // 系统设置-项目设置
 import tercalateProject from '../components/intercalate-child/tercalateChild-project'
+//  系统设置-任务规则
+import taskrules from '../components/intercalate-child/intercalateChild-Taskrules'
 Vue.use(Router)
 
 const routes = [
@@ -117,6 +119,9 @@ const routes = [
         }, {
           path: 'project',
           component: tercalateProject
+        }, {
+          path: 'taskrules',
+          component: taskrules
         }, {
           path: '/',
           component: intercalateStructure,

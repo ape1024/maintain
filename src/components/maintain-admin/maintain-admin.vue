@@ -279,7 +279,7 @@ export default {
     background #111a28
     position relative
     margin 10px
-    height 76px
+    padding 20px 0
   .ul_input
     margin-left 30px
     float left
@@ -457,7 +457,6 @@ export default {
     z-index 11
     overflow hidden
 .subject_top__div
-  margin-top 20px
   overflow hidden
 .el-container
   margin 12px 12px 0

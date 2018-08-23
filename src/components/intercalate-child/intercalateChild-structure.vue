@@ -883,6 +883,8 @@ export default {
       }
     },
     ormatting () {
+      this.organizationshortname = ''
+      this.organizationname = ''
       this.imageUrl = ''
       this.imageUrlTwo = ''
       this.categoryfireFightingData = ''
@@ -1008,7 +1010,7 @@ export default {
         width 100%
         min-height 700px
         max-height 700px
-        overflow hidden
+        /*color red!important*/
         position relative
         background #101826
         height calc(100% - 50px)
