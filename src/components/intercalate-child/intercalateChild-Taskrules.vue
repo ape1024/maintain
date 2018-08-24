@@ -1,15 +1,23 @@
 <template>
-  <div @click="shutdown" class="subject">
+  <div class="subject">
     <section class="subjectLeft">
       <header class="leftHeader">
         <img class="subjectImg" src="../../common/img/department.png" alt="">
         <p class="subjectP">设备</p>
-        <p v-if="JurisdictionApproval" @click="subjectpCreate" class="subjectptwo">新增</p>
       </header>
       <div class="leftBottom">
         <div class="leftBottomDiv">
-          <el-tree node-click="changClick" :data="data" :props="defaultProps" highlight-current @node-click="handleNodeClick">
-          </el-tree>
+            <el-tree
+              :data="deviceTree"
+              :props="facilitiesProps"
+              @node-click="handleNodeClick"
+              node-key="id"
+              highlight-current
+              :expand-on-click-node="false">
+      <span class="custom-tree-node" slot-scope="{ node, data }">
+        <span>{{ node.label }}</span>
+      </span>
+            </el-tree>
         </div>
       </div>
     </section>
@@ -25,7 +33,7 @@
                 <el-input
                   size="mini"
                   placeholder="请输入内容"
-                  v-model="input10"
+                  v-model="matter"
                   clearable>
               </el-input>
               </span>
@@ -39,12 +47,14 @@
                 工作方式:
               </span>
                   <span class="informationLiDivSpan">
-                <el-input
-                  size="mini"
-                  placeholder="请输入内容"
-                  v-model="input10"
-                  clearable>
-              </el-input>
+                     <el-select size="mini" v-model="patternData" placeholder="请选择">
+                    <el-option
+                      v-for="item in pattern"
+                      :key="item.workmodeid"
+                      :label="item.workmodename"
+                      :value="item.workmodeid">
+                    </el-option>
+                  </el-select>
               </span>
                 </li>
                 <li class="informationLiDivUULi">
@@ -52,12 +62,14 @@
                 工作周期:
               </span>
                   <span class="informationLiDivSpan">
-                <el-input
-                  size="mini"
-                  placeholder="请输入内容"
-                  v-model="input10"
-                  clearable>
-              </el-input>
+                     <el-select size="mini" v-model="revolutionData" placeholder="请选择">
+                    <el-option
+                      v-for="item in revolution"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
               </span>
                 </li>
                 <li class="informationLiDivUULi">
@@ -68,10 +80,13 @@
                 <el-input
                   size="mini"
                   placeholder="请输入内容"
-                  v-model="input10"
+                  v-model="drawCuts"
                   clearable>
               </el-input>
               </span>
+                  <span>
+                    (单位: %)
+                  </span>
                 </li>
               </ul>
             </div>
@@ -84,23 +99,44 @@
                     修订级别:
                   </span>
                   <span class="informationLiDivSpan">
-                <el-input
-                  size="mini"
-                  placeholder="请输入内容"
-                  v-model="input10"
-                  clearable>
-              </el-input>
+                    <el-select size="mini" v-model="reformulateData" placeholder="请选择">
+                    <el-option
+                      v-for="item in reformulate"
+                      :key="item.name"
+                      :label="item.name"
+                      :value="item.name">
+                    </el-option>
+                  </el-select>
               </span>
                 </li>
-                <li class="informationLiDivUULi">
+                <li class="">
                   <span class="informationLiDivSpantwo">
                      测量范围:
                   </span>
                   <span class="informationLiDivSpan">
                 <el-input
                   size="mini"
-                  placeholder="请输入内容"
-                  v-model="input10"
+                  placeholder="最大值"
+                  v-model="MaxMeasuring"
+                  clearable>
+              </el-input>
+              </span>
+                  <span class="informationLiDivSpan">
+                <el-input
+                  size="mini"
+                  placeholder="最小值"
+                  v-model="MinMeasuring"
+                  clearable>
+              </el-input>
+              </span>
+                  <span class="informationLiDivSpanFive">
+                     测量单位:
+                  </span>
+                  <span class="informationLiDivSpan">
+                <el-input
+                  size="mini"
+                  placeholder="请输入单位"
+                  v-model="company"
                   clearable>
               </el-input>
               </span>
@@ -119,7 +155,7 @@
                 :rows="2"
                 resize="none"
                 placeholder="请输入内容"
-                v-model="textarea">
+                v-model="workingMethods">
 </el-input>
               </span>
             </div>
@@ -135,7 +171,7 @@
                 :rows="2"
                 resize="none"
                 placeholder="请输入内容"
-                v-model="textarea">
+                v-model="requirement">
 </el-input>
               </span>
             </div>
@@ -151,7 +187,7 @@
                 :rows="2"
                 resize="none"
                 placeholder="请输入内容"
-                v-model="textarea">
+                v-model="safetyRequirements">
 </el-input>
               </span>
             </div>
@@ -167,7 +203,23 @@
                 :rows="2"
                 resize="none"
                 placeholder="请输入内容"
-                v-model="textarea">
+                v-model="implement">
+</el-input>
+              </span>
+            </div>
+          </li>
+          <li class="informationLi">
+            <div class="informationLiDiv">
+              <span class="informationLiDivSpanFour">
+                备注信息:
+              </span>
+              <span class="informationLiDivSpanThree">
+              <el-input
+                type="textarea"
+                :rows="2"
+                resize="none"
+                placeholder="请输入内容"
+                v-model="comments">
 </el-input>
               </span>
             </div>
@@ -182,9 +234,90 @@
             <div class="communicationTopLeft">
               <p class="communicationTopLeftP">技术要求:</p>
               <span class="communicationTopLeftSpan">
-                <el-input size="mini" v-model="input" placeholder="请输入内容"></el-input>
+                <el-input size="mini" v-model="technical " placeholder="请输入内容"></el-input>
               </span>
             </div>
+            <div class="communicationTopLeft">
+              <p class="communicationTopLeftP">技术说明:</p>
+              <span class="communicationTopLeftSpan">
+                <el-input size="mini" v-model="technicalNote" placeholder="请输入内容"></el-input>
+              </span>
+            </div>
+          </div>
+          <div class="communicationTop">
+            <div class="communicationTopLeft">
+              <p class="defectP">缺陷等级:</p>
+              <span class="defectSpan">
+                  <el-select size="mini" v-model="faultinessData" placeholder="请选择">
+                    <el-option
+                      v-for="item in faultiness"
+                      :key="item.name"
+                      :label="item.name"
+                      :value="item.name">
+                    </el-option>
+                  </el-select>
+              </span>
+            </div>
+            <div class="communicationTopLeft">
+              <!--添加-->
+              <div class="superinduce">
+                添加
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="taskrulesList">
+          <ul class="taskrulesListUl">
+            <li class="taskrulesListLi">
+              序号
+            </li>
+            <li class="taskrulesListLi">
+              技术要求
+            </li>
+            <li class="taskrulesListLi">
+              技术说明
+            </li>
+            <li class="taskrulesListLi">
+              缺陷等级
+            </li>
+            <li class="taskrulesListLi">
+              操作
+            </li>
+          </ul>
+          <ul class="taskrulesSummarizing">
+            <li class="taskrulesSummarizingLi">
+              <ul class="taskrulesSummarizingLiUl">
+                <li class="taskrulesListLi">1</li>
+                <li class="taskrulesListLi">2</li>
+                <li class="taskrulesListLi">3</li>
+                <li class="taskrulesListLi">4</li>
+                <li class="taskrulesListLi">
+                  <span class="eleven">删除</span>
+                </li>
+              </ul>
+            </li>
+            <li class="taskrulesSummarizingLi">
+              <ul class="taskrulesSummarizingLiUl">
+                <li class="taskrulesListLi">1</li>
+                <li class="taskrulesListLi">2</li>
+                <li class="taskrulesListLi">3</li>
+                <li class="taskrulesListLi">4</li>
+                <li class="taskrulesListLi">
+                  <span class="eleven">删除</span>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="manipulation">
+          <div class="newlyAdded">
+            新增
+          </div>
+          <div class="conserve">
+            保存
+          </div>
+          <div class="closedown">
+            关闭
           </div>
         </div>
       </div>
@@ -193,19 +326,208 @@
 </template>
 
 <script>
+import { findAllDeviceType } from '../../api/user'
+const LEVEL = {
+  level1: 1,
+  level2: 2
+}
 export default {
   name: 'intercalateChild-structure',
   data () {
     return {
-
+      //  设备树
+      deviceTree: [],
+      deviceTreeData: [],
+      //  工作事项
+      matter: '',
+      //  工作方式
+      pattern: [],
+      patternData: '',
+      //  工作周期
+      revolution: [],
+      revolutionData: '',
+      //  抽签比例
+      drawCuts: '',
+      //  修订级别
+      reformulate: '',
+      reformulateData: '',
+      //  测量范围
+      MaxMeasuring: '',
+      MinMeasuring: '',
+      //  工作方法
+      workingMethods: '',
+      //  质量要求
+      requirement: '',
+      //  安全要求
+      safetyRequirements: '',
+      //  工具适用
+      implement: '',
+      //  技术要求
+      technical: '',
+      //  技术说明
+      technicalNote: '',
+      //  缺陷等级
+      faultiness: '',
+      faultinessData: '',
+      //  测量单位
+      company: '',
+      //  备注信息
+      comments: '',
+      facilitiesProps: {
+        children: 'children',
+        label: 'name',
+        value: 'id'
+      },
+      //  点击三级渲染到右侧的对象 id code
+      transmit: {
+        basedevicecode: '',
+        checkstandardid: '',
+        devicetypeid: ''
+      }
     }
   },
   watch: {
   },
   methods: {
+    handleNodeClick (node, resolve) {
+      console.log(node)
+      console.log(resolve)
+      switch (node.Identification) {
+        case 1:
+          this.formatting()
+          break
+        case 2:
+          this.axios.post(`http://172.16.6.181:8920/plan/getCheckStandardsByBasedevicecode?basedevicecode=${node.code}`).then((response) => {
+            if (response.data.code === 0) {
+              let responseData = response.data.data
+              if (responseData.length) {
+                let arr = []
+                responseData.forEach((val) => {
+                  let obj = {
+                    name: val.workitem,
+                    code: val.basedevicecode,
+                    value: val.checkstandardid
+                  }
+                  arr.push(obj)
+                })
+                node.children = arr
+              }
+            }
+          })
+          this.formatting()
+          break
+        default:
+          this.formatting()
+          console.log(node.value)
+          this.axios.post(`http://172.16.6.181:8920/plan/getCheckStandard?checkstandardid=${node.value}`).then((response) => {
+            console.log(response)
+            if (response.data.code === 0) {
+              let data = response.data.data
+              console.log(data)
+              this.transmit.basedevicecode = data.basedevicecode
+              this.transmit.checkstandardid = data.checkstandardid
+              this.transmit.devicetypeid = data.devicetypeid
+              //  工作事项
+              this.matter = data.workitem
+              //  工作方式
+              this.patternData = data.workmodeid
+              //  备注信息
+              this.comments = data.memo
+              //  质量要求
+              this.requirement = data.qualityrequirement
+              //  修订
+              this.reformulateData = data.revisionlevel
+              //  安全要求
+              this.safetyRequirements = data.safetyrequirements
+              //  抽选比例
+              this.drawCuts = data.selectionratio
+              //  工具适用
+              this.implement = data.tool
+              //  工作周期
+              this.revolutionData = data.workcycleid
+              //  工作方法
+              this.workingMethods = data.workingmethods
+              this.axios.post(`http://172.16.6.181:8920/plan/getStandardparams?checkstandardid=${node.value}`).then((item) => {
+                if (item.data.code === 0) {
+                  console.log('///////')
+                  console.log(item)
+                }
+              })
+            }
+          })
+          break
+      }
+    },
+    resetTree (tree, index) {
+      return tree.map(t => {
+        const num = index + 1
+        return {
+          ...t,
+          Identification: LEVEL[`level${index}`],
+          children: t.children ? this.resetTree(t.children, num) : t.children
+        }
+      })
+    },
+    //  初始化,右侧所有数据
+    formatting () {
+      this.matter = ''
+      this.patternData = ''
+      this.revolutionData = ''
+      this.drawCuts = ''
+      this.reformulateData = ''
+      this.MinMeasuring = ''
+      this.MaxMeasuring = ''
+      this.company = ''
+      this.workingMethods = ''
+      this.requirement = ''
+      this.safetyRequirements = ''
+      this.implement = ''
+      this.comments = ''
+      this.technical = ''
+      this.technicalNote = ''
+      this.faultinessData = ''
+    }
   },
   created () {
-
+    this.axios.post(findAllDeviceType()).then((response) => {
+      if (response.data.code === 0) {
+        if (response.data.data.length) {
+          const filterArr = response.data.data.filter(t => t.name !== '全部')
+          const arr = this.resetTree(filterArr, 1)
+          console.log(arr)
+          this.deviceTree = arr
+        }
+      }
+    })
+    //  获取工作缺陷
+    this.axios.post(`http://172.16.6.181:8920/plan/getFaultTypes`).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response)
+        response.data.data.forEach((val) => {
+          val.name = val.name.toUpperCase()
+        })
+        this.faultiness = response.data.data
+      }
+    })
+    //  修订级别
+    this.axios.post(`http://172.16.6.181:8920/plan/getRevisionlevel`).then((response) => {
+      if (response.data.code === 0) {
+        this.reformulate = response.data.data
+      }
+    })
+    //  工作周期
+    this.axios.post(`http://172.16.6.181:8920/plan/getAllWorkcycle`).then((response) => {
+      if (response.data.code === 0) {
+        this.revolution = response.data.data
+      }
+    })
+    //  获取所有的工作方式
+    this.axios.post(`http://172.16.6.181:8920/plan/getWorkModes`).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response)
+        this.pattern = response.data.data
+      }
+    })
   }
 }
 </script>
@@ -252,9 +574,10 @@ export default {
         overflow-y auto
         overflow-x hidden
     .subjectRight
-      height 740px
+      max-height 740px
       background rgba(000,000,000,.47)
       overflow hidden
+      overflow-y auto
       position relative
       .rightHeader
         init()
@@ -331,14 +654,12 @@ export default {
       height 100%
   .el-tree
     background transparent
-  .custom-tree-node
-    color $color-text
   .el-button--text
     color $color-border-b-fault
   .information
     overflow-y auto
     position relative
-    margin 12px 30px
+    margin 30px
     .informationUl
       overflow hidden
       border 1px solid #444d5b
@@ -378,7 +699,7 @@ export default {
       margin-right 20px
     .bottom_headerthread
       float right
-      width 1330px
+      width 1280px
       height 1px
       background #444d5b
       margin-top 8px
@@ -395,6 +716,8 @@ export default {
         width 50%
         .communicationTopLeftP
           color #fff
+          line-height 28px
+          margin-right 20px
           float left
         .communicationTopLeftSpan
           display inline-block
@@ -410,4 +733,93 @@ export default {
       float left
       overflow hidden
       width 30%
+  .defectP
+    color #fff
+    line-height 28px
+    margin-right 20px
+    float left
+  .defectSpan
+     float left
+  .superinduce
+    display inline-block
+    width 107px
+    float right
+    color #fff
+    border-radius 5px
+    margin-right 78px
+    height 36px
+    text-align center
+    line-height 36px
+    background #3292a6
+    transition .2s
+    cursor pointer
+    &:hover
+      background #369aaf
+  .taskrulesList
+    overflow hidden
+    position relative
+    font-size 16px
+    width 100%
+  .taskrulesListUl
+    width 100%
+    background #354d76
+    position relative
+    overflow hidden
+    color #d5d5d5
+  .taskrulesListLi
+    float left
+    height 37px
+    text-align center
+    line-height 37px
+    position relative
+    overflow hidden
+    width 20%
+  .taskrulesSummarizing
+    overflow hidden
+    width 100%
+    position relative
+    .taskrulesSummarizingLiUl
+      width 100%
+      color #eee
+      overflow hidden
+  .taskrulesSummarizing .taskrulesSummarizingLi:nth-child(even)
+     background #141d2c
+  .taskrulesSummarizing .taskrulesSummarizingLi:nth-child(odd)
+     background #1c273a
+  .eleven
+    cursor pointer
+    color #83292b
+  .manipulation
+    overflow hidden
+    text-align center
+    color #fff
+    margin 50px 0 20px
+    position relative
+    .newlyAdded
+      display inline-block
+      width 107px
+      margin-right 20px
+      color #fff
+      border-radius 5px
+      height 36px
+      text-align center
+      line-height 36px
+      background #5ea8d7
+      transition .2s
+      cursor pointer
+      &:hover
+        background #62b4e8
+    .conserve
+      margin-right 20px
+      conserve()
+    .closedown
+      closedown()
+  .informationLiDivSpanFive
+     margin  0 20px
+  .leftBottomDiv
+     font-size 14px
+     color #999!important
+     margin 10px 0
+  .custom-tree-node
+    line-height 22px
 </style>

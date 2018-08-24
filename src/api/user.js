@@ -659,3 +659,7 @@ export const SetCheckTaskFiled = (taskID) => {
   const url = `${Test}/task/SetCheckTaskFiled?checktaskid=${taskID}`
   return url
 }
+export const getCheckStandardsByBasedevicecode = (basedevicecode) => {
+  const url = `${Test}/plan/getCheckStandardsByBasedevicecode?basedevicecode=${basedevicecode}`
+  return url
+}

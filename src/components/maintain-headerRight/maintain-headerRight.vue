@@ -95,8 +95,10 @@ export default {
           if (patternBo) {
             this.value = pattern
           } else {
-            this.value = response.data.data[0].projectid
-            window.localStorage.pattern = this.value
+            if (response.data.data.length) {
+              this.value = response.data.data[0].projectid
+              window.localStorage.pattern = this.value
+            }
           }
         }
       }
