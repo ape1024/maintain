@@ -663,3 +663,39 @@ export const getCheckStandardsByBasedevicecode = (basedevicecode) => {
   const url = `${Test}/plan/getCheckStandardsByBasedevicecode?basedevicecode=${basedevicecode}`
   return url
 }
+export const getCheckStandard = (value) => {
+  const url = `${Test}/plan/getCheckStandard?checkstandardid=${value}`
+  return url
+}
+export const getStandardparams = (value) => {
+  const url = `${Test}/plan/getStandardparams?checkstandardid=${value}`
+  return url
+}
+export const getTechnicalRequirements = (value) => {
+  const url = `${Test}/plan/getTechnicalRequirements?checkstandardid=${value}`
+  return url
+}
+export const deleteCheckStandard = (tabulationID) => {
+  const url = `${Test}/plan/deleteCheckStandard?checkstandardid=${tabulationID}`
+  return url
+}
+export const creatOrUpdateCheckStandard = (MinData, MaxData, unit) => {
+  const url = `${Test}/plan/creatOrUpdateCheckStandard?min=${MinData}&max=${MaxData}&unit=${unit}`
+  return url
+}
+export const getFaultTypes = () => {
+  const url = `${Test}/plan/getFaultTypes`
+  return url
+}
+export const getRevisionlevel = () => {
+  const url = `${Test}/plan/getRevisionlevel`
+  return url
+}
+export const getAllWorkcycle = () => {
+  const url = `${Test}/plan/getAllWorkcycle`
+  return url
+}
+export const getWorkModes = () => {
+  const url = `${Test}/plan/getWorkModes`
+  return url
+}

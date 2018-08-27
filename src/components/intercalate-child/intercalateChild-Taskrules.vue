@@ -4,6 +4,7 @@
       <header class="leftHeader">
         <img class="subjectImg" src="../../common/img/department.png" alt="">
         <p class="subjectP">设备</p>
+        <p @click="subjectptwo" class="subjectptwo">新增</p>
       </header>
       <div class="leftBottom">
         <div class="leftBottomDiv">
@@ -11,6 +12,7 @@
               :data="deviceTree"
               :props="facilitiesProps"
               @node-click="handleNodeClick"
+              accordion
               node-key="id"
               highlight-current
               :expand-on-click-node="false">
@@ -23,6 +25,7 @@
     </section>
     <section class="subjectRight">
       <div class="information">
+        <div v-if="maks" class="subjectRightMask"></div>
         <ul class="informationUl">
           <li class="informationLi">
             <div class="informationLiDiv">
@@ -116,16 +119,17 @@
                   <span class="informationLiDivSpan">
                 <el-input
                   size="mini"
-                  placeholder="最大值"
-                  v-model="MaxMeasuring"
+                  placeholder="最小值"
+                  v-model="MinMeasuring"
                   clearable>
               </el-input>
               </span>
+                  <span class="informationLiDivSpan">~</span>
                   <span class="informationLiDivSpan">
                 <el-input
                   size="mini"
-                  placeholder="最小值"
-                  v-model="MinMeasuring"
+                  placeholder="最大值"
+                  v-model="MaxMeasuring"
                   clearable>
               </el-input>
               </span>
@@ -260,7 +264,7 @@
             </div>
             <div class="communicationTopLeft">
               <!--添加-->
-              <div class="superinduce">
+              <div @click="superinduce" class="superinduce">
                 添加
               </div>
             </div>
@@ -285,39 +289,32 @@
             </li>
           </ul>
           <ul class="taskrulesSummarizing">
-            <li class="taskrulesSummarizingLi">
+            <li :key="index" v-for="(item, index) in tabulation" class="taskrulesSummarizingLi">
               <ul class="taskrulesSummarizingLiUl">
-                <li class="taskrulesListLi">1</li>
-                <li class="taskrulesListLi">2</li>
-                <li class="taskrulesListLi">3</li>
-                <li class="taskrulesListLi">4</li>
                 <li class="taskrulesListLi">
-                  <span class="eleven">删除</span>
+                  {{index + 1}}
                 </li>
-              </ul>
-            </li>
-            <li class="taskrulesSummarizingLi">
-              <ul class="taskrulesSummarizingLiUl">
-                <li class="taskrulesListLi">1</li>
-                <li class="taskrulesListLi">2</li>
-                <li class="taskrulesListLi">3</li>
-                <li class="taskrulesListLi">4</li>
                 <li class="taskrulesListLi">
-                  <span class="eleven">删除</span>
+                  {{item.requirement}}
+                </li>
+                <li :title="item.requirementdesc" class="taskrulesListLi">{{item.requirementdesc}}</li>
+                <li class="taskrulesListLi">{{item.faulttype}}</li>
+                <li class="taskrulesListLi">
+                  <span @click="elevenClick(item.checkstandardid, index)" class="eleven">删除</span>
                 </li>
               </ul>
             </li>
           </ul>
         </div>
         <div class="manipulation">
-          <div class="newlyAdded">
-            新增
+          <div v-if="!maksConserve" @click="newlyAdded" class="newlyAdded">
+            新增保存
           </div>
-          <div class="conserve">
+          <div v-if="maksConserve" @click="conserve" class="conserve">
             保存
           </div>
-          <div class="closedown">
-            关闭
+          <div @click="closedown" class="closedown">
+            删除
           </div>
         </div>
       </div>
@@ -326,7 +323,7 @@
 </template>
 
 <script>
-import { findAllDeviceType } from '../../api/user'
+import { findAllDeviceType, getCheckStandardsByBasedevicecode, getCheckStandard, getStandardparams, getTechnicalRequirements, deleteCheckStandard, creatOrUpdateCheckStandard, getFaultTypes, getRevisionlevel, getAllWorkcycle, getWorkModes } from '../../api/user'
 const LEVEL = {
   level1: 1,
   level2: 2
@@ -335,6 +332,10 @@ export default {
   name: 'intercalateChild-structure',
   data () {
     return {
+      maksConserve: true,
+      maks: true,
+      //  下方列表
+      tabulation: [],
       //  设备树
       deviceTree: [],
       deviceTreeData: [],
@@ -383,21 +384,33 @@ export default {
         basedevicecode: '',
         checkstandardid: '',
         devicetypeid: ''
-      }
+      },
+      tabulationID: '',
+      basedeviceCode: '',
+      checkStandardsNode: []
     }
   },
   watch: {
   },
   methods: {
-    handleNodeClick (node, resolve) {
-      console.log(node)
-      console.log(resolve)
+    handleNodeClick (node) {
       switch (node.Identification) {
         case 1:
+          this.maks = true
+          this.maksConserve = true
+          this.basedeviceCode = ''
+          this.tabulationID = ''
           this.formatting()
           break
         case 2:
-          this.axios.post(`http://172.16.6.181:8920/plan/getCheckStandardsByBasedevicecode?basedevicecode=${node.code}`).then((response) => {
+          this.maks = false
+          this.maksConserve = false
+          this.checkStandardsNode = node
+          this.tabulation = []
+          this.basedeviceCode = node.code
+          this.tabulationID = ''
+
+          this.axios.post(getCheckStandardsByBasedevicecode(node.code)).then((response) => {
             if (response.data.code === 0) {
               let responseData = response.data.data
               if (responseData.length) {
@@ -410,16 +423,19 @@ export default {
                   }
                   arr.push(obj)
                 })
-                node.children = arr
+                this.checkStandardsNode.children = arr
               }
             }
           })
           this.formatting()
           break
         default:
+          this.maks = false
           this.formatting()
           console.log(node.value)
-          this.axios.post(`http://172.16.6.181:8920/plan/getCheckStandard?checkstandardid=${node.value}`).then((response) => {
+
+          this.axios.post(getCheckStandard(node.value)).then((response) => {
+            this.tabulationID = node.value
             console.log(response)
             if (response.data.code === 0) {
               let data = response.data.data
@@ -447,10 +463,27 @@ export default {
               this.revolutionData = data.workcycleid
               //  工作方法
               this.workingMethods = data.workingmethods
-              this.axios.post(`http://172.16.6.181:8920/plan/getStandardparams?checkstandardid=${node.value}`).then((item) => {
+
+              this.axios.post(getStandardparams(node.value)).then((item) => {
                 if (item.data.code === 0) {
+                  if (!item.data.data.length) {
+                    return false
+                  } else {
+                    //  测量单位
+                    this.company = item.data.data[0].unit
+                    //  最小值
+                    this.MinMeasuring = item.data.data[0].minvalue ? item.data.data[0].minvalue : ''
+                    //  最大值
+                    this.MaxMeasuring = item.data.data[0].maxvalue ? item.data.data[0].maxvalue : ''
+                  }
+                }
+              })
+
+              this.axios.post(getTechnicalRequirements(node.value)).then((data) => {
+                if (data.data.code === 0) {
                   console.log('///////')
-                  console.log(item)
+                  console.log(data)
+                  this.tabulation = data.data.data
                 }
               })
             }
@@ -486,6 +519,366 @@ export default {
       this.technical = ''
       this.technicalNote = ''
       this.faultinessData = ''
+      this.tabulation = []
+    },
+    elevenClick (checkstandardid, index) {
+      this.$confirm('将删除该工作准备, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.tabulation.splice(index, 1)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    superinduce () {
+      if (!this.technical) {
+        this.$message({
+          message: '请填写技术要求',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.technicalNote) {
+        this.$message({
+          message: '请填写技术说明',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.faultinessData) {
+        this.$message({
+          message: '请填写缺陷等级',
+          type: 'warning'
+        })
+        return false
+      } else {
+        let obj = {
+          requirement: this.technical,
+          requirementdesc: this.technicalNote,
+          faulttype: this.faultinessData
+        }
+        console.log(obj)
+        this.tabulation.push(obj)
+      }
+    },
+    closedown () {
+
+      this.axios.post(deleteCheckStandard(this.tabulationID)).then((response) => {
+        if (response.data.code === 0) {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.formatting()
+
+          this.axios.post(getCheckStandardsByBasedevicecode(this.basedeviceCode)).then((data) => {
+            if (data.data.code === 0) {
+              let responseData = data.data.data
+              if (responseData.length) {
+                let arr = []
+                responseData.forEach((val) => {
+                  let obj = {
+                    name: val.workitem,
+                    code: val.basedevicecode,
+                    value: val.checkstandardid
+                  }
+                  arr.push(obj)
+                })
+                this.checkStandardsNode.children = arr
+              } else {
+                this.checkStandardsNode.children = []
+              }
+            }
+          })
+        }
+      })
+    },
+    conserve () {
+      let MinMeasuring = !isNaN(this.MinMeasuring) ? Number(this.MinMeasuring) : ''
+      let MaxMeasuring = !isNaN(this.MaxMeasuring) ? Number(this.MaxMeasuring) : ''
+      let drawCuts = !isNaN(this.drawCuts) ? Number(this.drawCuts) : ''
+      let Minresult = MinMeasuring.toString().indexOf('.')
+      let Maxresult = MaxMeasuring.toString().indexOf('.')
+      let resultDrawCuts = drawCuts.toString().indexOf('.')
+      let MinData = ''
+      let MaxData = ''
+      let drawCutsData = ''
+      if (Minresult !== -1) {
+        MinData = MinMeasuring.toFixed(2)
+      } else {
+        MinData = MinMeasuring
+      }
+      if (Maxresult !== -1) {
+        console.log(MaxMeasuring)
+        MaxData = MaxMeasuring.toFixed(2)
+      } else {
+        MaxData = MaxMeasuring
+      }
+      if (resultDrawCuts !== -1) {
+        console.log(Number(drawCuts).toFixed(2))
+        drawCutsData = drawCuts.toFixed(2)
+      } else {
+        drawCutsData = drawCuts
+      }
+      if (!this.matter) {
+        this.$message({
+          message: '工作事项不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.patternData) {
+        this.$message({
+          message: '工作方式不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.revolutionData) {
+        this.$message({
+          message: '工作周期不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!drawCutsData) {
+        this.$message({
+          message: '抽签比例不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.reformulateData) {
+        this.$message({
+          message: '修订级别不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.workingMethods) {
+        this.$message({
+          message: '工作方法不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.requirement) {
+        this.$message({
+          message: '质量要求不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.safetyRequirements) {
+        this.$message({
+          message: '质量要求不能为空',
+          type: 'warning'
+        })
+        return false
+      } else {
+        let unit = this.company ? this.company : ''
+        let arr = []
+        this.tabulation.forEach((val) => {
+          let obj = {
+            requirement: val.requirement,
+            requirementdesc: val.requirementdesc,
+            faulttype: val.faulttype
+          }
+          arr.push(obj)
+        })
+        console.log(arr)
+        let param = {
+          checkstandards: {
+            basedevicecode: this.basedeviceCode,
+            checkstandardid: this.tabulationID,
+            memo: this.comments,
+            qualityrequirement: this.requirement,
+            revisionlevel: this.reformulateData,
+            safetyrequirements: this.safetyRequirements,
+            selectionratio: drawCutsData,
+            tool: this.implement,
+            //  工作方式id
+            workmodeid: this.patternData,
+            //  工作周期id
+            workcycleid: this.revolutionData,
+            workingmethods: this.workingMethods,
+            workitem: this.matter
+          },
+          technicalrequirements: arr
+        }
+
+        this.axios.post(creatOrUpdateCheckStandard(MinData, MaxData, unit), param).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            this.axios.post(getCheckStandardsByBasedevicecode(this.basedeviceCode)).then((data) => {
+              if (data.data.code === 0) {
+                let responseData = data.data.data
+                if (responseData.length) {
+                  let arr = []
+                  responseData.forEach((val) => {
+                    let obj = {
+                      name: val.workitem,
+                      code: val.basedevicecode,
+                      value: val.checkstandardid
+                    }
+                    arr.push(obj)
+                  })
+                  this.checkStandardsNode.children = arr
+                }
+              }
+            })
+          }
+        })
+      }
+    },
+    newlyAdded () {
+      let MinMeasuring = !isNaN(this.MinMeasuring) ? Number(this.MinMeasuring) : ''
+      let MaxMeasuring = !isNaN(this.MaxMeasuring) ? Number(this.MaxMeasuring) : ''
+      let drawCuts = !isNaN(this.drawCuts) ? Number(this.drawCuts) : ''
+      let Minresult = MinMeasuring.toString().indexOf('.')
+      let Maxresult = MaxMeasuring.toString().indexOf('.')
+      let resultDrawCuts = drawCuts.toString().indexOf('.')
+      let MinData = ''
+      let MaxData = ''
+      let drawCutsData = ''
+      if (Minresult !== -1) {
+        MinData = MinMeasuring.toFixed(2)
+      } else {
+        MinData = MinMeasuring
+      }
+      if (Maxresult !== -1) {
+        console.log(MaxMeasuring)
+        MaxData = MaxMeasuring.toFixed(2)
+      } else {
+        MaxData = MaxMeasuring
+      }
+      if (resultDrawCuts !== -1) {
+        console.log(Number(drawCuts).toFixed(2))
+        drawCutsData = drawCuts.toFixed(2)
+      } else {
+        drawCutsData = drawCuts
+      }
+      if (!this.matter) {
+        this.$message({
+          message: '工作事项不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.patternData) {
+        this.$message({
+          message: '工作方式不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.revolutionData) {
+        this.$message({
+          message: '工作周期不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!drawCutsData) {
+        this.$message({
+          message: '抽签比例不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.reformulateData) {
+        this.$message({
+          message: '修订级别不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.workingMethods) {
+        this.$message({
+          message: '工作方法不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.requirement) {
+        this.$message({
+          message: '质量要求不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (!this.safetyRequirements) {
+        this.$message({
+          message: '质量要求不能为空',
+          type: 'warning'
+        })
+        return false
+      } else {
+        let unit = this.company ? this.company : ''
+        let arr = []
+        this.tabulation.forEach((val) => {
+          let obj = {
+            requirement: val.requirement,
+            requirementdesc: val.requirementdesc,
+            faulttype: val.faulttype
+          }
+          arr.push(obj)
+        })
+        console.log(arr)
+        let param = {
+          checkstandards: {
+            basedevicecode: this.basedeviceCode,
+            checkstandardid: -1,
+            memo: this.comments,
+            qualityrequirement: this.requirement,
+            revisionlevel: this.reformulateData,
+            safetyrequirements: this.safetyRequirements,
+            selectionratio: drawCutsData,
+            tool: this.implement,
+            //  工作方式id
+            workmodeid: this.patternData,
+            //  工作周期id
+            workcycleid: this.revolutionData,
+            workingmethods: this.workingMethods,
+            workitem: this.matter
+          },
+          technicalrequirements: arr
+        }
+
+        this.axios.post(creatOrUpdateCheckStandard(MinData, MaxData, unit), param).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            })
+            this.axios.post(getCheckStandardsByBasedevicecode(this.basedeviceCode)).then((data) => {
+              if (data.data.code === 0) {
+                let responseData = data.data.data
+                if (responseData.length) {
+                  let arr = []
+                  responseData.forEach((val) => {
+                    let obj = {
+                      name: val.workitem,
+                      code: val.basedevicecode,
+                      value: val.checkstandardid
+                    }
+                    arr.push(obj)
+                  })
+                  this.checkStandardsNode.children = arr
+                }
+              }
+            })
+          }
+        })
+      }
+    },
+    subjectptwo () {
+      if (!this.basedeviceCode) {
+        this.$message({
+          message: '请选择二级设备,才可以添加',
+          type: 'warning'
+        })
+        return false
+      } else {
+        this.maks = false
+        this.maksConserve = false
+        this.tabulation = []
+        this.formatting()
+      }
     }
   },
   created () {
@@ -500,7 +893,7 @@ export default {
       }
     })
     //  获取工作缺陷
-    this.axios.post(`http://172.16.6.181:8920/plan/getFaultTypes`).then((response) => {
+    this.axios.post(getFaultTypes()).then((response) => {
       if (response.data.code === 0) {
         console.log(response)
         response.data.data.forEach((val) => {
@@ -510,19 +903,19 @@ export default {
       }
     })
     //  修订级别
-    this.axios.post(`http://172.16.6.181:8920/plan/getRevisionlevel`).then((response) => {
+    this.axios.post(getRevisionlevel()).then((response) => {
       if (response.data.code === 0) {
         this.reformulate = response.data.data
       }
     })
     //  工作周期
-    this.axios.post(`http://172.16.6.181:8920/plan/getAllWorkcycle`).then((response) => {
+    this.axios.post(getAllWorkcycle()).then((response) => {
       if (response.data.code === 0) {
         this.revolution = response.data.data
       }
     })
     //  获取所有的工作方式
-    this.axios.post(`http://172.16.6.181:8920/plan/getWorkModes`).then((response) => {
+    this.axios.post(getWorkModes()).then((response) => {
       if (response.data.code === 0) {
         console.log(response)
         this.pattern = response.data.data
@@ -773,6 +1166,8 @@ export default {
     line-height 37px
     position relative
     overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
     width 20%
   .taskrulesSummarizing
     overflow hidden
@@ -822,4 +1217,17 @@ export default {
      margin 10px 0
   .custom-tree-node
     line-height 22px
+  .subjectptwo
+    float right
+    cursor pointer
+    color #3acf76
+    margin-right 20px
+  .subjectRightMask
+    top 0
+    left 0
+    position absolute
+    z-index 111
+    width 100%
+    height 100%
+    background rgba(000,000,000,.6)
 </style>
