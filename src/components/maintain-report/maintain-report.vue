@@ -7,6 +7,7 @@
           <div class="div_input">
             <el-cascader
               size="mini"
+              clearable
               :options="regionDate"
               v-model="regionModel"
               :props="regionProps"
@@ -19,6 +20,7 @@
           <div class="div_input">
             <el-cascader
               size="mini"
+              clearable
               v-model="equipmentDate"
               :options="equipment"
               :props="equipmentProps"
@@ -29,7 +31,7 @@
         <li class="li_input">
           <p class="div_p">处理状态：</p>
           <div class="div_input">
-            <el-select size="mini" v-model="dispose" placeholder="请选择">
+            <el-select clearable size="mini" v-model="dispose" placeholder="请选择">
               <el-option
                 v-for="item in disposeData"
                 :key="item.value"
@@ -42,7 +44,7 @@
         <li class="li_input">
           <p class="div_p">确认状态：</p>
           <div class="div_input">
-            <el-select size="mini" v-model="identification" placeholder="请选择">
+            <el-select clearable size="mini" v-model="identification" placeholder="请选择">
               <el-option
                 v-for="item in identificationData"
                 :key="item.value"

@@ -57,7 +57,6 @@ export default {
   },
   methods: {
     patternSwitch (ev) {
-      console.log(ev)
       this.updateProjectAndUpdateLocal(ev)
     },
     signout () {

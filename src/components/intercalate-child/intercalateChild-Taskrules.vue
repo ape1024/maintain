@@ -431,15 +431,12 @@ export default {
           break
         default:
           this.maks = false
+          this.maksConserve = true
           this.formatting()
-          console.log(node.value)
-
           this.axios.post(getCheckStandard(node.value)).then((response) => {
             this.tabulationID = node.value
-            console.log(response)
             if (response.data.code === 0) {
               let data = response.data.data
-              console.log(data)
               this.transmit.basedevicecode = data.basedevicecode
               this.transmit.checkstandardid = data.checkstandardid
               this.transmit.devicetypeid = data.devicetypeid
@@ -481,8 +478,6 @@ export default {
 
               this.axios.post(getTechnicalRequirements(node.value)).then((data) => {
                 if (data.data.code === 0) {
-                  console.log('///////')
-                  console.log(data)
                   this.tabulation = data.data.data
                 }
               })
@@ -560,12 +555,10 @@ export default {
           requirementdesc: this.technicalNote,
           faulttype: this.faultinessData
         }
-        console.log(obj)
         this.tabulation.push(obj)
       }
     },
     closedown () {
-
       this.axios.post(deleteCheckStandard(this.tabulationID)).then((response) => {
         if (response.data.code === 0) {
           this.$message({
@@ -573,7 +566,6 @@ export default {
             type: 'success'
           })
           this.formatting()
-
           this.axios.post(getCheckStandardsByBasedevicecode(this.basedeviceCode)).then((data) => {
             if (data.data.code === 0) {
               let responseData = data.data.data
@@ -612,13 +604,11 @@ export default {
         MinData = MinMeasuring
       }
       if (Maxresult !== -1) {
-        console.log(MaxMeasuring)
         MaxData = MaxMeasuring.toFixed(2)
       } else {
         MaxData = MaxMeasuring
       }
       if (resultDrawCuts !== -1) {
-        console.log(Number(drawCuts).toFixed(2))
         drawCutsData = drawCuts.toFixed(2)
       } else {
         drawCutsData = drawCuts
@@ -682,7 +672,6 @@ export default {
           }
           arr.push(obj)
         })
-        console.log(arr)
         let param = {
           checkstandards: {
             basedevicecode: this.basedeviceCode,
@@ -704,7 +693,6 @@ export default {
         }
 
         this.axios.post(creatOrUpdateCheckStandard(MinData, MaxData, unit), param).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             this.$message({
               message: '修改成功',
@@ -747,13 +735,11 @@ export default {
         MinData = MinMeasuring
       }
       if (Maxresult !== -1) {
-        console.log(MaxMeasuring)
         MaxData = MaxMeasuring.toFixed(2)
       } else {
         MaxData = MaxMeasuring
       }
       if (resultDrawCuts !== -1) {
-        console.log(Number(drawCuts).toFixed(2))
         drawCutsData = drawCuts.toFixed(2)
       } else {
         drawCutsData = drawCuts
@@ -817,7 +803,6 @@ export default {
           }
           arr.push(obj)
         })
-        console.log(arr)
         let param = {
           checkstandards: {
             basedevicecode: this.basedeviceCode,
@@ -839,7 +824,6 @@ export default {
         }
 
         this.axios.post(creatOrUpdateCheckStandard(MinData, MaxData, unit), param).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             this.$message({
               message: '添加成功',
@@ -887,7 +871,6 @@ export default {
         if (response.data.data.length) {
           const filterArr = response.data.data.filter(t => t.name !== '全部')
           const arr = this.resetTree(filterArr, 1)
-          console.log(arr)
           this.deviceTree = arr
         }
       }
@@ -895,7 +878,6 @@ export default {
     //  获取工作缺陷
     this.axios.post(getFaultTypes()).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         response.data.data.forEach((val) => {
           val.name = val.name.toUpperCase()
         })
@@ -917,7 +899,6 @@ export default {
     //  获取所有的工作方式
     this.axios.post(getWorkModes()).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         this.pattern = response.data.data
       }
     })

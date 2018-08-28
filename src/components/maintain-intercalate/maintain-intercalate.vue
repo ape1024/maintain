@@ -54,5 +54,6 @@ export default {
     overflow hidden
     position relative
   .router-link-active .headerLi
+     color #d5d5d5
      background #152135
 </style>
