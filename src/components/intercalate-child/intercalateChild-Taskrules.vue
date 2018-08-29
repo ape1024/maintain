@@ -14,8 +14,7 @@
               @node-click="handleNodeClick"
               accordion
               node-key="id"
-              highlight-current
-              :expand-on-click-node="false">
+              highlight-current>
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
       </span>
@@ -82,9 +81,11 @@
                   <span class="informationLiDivSpan">
                 <el-input
                   size="mini"
-                  placeholder="请输入内容"
-                  v-model="drawCuts"
-                  clearable>
+                  max="100"
+                  min="0"
+                  placeholder=""
+                  type="number"
+                  v-model="drawCuts">
               </el-input>
               </span>
                   <span>
@@ -119,18 +120,18 @@
                   <span class="informationLiDivSpan">
                 <el-input
                   size="mini"
+                  type="number"
                   placeholder="最小值"
-                  v-model="MinMeasuring"
-                  clearable>
+                  v-model="MinMeasuring">
               </el-input>
               </span>
                   <span class="informationLiDivSpan">~</span>
                   <span class="informationLiDivSpan">
                 <el-input
                   size="mini"
+                  type="number"
                   placeholder="最大值"
-                  v-model="MaxMeasuring"
-                  clearable>
+                  v-model="MaxMeasuring">
               </el-input>
               </span>
                   <span class="informationLiDivSpanFive">
@@ -403,13 +404,13 @@ export default {
           this.formatting()
           break
         case 2:
+          console.log(node)
           this.maks = false
           this.maksConserve = false
           this.checkStandardsNode = node
           this.tabulation = []
           this.basedeviceCode = node.code
           this.tabulationID = ''
-
           this.axios.post(getCheckStandardsByBasedevicecode(node.code)).then((response) => {
             if (response.data.code === 0) {
               let responseData = response.data.data
@@ -430,6 +431,7 @@ export default {
           this.formatting()
           break
         default:
+          this.basedeviceCode = node.code
           this.maks = false
           this.maksConserve = true
           this.formatting()
@@ -589,29 +591,27 @@ export default {
       })
     },
     conserve () {
-      let MinMeasuring = !isNaN(this.MinMeasuring) ? Number(this.MinMeasuring) : ''
-      let MaxMeasuring = !isNaN(this.MaxMeasuring) ? Number(this.MaxMeasuring) : ''
-      let drawCuts = !isNaN(this.drawCuts) ? Number(this.drawCuts) : ''
-      let Minresult = MinMeasuring.toString().indexOf('.')
-      let Maxresult = MaxMeasuring.toString().indexOf('.')
-      let resultDrawCuts = drawCuts.toString().indexOf('.')
-      let MinData = ''
-      let MaxData = ''
-      let drawCutsData = ''
-      if (Minresult !== -1) {
-        MinData = MinMeasuring.toFixed(2)
-      } else {
-        MinData = MinMeasuring
+      let drawCutsData = this.drawCuts ? parseInt(this.drawCuts) : ''
+      console.log(drawCutsData)
+      if (drawCutsData > 100) {
+        this.$message({
+          message: '抽签比例不能超过100%',
+          type: 'warning'
+        })
+        return false
       }
-      if (Maxresult !== -1) {
-        MaxData = MaxMeasuring.toFixed(2)
-      } else {
-        MaxData = MaxMeasuring
-      }
-      if (resultDrawCuts !== -1) {
-        drawCutsData = drawCuts.toFixed(2)
-      } else {
-        drawCutsData = drawCuts
+      let MinData = this.MinMeasuring
+      let MaxData = this.MaxMeasuring
+      if (!MinData) {
+        MinData = ''
+      } else if (!MaxData) {
+        MaxData = ''
+      } else if (MinData >= MaxData) {
+        this.$message({
+          message: '最小值不能大于最大值',
+          type: 'warning'
+        })
+        return false
       }
       if (!this.matter) {
         this.$message({
@@ -691,7 +691,6 @@ export default {
           },
           technicalrequirements: arr
         }
-
         this.axios.post(creatOrUpdateCheckStandard(MinData, MaxData, unit), param).then((response) => {
           if (response.data.code === 0) {
             this.$message({
@@ -720,29 +719,27 @@ export default {
       }
     },
     newlyAdded () {
-      let MinMeasuring = !isNaN(this.MinMeasuring) ? Number(this.MinMeasuring) : ''
-      let MaxMeasuring = !isNaN(this.MaxMeasuring) ? Number(this.MaxMeasuring) : ''
-      let drawCuts = !isNaN(this.drawCuts) ? Number(this.drawCuts) : ''
-      let Minresult = MinMeasuring.toString().indexOf('.')
-      let Maxresult = MaxMeasuring.toString().indexOf('.')
-      let resultDrawCuts = drawCuts.toString().indexOf('.')
-      let MinData = ''
-      let MaxData = ''
-      let drawCutsData = ''
-      if (Minresult !== -1) {
-        MinData = MinMeasuring.toFixed(2)
-      } else {
-        MinData = MinMeasuring
+      let drawCutsData = this.drawCuts ? parseInt(this.drawCuts) : ''
+      console.log(drawCutsData)
+      if (drawCutsData > 100) {
+        this.$message({
+          message: '抽签比例不能超过100%',
+          type: 'warning'
+        })
+        return false
       }
-      if (Maxresult !== -1) {
-        MaxData = MaxMeasuring.toFixed(2)
-      } else {
-        MaxData = MaxMeasuring
-      }
-      if (resultDrawCuts !== -1) {
-        drawCutsData = drawCuts.toFixed(2)
-      } else {
-        drawCutsData = drawCuts
+      let MinData = this.MinMeasuring
+      let MaxData = this.MaxMeasuring
+      if (!MinData) {
+        MinData = ''
+      } else if (!MaxData) {
+        MaxData = ''
+      } else if (MinData >= MaxData) {
+        this.$message({
+          message: '最小值不能大于最大值',
+          type: 'warning'
+        })
+        return false
       }
       if (!this.matter) {
         this.$message({
@@ -822,11 +819,10 @@ export default {
           },
           technicalrequirements: arr
         }
-
         this.axios.post(creatOrUpdateCheckStandard(MinData, MaxData, unit), param).then((response) => {
           if (response.data.code === 0) {
             this.$message({
-              message: '添加成功',
+              message: '修改成功',
               type: 'success'
             })
             this.axios.post(getCheckStandardsByBasedevicecode(this.basedeviceCode)).then((data) => {
