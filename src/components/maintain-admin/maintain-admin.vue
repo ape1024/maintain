@@ -1,6 +1,5 @@
 <template>
-  <el-container>
-    <div class="subject">
+  <div class="subject">
       <section class="subject_top">
         <div class="subject_top__div">
           <ul class="ul_input">
@@ -41,47 +40,44 @@
           </div>
         </div>
       </section>
-      <el-main>
-        <section class="subject_bottom">
-          <ul class="header_ul">
-            <li class="header_lithree">
-              区域
-            </li>
-            <li class="header_li">
-              设备数量
-            </li>
-            <li class="header_li">
-              待审核设备数量
-            </li>
-            <li class="header_li">
-              正常运行数量
-            </li>
-          </ul>
-          <ul class="table_ul">
-            <li v-for="(item) in tableData" class="table_li" :key="item.deviceid" :id="item.areaid">
-              <ul :id="item.id" class="inline_ul" @click="selectStyle (item)">
-                <li class="header_lithree">{{item.areaname}}</li>
-                <li class="header_li">{{item.alldevcount}}</li>
-                <li class="header_li">{{item.approvedevnum}}</li>
-                <li class="header_li">{{item.statedevnum}}</li>
-                <li class="header_li">
-                </li>
-              </ul>
-              <transition enter-active-class="fadeInUp"
-                          leave-active-class="fadeOutDown">
-                <div v-if="item.flag" class="inline_div">
-                  <adminchild :adminid="adminAreaid" :tabChild="tableChild"></adminchild>
-                </div>
-              </transition>
-            </li>
-          </ul>
-        </section>
-        <section v-if="review_boolean" @click.stop class="review">
-          <increase v-if="review_boolean" :msg="review_boolean" @say="onSay" ></increase>
-        </section>
-      </el-main>
+      <section class="subject_bottom">
+        <ul class="header_ul">
+          <li class="header_lithree">
+            区域
+          </li>
+          <li class="header_li">
+            设备数量
+          </li>
+          <li class="header_li">
+            待审核设备数量
+          </li>
+          <li class="header_li">
+            正常运行数量
+          </li>
+        </ul>
+        <ul class="table_ul">
+          <li v-for="(item) in tableData" class="table_li" :key="item.deviceid" :id="item.areaid">
+            <ul :id="item.id" class="inline_ul" @click="selectStyle (item)">
+              <li class="header_lithree">{{item.areaname}}</li>
+              <li class="header_li">{{item.alldevcount}}</li>
+              <li class="header_li">{{item.approvedevnum}}</li>
+              <li class="header_li">{{item.statedevnum}}</li>
+              <li class="header_li">
+              </li>
+            </ul>
+            <transition enter-active-class="fadeInUp"
+                        leave-active-class="fadeOutDown">
+              <div v-if="item.flag" class="inline_div">
+                <adminchild :adminid="adminAreaid" :tabChild="tableChild"></adminchild>
+              </div>
+            </transition>
+          </li>
+        </ul>
+      </section>
+      <section v-if="review_boolean" @click.stop class="review">
+        <increase v-if="review_boolean" :msg="review_boolean" @say="onSay" ></increase>
+      </section>
     </div>
-  </el-container>
 </template>
 
 <script>
@@ -273,12 +269,13 @@ export default {
     width 100%
     overflow hidden
     position relative
+    margin 12px 12px 0
     background rgba(000,000,000,.47)
   .subject_top
     overflow hidden
     background #111a28
     position relative
-    margin 10px
+    margin 10px 10px 0
     padding 20px 0
   .ul_input
     margin-left 30px
@@ -416,7 +413,7 @@ export default {
     color #333333
   .table_ul
     width 100%
-    min-height 660px
+    min-height 800px
     overflow hidden
     position relative
     color $color-text
@@ -463,5 +460,7 @@ export default {
 .el-main
   padding 10px
 .subject_bottom
+  overflow hidden
+  margin 10px
   background rgba(000,000,000,.35)
 </style>

@@ -175,17 +175,17 @@ export default {
        width 100%
        overflow hidden
        position relative
-       margin-top 12px
+       margin-top 14px
        display flex
     .population_left
         float left
         width 23%
-        height 858px
+        height 930px
         overflow hidden
         margin 0 .5%
         background-size cover
     .popu_h4
-      margin  8px 8px 26px
+      margin  30px 8px 26px
       font-size $font-size-medium-x
       color $color-text-title
       display inline-block
@@ -232,7 +232,8 @@ export default {
     .middle_bottom
       margin-top 7px
       width 100%
-      height 319px
+      height 390px
+      background-size cover!important
       display inline-block
       position relative
   .middle_bottom_div
@@ -250,8 +251,8 @@ export default {
   .population_right
     margin 0 .5%
     width 17%
-    height 858px
-    background-size cover
+    height 930px
+    background-size cover!important
     margin-right 16px
    .progress_bar
      overflow: hidden
@@ -279,7 +280,7 @@ export default {
     overflow hidden
     position relative
    .right_h4
-     margin 8px 0 8px
+     margin 10px 0
      font-size 18px
      color #eee
   .right_top

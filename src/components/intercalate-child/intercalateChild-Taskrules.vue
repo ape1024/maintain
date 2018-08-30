@@ -591,8 +591,8 @@ export default {
       })
     },
     conserve () {
+      let reg = /^[+-]?\d*\.?\d*$/
       let drawCutsData = this.drawCuts ? parseInt(this.drawCuts) : ''
-      console.log(drawCutsData)
       if (drawCutsData > 100) {
         this.$message({
           message: '抽签比例不能超过100%',
@@ -600,8 +600,26 @@ export default {
         })
         return false
       }
-      let MinData = this.MinMeasuring
-      let MaxData = this.MaxMeasuring
+      let MinData = ''
+      let MaxData = ''
+      if (reg.test(this.MinMeasuring)) {
+        MinData = this.MinMeasuring
+      } else {
+        this.$message({
+          message: '最小值请输入有效数字',
+          type: 'warning'
+        })
+        return false
+      }
+      if (reg.test(this.MaxMeasuring)) {
+        MaxData = this.MaxMeasuring
+      } else {
+        this.$message({
+          message: '最大值请输入有效数字',
+          type: 'warning'
+        })
+        return false
+      }
       if (!MinData) {
         MinData = ''
       } else if (!MaxData) {
@@ -719,8 +737,8 @@ export default {
       }
     },
     newlyAdded () {
+      let reg = /^[+-]?\d*\.?\d*$/
       let drawCutsData = this.drawCuts ? parseInt(this.drawCuts) : ''
-      console.log(drawCutsData)
       if (drawCutsData > 100) {
         this.$message({
           message: '抽签比例不能超过100%',
@@ -728,8 +746,26 @@ export default {
         })
         return false
       }
-      let MinData = this.MinMeasuring
-      let MaxData = this.MaxMeasuring
+      let MinData = ''
+      let MaxData = ''
+      if (reg.test(this.MinMeasuring)) {
+        MinData = this.MinMeasuring
+      } else {
+        this.$message({
+          message: '最小值请输入有效数字',
+          type: 'warning'
+        })
+        return false
+      }
+      if (reg.test(this.MaxMeasuring)) {
+        MaxData = this.MaxMeasuring
+      } else {
+        this.$message({
+          message: '最大值请输入有效数字',
+          type: 'warning'
+        })
+        return false
+      }
       if (!MinData) {
         MinData = ''
       } else if (!MaxData) {

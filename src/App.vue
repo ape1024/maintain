@@ -1,7 +1,9 @@
 <template>
   <div id="app">
-    <main-loading></main-loading>
-    <router-view></router-view>
+    <div class="wrapper">
+      <main-loading></main-loading>
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -19,13 +21,16 @@ export default {
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
  @import "~common/stylus/variable"
- html body
-   width 100%
-   height 100%
-   overflow hidden
  #app
    position relative
    width 100%
    height 100%
-   background-size 100% 100%!important
+   overflow auto
+   background-size cover
+   .wrapper
+     width 100%
+     height 100%
+     min-width 1900px
+     min-height 1000px
+     overflow hidden
 </style>

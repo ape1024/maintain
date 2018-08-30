@@ -186,7 +186,7 @@ import childModify from '../repair-operation/repair-arrange'
 import childExamine from '../repair-operation/repair-examine'
 import childquipment from '../repair-operation/repair-rescheduling'
 import childVerification from '../repair-operation/repair-Verification'
-import { getTaskQueryApprovalItems, findAreasTreeByProjectid, maintainRepairgetRepairStates, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindRepairTasks, maintainRepairmaintainRepairfindRepairTasksTwo, maintainRepairfindTaskByTaskid, maintainRepairremoveRepairtasks, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getRepairUsers } from '../../api/user'
+import { findAreasTreeByProjectid, maintainRepairgetRepairStates, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindRepairTasks, maintainRepairmaintainRepairfindRepairTasksTwo, maintainRepairfindTaskByTaskid, maintainRepairremoveRepairtasks, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getRepairUsers } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin],
@@ -517,7 +517,7 @@ export default {
       }
     })
     //  审核状态
-    this.axios.post(getTaskQueryApprovalItems()).then((response) => {
+    this.axios.post(maintainRepairgetRepariTaskApprovalItem()).then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
       }

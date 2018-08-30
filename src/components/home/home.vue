@@ -158,7 +158,7 @@ export default {
     overflow hidden
     position relative
     margin-bottom 12px
-    min-height 857px
+    min-height 900px
   .headerHome
     headerRouter("../../common/img/home.png")
   .headerAdmin
