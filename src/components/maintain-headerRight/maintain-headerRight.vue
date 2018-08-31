@@ -1,13 +1,20 @@
 <template>
   <div class="headerRight">
+    <div class="headerRight_leftImgLeft">
+      <img class="headerRight_left__img" src="../../common/img/headerRight_left_h4.png" alt="">
+    </div>
      <div class="headerRight_left">
-       <p class="headerRight_left__p">
-         <img class="headerRight_left__img" src="../../common/img/headerRight_left_h4.png" alt=""> 红塔集团
-       </p>
-        <h4 class="headerRight_left_h4">
-          维护管理系统
-        </h4>
-        <div class="headerRight_bottom">
+       <div class="headerRight_leftImg">
+         <div>
+           <p class="headerRight_left__p">
+             红塔集团
+           </p>
+           <h4 class="headerRight_left_h4">
+             维护管理系统
+           </h4>
+         </div>
+       </div>
+       <div class="headerRight_bottom">
           <img class="project" src="../../common/img/project.png" alt="">
           <div class="headerRight headerRightMaintain">
             <el-select size="mini" v-model="value"  @change="patternSwitch">
@@ -41,7 +48,6 @@
 </template>
 
 <script>
-// import $ from 'jquery'
 import { secede, findUserProjects } from '../../api/user'
 import { mapActions } from 'vuex'
 export default {
@@ -116,12 +122,12 @@ export default {
        position relative
        overflow hidden
     .headerRight_left__p
-      margin-top 10px
-      font-size 14px
-      color #d5d5d5
-    .headerRight_left_h4
-      font-size 24px
+      margin-top 20px
+      font-size 16px
       color $color-text
+    .headerRight_left_h4
+      font-size 12px
+      color #d5d5d5
       margin 4px 0
     .headerRight_bottom
        overflow hidden
@@ -131,7 +137,7 @@ export default {
     .headerRight_right
       float right
       position relative
-      margin 18px 20px 0 30px
+      margin 18px 0px 0 12px
       .portrait
          float left
          width 55px
@@ -167,7 +173,11 @@ export default {
                vertical-align middle
   .headerRight_left__img
     vertical-align middle
-    margin-right 6px
+  .headerRight_leftImgLeft
+    float left
+    margin 11px 8px 0 0
+    overflow hidden
+    position relative
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .headerRightMaintain .el-input--suffix .el-input__inner

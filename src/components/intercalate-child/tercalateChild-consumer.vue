@@ -396,9 +396,10 @@ export default {
   .subject
     init()
     .consumer
+      min-height 840px
       overflow hidden
       position relative
-      background #0e1521
+      background rgba(000,000,000,.47)
     .header
       overflow hidden
       position relative
@@ -544,8 +545,9 @@ export default {
       background #141d2c
   .paging
      text-align center
-     margin 20px 0
      init()
+     position fixed
+     bottom 40px
   .adhibit
     width 100%
     height 100%

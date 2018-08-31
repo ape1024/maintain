@@ -36,7 +36,7 @@
             </li>
             <!--组织机构名称-->
             <li class="informationLitwo">
-              <div>
+              <div class="informationDiv">
                 <p class="informationP">
                   组织机构名称：
                 </p>
@@ -1008,16 +1008,15 @@ export default {
          margin-right 20px
       .leftBottom
         width 100%
-        min-height 700px
-        max-height 700px
-        /*color red!important*/
+        min-height 800px
+        max-height 800px
         position relative
         background #101826
         height calc(100% - 50px)
         overflow-y auto
         overflow-x hidden
     .subjectRight
-      height 740px
+      height 840px
       background rgba(000,000,000,.47)
       overflow hidden
       position relative
@@ -1122,12 +1121,12 @@ export default {
     .informationDiv
       position relative
       float left
-      margin-bottom 26px
+      margin-bottom 36px
     .informationDivtwo
       overflow hidden
       position relative
       float right
-      margin-bottom 15px
+      margin-bottom 36px
     .informationP
       color $color-border-b-fault
       font-size $font-size-medium

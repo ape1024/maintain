@@ -244,11 +244,9 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
-    min-height 760px
-    max-height 750px
+    min-height 900px
     position relative
-    padding-bottom 70px
-    background rgba(000, 000, 000, .35)
+    background rgba(000, 000, 000, .45)
     margin 12px
     overflow auto
   .subject_top
@@ -458,12 +456,14 @@ export default {
     margin-right 20px
     color #83292b
   .subject_bottomDIv
-    margin 15px
+    margin 12px
+    background rgba(000,000,000,.35)
+    min-height 900px
     position relative
     overflow hidden
   .superinduce
     position fixed
-    bottom 50px
+    bottom 80px
     left 50%
     margin-left -53px
     background $color-background-newly

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="wrapper">
+    <div :style="{ background: 'url(static/img/back.png) no-repeat' }" class="wrapper">
       <main-loading></main-loading>
       <router-view></router-view>
     </div>
@@ -29,8 +29,8 @@ export default {
    background-size cover
    .wrapper
      width 100%
-     height 100%
      min-width 1900px
-     min-height 1000px
+     min-height 1080px
      overflow hidden
+     background-size cover!important
 </style>

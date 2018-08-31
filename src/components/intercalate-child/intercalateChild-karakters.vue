@@ -596,8 +596,8 @@ export default {
         line-height 40px
       .leftBottom
         width 100%
-        min-height 700px
-        max-height 700px
+        min-height 800px
+        max-height 800px
         position relative
         background #101826
         height calc(100% - 50px)
@@ -614,8 +614,8 @@ export default {
         height calc(100% - 50px)
         overflow hidden
         overflow-y auto
-        min-height 700px
-        max-height 700px
+        min-height 800px
+        max-height 800px
         position relative
         background #101826
       .jurisdictionBottom

@@ -192,7 +192,7 @@ export default {
    .popu_top
       margin 0 20px 8px
       overflow hidden
-      height 260px
+      height 280px
       .popu_header
          width 100%
          overflow hidden
@@ -280,7 +280,7 @@ export default {
     overflow hidden
     position relative
    .right_h4
-     margin 10px 0
+     margin 15px 0
      font-size 18px
      color #eee
   .right_top

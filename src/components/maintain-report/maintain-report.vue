@@ -646,6 +646,7 @@ export default {
     cursor pointer
   .subject_bottom
     margin 10px
+    min-height 800px
     background rgba(0,0,0,0.35)
     overflow hidden
 </style>

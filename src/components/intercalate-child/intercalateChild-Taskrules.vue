@@ -972,15 +972,15 @@ export default {
         margin-right 20px
       .leftBottom
         width 100%
-        min-height 700px
-        max-height 700px
+        min-height 800px
+        max-height 800px
         position relative
         background #101826
         height calc(100% - 50px)
         overflow-y auto
         overflow-x hidden
     .subjectRight
-      max-height 740px
+      max-height 840px
       background rgba(000,000,000,.47)
       overflow hidden
       overflow-y auto

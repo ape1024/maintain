@@ -413,7 +413,6 @@ export default {
     color #333333
   .table_ul
     width 100%
-    min-height 800px
     overflow hidden
     position relative
     color $color-text
@@ -462,5 +461,6 @@ export default {
 .subject_bottom
   overflow hidden
   margin 10px
+  min-height 800px
   background rgba(000,000,000,.35)
 </style>

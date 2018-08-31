@@ -17,7 +17,7 @@
         </li>
         <li class="li_input">
           <p class="div_p">维修状态：</p>
-          <div class="div_input">
+          <div class="div_inputTow">
             <el-select clearable size="mini" v-model="maintenanceData" placeholder="请选择">
               <el-option
                 v-for="item in maintenance"
@@ -31,7 +31,7 @@
         <li class="li_input">
           <p class="div_p">审批状态：</p>
           <div class="div_inputTwo">
-            <el-select clearable size="mini" v-model="Auditstatus" placeholder="" multiple>
+            <el-select clearable size="small" v-model="Auditstatus" placeholder="" multiple>
               <el-option
                 v-for="item in AuditstatusDate"
                 :key="item.value"
@@ -556,11 +556,10 @@ export default {
     margin 10px
     overflow hidden
     background #111a28
-    padding 18px 0
+    padding 20px 0
     display flex
   .ul_input
     padding-left 10px
-    margin-top 3px
     overflow hidden
     float left
     position relative
@@ -807,6 +806,8 @@ export default {
     margin 10px
     position relative
     overflow hidden
+    min-height 800px
+    background rgba(000,000,000,.35)
   .threelevel_litwo_ptwo
     color #444
     cursor initial
@@ -818,7 +819,8 @@ export default {
     display flex
   .table_liRepeat
     background #3a271c!important
-  .el-input--mini .el-input__inner
-    height 32px
-    line-height 32px
+  .div_inputTow
+    float left
+    margin-top 6px
+    width 167px
 </style>

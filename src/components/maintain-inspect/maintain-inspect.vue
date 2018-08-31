@@ -349,7 +349,7 @@ export default {
     margin 12px
     overflow hidden
     position relative
-    background rgba(000,000,000, .45)
+    background rgba(000,000,000, .47)
   .subject_top
     margin 10px
     overflow hidden
@@ -667,6 +667,7 @@ export default {
     -ms-user-select none
     user-select none
   .subject_bottom
+    min-height 800px
     background rgba(0,0,0,0.35)
     margin 10px
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div :style="{ background: 'url(static/img/back.png) no-repeat' }" id="home">
+  <div id="home">
     <div  class="macrocosm">
       <header class="header" :style="{ background: 'url(static/img/header.png) no-repeat' }">
         <div class="header_left">

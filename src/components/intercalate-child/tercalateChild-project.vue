@@ -196,6 +196,8 @@ export default {
         float left
     .content
       init()
+      min-height 840px
+      background rgba(000,000,000,.35)
     .headerUl
       init()
       background #354d76
