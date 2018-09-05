@@ -65,8 +65,8 @@
               </header>
             </div>
             <div class="content">
-              <ul class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)">
-                <li class="matters_lithree">
+              <ul class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)" :class="[!item.refid ? '' : 'content_repeat']">
+                <li class="matters_lithree" :title="item.workitem">
                   <el-checkbox v-bind:disabled="item.disabled" v-model="item.fuleco"></el-checkbox>
                   {{item.workitem}}
                 </li>
@@ -75,12 +75,12 @@
                   {{item.others}}
                 </li>
                 <li class="matters_li">
-                  {{fmtDate(item.checktime)}}
+                  {{!item.checktime ? '' : fmtDate(item.checktime)}}
                 </li>
-                <li class="matters_litwo">
+                <li class="matters_litwo" :title="item.workrecord">
                   {{item.workrecord}}
                 </li>
-                <li class="matters_li">
+                <li class="matters_li" :class="[item.conclusion === 1 ? 'martters_normal' : 'matters_problem']">
                   {{item.conclusionname}}
                 </li>
                 <li class="matters_li">
@@ -92,8 +92,11 @@
                   {{item.isassignedName}}
                 </li>
                 <li class="matters_litwo">
-                  <!--<span>照片数量{{item.path.length}}</span>-->
-                  <img class="photosImg" :key="index" v-for="(data, index) in item.path" :src="data" alt="">
+                  <!--{{item.photosArr}}-->
+                  <img class="photosImg" @click="selectImg(fieldphoto(item.photosArr, item.path), index)" :key="index" v-for="(data, index) in item.photosArr" :src="`${item.path}${data}`" alt="">
+                </li>
+                <li class="matters_lifour">
+                  <i @click.stop="amputatematters(item.checktaskdetailid)" v-if="!item.refid ? false : true" class="el-icon-close"></i>
                 </li>
               </ul>
             </div>
@@ -136,6 +139,45 @@
               </div>
             </div>
           </div>
+          <div class="opinion">
+            <div class="opinion_left">
+              <div class="left_header">
+                <p class="left_hederP">检测项</p>
+                <p class="left_hederPtwo"></p>
+              </div>
+              <div class="opinion_title">
+                <div class="opinion_ulDiv">
+                  <ul class="opinion__ul">
+                    <li class="opinion_li">
+                      检测名称
+                    </li>
+                    <li class="opinion_litwo">
+                      检测范围
+                    </li>
+                    <li class="opinion_litwo">
+                      检测值
+                    </li>
+                  </ul>
+                </div>
+                <ul class="title_ul">
+                  <li class="title_li" v-for="(item ,index) in Testing" :key="index">
+                    <ul class="title_li_ul">
+                      <li class="opinion_li">
+                        {{item.paramname}}
+                      </li>
+                      <li class="opinion_litwo">
+                        {{item.minvalue ? item.minvalue : ''}} -
+                        {{item.maxvalue ? item.maxvalue : ''}}
+                      </li>
+                      <li class="opinion_litwo">
+                        {{item.Testvalue}}
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="arrange">
           <div @click="assignment" class="assignment">
@@ -146,12 +188,14 @@
           </div>
         </div>
       </section>
+      <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </section>
   </div>
 </template>
 
 <script>
-import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments2 } from '../../api/user'
+import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments2, maintainDailygetTaskApprovalItems, deleteTaskDetail, getTaskParams } from '../../api/user'
+import DialogImg from 'base/dialog-img/dialog-img'
 import $ from 'jquery'
 export default {
   name: 'daily-Arrangetheview',
@@ -160,15 +204,97 @@ export default {
     return {
       checked: false,
       radio: 0,
-      textarea: '',
+      textarea: '同意归档',
       examine_Boolean: false,
       determinant: '',
       approvaloptions: '',
       equipment: '',
-      equipmentData: ''
+      equipmentData: '',
+      Testing: '',
+      imgList: []
     }
   },
   methods: {
+    fieldphoto (src, path) {
+      let arr = []
+      if (!src) {
+        return arr
+      } else {
+        src.forEach((val) => {
+          arr.push(`${path}${val}`)
+        })
+        return arr
+      }
+    },
+    selectImg (list, index) {
+      this.imgList = list
+      setTimeout(() => {
+        this.$refs.dialogImg.switchIndex(index)
+        this.$refs.dialogImg.open()
+      }, 200)
+    },
+    amputatematters (checktaskdetailid) {
+      this.axios.post(deleteTaskDetail(checktaskdetailid)).then((response) => {
+        if (response.data.code === 0) {
+          this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
+            if (response.data.code === 0) {
+              let arrData = []
+              response.data.data.details.forEach((val) => {
+                if (val.path !== '') {
+                  let arr = []
+                  if (val.path.indexOf(',') !== -1) {
+                    arr = val.path.split(',')
+                    val.path = arr
+                  } else {
+                    arr = [val.path]
+                    val.path = arr
+                  }
+                } else {
+                  val.path = []
+                }
+                val.fuleco = false
+                val.pathBoolem = false
+                if (val.conclusion) {
+                  if (!val.refid) {
+                    val.disabled = false
+                  } else {
+                    val.disabled = true
+                  }
+                } else {
+                  val.disabled = true
+                }
+                if (!val.iswaitapproval) {
+                  if (!val.isapproval) {
+                    val.iswaitapprovalName = ''
+                  } else {
+                    val.iswaitapprovalName = '已审批'
+                  }
+                } else {
+                  val.iswaitapprovalName = '待审批'
+                }
+                if (val.isassigned) {
+                  val.isassignedName = '已安排'
+                } else {
+                  val.isassignedName = '未安排'
+                }
+                arrData.push(val)
+                if (val.photos) {
+                  val.photosArr = []
+                  if (val.photos.indexOf(',') !== -1) {
+                    let arr = val.photos.split(',')
+                    val.photosArr = arr
+                  } else {
+                    val.photosArr.push(val.photos)
+                  }
+                }
+              })
+              this.equipment = arrData
+              this.equipmentData = response.data.data
+            }
+          })
+        }
+      })
+    },
     checkedChang () {
       if (this.checked === true) {
         this.equipment.forEach((val) => {
@@ -194,7 +320,6 @@ export default {
           return false
         } else {
           let data = {
-            problem: val.conclusion,
             matters: val.workitem,
             conclusion: val.conclusionname,
             checktaskdetailid: val.checktaskdetailid,
@@ -207,7 +332,9 @@ export default {
       let flga = true
       arrData.forEach((val) => {
         if (val.isassigned || val.conclusionCode > 0) {
-          flga = false
+          if (!val.isapproval && !val.iswaitapproval) {
+            flga = false
+          }
         }
       })
       if (arrData.length === 0) {
@@ -220,7 +347,7 @@ export default {
         this.$emit('examineMine', arrData)
       } else {
         this.$message({
-          message: '已安排工作项,正常工作项,不能安排!',
+          message: '已安排工作项与正常工作项,不能安排!',
           type: 'warning'
         })
       }
@@ -229,37 +356,60 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       let radio = this.radio
       let taskDetailArr = []
+      let flag = true
       let textarea = this.textarea
       this.equipment.forEach((val) => {
         if (val.fuleco === false) {
           return false
-        } else {
+        } else if (!val.isapproval && val.iswaitapproval) {
           taskDetailArr.push(val.checktaskdetailid)
+        } else {
+          flag = false
         }
       })
-      if (taskDetailArr.length === 0) {
-        this.$message({
-          message: '请选择工作事项',
-          type: 'warning'
-        })
-        return false
-      } else {
-        if (textarea === '') {
+      if (flag) {
+        if (taskDetailArr.length === 0) {
           this.$message({
-            message: '请输入审核意见!',
+            message: '请选择工作事项,只有待审批状态,才可以审批',
             type: 'warning'
           })
           return false
         } else {
-          taskDetailArr.forEach((val) => {
-            this.axios.post(maintainDailyapprovalTaskDetail(token, val, textarea, radio)).then((response) => {
-              if (response.data.code === 0) {
-                this.$emit('mine', false)
-                return false
-              }
+          if (radio === 0) {
+            this.$message({
+              message: '请选择审核结论',
+              type: 'warning'
             })
-          })
+            return false
+          }
+          if (textarea === '') {
+            this.$message({
+              message: '请输入审核意见!',
+              type: 'warning'
+            })
+            return false
+          } else {
+            taskDetailArr.forEach((val) => {
+              this.axios.post(maintainDailyapprovalTaskDetail(token, val, textarea, radio)).then((response) => {
+                if (response.data.code === 0) {
+                  this.examine_Boolean = this.examine
+                  this.examine_Boolean = !this.examine_Boolean
+                  this.$message({
+                    message: '审批成功',
+                    type: 'success'
+                  })
+                  this.$emit('mine', this.examine_Boolean)
+                  return false
+                }
+              })
+            })
+          }
         }
+      } else {
+        this.$message({
+          message: '请选择工作事项,只有待审批状态,才可以审批',
+          type: 'warning'
+        })
       }
     },
     closeup () {
@@ -273,13 +423,31 @@ export default {
       $(el).addClass('content_ulBack')
       this.axios.post(maintainDailygetEquirementjudgments2(checktaskdetailid)).then((response) => {
         if (response.data.code === 0) {
+          if (response.data.data.length !== 0) {
+            response.data.data.forEach((val) => {
+              if (!val.checkvalue) {
+                val.Testvalue = ``
+              } else {
+                val.Testvalue = `${val.checkvalue}${val.unit}`
+              }
+            })
+          }
           this.determinant = response.data.data
+        }
+      })
+
+      this.axios.post(getTaskParams(checktaskdetailid)).then((response) => {
+        if (response.data.code === 0) {
+          this.Testing = response.data.data
         }
       })
     },
     picturedetails (item) {
       item.pathBoolem = !item.pathBoolem
     }
+  },
+  components: {
+    DialogImg
   },
   created () {
     this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
@@ -300,8 +468,12 @@ export default {
           }
           val.fuleco = false
           val.pathBoolem = false
-          if (val.conclusion === -1) {
-            val.disabled = false
+          if (val.conclusion) {
+            if (!val.refid) {
+              val.disabled = false
+            } else {
+              val.disabled = true
+            }
           } else {
             val.disabled = true
           }
@@ -320,9 +492,24 @@ export default {
             val.isassignedName = '未安排'
           }
           arrData.push(val)
+          if (val.photos) {
+            val.photosArr = []
+            if (val.photos.indexOf(',') !== -1) {
+              let arr = val.photos.split(',')
+              val.photosArr = arr
+            } else {
+              val.photosArr.push(val.photos)
+            }
+          }
         })
         this.equipment = arrData
         this.equipmentData = response.data.data
+      }
+    })
+    //  任务审批选项
+    this.axios.post(maintainDailygetTaskApprovalItems()).then((response) => {
+      if (response.data.code === 0) {
+        this.approvaloptions = response.data.data
       }
     })
   }
@@ -332,7 +519,7 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .newlyadded
-    margin 90px 0 0
+    margin 50px 0 0
     width 100%
     overflow hidden
     background #111a28
@@ -375,8 +562,6 @@ export default {
           color $color-border-b-fault
     .proceeding
       width 100%
-      min-height 400px
-      max-height 400px
       height calc(100% - 50px)
       overflow-y auto
       overflow-x hidden
@@ -434,7 +619,7 @@ export default {
           width 10%
         .matters_litwo
           float left
-          width 18%
+          width 16%
           position relative
           padding 0 1%
         .matters_lithree
@@ -455,7 +640,7 @@ export default {
         .matters_litwo
           position relative
           float left
-          width 18%
+          width 16%
           height 30px
           padding 0 1%
           text-overflow ellipsis
@@ -553,7 +738,8 @@ export default {
       width 100%
       text-align center
       overflow hidden
-      margin-bottom: 20px;
+      margin-top 40px
+      margin-bottom 20px
       .assignment
         display inline-block
         cursor pointer
@@ -600,4 +786,25 @@ export default {
     border-radius 5px
     z-index 1
     padding 20px 10px 20px 20px
+  .matters_lifour
+    float left
+    overflow hidden
+    width 2%
+  .opinion__li
+    float left
+    padding-left 5%
+    width 35%
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+  .opinion__ul
+    background #202f49
+    overflow hidden
+    padding 5px 0
+  .matters_problem
+    color #cfb53a
+  .martters_normal
+    color #3acf76
+  .content_repeat
+    background #3a271c!important
 </style>

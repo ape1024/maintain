@@ -68,7 +68,7 @@
                     <el-option
                       v-for="item in revolution"
                       :key="item.value"
-                      :label="item.label"
+                      :label="item.name"
                       :value="item.value">
                     </el-option>
                   </el-select>
@@ -926,6 +926,8 @@ export default {
     this.axios.post(getAllWorkcycle()).then((response) => {
       if (response.data.code === 0) {
         this.revolution = response.data.data
+        console.log('0000')
+        console.log(response.data.data)
       }
     })
     //  获取所有的工作方式

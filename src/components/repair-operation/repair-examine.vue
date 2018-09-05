@@ -662,7 +662,7 @@ export default {
       margin 0 auto
      .contentH
        color $color-text-title
-       margin-bottom 26px
+       margin-bottom 10px
        font-size $font-size-medium-x
      .information
        overflow hidden
