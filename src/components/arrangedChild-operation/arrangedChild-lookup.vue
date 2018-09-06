@@ -794,7 +794,7 @@ export default {
               width 100%
               background #0b111a
               height 460px
-              overflow-y scroll
+              overflow-y auto
   .sectionTopliSpantwo
     line-height 38px
     width 202px

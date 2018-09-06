@@ -183,7 +183,7 @@
                       <p class="frequencyLi_P">
                        <span>
                         每月
-                        <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="31"></el-input-number> 号巡检
+                        <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="28"></el-input-number> 号巡检
                        </span>
                       </p>
                     </li>
@@ -195,7 +195,7 @@
                      <p class="frequencyLi_P">
                         <span>
                         每月
-                        <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="31"></el-input-number>
+                        <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="28"></el-input-number>
                           号巡检
                       </span>
                      </p>
@@ -289,7 +289,9 @@ export default {
       //  巡检范围
       lookupchooseData: [],
       numbers: '1',
-      monthsNumber: true
+      monthsNumber: true,
+      //  频次data
+      frequencyData: ''
     }
   },
   methods: {
@@ -432,25 +434,34 @@ export default {
       //   let checkFrequency = this.frequencyradio
       //  间隔时间
       //  制定创建时间  createTaskTime
+      //   d 是 月  w是周
       let interval = ''
       let createTaskTime = ''
       if (this.groupBoolean) {
-        if (this.frequencyradio === 1) {
+        if (!this.frequencyData) {
+          this.$message({
+            message: '没有选择频次!',
+            type: 'warning'
+          })
+          return false
+        }
+        if (this.frequencyData === 1) {
           interval = '1d'
-          createTaskTime = 'd1'
-        } else if (this.frequencyradio === 2) {
+          createTaskTime = ''
+        } else if (this.frequencyData === 2) {
           interval = '1w'
-          createTaskTime = 'w1'
-        } else if (this.frequencyradio === 3) {
+          createTaskTime = 'd1'
+        } else if (this.frequencyData === 3) {
           interval = '1m'
-          createTaskTime = `m${this.numbers}`
-        } else if (this.frequencyradio === 5) {
+          createTaskTime = `d${this.numbers}`
+        } else if (this.frequencyData === 5) {
           interval = `${this.manyClasses}b`
           createTaskTime = `b${this.manyClasses}`
         }
       } else {
         interval = `1m`
-        createTaskTime = `m${this.numbers}`
+        createTaskTime = `d${this.numbers}`
+        this.frequencyData = 3
       }
       //  巡检范围  scopeInspection
       //  消防设施  checkplandetails
@@ -463,7 +474,7 @@ export default {
         workmodes: worktypeData
       }
       //  频次
-      let checkFrequency = this.frequencyradio
+      let checkFrequency = this.frequencyData
       this.axios.post(createPlan(token, worktypeid, projectid, planName, planCode, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime), param).then((response) => {
         if (response.data.code === 0) {
           this.$message({
@@ -480,8 +491,6 @@ export default {
       this.lookupchooseData = checked.checkedNodes
     },
     scheduleChange (value) {
-      this.frequencyradio = value
-
       this.axios.post(maintainArranggetWorkModesByWorkType(value)).then((response) => {
         if (response.data.code === 0) {
           response.data.data.forEach(val => {
@@ -503,6 +512,7 @@ export default {
       this.handleCheckData = checked.checkedNodes
     },
     frequencyChange (data) {
+      this.frequencyData = data.value
       if (data.value === 5) {
         this.dayShift = false
         this.monthsNumber = true
@@ -568,6 +578,7 @@ export default {
     })
     this.axios.post(maintainArranggetAllCheckFrequency()).then((response) => {
       if (response.data.code === 0) {
+        console.log(response.data.data)
         this.frequency = response.data.data
       }
     })
@@ -671,7 +682,7 @@ export default {
               width 100%
               background #0b111a
               height 460px
-              overflow-y scroll
+              overflow-y auto
   .sectionTopliSpantwo
     width 202px
     line-height 38px
