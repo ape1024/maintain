@@ -52,12 +52,18 @@
               {{item.plandesc}}
             </li>
             <li class="repair_lithree">
-              <p v-if="item.planstate === 0"  @click.stop="question(item.checkplanid, item)" class="header_p_eight threelevel_litwo_p">
-                审核
-              </p>
-              <p v-if="item.planstate !== 0" class="header_p_fourteen" >审核</p>
-              <p @click.stop="examine(item.checkplanid)" class="header_p_ten">修改</p>
-              <p class="header_p_eleven" @click.stop="amputate(index, arrangedData,item.checkplanid)">删除</p>
+              <div v-if="JurisdictionInsert">
+                <p v-if="item.planstate === 5"  @click.stop="question(item.checkplanid, item)" class="header_p_eight threelevel_litwo_p">
+                  审核
+                </p>
+                <p v-if="item.planstate !== 5" class="header_p_fourteen" >审核</p>
+              </div>
+              <div v-if="JurisdictionUpdate">
+                <p @click.stop="examine(item.checkplanid)" class="header_p_ten">修改</p>
+              </div>
+              <div v-if="JurisdictionDelete">
+                <p class="header_p_eleven" @click.stop="amputate(index, arrangedData,item.checkplanid)">删除</p>
+              </div>
             </li>
           </ul>
         </li>
@@ -83,14 +89,23 @@ import lookup from '../arrangedChild-operation/arrangedChild-lookup'
 import examination from '../arrangedChild-operation/arrangedChild-examination'
 import newlybuild from '../arrangedChild-operation/arrangedChild-newlybuild'
 import { maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes } from '../../api/user'
+import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   name: 'maintain-arranged',
+  mixins: [projectMixin, loadingMixin],
   components: {
     lookup,
     examination,
     newlybuild
   },
   methods: {
+    init () {
+      this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.arrangedData = response.data.data
+        }
+      })
+    },
     superinduce () {
       this.newlybuildBoolean = true
     },
@@ -134,10 +149,15 @@ export default {
       this.examinaBoolean = true
     },
     Closeup (ev) {
+      this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.arrangedData = response.data.data
+        }
+      })
       this.examinaBoolean = ev
     },
     Build (ev) {
-      this.axios.post(maintainArrangegetAllPlans()).then((response) => {
+      this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.arrangedData = response.data.data
           this.newlybuildBoolean = false
@@ -145,7 +165,7 @@ export default {
       })
     },
     Lookup (ev) {
-      this.axios.post(maintainArrangegetAllPlans()).then((response) => {
+      this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.arrangedData = response.data.data
           this.review_boolean = false
@@ -217,11 +237,23 @@ export default {
       CheckPlan: '',
       CheckPlanid: '',
       worktypeData: [],
-      planStateData: []
+      planStateData: [],
+      JurisdictionInsert: '',
+      JurisdictionUpdate: '',
+      JurisdictionDelete: ''
     }
   },
   created () {
-    this.axios.post(maintainArrangegetAllPlans()).then((response) => {
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      console.log(val)
+      if (val.functioncode === 'plan') {
+        this.JurisdictionInsert = val.insert
+        this.JurisdictionUpdate = val.update
+        this.JurisdictionDelete = val.delete
+      }
+    })
+    this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.arrangedData = response.data.data
       }
@@ -499,4 +531,7 @@ export default {
     margin-top 50px
     overflow hidden
     text-align center
+  .repair_lithree div
+    float left
+    overflow hidden
 </style>

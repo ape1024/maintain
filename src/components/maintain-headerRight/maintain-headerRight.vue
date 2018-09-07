@@ -1,9 +1,9 @@
 <template>
   <div class="headerRight">
-    <div class="headerRight_leftImgLeft">
-      <img class="headerRight_left__img" src="../../common/img/headerRight_left_h4.png" alt="">
-    </div>
      <div class="headerRight_left">
+       <div class="headerRight_leftImgLeft">
+         <img class="headerRight_left__img" src="../../common/img/headerRight_left_h4.png" alt="">
+       </div>
        <div class="headerRight_leftImg">
          <div>
            <p class="headerRight_left__p">
@@ -136,7 +136,7 @@ export default {
     .headerRight_right
       float right
       position relative
-      margin 18px 0px 0 12px
+      margin 18px 0px 0 40px
       .portrait
          float left
          width 55px
@@ -174,7 +174,7 @@ export default {
     vertical-align middle
   .headerRight_leftImgLeft
     float left
-    margin 11px 8px 0 0
+    margin 11px 8px 0 -6px
     overflow hidden
     position relative
 </style>

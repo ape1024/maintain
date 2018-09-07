@@ -396,8 +396,8 @@ export const maintainArrangeddeletePlan = (checkplanid) => {
   return url
 }
 //  获取所有的巡检计划
-export const maintainArrangegetAllPlans = () => {
-  const url = `${Test}/plan/getAllPlans`
+export const maintainArrangegetAllPlans = (projectid) => {
+  const url = `${Test}/plan/getAllPlans?projectid=${projectid}`
   return url
 }
 //  获取巡检计划

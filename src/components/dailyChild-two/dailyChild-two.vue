@@ -216,7 +216,6 @@ export default {
   },
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
-
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'task_xj') {
         this.JurisdictionInsert = val.insert

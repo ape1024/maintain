@@ -108,6 +108,7 @@ export default {
                   let newToken = JSON.parse(token)
                   this.axios.post(getUserFuncions(newToken)).then((data) => {
                     data.data.forEach((val) => {
+                      console.log(val)
                       let approval = ''
                       let deleteData = ''
                       let insertData = ''

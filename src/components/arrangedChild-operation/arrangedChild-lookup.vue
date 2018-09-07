@@ -149,8 +149,7 @@
                       :data="facilities"
                       show-checkbox
                       node-key="id"
-                      accordion
-                      :default-checked-keys="defaultCheckedFacilities"
+                      accordion :default-checked-keys="defaultCheckedFacilities"
                       :default-expanded-keys="defaultCheckedFacilities"
                       @check="handleCheckChange"
                       :props="facilitiesProps">
@@ -188,7 +187,7 @@
                       <p class="frequencyLi_P">
                        <span>
                         每月
-                        <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="31"></el-input-number> 号巡检
+                        <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="28"></el-input-number> 号巡检
                        </span>
                       </p>
                     </li>
@@ -200,7 +199,7 @@
                     <p class="frequencyLi_P">
                         <span>
                         每月
-                        <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="31"></el-input-number>
+                        <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="28"></el-input-number>
                           号巡检
                       </span>
                     </p>
@@ -307,11 +306,14 @@ export default {
       timeStamp: '',
       facilitiesData: '',
       judgementValue: false,
-      lookupchooseValue: false
+      lookupchooseValue: false,
+      frequencyData: ''
     }
   },
   methods: {
     conserve () {
+      console.log(this.Plandevices)
+      // return
       let worktypeid = this.scheduleData
       let planName = this.planName
       let planCode = this.planCode
@@ -371,7 +373,7 @@ export default {
             message: '没有选择工作类型!',
             type: 'warning'
           })
-          return
+          return false
         }
       } else {
         //   没有工作类型 ,意味着没有选择任务类型
@@ -383,8 +385,15 @@ export default {
       }
       //  选择消防设施
       let newArr = []
-      if (this.judgementValue === true) {
-        if (this.handleCheckData.length !== 0) {
+      console.log(this.judgementValue)
+      if (this.judgementValue) {
+        if (!this.handleCheckData.length) {
+          this.$message({
+            message: '请选择消防设备!',
+            type: 'warning'
+          })
+          return false
+        } else {
           this.handleCheckData.forEach((val) => {
             if (val.hierarchy === 2) {
               let valId = (val.id.split(','))[0]
@@ -394,29 +403,19 @@ export default {
                 basedevicename: val.name
               }
               newArr.push(obj)
-            } else {
-              return false
             }
           })
-        } else {
-          //  没有选择消防设施
-          this.$message({
-            message: '没有选择消防设施!',
-            type: 'warning'
-          })
-          return false
         }
       } else {
-        this.checkplan.Plandevices.forEach((val) => {
+        this.Plandevices.forEach((val) => {
           let obj = {
-            basedevicecode: val.areacode,
-            basedeviceid: val.areaid,
-            basedevicename: val.areaname
+            basedevicecode: val.code,
+            basedeviceid: val.basedeviceid,
+            basedevicename: val.name
           }
           newArr.push(obj)
         })
       }
-      // newArr = this.handleCheckData.filter((val) => wipeOff.indexOf(val) === -1)
       //  执行人
       let users = []
       if (this.maintenanceList.length !== 0) {
@@ -473,29 +472,37 @@ export default {
       //  制定创建时间  createTaskTime
       let interval = ''
       let createTaskTime = ''
-      if (this.groupBoolean) {
+      if (this.scheduleData !== 1 && this.scheduleData !== 3) {
         if (this.frequencyradio === 1) {
           interval = '1d'
-          createTaskTime = 'd1'
+          createTaskTime = ''
+          this.frequencyData = 1
         } else if (this.frequencyradio === 2) {
           interval = '1w'
           createTaskTime = 'w1'
+          this.frequencyData = 2
         } else if (this.frequencyradio === 3) {
           interval = '1m'
-          createTaskTime = `m${this.numbers}`
+          createTaskTime = `d${this.numbers}`
+          this.frequencyData = 3
         } else if (this.frequencyradio === 5) {
           interval = `${this.manyClasses}b`
           createTaskTime = `b${this.manyClasses}`
+          console.log(createTaskTime)
+          this.frequencyData = 5
         }
       } else {
         interval = `1m`
-        createTaskTime = `m${this.numbers}`
+        createTaskTime = `d${this.numbers}`
+        this.frequencyData = 3
       }
 
       //  巡检范围  scopeInspection
       //  消防设施  checkplandetails
       //  执行人   users
       //  工作模式  workmodes
+      console.log('=====')
+      console.log(newArr)
       let param = {
         areas: scopeInspection,
         checkplandetails: newArr,
@@ -503,7 +510,7 @@ export default {
         workmodes: worktypeData
       }
       //  频次
-      let checkFrequency = this.frequencyradio
+      let checkFrequency = this.frequencyData
       this.axios.post(maintainArrangupdatePlan(this.Checkplanid, planName, planCode, worktypeid, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime), param).then((response) => {
         if (response.data.code === 0) {
           this.$message({
@@ -542,7 +549,6 @@ export default {
     },
     handleCheckChange (data, checked, indeterminate) {
       this.judgementValue = true
-
       this.handleCheckData = checked.checkedNodes
     },
     frequencyChange (data) {
@@ -593,6 +599,8 @@ export default {
     this.endTime = fmtDate(this.PlanData.enddate)
     this.planDescription = this.PlanData.plandesc
     this.scheduleData = this.PlanData.worktypeid
+    console.log('/////////////////////////////////')
+    console.log(this.PlanData.worktypeid)
     //   执行人
     // this.defaultCheckedPeople
     this.Planusers.forEach((val) => {
@@ -657,40 +665,39 @@ export default {
         response.data.data.forEach((val) => {
           val.switch = false
         })
+        console.log(response.data.data)
+        console.log(this.PlanData)
         this.frequency = response.data.data
-        if (this.scheduleData === 1 || this.scheduleData === 3) {
+        if (this.scheduleData !== 1 && this.scheduleData !== 3) {
           let string = this.PlanData.interval.substr(this.PlanData.interval.length - 1, 1)
           if (string === 'b') {
             this.frequencyradio = 5
             this.dayShift = false
-            this.manyClasses = this.PlanData.interval.substr(0, 1)
+            if (!this.PlanData.createtasktime) {
+              this.numbers = 1
+              this.classesGrades = 24
+            } else {
+              this.manyClasses = this.PlanData.createtasktime.substr(1)
+              let num = 24 / this.manyClasses
+              this.classesGrades = num.toFixed(2)
+            }
           } else if (string === 'd') {
             this.frequencyradio = 1
           } else if (string === 'w') {
             this.frequencyradio = 2
           } else if (string === 'm') {
             this.frequencyradio = 3
-          }
-          if (this.PlanData.createtasktime !== null) {
-            this.numbers = this.PlanData.createtasktime.substr(this.PlanData.createtasktime.length - 1, 1)
-          } else {
-            this.numbers = 1
-          }
-          this.groupBoolean = false
-        } else {
-          let string = this.PlanData.interval.substr(this.PlanData.interval.length - 1, 1)
-          if (string === 'b') {
-            this.frequencyradio = 5
-            this.dayShift = false
-            this.manyClasses = this.PlanData.interval.substr(0, this.PlanData.interval.length - 1)
-          } else if (string === 'd') {
-            this.frequencyradio = 1
-          } else if (string === 'w') {
-            this.frequencyradio = 2
-          } else if (string === 'm') {
-            this.frequencyradio = 3
+            this.monthsNumber = false
+            if (!this.PlanData.createtasktime) {
+              this.numbers = 1
+            } else {
+              this.numbers = this.PlanData.createtasktime.substr(1)
+            }
           }
           this.groupBoolean = true
+        } else {
+          this.numbers = this.PlanData.createtasktime.substr(1)
+          this.groupBoolean = false
         }
       }
     })

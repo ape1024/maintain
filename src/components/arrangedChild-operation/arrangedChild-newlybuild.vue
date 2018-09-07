@@ -450,7 +450,7 @@ export default {
           createTaskTime = ''
         } else if (this.frequencyData === 2) {
           interval = '1w'
-          createTaskTime = 'd1'
+          createTaskTime = 'w1'
         } else if (this.frequencyData === 3) {
           interval = '1m'
           createTaskTime = `d${this.numbers}`
