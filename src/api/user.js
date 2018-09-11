@@ -505,8 +505,8 @@ export const getUserFuncions = (token) => {
   return url
 }
 //  CalcDevCount
-export const CalcDevCount = (regionId, pageIndex, pageSize) => {
-  const url = `${Test}/dev/CalcDevCount?areaid=${regionId}&pageIndex=${pageIndex}&pageSize=${pageSize}`
+export const CalcDevCount = (token, projectid, regionId, pageIndex, pageSize) => {
+  const url = `${Test}/dev/CalcDevCount?token=${token}&projectid=${projectid}&areaid=${regionId}&pageIndex=${pageIndex}&pageSize=${pageSize}`
   return url
 }
 //  FindDevAllApprovalstate

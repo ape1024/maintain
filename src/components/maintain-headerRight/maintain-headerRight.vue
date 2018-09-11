@@ -29,7 +29,7 @@
         </div>
      </div>
      <div class="headerRight_right">
-       <div class="portrait">
+       <div @click="personalInformation" class="portrait">
          <img class="portraitImg" :src="portrait" alt="">
        </div>
        <div class="userOperation">
@@ -44,24 +44,35 @@
          </div>
        </div>
      </div>
+    <section v-if="modifyBoolean" class="modifyInformation">
+      <Information :communication="moDifynews" @informa="inFourma"></Information>
+    </section>
   </div>
 </template>
 
 <script>
-import { secede, findUserProjects } from '../../api/user'
+import { secede, findUserProjects, consumerFindUser } from '../../api/user'
 import { mapActions } from 'vuex'
+import Information from '../intercalateChild-operation/consumerChild-changeinfo'
 export default {
   name: 'maintain-headerRight',
+  components: {
+    Information
+  },
   props: ['name'],
   data () {
     return {
       portrait: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).icon : '',
       username: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).username : '',
       options: [],
-      value: []
+      value: [],
+      modifyBoolean: false
     }
   },
   methods: {
+    inFourma (ev) {
+      this.modifyBoolean = ev
+    },
     patternSwitch (ev) {
       this.updateProjectAndUpdateLocal(ev)
     },
@@ -75,7 +86,16 @@ export default {
     },
     ...mapActions([
       'updateProjectAndUpdateLocal'
-    ])
+    ]),
+    personalInformation () {
+      let user = JSON.parse(window.sessionStorage.userInfo).userid
+      this.axios.post(consumerFindUser(user)).then((response) => {
+        if (response.data.code === 0) {
+          this.moDifynews = response.data.data
+          this.modifyBoolean = true
+        }
+      })
+    }
   },
   created () {
     let token = JSON.parse(window.sessionStorage.token)
@@ -177,6 +197,14 @@ export default {
     margin 11px 8px 0 -6px
     overflow hidden
     position relative
+  .modifyInformation
+    position fixed
+    left 0
+    top 0
+    z-index 1111
+    background rgba(000,000,000,.8)
+    height 100%
+    width 100%
 </style>
 <style lang="stylus" rel="stylesheet/stylus">
   .headerRightMaintain .el-input--suffix .el-input__inner

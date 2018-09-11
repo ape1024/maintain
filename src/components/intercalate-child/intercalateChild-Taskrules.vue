@@ -307,10 +307,16 @@
           </ul>
         </div>
         <div class="manipulation">
-          <div v-if="!maksConserve &&technicalStandard" @click="newlyAdded" class="newlyAdded">
+          <div v-if="!maksConserve && technicalStandard" @click="newlyAdded" class="newlyAdded">
             新增保存
           </div>
-          <div v-if="maksConserve &&technicalStandard" @click="conserve" class="conserve">
+          <div v-if="!maksConserve && !technicalStandard" class="newlyAddedTwo">
+            新增保存
+          </div>
+          <div v-if="maksConserve && technicalStandard" @click="conserve" class="conserve">
+            保存
+          </div>
+          <div v-if="maksConserve && !technicalStandard" class="conserveTwo">
             保存
           </div>
           <div @click="closedown" class="closedown">
@@ -508,6 +514,7 @@ export default {
     },
     //  初始化,右侧所有数据
     formatting () {
+      this.tabulationID = ''
       this.matter = ''
       this.patternData = ''
       this.revolutionData = ''
@@ -569,6 +576,13 @@ export default {
       }
     },
     closedown () {
+      if (!this.tabulationID) {
+        this.$message({
+          message: '请选择删除所选项',
+          type: 'warning'
+        })
+        return false
+      }
       this.axios.post(deleteCheckStandard(this.tabulationID)).then((response) => {
         if (response.data.code === 0) {
           this.$message({
@@ -1253,4 +1267,30 @@ export default {
     width 100%
     height 100%
     background rgba(000,000,000,.6)
+  .newlyAddedTwo
+    display inline-block
+    width 107px
+    margin-right 20px
+    color #fff
+    border-radius 5px
+    height 36px
+    text-align center
+    line-height 36px
+    background #999
+    transition .2s
+    &:hover
+      background #999
+  .conserveTwo
+    display inline-block
+    width 107px
+    margin-right 20px
+    color #fff
+    border-radius 5px
+    height 36px
+    text-align center
+    line-height 36px
+    background #999
+    transition .2s
+    &:hover
+      background #999
 </style>

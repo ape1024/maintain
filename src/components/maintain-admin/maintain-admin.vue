@@ -26,17 +26,6 @@
             <div v-if="JurisdictionApproval" @click.stop="auditing" class="newly">
               新 增
             </div>
-            <!--导入-->
-            <div class="introduce">
-              <el-dropdown size="medium" split-button type="primary">
-                导入选择
-                <el-dropdown-menu slot="dropdown" trigger="click">
-                  <el-dropdown-item>批量导入</el-dropdown-item>
-                  <el-dropdown-item>导入</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </div>
-
           </div>
         </div>
       </section>
@@ -101,7 +90,8 @@ export default {
           this.regionModel.push((this.regionDate)[0].areaid)
           //  获取 列表数据 默认第一页 20个
           let regionId = (this.regionModel).shift()
-          this.axios.post(CalcDevCount(regionId, 1, 20)).then((data) => {
+          let token = JSON.parse(window.sessionStorage.token)
+          this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
             if (data.data.code === 0) {
               this.tableData = data.data.data.datas
             }
@@ -119,9 +109,10 @@ export default {
         })
         return false
       } else {
+        let token = JSON.parse(window.sessionStorage.token)
         let areaid = this.regionModel[this.regionModel.length - 1]
         console.log(areaid)
-        this.axios.post(CalcDevCount(areaid, 1, 30)).then((response) => {
+        this.axios.post(CalcDevCount(token, this.maintainProject, areaid, 1, 30)).then((response) => {
           if (response.data.code === 0) {
             this.tableData = response.data.data.datas
           }
@@ -222,6 +213,7 @@ export default {
     }
   },
   created () {
+    let token = JSON.parse(window.sessionStorage.token)
     //  权限
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
@@ -236,7 +228,7 @@ export default {
         this.regionModel.push((this.regionDate)[0].areaid)
         //  获取 列表数据 默认第一页 20个
         let regionId = (this.regionModel).shift()
-        this.axios.post(CalcDevCount(regionId, 1, 20)).then((data) => {
+        this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
           if (data.data.code === 0) {
             this.tableData = data.data.data.datas
           }

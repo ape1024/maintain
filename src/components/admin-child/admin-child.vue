@@ -43,19 +43,19 @@
       <li class="threelevel_lithree">
         生产时间
       </li>
-      <li class="threelevel_lithree">
-        运行状态 <i class="el-icon-caret-bottom"></i>
-        <div class="threelevel_ensconce">
-          <el-select @change="runningChange" v-model="runningState" size="mini" placeholder="">
-            <el-option
-              v-for="item in runningstateDate"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-      </li>
+      <!--<li class="threelevel_lithree">-->
+        <!--运行状态 <i class="el-icon-caret-bottom"></i>-->
+        <!--<div class="threelevel_ensconce">-->
+          <!--<el-select @change="runningChange" v-model="runningState" size="mini" placeholder="">-->
+            <!--<el-option-->
+              <!--v-for="item in runningstateDate"-->
+              <!--:key="item.value"-->
+              <!--:label="item.name"-->
+              <!--:value="item.value">-->
+            <!--</el-option>-->
+          <!--</el-select>-->
+        <!--</div>-->
+      <!--</li>-->
       <li class="threelevel_lithree">
         审核状态 <i class="el-icon-caret-bottom"></i>
         <div class="threelevel_ensconce">
@@ -97,9 +97,9 @@
           <li class="threelevel_lithree">
             {{dataset.madedate}}
           </li>
-          <li class="threelevel_lithree">
-            <p :style="{color: devicestatecodeColor(dataset.devicestatecode)}">{{devicestateCode(dataset.devicestatecode)}}</p>
-          </li>
+          <!--<li class="threelevel_lithree">-->
+            <!--<p :style="{color: devicestatecodeColor(dataset.devicestatecode)}">{{devicestateCode(dataset.devicestatecode)}}</p>-->
+          <!--</li>-->
           <li class="threelevel_lithree">
             <p :style="{color: examineCodeColor(dataset.approvalstatecode)}">
               {{examineCode(dataset.approvalstatecode)}}
@@ -107,9 +107,9 @@
             <!--{{dataset.approvalstatecode}}-->
           </li>
           <li class="threelevel_litwo">
-            <!--<p @click.stop="question" class="header_p_eight threelevel_litwo_p">-->
-              <!--审核-->
-            <!--</p>-->
+            <p @click.stop="question" class="header_p_eight threelevel_litwo_p">
+              审核
+            </p>
             <p v-if="JurisdictionSelect" @click.stop="examine(dataset.deviceid)" class="header_p_ten">查看</p>
             <p v-if="JurisdictionUpdate" @click.stop="modify(dataset, dataset.deviceid)" class="header_p_twelve">
               修改
@@ -507,7 +507,7 @@ export default {
       overflow hidden
      .threelevel_lithree
        float left
-       width 7.5%
+       width 8.5%
        padding-left 1%
        position relative
   .threelevel_list
@@ -540,7 +540,7 @@ export default {
             white-space nowrap
           .threelevel_lithree
             float left
-            width 7.5%
+            width 8.5%
             height 40px
             padding-left 1%
             overflow hidden

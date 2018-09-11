@@ -331,6 +331,7 @@ export default {
       position relative
       .informationH
         color $color-text-title
+        margin-bottom 15px
         font-size $font-size-medium-x
       .informationP
         text-align right
