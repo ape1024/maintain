@@ -11,6 +11,35 @@ export const findMap = (areaId, types) => {
   })
 }
 
+export const findMap2 = (parentId, areaId) => {
+  const current = areaId ? `&currentAreaid=${areaId}` : ``
+  const url = `${URL}/areas/findMap_L2?areaid=${parentId}${current}`
+  return axios.post(url).then(function (response) {
+    return Promise.resolve(response.data.data)
+  }).catch(function (error) {
+    console.log(error)
+  })
+}
+
+export const findFloorPlans = (parentId, deviceTypeId) => {
+  const type = deviceTypeId ? `&devicetypeid=${deviceTypeId}` : ``
+  const url = `${URL}/areas/findMapDeviceData?areaid=${parentId}${type}`
+  return axios.post(url).then(function (response) {
+    return Promise.resolve(response.data.data)
+  }).catch(function (error) {
+    console.log(error)
+  })
+}
+
+export const getDeviceTypeList = () => {
+  const url = `${URL}/areas/findDeviceTypeList`
+  return axios.post(url).then(function (response) {
+    return Promise.resolve(response.data.data)
+  }).catch(function (error) {
+    console.log(error)
+  })
+}
+
 export const getDeviceRecord = (deviceId) => {
   const url = `${URL}/task/getTaskInfoForAlarm?deviceid=${deviceId}`
   return axios.post(url).then(function (response) {

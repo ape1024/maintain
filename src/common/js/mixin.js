@@ -1,8 +1,10 @@
-import { layer, stateCode, iconUrl, polygonState, iconTypeStyle, errorUrl, stateLevel } from 'common/js/config'
-import { osmUrl } from 'api/config'
+import { layer, stateCode, iconUrl, polygonState, iconTypeStyle, errorUrl, stateLevel, alarmHandle } from 'common/js/config'
+import { projectBaiDuUrl } from 'api/config'
 import { IconAlarmList, createFloorData, createFactoryData, createBuildingData } from 'common/js/map'
+import { confirmAlarm } from 'api/alarm'
 import { findMap } from 'api/map'
 import { mapGetters, mapMutations } from 'vuex'
+
 /* global L:true */
 export const mapMixin = {
   data () {
@@ -10,10 +12,11 @@ export const mapMixin = {
       title: '',
       state: false,
       loadingState: true,
-      iconList: [],
+      iconListData: [],
       iconListPos: {x: 0, y: 0},
       details: {
         state: '',
+        deviceId: '',
         device: [],
         maintenance: [],
         alarm: []
@@ -23,14 +26,19 @@ export const mapMixin = {
       polygonPos: {x: 0, y: 0}
     }
   },
+  computed: {
+    ...mapGetters([
+      'clientId'
+    ])
+  },
   methods: {
-    addOSMMapLayer (minZoom, maxZoom) {
+    /* addOSMMapLayer (minZoom, maxZoom) {
       L.tileLayer(`${osmUrl}/{z}/{x}/{y}.png`, {
         minZoom,
         maxZoom,
         errorTileUrl: errorUrl
       }).addTo(this.map)
-    },
+    }, */
     setMaxBounds (bounds) {
       this.map.setMaxBounds(L.latLngBounds(
         L.latLng(bounds[0][0], bounds[0][1]),
@@ -109,15 +117,43 @@ export const mapMixin = {
     fitBounds (bounds) {
       this.map.fitBounds(bounds)
     },
+    // 百度地体坐标系
+    initCrsModel () {
+      let level = 19
+      let res = []
+      res[0] = Math.pow(2, 18)
+      for (let i = 1; i < level; i++) {
+        res[i] = Math.pow(2, (18 - i))
+      }
+      return new L.Proj.CRS('EPSG:900913',
+        '+proj=merc +a=6378206 +b=6356584.314245179 +lat_ts=0.0 +lon_0=0.0 +x_0=0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs',
+        {
+          resolutions: res,
+          origin: [0, 0],
+          bounds: L.bounds([20037508.342789244, 0], [0, 20037508.342789244])
+        })
+    },
+    initQuest (minZoom, maxZoom) {
+      return new L.TileLayer(projectBaiDuUrl, {
+        minZoom,
+        maxZoom,
+        subdomains: [0, 1, 2],
+        tms: true
+      })
+    },
     initMap (dom, minZoom, maxZoom) {
+      const crs = this.initCrsModel()
+      const mapQuest = this.initQuest(minZoom, maxZoom)
       // 初始化地图
       const option = {
+        crs: crs,
+        layers: [mapQuest],
         attributionControl: false,
         zoomControl: false
       }
       this.map = L.map(dom, option)
       this.map.invalidateSize(true)
-      this.addOSMMapLayer(minZoom, maxZoom)
+      // this.addOSMMapLayer(minZoom, maxZoom)
       // 创建窗口
       this.createPane()
     },
@@ -241,20 +277,32 @@ export const mapMixin = {
       this.reset()
       this.loadingState = true
     },
-    configure (areaId) {
+    configure (requestData, deviceData, types) {
+      // 地图加载前
+      this.loading(true)
       // 发送请求
-      findMap(areaId).then((data) => {
+      findMap(requestData.areaId, types).then((data) => {
         // 请求失败
         if (!data) {
           // 获取数据失败
           this.loadingState = true
+          // 地图加载完成
+          this.loading(false)
           return
         }
+
+        // 重置所有弹窗状态
+        this.$refs.iconListPopup.close()
+        this.$refs.iconPopup.close()
+        this.$refs.polygonPopup.close()
         // 请求成功
         const list = data.subAreaList
         const area = data.areaInfo
         // 加载第二个地图
-        this.update && this.update(list.length > 0 ? list[0].areaid : '')
+        this.update && this.update({
+          selectData: requestData.childTree ? {...requestData.childTree} : {areaId: list.length > 0 ? list[0].areaid : ''},
+          deviceData
+        })
         // 设备是否定位
         this.devicePosition = true
         // 数据获取成功
@@ -269,6 +317,7 @@ export const mapMixin = {
         // 根据状态不同进行不同操作
         if (!this.CRSState) {
           if (!area.border.length) {
+            this.loading(false)
             return
           }
           // 初始化地图
@@ -277,14 +326,16 @@ export const mapMixin = {
           this.bounds = this.resetBounds(area.border)
           this.center = [area.lat, area.lon]
           // 设置区域块
-          this.setPolygonInfo(list)
+          this.setPolygonInfo(list, requestData)
           // 设置周边图标信息
-          this.setIconInfo(area.devices, true)
+          this.setIconInfo(area.devices, deviceData, true)
           // 设置基本数据
           this.setBaseData()
           // 地图加载完成
+          this.loading(false)
         } else {
           if (!area.height || !area.width) {
+            this.loading(false)
             return
           }
           // 加载地图
@@ -294,13 +345,54 @@ export const mapMixin = {
           this.bounds = [[0, 0], [area.height, area.width]]
           this.setBaseDataCRS()
           // 设置区域块
-          this.setPolygonInfo(list)
+          this.setPolygonInfo(list, requestData)
           // 设置周边图标信息
-          this.setIconInfo(area.devices, false)
+          this.setIconInfo(area.devices, deviceData, false)
           if (!(this.devicePosition && this.findDevice)) {
             this.setMaxBounds(this.bounds)
           }
+          // 加载完成
+          this.loading(false)
         }
+      })
+    },
+    mqToUpdateMap (requestData, deviceData) {
+      // 地图加载前
+      this.loading(true)
+      // 发送请求
+      findMap(requestData.areaId).then((data) => {
+        // 请求失败
+        if (!data) {
+          // 地图加载完成
+          this.loading(false)
+          return
+        }
+        this.devicePosition = false
+        // 加载第二个地图
+        requestData.childTree && this.updateMq && this.updateMq({
+          treeData: {...requestData.childTree},
+          deviceData
+        })
+        // 关闭列表图标弹窗，删除原来图标
+        this.$refs.iconListPopup.close()
+        this.iconList.forEach((t) => {
+          this.removeLayer(t)
+        })
+        this.iconList = []
+        // 请求成功
+        const list = data.subAreaList
+        const area = data.areaInfo
+        // 生成新的图标信息
+        list.forEach((item) => {
+          // 设置报警图标信息
+          if (!item.border.length) return
+          const center = this.getLatLngAverageNum(item.border)
+          this.setAlarmIconList(item.alarmDevices, center)
+        })
+        // 设置周边图标信息
+        this.setIconInfo(area.devices, deviceData, !this.CRSState)
+        // 地图加载完成
+        this.loading(false)
       })
     },
     openFullScreen () {
@@ -335,20 +427,22 @@ export const mapMixin = {
     toggleIconInfo (info, x, y) {
       createFloorData(info).then((t) => {
         this.details = t
+        this.iconDataPos = {x, y}
+        this.$refs.iconPopup.open()
       })
-      this.iconDataPos = {x, y}
-      this.$refs.iconPopup.open()
     },
     toggleAlarmIconList (list, x, y) {
-      this.iconList = list
+      this.iconListData = list
       this.iconListPos = {x, y}
       this.$refs.iconListPopup.open()
     },
-    setPolygonInfo (data) {
+    setPolygonInfo (data, requestData) {
       data.forEach((item) => {
         if (!item.border.length) return
         // 更新下级地图的数据
-        const updateData = item.areaid
+        const updateData = {
+          selectData: {areaId: item.areaid}
+        }
         // 设置区域信息
         const polygon = item.border.map((b) => {
           if (!this.CRSState) {
@@ -363,7 +457,11 @@ export const mapMixin = {
           index: this.step += 1
         })
         // 默认区域的选中
-        if (this.step === 0) {
+        if (requestData.childTree && requestData.childTree.areaId === item.areaid) {
+          polygonItem.setStyle({color: polygonState.selected})
+          this.polygonSelected = this.step
+        }
+        if (!requestData.childTree && this.step === 0) {
           polygonItem.setStyle({color: polygonState.selected})
         }
         // 保存区域块信息数据
@@ -373,13 +471,33 @@ export const mapMixin = {
         this.setAlarmIconList(item.alarmDevices, center)
       })
     },
-    setIconInfo (list, flag) {
+    setIconInfo (list, deviceData, flag) {
       if (!list.length) return
       // 设置报警图表信息
       list.forEach((item) => {
         let showState = ''
         const deviceState = this.getDeviceState(item)
-        if (deviceState === layer.fire) {
+        if (deviceData && deviceData.deviceId === item.deviceid && (!this.details.deviceId || this.details.deviceId === deviceData.deviceId)) {
+          showState = `${showState} ${iconTypeStyle.selected}`
+          createFloorData({
+            ...item,
+            deviceStateVal: deviceState
+          }).then((t) => {
+            this.details = t
+          })
+          if (this.devicePosition) {
+            this.findDevice = true
+            const pos = this.getDomCenterPos()
+            if (flag) {
+              this.setView(item.lat, item.lon)
+            } else {
+              this.setView(item.y, item.x)
+            }
+            this.iconDataPos = {x: pos.x, y: pos.y}
+            this.$refs.iconPopup.open()
+          }
+        }
+        if (deviceState === layer.fire && (item.acceptState === alarmHandle.ALARM_NOT_ALARM || item.acceptState === alarmHandle.ALARM_NOT_ALARM_OVERTIME)) {
           showState = `${showState} ${iconTypeStyle.alarm}`
         }
         if (flag && item.lat && item.lng) {
@@ -442,10 +560,39 @@ export const mapMixin = {
       }
     },
     setBaseDataCRS () {
-      this.setMaxZoom(0)
-      this.setMinZoom(-3)
+      this.setMaxZoom(this.maxSize)
+      this.setMinZoom(this.minSize)
       this.imageOverlay(this.url, this.bounds)
       this.fitBounds(this.bounds)
+    },
+    receive (alarmId) {
+      confirmAlarm(alarmId, this.clientId).then((data) => {})
+    },
+    handle (alarmId) {
+      this.$refs.iconPopup.close()
+      this.updateAlarmId(alarmId)
+      this.$router.push({
+        path: '/alarm-processing'
+      })
+    },
+    close () {
+      if (this.devicePosition && this.findDevice) {
+        if (this.CRSState) {
+          this.setBaseDataCRS()
+        } else {
+          this.setBaseData()
+        }
+        this.devicePosition = false
+        this.findDevice = false
+      }
+      // 重置details数据
+      this.details = {
+        state: '',
+        deviceId: '',
+        device: [],
+        maintenance: [],
+        alarm: []
+      }
     },
     getDomCenterPos () {
       const pos = this.$refs.map.getBoundingClientRect()
@@ -453,6 +600,20 @@ export const mapMixin = {
         x: (pos.left + pos.width / 2),
         y: (pos.top + pos.height / 2)
       }
+    }
+  },
+  watch: {
+    state (newVal) {
+      this.remove()
+      const map = newVal ? this.map2 : this.map1
+      setTimeout(() => {
+        if (!this.CRSState) {
+          this.initMap(map, this.minZoom, this.maxZoom)
+        } else {
+          this.initCRSMap(map)
+        }
+        this.redraw()
+      }, 200)
     }
   }
 }
