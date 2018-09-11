@@ -13,8 +13,7 @@
               :props="facilitiesProps"
               @node-click="handleNodeClick"
               accordion
-              node-key="id"
-              highlight-current>
+              node-key="id">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>
       </span>
@@ -308,10 +307,10 @@
           </ul>
         </div>
         <div class="manipulation">
-          <div v-if="!maksConserve" @click="newlyAdded" class="newlyAdded">
+          <div v-if="!maksConserve &&technicalStandard" @click="newlyAdded" class="newlyAdded">
             新增保存
           </div>
-          <div v-if="maksConserve" @click="conserve" class="conserve">
+          <div v-if="maksConserve &&technicalStandard" @click="conserve" class="conserve">
             保存
           </div>
           <div @click="closedown" class="closedown">
@@ -388,10 +387,19 @@ export default {
       },
       tabulationID: '',
       basedeviceCode: '',
-      checkStandardsNode: []
+      checkStandardsNode: [],
+      technicalStandard: false
     }
   },
   watch: {
+    tabulation (ev) {
+      console.log(ev)
+      if (!ev.length) {
+        this.technicalStandard = false
+      } else {
+        this.technicalStandard = true
+      }
+    }
   },
   methods: {
     handleNodeClick (node) {

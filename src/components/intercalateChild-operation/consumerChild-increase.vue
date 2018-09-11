@@ -172,7 +172,6 @@
                     ref="tree"
                     show-checkbox
                     default-expand-all
-                    highlight-current
                     @check="firecontrolCheck">
                   </el-tree>
                 </div>
@@ -334,7 +333,7 @@ export default {
       fileList: [],
       documentPapers: [],
       arrayAddresses: [],
-      uploadUrl: upload()
+      uploadUrl: upload(JSON.parse(window.sessionStorage.token))
     }
   },
   methods: {

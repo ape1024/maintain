@@ -120,6 +120,7 @@ export default {
         return false
       } else {
         let areaid = this.regionModel[this.regionModel.length - 1]
+        console.log(areaid)
         this.axios.post(CalcDevCount(areaid, 1, 30)).then((response) => {
           if (response.data.code === 0) {
             this.tableData = response.data.data.datas

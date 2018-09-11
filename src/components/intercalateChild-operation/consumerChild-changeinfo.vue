@@ -193,7 +193,7 @@ export default {
       },
       organizeOptions: [],
       imageUrlTwo: '',
-      uploadUrlData: upload()
+      uploadUrlData: upload(JSON.parse(window.sessionStorage.token))
     }
   },
   watch: {

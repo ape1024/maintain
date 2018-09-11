@@ -169,7 +169,6 @@
                     :data="firecontrol"
                     show-checkbox
                     default-expand-all
-                    highlight-current
                     node-key="id"
                     ref="tree"
                     :props="firecontrolProps">
@@ -335,7 +334,7 @@ export default {
       fileList: [],
       documentPapers: [],
       arrayAddresses: [],
-      uploadUrl: upload()
+      uploadUrl: upload(JSON.parse(window.sessionStorage.token))
     }
   },
   methods: {

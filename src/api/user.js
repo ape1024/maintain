@@ -55,8 +55,8 @@ export const getTaskParams = (checktaskdetailid) => {
   return url
 }
 
-export const upload = () => {
-  const url = `${Test}/upload/upload`
+export const upload = (token) => {
+  const url = `${Test}/upload/upload?token=${token}`
   return url
 }
 //  组织结构权限管理  获取左边的树状结构
