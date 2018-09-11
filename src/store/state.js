@@ -10,7 +10,32 @@ const state = {
   usericon: '',
   userToken: '',
   loading: false,
-  maintainProject: window.localStorage.pattern ? window.localStorage.pattern : ''
+  maintainProject: window.localStorage.pattern ? window.localStorage.pattern : '',
+  clientId: '',
+  userList: [],
+  treeStructure: [],
+  cityDataDelete: false,
+  cityData: {},
+  cityDataMq: {},
+  factoryDataDelete: false,
+  factoryData: {},
+  factoryDataMq: {},
+  buildingDataDelete: false,
+  buildingData: {},
+  buildingDataMq: {},
+  floorDataDelete: false,
+  floorData: {},
+  floorDataMq: {},
+  mapLoadingState1: false,
+  mapLoadingState2: false,
+  mapLoadingState3: false,
+  mapLoadingState4: false,
+  mapLoadingStateMq: false,
+  firstList: [],
+  allList: [],
+  alarmMq: {},
+  alarmId: '',
+  repairId: ''
 }
 
 export default state

@@ -4,7 +4,7 @@
       <header class="header" :style="{ background: 'url(static/img/header.png) no-repeat' }">
         <div class="header_left">
           <ul class="ul_router">
-            <router-link to="/home/maintain-home">
+            <router-link to="/home/maintain-home-new">
               <li>
                 <i class="headerHome"></i>
                 首页

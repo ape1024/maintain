@@ -7,7 +7,9 @@ import loginBlank from '../components/login/loginBlank'
 // 首页
 import home from '../components/home/home'
 // 首页
-import maintainHome from '../components/maintain-home/maintain-home'
+// import maintainHome from '../components/maintain-home/maintain-home'
+import maintainHomeNew from '../components/maintain-home-new/maintain-home-new'
+import maintainHomeAnother from '../components/maintain-home-another/maintain-home-another'
 // 设备管理
 import admin from '../components/maintain-admin/maintain-admin'
 // 日常巡检
@@ -58,8 +60,14 @@ const routes = [
     children: [
       {
         // 设备管理
-        path: 'maintain-home',
-        component: maintainHome
+        path: 'maintain-home-new',
+        component: maintainHomeNew,
+        children: [
+          {
+            path: '',
+            component: maintainHomeAnother
+          }
+        ]
       },
       {
         // 设备管理
@@ -131,7 +139,7 @@ const routes = [
       },
       {
         path: '/home',
-        redirect: '/home/maintain-home'
+        redirect: '/home/maintain-home-new'
       }
     ]
   },
