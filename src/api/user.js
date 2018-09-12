@@ -360,8 +360,8 @@ export const maintainReportAddManufacture = (customManufacturerDate, devicetypei
   return url
 }
 //  增加上报问题
-export const maintainReportAddDevice = (rowcount, token, devicetypeid, manufacturerid, basedevicecode, devicemodel, position, devicecount, parameters, memo, madedate, effectivedate, mac) => {
-  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodel=${devicemodel}&position=${position}&devicecount=${devicecount}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&mac=${mac}`
+export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate) => {
+  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodel=${devicemodel}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`
   return url
 }
 //  通过厂家获取到规格型号

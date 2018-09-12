@@ -2,12 +2,12 @@
   <div class="headerRight">
      <div class="headerRight_left">
        <div class="headerRight_leftImgLeft">
-         <img class="headerRight_left__img" src="../../common/img/headerRight_left_h4.png" alt="">
+         <img class="headerRight_left__img" :src="logo" alt="">
        </div>
        <div class="headerRight_leftImg">
          <div>
            <p class="headerRight_left__p">
-             红塔集团
+             {{organization}}
            </p>
            <h4 class="headerRight_left_h4">
              维护管理系统
@@ -66,7 +66,9 @@ export default {
       username: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).username : '',
       options: [],
       value: [],
-      modifyBoolean: false
+      modifyBoolean: false,
+      logo: JSON.parse(sessionStorage.userInfo).logo,
+      organization: JSON.parse(sessionStorage.userInfo).organization
     }
   },
   methods: {

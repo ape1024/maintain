@@ -123,7 +123,7 @@
       <div class="increase_bottom">
         <div class="top_header">
           <p class="header_p">
-            逐一录入每隔设施的具体信息
+            逐一录入每台设施的具体信息
           </p>
           <p class="thread"></p>
         </div>
@@ -159,12 +159,6 @@
                 <el-input size="mini" v-model="specific" placeholder="请输入详细地址"></el-input>
               </div>
             </div>
-            <div class="left_list">
-              <p class="left_list_p">地址编码:</p>
-              <div class="encrypt">
-                <el-input size="mini" v-model="encoded" placeholder="请输入内容"></el-input>
-              </div>
-            </div>
           </li>
           <li class="bottom_left">
             <div class="left_list">
@@ -196,7 +190,7 @@
             <ul class="tabulation_ul">
               <li class="tabulation_li">设施位置</li>
               <li class="tabulation_li">设施数量</li>
-              <li class="tabulation_li">地址编码</li>
+              <li class="tabulation_liTwo">编码</li>
               <li class="tabulation_li">操作</li>
             </ul>
           </div>
@@ -205,13 +199,28 @@
               <li v-for="(item,$index) in tabulationtitle" :key="item.id" :id="item.id" class="title_li">
                 <ul class="title_li_ul">
                   <li class="title_lili">
-                    {{item.seat}}
+                    {{item.position}}
                   </li>
                   <li class="title_lili">
-                    {{item.amount}}
+                    {{item.devcount}}
                   </li>
-                  <li class="title_lili">
-                    {{item.seatcode}}
+                  <li class="title_liliTwo">
+                    <!--控制器编码-->
+                    <div class="title_liliTwoDiv">
+                      <el-input v-model="item.a" placeholder="控制器编码"></el-input>
+                    </div>
+                    <!--回路号-->
+                    <div class="title_liliTwoDiv">
+                      <el-input v-model="item.b" placeholder="回路号"></el-input>
+                    </div>
+                    <!--一次码-->
+                    <div class="title_liliTwoDiv">
+                      <el-input v-model="item.c" placeholder="一次码"></el-input>
+                    </div>
+                    <!--地址编码-->
+                    <div class="title_liliTwoDiv">
+                      <el-input v-model="item.d" placeholder="地址编码"></el-input>
+                    </div>
                   </li>
                   <li class="title_lili">
                     <div @click.stop="amputate($index)" class="title_lili_div">
@@ -239,8 +248,10 @@
 <script>
 import $ from 'jquery'
 import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, getAllProvince, findAllDeviceType, getCitiesByProvinceId, getCountiesByCityId, maintainReportfindDivecemodels } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
+  mixins: [projectMixin],
   props: ['msg'],
   data () {
     return {
@@ -379,18 +390,24 @@ export default {
     },
     addincrease () {
       let obtainCode = this.regionDate + this.specific
-      let devicecoding = this.devicecoding
+      // let devicecoding = this.devicecoding
       let quantum = this.quantum
-      let encoded = this.encoded
+      // let encoded = this.encoded
       let data = {
-        // 编码
-        code: devicecoding,
+        // // 编码
+        // code: devicecoding,
         // 位置
-        seat: obtainCode,
+        position: obtainCode,
         // 数量
-        amount: quantum,
-        // 地址编码
-        seatcode: encoded
+        devcount: quantum,
+        //  控制器编码
+        a: '',
+        //  回路号
+        b: '',
+        //  一次码
+        c: '',
+        //  地址编码
+        d: ''
       }
       if (this.checked) {
         for (let i = 1; i <= this.num; i++) {
@@ -432,66 +449,56 @@ export default {
       // this.lyaddedShow = !this.lyaddedShow
       // this.$emit('say', this.lyaddedShow)
       //  批量编码 个数
-      let rowcount = this.num ? this.num : 1
+      let rowcount = this.tabulationtitle.length ? this.tabulationtitle.length : 0
       //  token
       let token = JSON.parse(window.sessionStorage.token)
+      //  设备id
+      let devicetypeid = this.categoryDate[this.categoryDate.length - 1]
       //  厂家id
       let manufacturerid = ''
       //  型号
       let devicemodel = ''
       if (this.versionManufacturer) {
-        devicemodel = this.versionCustom ? this.versionCustom : ' '
+        devicemodel = this.versionCustom ? this.versionCustom : ''
       } else {
-        devicemodel = this.versionValue ? this.versionValue : ' '
+        devicemodel = this.versionValue ? this.versionValue : ''
       }
-      //  位置
-      let position = this.regionDate ? `${this.regionDate} ${this.specific}` : ' '
-      //  数量
-      let devicecount = this.quantum ? this.quantum : ' '
       //  设备参数
-      let parameters = this.technicalParameter ? this.technicalParameter : ' '
+      let parameters = this.technicalParameter ? this.technicalParameter : ''
       // 备注
-      let memo = this.textarea ? this.textarea : ' '
+      let memo = this.textarea ? this.textarea : ''
       //  生产日期
-      let madedate = this.productionValue1 ? this.productionValue1 : ' '
+      let madedate = this.productionValue1 ? this.productionValue1 : ''
       //  有效日期
-      let effectivedate = this.validity ? this.validity : ' '
+      let effectivedate = this.validity ? this.validity : ''
       //  地址编码
-      let mac = this.encoded ? this.encoded : ' '
       if (this.categoryDate.length !== 0) {
-        //  设备id
-        let devicetypeid = this.categoryDate[this.categoryDate.length - 1]
         if (this.customManufacturer === true) {
           this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
             if (response.data.code === 0) {
               // 厂家id
               manufacturerid = response.data.data.manufacturerid
-              this.axios.post(maintainReportAddDevice(rowcount, token, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, position, devicecount, parameters, memo, madedate, effectivedate, mac)).then((response) => {
-                if (response.data.code === 0) {
+              this.axios.post(maintainReportAddDevice(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), this.tabulationtitle).then((data) => {
+                if (data.data.code === 0) {
                   this.$message({
                     message: '创建成功',
                     type: 'success'
                   })
-                  this.lyaddedShow = this.msg
-                  this.lyaddedShow = !this.lyaddedShow
-                  this.$emit('say', this.lyaddedShow)
+                  this.$emit('say', false)
                 }
               })
             }
           })
         } else {
           //  厂家 id
-
           manufacturerid = this.manufactorModel
-          this.axios.post(maintainReportAddDevice(rowcount, token, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, position, devicecount, parameters, memo, madedate, effectivedate, mac)).then((response) => {
-            if (response.data.code === 0) {
+          this.axios.post(maintainReportAddDevice(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), this.tabulationtitle).then((data) => {
+            if (data.data.code === 0) {
               this.$message({
                 message: '创建成功',
                 type: 'success'
               })
-              this.lyaddedShow = this.msg
-              this.lyaddedShow = !this.lyaddedShow
-              this.$emit('say', this.lyaddedShow)
+              this.$emit('say', false)
             }
           })
         }
@@ -773,8 +780,8 @@ export default {
       position relative
       font-size $font-size-medium
       color $color-text-title
-      max-height 180px
-      min-height 180px
+      max-height 240px
+      min-height 240px
       margin-bottom 8px
       height calc(100% - 50px)
       overflow-y auto
@@ -788,8 +795,12 @@ export default {
          padding 12px 0
          .tabulation_li
           float left
-          width 25%
+          width 20%
           text-align center
+         .tabulation_liTwo
+           float left
+           width 40%
+           text-align center
       .tabulation_title
          width 100%
          overflow hidden
@@ -806,22 +817,17 @@ export default {
                position relative
              .title_lili
                line-height: 40px;
-               width 25%
+               width 20%
                height 40px
                float left
                text-align center
                .title_lili_div
-                 width 107px
-                 height 32px
-                 border-radius 5px
+                 color #83292b
                  line-height 32px
                  text-align center
-                 background $color-border-b-alarm
                  cursor pointer
                  margin 4px auto
                  transition .2s
-                 &:hover
-                   background #dc4d5f
          .title_ul .title_li:nth-child(odd)
            background #1c273a
          .title_ul .title_li:nth-child(even)
@@ -835,32 +841,11 @@ export default {
      text-align center
      margin-bottom 10px
      .preservation
-       display inline-block
-       width 167px
-       height 36px
-       border-radius 5px
-       text-align center
-       line-height 36px
-       background $color-background-query
-       margin-right 110px
-       cursor pointer
-       transition .2s
-       &:hover
-         background: #4b92bf;
+       conserve()
      .cancel
-       display inline-block
-       width 167px
-       height 36px
-       border-radius 5px
-       text-align center
-       line-height 36px
-       background $color-background-button
-       cursor pointer
-       transition .2s
-       &:hover
-         background #304364
+       closedown()
   .newlyadded
-    margin 40px 0 0
+    margin 70px 0 0
     width 100%
     background #111a28
   .increase
@@ -903,12 +888,12 @@ export default {
         font-size $font-size-medium
       .modify_liDiv
         init()
-        margin-bottom 17px
+        margin-bottom 30px
       .modify_liDivtwo
         position relative
         display inline-block
         width 100%
-        margin-bottom 17px
+        margin-bottom 30px
       .modify_li_p
         float left
         margin-right 6px
@@ -1054,7 +1039,7 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin-bottom 17px
+    margin-bottom 30px
   .upload
     display inline-block
     width 100px
@@ -1069,7 +1054,7 @@ export default {
     transition .4s
     cursor pointer
   .upload > input
-    position: absolute;
+    position absolute
     top 0
     left 0
     width 100%
@@ -1079,9 +1064,29 @@ export default {
   .upload:hover
      cursor pointer
      background $color-background-query
+  .title_liliTwo
+    line-height 40px
+    width 40%
+    height 40px
+    float left
+    text-align center
+  .title_liliTwoDiv
+     display inline-block
+     width 106px
+     height 30px
+     line-height 30px
+     margin 5px 10px 0 0
+     position relative
+     overflow hidden
+     text-align center
+     border-radius 5px
+
 </style>
 <style>
-  .el-input__icon{
-    line-height: 20px;
+  .title_liliTwoDiv  .el-input__inner{
+    padding: 0 10px;
+    height: 30px;
+    line-height: 30px;
   }
+
 </style>

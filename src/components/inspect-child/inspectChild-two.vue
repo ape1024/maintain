@@ -453,12 +453,10 @@ export default {
         margin 0 auto
         color #3279A6
         cursor pointer
-        text-decoration underline
       .list_data_li_ptwo
         display inline-block
         color $color-text-tile-project
         cursor pointer
-        text-decoration underline
   .threelevel
     margin 0 10px
     overflow hidden

@@ -77,7 +77,7 @@
       <li :key="dataset.deviceid" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
           <li class="threelevel_lithree">
-            {{dataset.basedevicecode}}
+            {{dataset.devicecode}}
           </li>
           <li :title="dataset.devicename" class="threelevel_lithree">
             {{dataset.devicename}}
@@ -466,8 +466,9 @@ export default {
     color #333333
   .header_p_ten
     color $color-background-newly
-  .header_p_eleven
-    color #83292b
+  .header_p_eleven .el-button--text
+    color #83292b!important
+    font-size 16px
   .header_p_twelve
     color $color-background-introduce
   .header_pe_quipment
@@ -549,7 +550,6 @@ export default {
           .threelevel_litwo p
             float left
             margin-right 35px
-            text-decoration underline
             cursor pointer
   .threelevel_list_ul:hover
     background #253147

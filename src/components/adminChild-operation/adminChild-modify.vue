@@ -514,6 +514,7 @@ export default {
     }
   },
   created () {
+    console.log(this.modify)
     this.axios.post(findAllDeviceType()).then((response) => {
       if (response.data.code === 0) {
         this.category = response.data.data

@@ -4,7 +4,7 @@
         <div class="subject_top__div">
           <ul class="ul_input">
             <li class="li_input">
-              <p class="div_p">区 域：</p>
+              <p class="div_p">建筑区域：</p>
               <div class="div_input">
                 <el-cascader
                   size="mini"
@@ -32,27 +32,33 @@
       <section class="subject_bottom">
         <ul class="header_ul">
           <li class="header_lithree">
-            区域
+            建筑区域
           </li>
           <li class="header_li">
-            设备数量
+            设施总数量
           </li>
           <li class="header_li">
-            待审核设备数量
+            待审查数量
           </li>
           <li class="header_li">
-            正常运行数量
+            已归档数量
+          </li>
+          <li class="header_li">
+            需修改数量
+          </li>
+          <li class="header_li">
+            停用数量
           </li>
         </ul>
         <ul class="table_ul">
           <li v-for="(item) in tableData" class="table_li" :key="item.deviceid" :id="item.areaid">
             <ul :id="item.id" class="inline_ul" @click="selectStyle (item)">
               <li class="header_lithree">{{item.areaname}}</li>
-              <li class="header_li">{{item.alldevcount}}</li>
-              <li class="header_li">{{item.approvedevnum}}</li>
-              <li class="header_li">{{item.statedevnum}}</li>
-              <li class="header_li">
-              </li>
+              <li class="header_li">{{item.checkdevnum}}</li>
+              <li class="header_li">{{item.filedevnum}}</li>
+              <li class="header_li">{{item.updatedevnum}}</li>
+              <li class="header_li"> </li>
+              <li class="header_li">{{item.stopdevnum}}</li>
             </ul>
             <transition enter-active-class="fadeInUp"
                         leave-active-class="fadeOutDown">
@@ -349,7 +355,8 @@ export default {
     background #354d76
   .header_li
     float left
-    width 25%
+    width 15%
+    text-align center
     .admin_show
       overflow hidden
       font-size $font-size-small
@@ -442,7 +449,7 @@ export default {
     left 0
     width 100%
     height 100%
-    background rgba(000,000,000,.4)
+    background rgba(000,000,000,.9)
     z-index 11
     overflow hidden
 .subject_top__div
