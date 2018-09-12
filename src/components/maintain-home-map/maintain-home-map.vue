@@ -1,5 +1,5 @@
 <template>
-  <div class="home-another">
+  <div class="home-map">
     <div class="middle">
       <area-view></area-view>
     </div>
@@ -26,7 +26,7 @@ export default {
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
-  .home-another
+  .home-map
     position relative
     width 100%
     height 100%

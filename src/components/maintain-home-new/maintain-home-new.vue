@@ -27,8 +27,8 @@ export default {
   .home-new
     position relative
     width 100%
-    height 920px
-    padding 14px 15px 0
+    height 960px
+    padding 12px 12px 0
     box-sizing border-box
     display flex
     justify-content space-between

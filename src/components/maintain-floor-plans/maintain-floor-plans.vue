@@ -158,7 +158,7 @@ export default {
   .floor-plans
     position relative
     width 100%
-    height 645px
+    height 610px
     background url("../../common/img/block.png")
     .loading
       position absolute

@@ -9,7 +9,8 @@ import home from '../components/home/home'
 // 首页
 // import maintainHome from '../components/maintain-home/maintain-home'
 import maintainHomeNew from '../components/maintain-home-new/maintain-home-new'
-import maintainHomeAnother from '../components/maintain-home-another/maintain-home-another'
+import maintainHomeMap from '../components/maintain-home-map/maintain-home-map'
+import maintainHomeTable from '../components/maintain-home-table/maintain-home-table'
 // 设备管理
 import admin from '../components/maintain-admin/maintain-admin'
 // 日常巡检
@@ -40,6 +41,9 @@ import tercalateConsumer from '../components/intercalate-child/tercalateChild-co
 import tercalateProject from '../components/intercalate-child/tercalateChild-project'
 //  系统设置-任务规则
 import taskrules from '../components/intercalate-child/intercalateChild-Taskrules'
+// 我的消息
+import tercalateInfo from '../components/intercalate-child/tercalateChild-info'
+
 Vue.use(Router)
 
 const routes = [
@@ -64,8 +68,12 @@ const routes = [
         component: maintainHomeNew,
         children: [
           {
-            path: '',
-            component: maintainHomeAnother
+            path: 'map',
+            component: maintainHomeMap
+          },
+          {
+            path: 'table',
+            component: maintainHomeTable
           }
         ]
       },
@@ -130,6 +138,9 @@ const routes = [
         }, {
           path: 'taskrules',
           component: taskrules
+        }, {
+          path: 'info',
+          component: tercalateInfo
         }, {
           path: '/',
           component: intercalateStructure,
