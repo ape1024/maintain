@@ -364,6 +364,10 @@ export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid
   const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodel=${devicemodel}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`
   return url
 }
+export const PojectdeviceApprovals2 = (deviceids, approvalstate) => {
+  const url = `${Test}/dev/PojectdeviceApprovals2?deviceids=${deviceids}&approvalstate=${approvalstate}`
+  return url
+}
 //  通过厂家获取到规格型号
 export const maintainReportfindDivecemodels = (region, manufacturerId) => {
   const url = `${Test}/dev/findDivecemodels?baseDeviceId=${region}&manufacturerId=${manufacturerId}`

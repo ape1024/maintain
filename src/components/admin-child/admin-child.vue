@@ -2,6 +2,7 @@
   <div class="admin_child">
     <ul class="threelevel_header">
       <li class="threelevel_lithree">
+        <el-checkbox v-model="checkedData" @change="checkedChange"></el-checkbox>
         设施编码
       </li>
       <li class="threelevel_lithree">
@@ -72,11 +73,15 @@
       <li class="threelevel_litwo">
         操作
       </li>
+      <li @click="approvalstateS" class="threelevel_lifive">
+        批量审批
+      </li>
     </ul>
     <ul class="threelevel_list">
       <li :key="dataset.deviceid" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
           <li class="threelevel_lithree">
+            <el-checkbox v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>
             {{dataset.devicecode}}
           </li>
           <li :title="dataset.devicename" class="threelevel_lithree">
@@ -125,7 +130,7 @@
         </ul>
       </li>
     </ul>
-    <section v-show="examineBoolean" @click.stop class="review">
+    <section v-if="examineBoolean" @click.stop class="review">
       <!--审核-->
       <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
     </section>
@@ -150,7 +155,7 @@ import childModify from '../adminChild-operation/adminChild-modify'
 import childExamine from '../adminChild-operation/adminChild-examine'
 import childquipment from '../adminChild-operation/adminChild-quipment'
 import {stateData, examineDate} from '../../common/js/utils'
-import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, FindDevAllApprovalstate, getDevListDetailProjectsThree } from '../../api/user'
+import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, FindDevAllApprovalstate, getDevListDetailProjectsThree, PojectdeviceApprovals2 } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin, loadingMixin],
@@ -193,7 +198,9 @@ export default {
       //  审核状态
       AuditstatusDate: [],
       AuditstatusD: '',
-      tabChild: ''
+      tabChild: '',
+      checkedData: false,
+      checkedChangeData: []
     }
   },
   methods: {
@@ -292,7 +299,6 @@ export default {
     },
     examine (deviceid) {
       // 点击查看
-
       this.lookoverBoolean = true
       this.axios.post(adminfindDeviceDetail(deviceid)).then((response) => {
         if (response.data.code === 0) {
@@ -367,6 +373,78 @@ export default {
       } else {
         return examineDate[data].color
       }
+    },
+    checkedChange (ev) {
+      console.log(ev === true)
+      if (ev === true) {
+        this.tabChild.forEach((val) => {
+          if (val.disabled !== true) {
+            val.checked = true
+          }
+        })
+      } else {
+        this.tabChild.forEach((val) => {
+          if (val.disabled !== true) {
+            val.checked = false
+          }
+        })
+      }
+    },
+    approvalstateS () {
+      let arr = []
+      this.tabChild.forEach((val) => {
+        if (!val.disabled) {
+          if (val.checked) {
+            arr.push(val.deviceid)
+          }
+        }
+      })
+      if (!arr.length) {
+        this.$message({
+          message: '请选择对应的设备',
+          type: 'warning'
+        })
+        return false
+      } else {
+        let checkedChangeData = arr.join()
+        // 审批状态 设定为100
+        this.axios.post(PojectdeviceApprovals2(checkedChangeData, 100)).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            this.$message({
+              message: '审批成功',
+              type: 'success'
+            })
+            this.axios.post(admingetDevListDetailProjects(this.adminid)).then((response) => {
+              if (!response) {
+                // 请求失败关闭加载
+                this.closeLoadingDialog()
+                return
+              }
+              if (response.data.code === 0) {
+                response.data.data.forEach((val) => {
+                  val.checked = false
+                  if (val.approvalstate === 100) {
+                    val.disabled = true
+                  } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+                    val.disabled = false
+                  } else {
+                    val.disabled = true
+                  }
+                })
+                this.tabChild = response.data.data
+              }
+              // 请求成功关闭数据加载
+              this.closeLoadingDialog()
+            })
+          } else {
+            this.$message({
+              message: '审批失败',
+              type: 'warning'
+            })
+          }
+        })
+      }
     }
   },
   created () {
@@ -378,6 +456,16 @@ export default {
         return
       }
       if (response.data.code === 0) {
+        response.data.data.forEach((val) => {
+          val.checked = false
+          if (val.approvalstate === 100) {
+            val.disabled = true
+          } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+            val.disabled = false
+          } else {
+            val.disabled = true
+          }
+        })
         this.tabChild = response.data.data
       }
       // 请求成功关闭数据加载
@@ -494,17 +582,16 @@ export default {
   .table_ul .table_li:nth-child(even)
     background #141D2C
   .threelevel_header
-    margin: 4px;
-    overflow: hidden;
-    position: relative;
-    padding: 12px 0;
-    background: #354d76;
+    margin 4px
+    overflow hidden
+    position relative
+    background #354d76
     .threelevel_li
       float left
       width 8.5%
     .threelevel_litwo
       float left
-      width 23.5%
+      width 18.5%
       overflow hidden
      .threelevel_lithree
        float left
@@ -571,4 +658,17 @@ export default {
     width 100%
     left 0
     opacity 0
+  .threelevel_lifive
+    float left
+    width 5.5%
+    background #3279a6
+    text-align center
+    overflow hidden
+    cursor pointer
+    transition .2s
+    &:hover
+      background #4b92bf
+  .threelevel_header li
+    height 40px
+    line-height 40px
 </style>

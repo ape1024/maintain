@@ -156,6 +156,9 @@ export default {
       this.examineBoolean = !this.examineBoolean
       this.$emit('mine', this.examineBoolean)
     }
+  },
+  created () {
+    console.log(this.examine)
   }
 }
 </script>
