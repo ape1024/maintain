@@ -1,8 +1,8 @@
 // import axios from 'axios'
 //  登录接口
 const Test = window.Test
-export const userLogin = (username, password) => {
-  let url = `${Test}/auth/login?usercode=${username}&password=${password}`
+export const userLogin = (username, password, clientId) => {
+  let url = `${Test}/auth/login?usercode=${username}&password=${password}&deviceKey=${clientId}`
   return url
 }
 //  退出登录

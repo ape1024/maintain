@@ -1,6 +1,6 @@
 <template>
-  <div class="icon-popup" v-show="state">
-    <div class="wrapper" ref="wrapper">
+  <div class="icon-popup" v-show="state" @click="close">
+    <div class="wrapper" ref="wrapper" @click.stop>
       <div class="head">
         <div class="title"></div>
         <i class="el-icon-close" @click="close"></i>
@@ -9,7 +9,6 @@
         <div class="nav">
           <div class="tab" :class="{'selected-tab':selectedTab === 0}" @click="selectTab(0)">{{tab1}}</div>
           <div class="tab" :class="{'selected-tab':selectedTab === 1}" @click="selectTab(1)">{{tab2}}</div>
-          <div class="tab" v-show="details.state !== alarm" :class="{'selected-tab':selectedTab === 2}" @click="selectTab(2)">{{tab3}}</div>
         </div>
         <div class="content">
           <div class="content1" v-show="selectedTab === 0">
@@ -23,28 +22,6 @@
               <div class="name">{{item.name}}</div>
               <div class="val">{{item.val}}</div>
               <div class="time">{{item.time}}</div>
-            </div>
-          </div>
-          <div class="content3" v-show="details.state !== alarm && selectedTab === 2">
-            <div :key="index" class="group" v-for="(item, index) in details.alarm">
-              <div class="name">{{item.name}}</div>
-              <div class="val">{{item.val}}</div>
-            </div>
-            <div class="handle" v-show="details.handleState === 1" @click="alarmReceive">接警</div>
-            <div class="handle" v-show="details.handleState === 2" @click="alarmHandle">报警处理</div>
-            <div class="handle" v-show="details.handleState === 3">已处理</div>
-            <div class="tip">
-              <div class="small-title">
-                <div>操作指引</div>
-                <div @click="toggleState=!toggleState">
-                  <span>收起</span>
-                  <i class="el-icon-arrow-up" v-show="!toggleState"></i>
-                  <i class="el-icon-arrow-down" v-show="toggleState"></i>
-                </div>
-              </div>
-              <div class="desc" v-show="toggleState">
-                <p>{{details.guide}}</p>
-              </div>
             </div>
           </div>
         </div>
@@ -109,10 +86,8 @@ export default {
       const currentY = resize(newVal.y, height, document.body.clientHeight)
       this.$refs.wrapper.style.transform = `translate(${currentX}px,${currentY}px)`
     },
-    details (newVal) {
-      if (newVal.state !== this.alarm) {
-        this.selectedTab = 2
-      }
+    details () {
+      this.selectedTab = 0
     }
   },
   created () {
@@ -127,7 +102,6 @@ export default {
   @import "~common/stylus/variable"
   @import "~common/stylus/mixin"
   .icon-popup
-    color #fff
     full-screen()
     background transparent
     z-index $z-index-large
@@ -139,6 +113,7 @@ export default {
       flex-direction column
       background rgba(13, 19, 28, 0.95)
       font-size $font-size-small-s
+      border 1px solid #303947
       .head
         flex-shrink 0
         width 100%

@@ -73,6 +73,7 @@ export default {
       color $color-text
       font-size $font-size-small
       border 1px solid $color-background-black
+      outline none
       &:focus
         border 1px solid $color-border-b-normal
     .el-icon-close

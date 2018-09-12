@@ -1,6 +1,6 @@
 <template>
-  <div class="polygon-popup" v-show="state">
-    <div class="wrapper" ref="wrapper">
+  <div class="polygon-popup" v-show="state" @click="close">
+    <div class="wrapper" ref="wrapper" @click.stop>
       <div class="header">
         <div class="title">{{title}}</div>
         <i class="el-icon-close" @click="close"></i>
@@ -69,7 +69,6 @@ export default {
     full-screen()
     background transparent
     z-index $z-index-large
-    color #fff
     .wrapper
       position relative
       width 340px
@@ -78,6 +77,7 @@ export default {
       flex-direction column
       background rgba(13, 19, 28, 0.95)
       font-size $font-size-small-s
+      border 1px solid #303947
       .header
         flex-shrink 0
         width 100%

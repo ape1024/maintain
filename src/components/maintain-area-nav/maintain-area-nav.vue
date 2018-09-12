@@ -1,5 +1,9 @@
 <template>
-  <div class="area-nav">
+  <div class="area-nav area-nav-tree-change">
+    <div class="switch-content">
+      <img src="./map.png" alt="地图" v-show="switchState" @click="switchContent('map')">
+      <img src="./table.png" alt="表格" v-show="!switchState" @click="switchContent('table')">
+    </div>
     <div class="title">{{title}}</div>
     <div class="subtitle">
       <div class="text">{{subtitle}}</div>
@@ -30,7 +34,7 @@ import SearchList from 'base/search-list/search-list'
 import { findAreasTree } from 'api/tree'
 import { mapActions, mapGetters } from 'vuex'
 import { SearchData } from 'common/js/area'
-const SEARCH_LEN = 12
+const SEARCH_LEN = 18
 
 export default {
   created () {
@@ -40,6 +44,7 @@ export default {
   },
   data () {
     return {
+      switchState: false,
       searchState: false,
       searchList: [],
       selected: -1,
@@ -57,7 +62,16 @@ export default {
       'clientId'
     ])
   },
+  mounted () {
+    this.getTree(this.clientId)
+  },
   methods: {
+    switchContent (r) {
+      this.switchState = !this.switchState
+      this.$router.push({
+        path: `/home/maintain-home-new/${r}`
+      })
+    },
     getTree (clientId) {
       findAreasTree(clientId).then((data) => {
         // 获取数据失败
@@ -189,6 +203,18 @@ export default {
     width 325px
     height 710px
     background url("../../common/img/block.png")
+    .switch-content
+      position absolute
+      right 15px
+      top 10px
+      width 30px
+      height 30px
+      display flex
+      justify-content center
+      align-items center
+      cursor pointer
+      img
+        display block
     .title
       padding-left 10px
       line-height 50px
@@ -221,7 +247,7 @@ export default {
         left 0
         right 0
         top 40px
-        height 400px
+        height 580px
     .tree-wrapper
       position absolute
       left 15px
@@ -253,4 +279,18 @@ export default {
         .el-tree-node__children .custom-tree-node
           font-size $font-size-small-s
           background none
+</style>
+<style lang="stylus" rel="stylesheet/stylus">
+  .area-nav-tree-change
+    .el-tree
+      color #fff!important
+
+      .el-tree-node:focus>.el-tree-node__content
+        background none
+
+      .el-tree-node__content:hover
+        background none
+
+      .el-tree-node__content:active
+        background none
 </style>

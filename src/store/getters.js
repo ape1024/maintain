@@ -1,4 +1,3 @@
-import { stateData } from 'common/js/config'
 export const user = state => state.user
 export const clientId = state => state.clientId
 export const treeStructure = state => state.treeStructure
@@ -18,55 +17,6 @@ export const factoryDataDelete = state => state.factoryDataDelete
 export const buildingDataDelete = state => state.buildingDataDelete
 export const floorDataDelete = state => state.floorDataDelete
 
-export const alarmData = state => {
-  let shieldList = []
-  let fireList = []
-  let superviseList = []
-  let startList = []
-  let feedbackList = []
-  let faultList = []
-  let stateList = []
-  let otherList = []
-  state.allList.forEach((item) => {
-    switch (item.action) {
-      case stateData.fire.name:
-        fireList.push(item)
-        break
-      case stateData.shield.name:
-        shieldList.push(item)
-        break
-      case stateData.feedback.name:
-        feedbackList.push(item)
-        break
-      case stateData.fault.name:
-        faultList.push(item)
-        break
-      case stateData.supervise.name:
-        superviseList.push(item)
-        break
-      case stateData.state.name:
-        stateList.push(item)
-        break
-      case stateData.start.name:
-        startList.push(item)
-        break
-      case stateData.other.name:
-        otherList.push(item)
-        break
-    }
-  })
-  return {
-    all: state.allList,
-    shield: shieldList,
-    fire: fireList,
-    supervise: superviseList,
-    start: startList,
-    feedback: feedbackList,
-    fault: faultList,
-    state: stateList,
-    other: otherList
-  }
-}
 export const alarmId = state => state.alarmId
 
 export const userData = state => state.userData

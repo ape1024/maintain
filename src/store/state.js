@@ -11,7 +11,7 @@ const state = {
   userToken: '',
   loading: false,
   maintainProject: window.localStorage.pattern ? window.localStorage.pattern : '',
-  clientId: '',
+  clientId: `${Math.random() * 8000 + 1000}${new Date().getTime()}`,
   userList: [],
   treeStructure: [],
   cityDataDelete: false,

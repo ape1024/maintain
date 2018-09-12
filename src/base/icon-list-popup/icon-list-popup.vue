@@ -1,6 +1,6 @@
 <template>
-  <div class="icon-list-popup" v-show="state">
-    <div class="wrapper" ref="wrapper">
+  <div class="icon-list-popup" v-show="state" @click="close">
+    <div class="wrapper" ref="wrapper" @click.stop>
       <div class="header">
         <i class="el-icon-close" @click="close"></i>
       </div>
@@ -96,7 +96,6 @@ export default {
     full-screen()
     background transparent
     z-index $z-index-large
-    color #fff
     .wrapper
       position relative
       display flex
@@ -104,7 +103,7 @@ export default {
       width 400px
       height 250px
       box-sizing border-box
-      border 2px solid #303947
+      border 1px solid #303947
       padding-bottom 10px
       background rgba(13, 19, 28, 0.95)
       .header

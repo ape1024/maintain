@@ -78,7 +78,7 @@ export const createFloorData = async function (floor) {
       {name: '生产时间：', val: resetTime(floor.madedate, 'all')}
     ],
     maintenance: record.map((t) => {
-      return {name: t.worktypename, val: t.conclusion, time: t.lasttime}
+      return {name: t.worktypename, val: t.conclusion, time: t.lasttime ? resetTime(t.lasttime, 'date') : '0000-00-00'}
     }),
     alarm: [
       {name: '信号类型：', val: stateName},
