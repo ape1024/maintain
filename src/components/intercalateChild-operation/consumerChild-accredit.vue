@@ -52,8 +52,7 @@ export default {
   created () {
     let token = JSON.parse(window.sessionStorage.token)
     let getUserRolesData = []
-
-    this.axios.post(getRolesList(token)).then((response) => {
+    this.axios.post(getRolesList(token, this.userid)).then((response) => {
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
           val.flag = false
