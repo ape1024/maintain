@@ -77,7 +77,7 @@
           </div>
         </div>
         <div class="handle">
-          <div class="handle-val save">保存</div>
+          <div class="handle-val save" @click="save">保存</div>
           <div class="handle-val close" @click="close">关闭</div>
         </div>
       </div>
@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import { deliverAnnouncement } from '../../api/user'
 export default {
   props: {
     show: {
@@ -107,6 +108,62 @@ export default {
   methods: {
     close () {
       this.$emit('update:show', false)
+    },
+    save () {
+      // 标题名称
+      if (!this.titleName) {
+        this.$message({
+          message: '请填写标题名称',
+          type: 'warning'
+        })
+        return
+      }
+      // 截止时间
+      if (!this.finishTimeVal) {
+        this.$message({
+          message: '请选择截止时间',
+          type: 'warning'
+        })
+        return
+      }
+      // 发送时间
+      if (!this.sendTimeVal) {
+        this.$message({
+          message: '请选择截止时间',
+          type: 'warning'
+        })
+        return
+      }
+      // 信息等级
+      if (!this.messageLevel) {
+        this.$message({
+          message: '请选择消息级别',
+          type: 'warning'
+        })
+        return
+      }
+      // 通知内容
+      if (!this.messageDesc) {
+        this.$message({
+          message: '请填写通知内容',
+          type: 'warning'
+        })
+        return
+      }
+      // 通知人员
+      if (!this.selectedOptions) {
+        this.$message({
+          message: '请选择通知人员',
+          type: 'warning'
+        })
+        return
+      }
+
+      this.axios.post(deliverAnnouncement()).then((response) => {
+        if (response.data.code === 0) {
+          this.close()
+        }
+      })
     }
   }
 }

@@ -15,6 +15,18 @@ import AreaNav from 'components/maintain-area-nav/maintain-area-nav'
 import AreaInfo from 'components/maintain-area-info/maintain-area-info'
 
 export default {
+  created () {
+    const showMap = JSON.parse(window.sessionStorage.getItem('showMap'))
+    if (showMap === 1) {
+      this.$router.replace({
+        path: '/home/maintain-home-new/map'
+      })
+    } else {
+      this.$router.replace({
+        path: '/home/maintain-home-new/table'
+      })
+    }
+  },
   components: {
     AreaNav,
     AreaInfo
