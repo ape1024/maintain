@@ -12,20 +12,20 @@
               <el-input size="mini" v-model="designation" placeholder="请输入角色名称"></el-input>
             </div>
           </div>
-          <div class="headerLeft">
-            <p class="headerP">组织机构：</p>
-            <div class="headerDiv">
-              <el-select size="mini" v-model="organization" placeholder="请选择">
-                <el-option
-                  v-for="item in organizationData"
-                  :key="item.organizationid"
-                  :label="item.organizationname"
-                  :value="item.organizationid">
-                </el-option>
-              </el-select>
+          <!--<div class="headerLeft">-->
+            <!--<p class="headerP">组织机构：</p>-->
+            <!--<div class="headerDiv">-->
+              <!--<el-select size="mini" v-model="organization" placeholder="请选择">-->
+                <!--<el-option-->
+                  <!--v-for="item in organizationData"-->
+                  <!--:key="item.organizationid"-->
+                  <!--:label="item.organizationname"-->
+                  <!--:value="item.organizationid">-->
+                <!--</el-option>-->
+              <!--</el-select>-->
 
-            </div>
-          </div>
+            <!--</div>-->
+          <!--</div>-->
         </div>
         <div class="karakters">
           <div class="jurisdictionBottom">
@@ -163,13 +163,14 @@ export default {
         })
       })
       // roleFunctions = JSON.stringify(roleFunctions)
-      if (organizationinfoid === '') {
-        this.$message({
-          message: '请选择组织机构',
-          type: 'warning'
-        })
-        return false
-      } else if (roleName === '') {
+      // if (organizationinfoid === '') {
+      //   this.$message({
+      //     message: '请选择组织机构',
+      //     type: 'warning'
+      //   })
+      //   return false
+      // } else
+      if (roleName === '') {
         this.$message({
           message: '请填写角色名称',
           type: 'warning'

@@ -1,5 +1,20 @@
 <template>
   <div class="subject">
+    <!--左边-->
+    <section class="subjectLeft">
+      <header class="leftHeader">
+        <img class="subjectImg" src="../../common/img/department.png" alt="">
+        <p class="subjectP">结构组织</p>
+      </header>
+      <div class="leftBottom">
+        <div class="leftBottomDiv">
+          <el-tree node-click="changClick" :data="data" :props="defaultProps" @node-click="handleNodeClick">
+          </el-tree>
+        </div>
+      </div>
+    </section>
+    <!--右边-->
+    <section class="subjectRight">
     <section class="consumer">
       <header class="header">
         <ul class="headerUl">
@@ -11,21 +26,21 @@
               <el-input size="mini"  v-model="Username" placeholder=""  clearable>></el-input>
             </div>
           </li>
-          <li class="headerLi">
-            <p class="headerP">
-              所属部门
-            </p>
-            <div class="headerDiv">
-              <el-cascader
-                size="mini"
-                clearable
-                :options="options"
-                :props="selectedProps"
-                change-on-select
-                v-model="selectedOptions">
-              </el-cascader>
-            </div>
-          </li>
+          <!--<li class="headerLi">-->
+            <!--<p class="headerP">-->
+              <!--所属部门-->
+            <!--</p>-->
+            <!--<div class="headerDiv">-->
+              <!--<el-cascader-->
+                <!--size="mini"-->
+                <!--clearable-->
+                <!--:options="options"-->
+                <!--:props="selectedProps"-->
+                <!--change-on-select-->
+                <!--v-model="selectedOptions">-->
+              <!--</el-cascader>-->
+            <!--</div>-->
+          <!--</li>-->
           <li class="headerLi">
             <p class="headerP">
               角 色
@@ -72,19 +87,19 @@
           <li class="entryLitwo">
             姓名
           </li>
-         <!-- <li class="entryLitwo">
-            角色
-          </li>-->
           <li class="entryLitwo">
+            角色
+          </li>
+          <li class="entryLifive">
             邮箱
           </li>
           <li class="entryLitwo">
             电话
           </li>
-         <!-- <li class="entryLitwo">
+          <li class="entryLifive">
             组织机构
-          </li>-->
-          <li class="entryLitwo">
+          </li>
+          <li class="entryLithree">
             最后登录时间
           </li>
          <!-- <li class="entryLithree">
@@ -103,14 +118,14 @@
               <li class="entryLitwo">
                 {{item.username?item.username:' '}}
               </li>
-             <!-- <li class="entryLitwo">
-                {{item.userid?item.userid:' '}}
-              </li>-->
-              <li class="entryLitwo">{{item.email?item.email:' '}}</li>
+              <li class="entryLitwo">
+                {{item.rolenames?item.rolenames:' '}}
+              </li>
+              <li class="entryLifive">{{item.email?item.email:' '}}</li>
               <li class="entryLitwo">{{item.tel?item.tel:' '}}</li>
-              <!--<li class="entryLitwo">{{item.organizationid?item.organizationid:' '}}</li>-->
-              <li class="entryLitwo">{{item.lastlogintime?fmtDate(item.lastlogintime):' '}}</li>
-             <!-- <li class="entryLithree">
+              <li class="entryLifive">{{item.organizationname?item.organizationname:' '}}</li>
+              <li class="entryLithree">{{item.lastlogintime?fmtDate(item.lastlogintime):' '}}</li>
+              <!-- <li class="entryLithree">
                 {{item.userroleid?item.userroleid:' '}}
               </li>-->
               <li class="entryLifour">
@@ -153,6 +168,7 @@
         </el-pagination>
       </div>
     </section>
+    </section>
     <!--新增-->
     <section v-if="adhibitBoolean" class="adhibit">
       <increase :increaseBoolean="adhibitBoolean" @incr="Incr"></increase>
@@ -177,7 +193,7 @@
 </template>
 
 <script>
-import { iConsumerexamine, karaktersFindAllRoles, consumerFindUser, consumerdelUser, getOrganizationTreeByUser, findAllBy } from '../../api/user'
+import { iConsumerexamine, karaktersFindAllRoles, managementCreatedtree, getAdminUsers, managementCreatedOrganizationtree, consumerFindUser, consumerdelUser, getOrganizationTreeByUser, findAllBy } from '../../api/user'
 import increase from '../intercalateChild-operation/consumerChild-augment'
 import examine from '../intercalateChild-operation/consumerChild-seeinfo'
 import edit from '../intercalateChild-operation/consumerChild-steganogram'
@@ -195,6 +211,14 @@ export default {
   },
   data () {
     return {
+      organizationId: '',
+      data: [],
+      defaultProps: {
+        children: 'subOrgnizations',
+        label: 'organizationName',
+        value: 'organizationId'
+      },
+      creatData: [], // 用户自己创建的组织机构
       roleData: [],
       //  用户id
       itemUserId: '',
@@ -234,7 +258,7 @@ export default {
       JurisdictionApproval: true,
       JurisdictionUpdate: true,
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 12,
       totalPage: 0
     }
   },
@@ -251,10 +275,10 @@ export default {
       // this.Handphone
 
       let token = JSON.parse(window.sessionStorage.token)
-      const len = this.selectedOptions.length
-      const selectOptionsData = len === 0 ? '' : this.selectedOptions[(len - 1)]
+      // const len = this.selectedOptions.length
+      // const selectOptionsData = len === 0 ? '' : this.selectedOptions[(len - 1)]
       const selectRoleId = this.role.length === 0 ? '' : this.role[1]
-      this.axios.post(findAllBy(selectOptionsData, selectRoleId, this.Username, this.Handphone, this.pageIndex, this.pageSize, token)).then((response) => {
+      this.axios.post(findAllBy(this.organizationId, selectRoleId, this.Username, this.Handphone, this.pageIndex, this.pageSize, token)).then((response) => {
         if (response.data.code === 0) {
           this.information = response.data.data.data
           this.totalPage = response.data.data.pageTotal
@@ -351,10 +375,51 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    handleNodeClick (data) {
+      const organization = data.organizationId
+      this.organizationId = organization
+      if (data.flagVal === 0) {
+        this.search()
+      } else {
+        let token = JSON.parse(window.sessionStorage.token)
+        this.axios.post(getAdminUsers(this.organizationId, token)).then((response) => {
+          console.log(response.data)
+          if (response.data.code === 0) {
+            this.information = response.data.data.data
+            this.totalPage = 1
+          }
+        })
+      }
+    },
+    changClick (a) {
+    },
+    resetData (data, prop, val) {
+      let arr = []
+      data.forEach(t => {
+        arr.push({
+          ...t,
+          flagVal: val,
+          [prop]: t[prop] ? this.resetData(t[prop], prop, val) : []
+        })
+      })
+      return arr
     }
   },
   created () {
     let token = JSON.parse(window.sessionStorage.token)
+    //  左边的树状结构
+    this.axios.post(managementCreatedOrganizationtree(token)).then((response) => {
+      if (response.data.code === 0) {
+        this.creatData = this.resetData(response.data.data, 'subOrgnizations', 1)
+      }
+    })
+    this.axios.post(managementCreatedtree(token)).then((response) => {
+      if (response.data.code === 0) {
+        this.data = this.resetData(response.data.data, 'subOrgnizations', 0)
+        this.data = this.data.concat(this.creatData)
+      }
+    })
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'device') {
@@ -395,6 +460,93 @@ export default {
   @import "~common/stylus/variable"
   .subject
     init()
+    .subjectLeft
+      float left
+      width 368px
+      position relative
+      margin-right 56px
+      .leftHeader
+        width 100%
+        overflow hidden
+        position relative
+        height 40px
+        line-height 40px
+        background #354d76
+      .subjectImg
+        margin 0 4px
+        display inline-block
+        width 40px
+        float left
+        height 40px
+      .subjectP
+        float left
+        color $color-text
+        line-height 40px
+      .leftBottom
+        width 100%
+        min-height 800px
+        max-height 800px
+        position relative
+        background #101826
+        height calc(100% - 50px)
+        overflow-y auto
+        overflow-x hidden
+    .subjectRight
+      overflow hidden
+      position relative
+      .rightHeader
+        init()
+        background #354d76
+        height 40px
+      .karakters
+        height calc(100% - 50px)
+        overflow hidden
+        overflow-y auto
+        min-height 800px
+        max-height 800px
+        position relative
+        background #101826
+      .jurisdictionBottom
+        margin 20px 30px
+        overflow hidden
+        .header
+          init()
+          margin-bottom 20px
+          .headerP
+            float left
+            line-height 30px
+            margin-right 8px
+            color $color-border-b-fault
+            font-size $font-size-medium
+          .headerDiv
+            float left
+            overflow hidden
+          .increased
+            float right
+            margin-right 20px
+            background $color-background-newly
+            text-align center
+            padding 0 20px
+            height 36px
+            line-height 36px
+            color $color-text-title
+            border-radius 5px
+            cursor pointer
+            transition .2s
+            &:hover
+              background #4baabe
+        .definition
+          init()
+          margin-bottom 55px
+        .fastener
+          init()
+          color $color-text
+          text-align center
+          .conserve
+            conserve()
+            margin-right 100px
+          .closedown
+            closedown()
     .consumer
       min-height 840px
       overflow hidden
@@ -481,22 +633,22 @@ export default {
         font-size $font-size-medium
     .entryLione
       float left
-      width 10%
+      width 6%
       padding-left 1%
       text-align left
     .entryLitwo
-      width 14%
-      text-align left
+      width 8%
+      text-align left10
       float left
     .entryLithree
-      width 5%
+      width 12%
       text-align left
       float left
       white-space nowrap
       overflow hidden
       text-overflow ellipsis
     .entryLifour
-      width 30%
+      width 25%
       float left
       text-align left
     .entryLifive
@@ -544,7 +696,8 @@ export default {
     .entryList .listLi:nth-child(even)
       background #141d2c
   .paging
-     text-align center
+     text-align left
+     margin-left 500px
      init()
      position fixed
      bottom 40px
@@ -581,4 +734,19 @@ export default {
     width 100px
     height 100px
     display block
+  .leftBottomDiv
+    init()
+    line-height 28px
+    margin-top 10px
+  .el-tree
+    background transparent
+  .custom-tree-node
+    color $color-text
+  .leftBottomLl
+    text-indent 1em
+    cursor pointer
+    overflow hidden
+    padding 10px 0
+    font-size 14px
+    color #999 !important
 </style>

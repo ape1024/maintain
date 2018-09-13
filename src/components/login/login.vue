@@ -87,8 +87,8 @@ export default {
     },
     signin (e) {
       if (this.confirmSuccess) {
-        let account = this.account
-        let password = this.password
+        let account = 1008 // this.account
+        let password = 123456 // this.password
         //  获取登录 url
         let pstDate = userLogin(account, password, this.clientId)
         // 登陆时重置token状态
