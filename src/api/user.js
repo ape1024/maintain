@@ -64,6 +64,11 @@ export const managementCreatedtree = (token) => {
   const url = `${Test}/organization/getOrganizationTreeByUser?token=${token}`
   return url
 }
+// 组织机构权限管理 获取用户创建的组织机构
+export const managementCreatedOrganizationtree = (token) => {
+  const url = `${Test}/organization/getCreateOrganizations?token=${token}`
+  return url
+}
 //  deleteTaskDetail
 export const deleteTaskDetail = (checktaskdetailid) => {
   const url = `${Test}/task/deleteTaskDetail?taskDetailId=${checktaskdetailid}`
@@ -87,6 +92,16 @@ export const managementCreatedbusiness = () => {
 //  组织结构权限管理   组织类别
 export const managementCreatedorganization = (token) => {
   const url = `${Test}/organization/getOrganizationType?token=${token}`
+  return url
+}
+//  获取当前用户的组织机构信息
+export const managementgetUserOrganization = (token) => {
+  const url = `${Test}/organization/getUserOrganization?token=${token}`
+  return url
+}
+// 创建组织机构
+export const managementCreate = (token, organizationcode, organizationname, shortname, admin, pwd, tel, organizationtype) => {
+  const url = `${Test}/organization/create?token=${token}&organizationcode=${organizationcode}&organizationname=${organizationname}&shortname=${shortname}&admin=${admin}&pwd=${pwd}&tel=${tel}&organizationtype=${organizationtype}`
   return url
 }
 //  组织结构权限管理 点击新增保存
@@ -548,6 +563,11 @@ export const findAllBydefault = (pageIndex, pageSize, token) => {
   return url
 }
 //  获取用户列表 (条件查询)
+export const getAdminUsers = (orgid, token) => {
+  const url = `${Test}/users/getAdminUsers?orgid=${orgid}&token=${token}`
+  return url
+}
+// 查询组织机构中的管理员用户
 export const findAllBy = (selectedOptions, role, Username, Handphone, pageIndex, pageSize, token) => {
   const url = `${Test}/users/findAllBy?organizationId=${selectedOptions}&roleId=${role}&usercode=${Username}&tel=${Handphone}&pageIndex=${pageIndex}&pageSize=${pageSize}&token=${token}`
   return url
@@ -563,8 +583,8 @@ export const getOrganizationTreeByUser = (token) => {
   return url
 }
 //  获取角色列表
-export const getRolesList = (token) => {
-  const url = `${Test}/users/getRolesList?token=${token}`
+export const getRolesList = (token, userId) => {
+  const url = `${Test}/users/getRolesList3?userid=${userId}&token=${token}`
   return url
 }
 //  getUserRoles
@@ -718,4 +738,15 @@ export const getApproveType = (token) => {
 export const findAreasTree = (areaid) => {
   const url = `${Test}/areas/findAreasTree?areaid=${areaid}`
   return url
+// 发布通知
+export const deliverAnnouncement = (title, sendTime, effectTime, level, content, ids) => {
+  return `${Test}/message/createMessage?msgtitle=${title}&sendtime=${sendTime}&effecttime=${effectTime}&msglevel=${level}&content=${content}&receiveids=${ids}`
+}
+// 获取接收人
+export const getReceivePer = () => {
+  return `${Test}/message/findReceiveUsers`
+}
+// 获取通知消息列表
+export const getMessageList = (pageIndex, pageSize, msg) => {
+  return `${Test}/message/findMessageList?pageIndex=${pageIndex}&pageSize=${pageSize}&msgtitle=${msg}`
 }

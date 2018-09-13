@@ -1,7 +1,8 @@
 <template>
   <div class="subject">
     <div class="subjectDiv">
-      <div v-if="JurisdictionApproval" @click="conserve" class="conserve">
+      <!--v-if="JurisdictionApproval"-->
+      <div @click="conserve" class="conserve">
         增 加
       </div>
     </div>

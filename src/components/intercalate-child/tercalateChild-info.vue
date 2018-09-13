@@ -24,23 +24,22 @@
           <div class="item handle">操作</div>
         </div>
         <div class="content-body">
-          <div class="content-body-wrap" :key="index" v-for="(item, index) in 15">
-            <div class="item type">{{item}}</div>
-            <div class="item title">标题</div>
+          <div class="content-body-wrap" :key="index" v-for="(item, index) in list">
+            <div class="item type">{{item.msgtitle}}</div>
+            <div class="item title">{{item.msgtitle}}</div>
             <div class="item person">发布人员</div>
-            <div class="item time">发布时间</div>
+            <div class="item time">{{resetTimeModel(item.createtime)}}</div>
             <div class="item state">消息状态</div>
             <div class="item important">重要程度</div>
-            <div class="item handle" @click="examineMsg">查看</div>
+            <div class="item handle" @click="examineMsg(item.content)">查看</div>
           </div>
         </div>
       </div>
-      <div class="footer" v-show="totalPage !== 0">
+      <div class="footer" v-if="totalPage !== 0">
         <el-pagination
-          @current-change="currentChangeHandle"
+          @current-change="handleCurrentChange"
           background
           :page-count="totalPage"
-          :page-size="pageSize"
           :current-page="pageIndex"
           layout="prev, pager, next"
           prev-text="上一页"
@@ -48,15 +47,16 @@
         </el-pagination>
       </div>
     </div>
-    <info-child-add :show.sync="addState"></info-child-add>
+    <info-child-add :show.sync="addState" @success="updateMessageList"></info-child-add>
     <info-child-examine :show.sync="examineState" :message="examineMessage"></info-child-examine>
   </div>
 </template>
 
 <script>
-// const LEN = 15
 import InfoChildAdd from '../intercalateChild-operation/infoChild-add'
 import InfoChildExamine from '../intercalateChild-operation/infoChild-examine'
+import { getMessageList } from '../../api/user'
+const LEN = 15
 export default {
   data () {
     return {
@@ -64,23 +64,50 @@ export default {
       examineState: false,
       examineMessage: '',
       searchVal: '',
-      pageIndex: 0,
-      totalPage: 1,
-      pageSize: 15
+      pageIndex: 1,
+      totalPage: 0,
+      list: []
     }
   },
   methods: {
     add () {
       this.addState = true
     },
-    examineMsg () {
-      this.examineMessage = '11111111111111111111'
+    examineMsg (msg) {
+      this.examineMessage = msg
       this.examineState = true
     },
-    searchData () {},
-    currentChangeHandle (val) {
-      this.pageIndex = val
+    resetTimeModel (time) {
+    },
+    searchData () {
+      this.getMessageList(0, LEN, this.searchVal)
+    },
+    handleCurrentChange (val) {
+      this.getMessageList(val - 1, LEN, this.searchVal)
+    },
+    updateMessageList () {
+      this.getMessageList(0, LEN, '')
+    },
+    getMessageList (pageIndex, pageSize, msg) {
+      // 重置分页
+      const totalPage = this.totalPage
+      this.totalPage = 0
+      this.axios.post(getMessageList(pageIndex, pageSize, msg)).then((response) => {
+        console.log(response)
+        if (response && response.data.code === 0) {
+          const data = response.data.data
+          console.log(data.data)
+          this.totalPage = data.pageTotal
+          this.pageIndex = data.pageIndex + 1
+          this.list = data.data
+        } else {
+          this.totalPage = totalPage
+        }
+      })
     }
+  },
+  created () {
+    this.getMessageList(0, LEN, '')
   },
   components: {
     InfoChildAdd,

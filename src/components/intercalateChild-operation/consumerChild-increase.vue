@@ -31,7 +31,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-select size="mini" v-model="proprieTor" placeholder="请选择">
+                <el-select size="mini" v-model="proprieTor" placeholder="请选择" :disabled="!organizationDisable">
                   <el-option
                     v-for="item in proprieTorDate"
                     :key="item.organizationid"
@@ -39,7 +39,6 @@
                     :value="item.organizationid">
                   </el-option>
                 </el-select>
-
               </div>
               <p class="informationP">
                 业主单位：
@@ -71,7 +70,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-select size="mini" v-model="proprietornameDate" placeholder="请选择">
+                <el-select size="mini" v-model="proprietornameDate" placeholder="请选择" :disabled="organizationDisable" >
                   <el-option
                     v-for="item in proprietorName"
                     :key="item.organizationid"
@@ -124,6 +123,64 @@
               </div>
               <p class="informationP">
                 项目地址：
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="information_Maintain" v-show="proprietornameDate === -1 || proprieTor === -1">
+        <ul class="informationUl">
+          <li class="informationLi">
+            <div class="informationDiv_Maintain">
+              <div class="content">
+                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+              </div>
+              <p class="informationP">
+                机构编码：
+              </p>
+            </div>
+            <div class="informationDiv_Maintain">
+              <div class="content">
+                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+              </div>
+              <p class="informationP">
+                用户名：
+              </p>
+            </div>
+          </li>
+          <li class="informationLi">
+            <div class="informationDiv_Maintain">
+              <div class="content">
+                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+              </div>
+              <p class="informationP">
+                机构名称：
+              </p>
+            </div>
+            <div class="informationDiv_Maintain">
+              <div class="content">
+                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+              </div>
+              <p class="informationP">
+                用户密码：
+              </p>
+            </div>
+          </li>
+          <li class="informationLi">
+            <div class="informationDiv_Maintain">
+              <div class="content">
+                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+              </div>
+              <p class="informationP">
+                机构简称：
+              </p>
+            </div>
+            <div class="informationDiv_Maintain">
+              <div class="content">
+                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+              </div>
+              <p class="informationP">
+                电话：
               </p>
             </div>
           </li>
@@ -191,7 +248,7 @@
         <div class="purviewDivtwo">
           <el-input
             type="textarea"
-            :rows="3"
+            :rows="2"
             resize="none"
             placeholder="请输入内容"
             v-model="conTent">
@@ -206,7 +263,7 @@
         <div class="purviewDivtwo">
           <el-input
             type="textarea"
-            :rows="3"
+            :rows="2"
             resize="none"
             placeholder="请输入内容"
             v-model="requirement">
@@ -221,7 +278,7 @@
         <div class="purviewDivtwo">
           <el-input
             type="textarea"
-            :rows="3"
+            :rows="2"
             resize="none"
             placeholder="请输入内容"
             v-model="comment">
@@ -254,7 +311,7 @@
 
 <script>
 import $ from 'jquery'
-import { createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload } from '../../api/user'
+import { managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload } from '../../api/user'
 export default {
   name: 'consumerChild-increase',
   props: ['edit', 'project'],
@@ -333,7 +390,15 @@ export default {
       fileList: [],
       documentPapers: [],
       arrayAddresses: [],
-      uploadUrl: upload(JSON.parse(window.sessionStorage.token))
+      uploadUrl: upload(JSON.parse(window.sessionStorage.token)),
+      organizationcode: '', // 机构编码
+      organizationname: '', // 机构名称
+      shortname: '', // 机构简称
+      admin: '', // 用户名
+      pwd: '', // 用户密码
+      tel: '', // 电话
+      organizationtype: '', // 机构类型
+      organizationDisable: false
     }
   },
   methods: {
@@ -384,8 +449,16 @@ export default {
       this.firecontrolBoolean = !this.firecontrolBoolean
     },
     conserve () {
-      //  项目名称 项目开始 业主单位 项目编号 项目结束 服务机构 项目类别  建筑范围  消防设备
-      if (this.projectName === '' || this.startdate === '' || this.proprieTor === '' || this.projectCode === '' || this.endDate === '' || this.proprietornameDate === '' || this.projectDate.length === 0 || this.buildscope === '' || this.firecontrolda === '') {
+      if (this.proprietornameDate === -1 || this.proprieTor === -1) {
+        // 添加单位信息
+        if (this.organizationcode === '' || this.organizationname === '' || this.admin === '' || this.pwd === '') {
+          this.$message({
+            message: '您的信息没有填写完整',
+            type: 'warning'
+          })
+          return false
+        }
+      } else if (this.projectName === '' || this.startdate === '' || this.proprieTor === '' || this.projectCode === '' || this.endDate === '' || this.proprietornameDate === '' || this.projectDate.length === 0 || this.buildscope === '' || this.firecontrolda === '') {
         this.$message({
           message: '您的信息没有填写完整',
           type: 'warning'
@@ -550,6 +623,8 @@ export default {
     }
   },
   created () {
+    // 获取当前用户的组织机构信息
+    let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(increasefindAllDevType()).then((response) => {
       this.firecontrol = response.data
     })
@@ -567,18 +642,30 @@ export default {
     //  服务机构
     this.axios.post(getRootOrganizationsNotProprietor()).then((response) => {
       if (response.data.code === 0) {
-        this.proprietorName = response.data.data
+        this.proprietorName = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])
       }
     })
     //  获取业主单位
     this.axios.post(getProprietorOrganization()).then((response) => {
       if (response.data.code === 0) {
-        this.proprieTorDate = response.data.data
+        this.proprieTorDate = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增业主单位 --'}])
       }
     })
     this.axios.post(managementCreatedProvince()).then((response) => {
       if (response.data.code === 0) {
         this.province = response.data.data
+      }
+    })
+    this.axios.post(managementgetUserOrganization(token)).then((response) => {
+      if (response.data.code === 0) {
+        const data = response.data.data
+        let type = data.organizationtype
+        if (type === 1) {
+          this.proprieTor = data.organizationid
+          this.organizationDisable = false
+        } else {
+          this.proprietornameDate = data.organizationid
+        }
       }
     })
   }
@@ -620,6 +707,41 @@ export default {
         position relative
         display inline-block
         margin-bottom 15px
+      .informationP
+        color $color-border-b-fault
+        font-size $font-size-medium
+        line-height 30px
+        margin-right 10px
+        float right
+      .content
+        width 267px
+        float right
+    .information_Maintain
+      margin-left 55px
+      margin-top 180px
+      margin-bottom 15px
+      border lightblue solid 1px
+      border-radius 10px
+      height 120px
+      .informationUl
+        width 100%
+        position relative
+        .informationLi
+          float left
+          overflow hidden
+          position relative
+          width 33%
+      .informationLitwo
+        float left
+        margin-left .5%
+        position relative
+        width 33%
+      .informationDiv_Maintain
+        width 100%
+        position relative
+        display inline-block
+        margin-bottom 15px
+        margin-top 10px
       .informationP
         color $color-border-b-fault
         font-size $font-size-medium
@@ -678,8 +800,8 @@ export default {
         margin-left 96px
         float left
       .uploadDiv
-        max-height 140px
-        min-height 140px
+        max-height 120px
+        min-height 120px
         overflow-y scroll
     .personnel
       init()
@@ -811,6 +933,10 @@ export default {
         cursor pointer
   .content
     width 210px
+    position relative
+  .content_maintenance
+    width 267px
+    float right
     position relative
   .region
     width 100%

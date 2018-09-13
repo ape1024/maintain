@@ -71,6 +71,9 @@ export default {
       this.$router.push({
         path: `/home/maintain-home-new/${r}`
       })
+      this.$nextTick(() => {
+        this.updateMap({treeData: new SearchData(this.treeStructure[0])})
+      })
     },
     getTree (clientId) {
       findAreasTree(clientId).then((data) => {

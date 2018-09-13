@@ -3,7 +3,7 @@
       <section class="subjectLeft">
         <header class="leftHeader">
           <img class="subjectImg" src="../../common/img/department.png" alt="">
-          <p class="subjectP">结构组织权限管理</p>
+          <p class="subjectP">结构组织</p>
           <p v-if="JurisdictionApproval" @click="subjectpCreate" class="subjectptwo">新增</p>
         </header>
         <div class="leftBottom">
