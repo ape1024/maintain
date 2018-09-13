@@ -108,8 +108,10 @@ export default {
                 if (data.data.code === 0) {
                   let userinfo = JSON.stringify(response.data.data.userInfo)
                   let token = JSON.stringify(response.data.data.token)
+                  let showMap = JSON.stringify(response.data.data.systemConfig.showMap)
                   window.sessionStorage.setItem('userInfo', userinfo)
                   window.sessionStorage.setItem('token', token)
+                  window.sessionStorage.setItem('showMap', showMap)
                   let newToken = JSON.parse(token)
                   this.axios.post(getUserFuncions(newToken)).then((data) => {
                     data.data.forEach((val) => {

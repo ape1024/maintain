@@ -703,3 +703,7 @@ export const getWorkModes = () => {
   const url = `${Test}/plan/getWorkModes`
   return url
 }
+// 发布通知
+export const deliverAnnouncement = (title, sendTime, effectTime, level, content, ids) => {
+  return `${Test}/message/createMessage?msgtitle=${title}&sendtime=${sendTime}&effecttime=${effectTime}&msglevel=${level}&content=${content}&receiveids=${ids}`
+}
