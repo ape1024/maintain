@@ -707,3 +707,11 @@ export const getWorkModes = () => {
 export const deliverAnnouncement = (title, sendTime, effectTime, level, content, ids) => {
   return `${Test}/message/createMessage?msgtitle=${title}&sendtime=${sendTime}&effecttime=${effectTime}&msglevel=${level}&content=${content}&receiveids=${ids}`
 }
+// 获取接收人
+export const getReceivePer = () => {
+  return `${Test}/message/findReceiveUsers`
+}
+// 获取通知消息列表
+export const getMessageList = (pageIndex, pageSize, msg) => {
+  return `${Test}/message/findMessageList?pageIndex=${pageIndex}&pageSize=${pageSize}&msgtitle=${msg}`
+}
