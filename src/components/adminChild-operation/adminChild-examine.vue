@@ -8,67 +8,67 @@
         <ul class="lookover_ul">
           <li class="lookover_litwo">
             <p class="lookover_p">设施名称：</p>
-            <div class="lookover_div">123</div>
+            <div class="lookover_div">{{question.devicename}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">设备编码：</p>
-            <div class="lookover_div">321</div>
+            <div class="lookover_div">{{question.devicecode}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">业主单位：</p>
-            <div class="lookover_div">123</div>
+            <div class="lookover_div">{{Organization}}</div>
           </li>
         </ul>
         <ul class="information">
           <li class="lookover_litwo">
             <p class="lookover_p">生产厂家：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.name}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">生产日期：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.madedate}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">技术参数：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.parameters}}</div>
           </li>
 
           <li class="lookover_litwo">
             <p class="lookover_p">规格型号：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.devicemodel}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">有效日期：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.effectivedate}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">创建人员：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.creatername}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">设备位置：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.position}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">设备数量：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.devicecount}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">编辑人员：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.creatername}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">备注说明：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.memo}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">审核人员：</p>
-            <div class="lookover_div">1231</div>
+            <div class="lookover_div">{{question.approvername}}</div>
           </li>
           <li class="lookover_lithree">
             <p class="lithree_p">现场照片：</p>
             <div class="lookover_lithree_div">
-
+              <img  @click="selectImg(question.photoArray, index)" class="lookoverImg" :key="index" v-for="(item, index) in question.photoArray" :src="item" alt="">
             </div>
           </li>
         </ul>
@@ -79,32 +79,23 @@
             <p class="lookover_p">审核结论：</p>
             <div class="lookoverDiv">
               <el-radio-group v-model="radio">
-                <el-radio :label="1">修改</el-radio>
-                <el-radio :label="2">待审</el-radio>
-                <el-radio :label="3">停用</el-radio>
+                <el-radio :key="index" v-for="(item, index) in conclusion" :label="item.value">{{item.name}}</el-radio>
               </el-radio-group>
             </div>
           </div>
           <div class="situation_div">
             <p class="lookover_p">审核意见：</p>
             <div class="lookoverDiv">
-              <el-select size="mini" v-model="view.value" placeholder="请选择">
-                <el-option
-                  v-for="item in view.child"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.label">
-                </el-option>
-              </el-select>
+              <el-input size="mini" v-model="view" placeholder="请输入内容"></el-input>
             </div>
           </div>
         </div>
-        <div class="situation_right">
-          <div class="lookoverDiv">
-            <p class="lookover_p">审核意见：</p>
-            <p class="lookoverDivP">正常</p>
-          </div>
-        </div>
+        <!--<div class="situation_right">-->
+          <!--<div class="lookoverDiv">-->
+            <!--<p class="lookover_p">审核意见：</p>-->
+            <!--<p class="lookoverDivP">正常</p>-->
+          <!--</div>-->
+        <!--</div>-->
       </div>
       <div class="fastener">
         <div @click.stop="conserve" class="conserve">
@@ -114,51 +105,100 @@
           取消
         </div>
       </div>
+      <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </section>
   </div>
 </template>
 
 <script>
+import { fmtDate } from '../../common/js/utils'
+import DialogImg from 'base/dialog-img/dialog-img'
+import { getProprietorOrganization, getApproveType, PojectdeviceApproval, findAreasTree } from '../../api/user'
 export default {
   name: 'adminChild-examine',
-  props: ['examine'],
+  props: ['examine', 'question'],
   data () {
     return {
       // 审核  显示/隐藏
       examineBoolean: true,
-      radio: 0,
-      view: {
-        child: [{
-          value: '1',
-          label: '默许'
-        }, {
-          value: '2',
-          label: '拒绝'
-        }, {
-          value: '3',
-          label: '同意'
-        }, {
-          value: '4',
-          label: '不同意'
-        }],
-        value: ''
-      }
+      radio: '',
+      Organization: '',
+      view: '',
+      imgList: [],
+      conclusion: []
     }
   },
   methods: {
     conserve () {
-      this.examineBoolean = this.examine
-      this.examineBoolean = !this.examineBoolean
-      this.$emit('mine', this.examineBoolean)
+      const deviceid = this.question.deviceid
+      const approvalopinion = this.view
+      const approvalstate = this.radio
+      console.log(deviceid)
+      console.log(approvalopinion)
+      console.log(approvalstate)
+      console.log(PojectdeviceApproval(deviceid, approvalopinion, approvalstate))
+      if (!approvalstate) {
+        this.$message({
+          message: '请选择审核结论',
+          type: 'warning'
+        })
+        return false
+      }
+      if (!approvalopinion) {
+        this.$message({
+          message: '请输入审核意见',
+          type: 'warning'
+        })
+        return false
+      }
+      this.axios.post(PojectdeviceApproval(deviceid, approvalopinion, approvalstate)).then((response) => {
+        if (response.data.code === 0) {
+          this.$message({
+            message: '审核成功',
+            type: 'success'
+          })
+          this.$emit('mine', false)
+        }
+      })
     },
     closedown () {
-      this.examineBoolean = this.examine
-      this.examineBoolean = !this.examineBoolean
-      this.$emit('mine', this.examineBoolean)
+      this.$emit('mine', false)
+    },
+    tiemerIf (timer) {
+      if (timer !== undefined && timer !== null) {
+        return fmtDate(timer)
+      } else {
+        return ' '
+      }
+    },
+    selectImg (list, index) {
+      this.imgList = list
+      setTimeout(() => {
+        this.$refs.dialogImg.switchIndex(index)
+        this.$refs.dialogImg.open()
+      }, 200)
     }
   },
+  components: {
+    DialogImg
+  },
   created () {
-    console.log(this.examine)
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(findAreasTree(this.question.areaid)).then((response) => {
+      console.log('//////')
+      console.log(response)
+    })
+    this.axios.post(getProprietorOrganization()).then((response) => {
+      if (response.data.code === 0) {
+        this.Organization = (response.data.data)[0].organizationname
+      }
+    })
+    this.axios.post(getApproveType(token)).then((response) => {
+      console.log(response)
+      if (response.data.code === 0) {
+        this.conclusion = response.data.data
+      }
+    })
   }
 }
 </script>
@@ -281,4 +321,10 @@ export default {
     .lookoverDivP
        float left
        color $color-text-tile-complete
+  .lookoverImg
+    width 50px
+    height 50px
+    display inline-block
+    cursor pointer
+    margin-right 20px
 </style>

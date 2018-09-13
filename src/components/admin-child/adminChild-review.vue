@@ -133,26 +133,13 @@
               <div class="modify_liDivtwo">
                 <p class="left_list_p">设施位置:</p>
                 <div class="modify_li_div">
-                  <div class="content">
-                    <div @click.stop="accessarea" class="region">
-                      {{regionDate}}
-                    </div>
-                    <ul v-show="regionUl" class="region_ul">
-                      <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
-                        <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
-                        <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">
-                          <i @click.stop="count($event, data.cityid)" class="el-icon-circle-plus-outline region_itwo"></i>
-                          <span class="countSpen" @click="citySpan($event, data)">{{data.cityname}}</span>
-                          <ul class="countUl">
-                            <li @click="countytownSpan(coundata)" :key="coundata.countyid" :id="coundata.countyid" v-for="coundata in countytown" class="countLi">
-                              {{coundata.countyname}}
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                      </li>
-                    </ul>
-                  </div>
+                  <el-cascader
+                    :options="facilityLocation"
+                    :props="facilityLocationProps"
+                    v-model="facilityLocationDate"
+                    size="mini"
+                    change-on-select
+                  ></el-cascader>
                 </div>
               </div>
               <div class="specific">
@@ -199,7 +186,7 @@
               <li v-for="(item,$index) in tabulationtitle" :key="item.id" :id="item.id" class="title_li">
                 <ul class="title_li_ul">
                   <li class="title_lili">
-                    {{item.position}}
+                    {{item.positionName}}{{item.position}}
                   </li>
                   <li class="title_lili">
                     {{item.devcount}}
@@ -247,7 +234,8 @@
 
 <script>
 import $ from 'jquery'
-import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, getAllProvince, findAllDeviceType, getCitiesByProvinceId, getCountiesByCityId, maintainReportfindDivecemodels } from '../../api/user'
+import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, findAllDeviceType,
+  maintainReportfindDivecemodels, findAreasTreeByProjectid } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
@@ -341,10 +329,20 @@ export default {
       myfileImgTwo: [],
       basedevicecode: '',
       //  图片dome
-      picName: []
+      picName: [],
+      facilityLocation: [],
+      facilityLocationProps: {
+        children: 'areas',
+        label: 'areaname',
+        value: 'areaid'
+      },
+      facilityLocationDate: []
     }
   },
   methods: {
+    facilityLocationChang (ev) {
+      console.log(ev)
+    },
     versionChang (data) {
       if (this.versionValue === '-9999') {
         this.versionManufacturer = true
@@ -388,34 +386,73 @@ export default {
         })
       }
     },
+    ergodic (data) {
+      let result = ''
+      let findData = (data, val) => {
+        let flag = true
+        data.forEach((item) => {
+          if (item.areaid === val) {
+            result += item.areaname
+            flag = false
+          } else if (flag && item.areas) {
+            findData(item.areas, val)
+          }
+        })
+      }
+      data.forEach((val) => {
+        findData(this.facilityLocation, val)
+      })
+      return result
+    },
     addincrease () {
-      let obtainCode = this.regionDate + this.specific
+      let obtainCode = this.specific
+      let areaid = this.facilityLocationDate
+      let areaidName = this.ergodic(areaid)
       // let devicecoding = this.devicecoding
       let quantum = this.quantum
       // let encoded = this.encoded
-      let data = {
-        // // 编码
-        // code: devicecoding,
-        // 位置
-        position: obtainCode,
-        // 数量
-        devcount: quantum,
-        //  控制器编码
-        a: '',
-        //  回路号
-        b: '',
-        //  一次码
-        c: '',
-        //  地址编码
-        d: ''
-      }
       if (this.checked) {
         for (let i = 1; i <= this.num; i++) {
-          this.tabulationtitle.unshift(data)
+          this.tabulationtitle.unshift({
+            // // 编码
+            // code: devicecoding,
+            positionName: areaidName,
+            // 位置
+            position: obtainCode,
+            areaid: areaid[areaid.length - 1],
+            // 数量
+            devcount: quantum,
+            //  控制器编码
+            a: '',
+            //  回路号
+            b: '',
+            //  一次码
+            c: '',
+            //  地址编码
+            d: ''
+          })
         }
       } else {
-        this.tabulationtitle.unshift(data)
+        this.tabulationtitle.unshift({
+          // // 编码
+          // code: devicecoding,
+          positionName: areaidName,
+          // 位置
+          position: obtainCode,
+          areaid: areaid[areaid.length - 1],
+          // 数量
+          devcount: quantum,
+          //  控制器编码
+          a: '',
+          //  回路号
+          b: '',
+          //  一次码
+          c: '',
+          //  地址编码
+          d: ''
+        })
       }
+      console.log(this.tabulationtitle)
     },
     amputate (index) {
       this.tabulationtitle.splice(index, 1)
@@ -472,13 +509,26 @@ export default {
       //  有效日期
       let effectivedate = this.validity ? this.validity : ''
       //  地址编码
+      let tabulationtitle = []
+      this.tabulationtitle.forEach((val) => {
+        let obj = {
+          a: val.a,
+          areaid: val.areaid,
+          b: val.b,
+          c: val.c,
+          d: val.d,
+          devcount: val.devcount,
+          position: val.position
+        }
+        tabulationtitle.push(obj)
+      })
       if (this.categoryDate.length !== 0) {
         if (this.customManufacturer === true) {
           this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
             if (response.data.code === 0) {
               // 厂家id
               manufacturerid = response.data.data.manufacturerid
-              this.axios.post(maintainReportAddDevice(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), this.tabulationtitle).then((data) => {
+              this.axios.post(maintainReportAddDevice(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), tabulationtitle).then((data) => {
                 if (data.data.code === 0) {
                   this.$message({
                     message: '创建成功',
@@ -492,7 +542,7 @@ export default {
         } else {
           //  厂家 id
           manufacturerid = this.manufactorModel
-          this.axios.post(maintainReportAddDevice(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), this.tabulationtitle).then((data) => {
+          this.axios.post(maintainReportAddDevice(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), tabulationtitle).then((data) => {
             if (data.data.code === 0) {
               this.$message({
                 message: '创建成功',
@@ -511,54 +561,6 @@ export default {
     },
     accessarea () {
       this.regionUl = !this.regionUl
-    },
-    deploy (event, provinceid) {
-      if ($(event.currentTarget).siblings('.regionliUl').css('display') === 'block') {
-        $(event.currentTarget).siblings('.regionliUl').slideToggle()
-        $(event.currentTarget).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
-        return false
-      } else {
-        $('.region_i').each(function (index, item) {
-          if ($(item).hasClass('el-icon-circle-plus-outline')) {
-          } else {
-            $(item).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
-          }
-        })
-        $(event.currentTarget).removeClass('el-icon-circle-plus-outline').addClass('el-icon-remove-outline')
-        $('.regionliUl').each(function (index, item) {
-          $(item).css('display', 'none')
-        })
-        $(event.currentTarget).siblings('.regionliUl').slideDown()
-        this.axios.post(getCitiesByProvinceId(provinceid)).then((response) => {
-          if (response.data.code === 0) {
-            this.conurbation = response.data.data
-          }
-        })
-      }
-    },
-    count (event, countid) {
-      if ($(event.currentTarget).siblings('.countUl').css('display') === 'block') {
-        $(event.currentTarget).siblings('.countUl').slideToggle()
-        $(event.currentTarget).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
-        return false
-      } else {
-        $('.region_itwo').each(function (index, item) {
-          if ($(item).hasClass('el-icon-circle-plus-outline')) {
-          } else {
-            $(item).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
-          }
-        })
-        $(event.currentTarget).removeClass('el-icon-circle-plus-outline').addClass('el-icon-remove-outline')
-        $('.countUl').each(function (index, item) {
-          $(item).css('display', 'none')
-        })
-        $(event.currentTarget).siblings('.countUl').slideDown()
-        this.axios.post(getCountiesByCityId(countid)).then((response) => {
-          if (response.data.code === 0) {
-            this.countytown = response.data.data
-          }
-        })
-      }
     },
     //  点击最父级，关闭地址框
     shutdown () {
@@ -618,15 +620,21 @@ export default {
   },
   created () {
     //  设备类型
-    this.axios.post(findAllDeviceType()).then((response) => {
+    // let token = JSON.parse(sessionStorage.token)
+    console.log('1///')
+    let token = JSON.parse(window.sessionStorage.token)
+    console.log(this.maintainProject)
+    console.log(findAllDeviceType(token, this.maintainProject))
+    this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
+        console.log(response)
         this.category = response.data.data
       }
     })
-    //  省份
-    this.axios.post(getAllProvince()).then((response) => {
+
+    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
-        this.province = response.data.data
+        this.facilityLocation = response.data.data
       }
     })
   }

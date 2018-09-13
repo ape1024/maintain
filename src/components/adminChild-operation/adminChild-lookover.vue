@@ -69,7 +69,7 @@
           <li class="lookover_lithree">
             <p class="lithree_p">现场照片：</p>
             <div class="lookover_lithree_div">
-              <img class="lookoverImg" :key="$index" v-for="(item, $index) in information.photoArray" :src="item" alt="">
+              <img  @click="selectImg(information.photoArray, index)" class="lookoverImg" :key="index" v-for="(item, index) in information.photoArray" :src="item" alt="">
             </div>
           </li>
         </ul>
@@ -122,12 +122,14 @@
           取消
         </div>
       </div>
+      <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </section>
   </div>
 </template>
 
 <script>
 import { fmtDate } from '../../common/js/utils'
+import DialogImg from 'base/dialog-img/dialog-img'
 import { getProprietorOrganization } from '../../api/user'
 export default {
   name: 'adminChild-lookover',
@@ -140,16 +142,20 @@ export default {
       fmtDateOne: '',
       fmtDateTwo: '',
       fmtDateThree: '',
-      fmtDateFour: ''
+      fmtDateFour: '',
+      imgList: []
     }
   },
+  components: {
+    DialogImg
+  },
   methods: {
-    conserve () {
-      // 保存
-      // this.lookoverBoolean = this.msg
-      // this.lookoverBoolean = !this.lookoverBoolean
-      // this.$emit('look', this.lookoverBoolean)
-
+    selectImg (list, index) {
+      this.imgList = list
+      setTimeout(() => {
+        this.$refs.dialogImg.switchIndex(index)
+        this.$refs.dialogImg.open()
+      }, 200)
     },
     closedown () {
       // 取消
@@ -305,8 +311,9 @@ export default {
        float left
        color $color-text
   .lookoverImg
-    display inline-block
-    margin-right 20px
-    width  50px
+    width 50px
     height 50px
+    display inline-block
+    cursor pointer
+    margin-right 20px
 </style>

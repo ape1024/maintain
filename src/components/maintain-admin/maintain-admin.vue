@@ -102,6 +102,8 @@ export default {
               this.tableData = data.data.data.datas
             }
           })
+        } else {
+          this.tableData = []
         }
       })
     },
@@ -242,7 +244,7 @@ export default {
       }
     })
     //  获取设备类别
-    this.axios.post(findAllDeviceType()).then((response) => {
+    this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.equipment = response.data.data
       }

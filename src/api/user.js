@@ -115,9 +115,9 @@ export const approvalCheckPlan = (token, checkPlanId, approvalOpinion, approvalS
   const url = `${Test}/plan/approvalCheckPlan?token=${token}&checkPlanId=${checkPlanId}&approvalOpinion=${approvalOpinion}&approvalState=${approvalState}`
   return url
 }
-export const findAllDeviceType = () => {
+export const findAllDeviceType = (token, projectid) => {
   //  获取设备类别
-  const url = `${Test}/dev/findAllDeviceType`
+  const url = `${Test}/dev/findAllDeviceType?token=${token}&projectid=${projectid}`
   return url
 }
 export const getTaskQueryApprovalItems = () => {
@@ -366,6 +366,10 @@ export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid
 }
 export const PojectdeviceApprovals2 = (deviceids, approvalstate) => {
   const url = `${Test}/dev/PojectdeviceApprovals2?deviceids=${deviceids}&approvalstate=${approvalstate}`
+  return url
+}
+export const PojectdeviceApproval = (deviceid, approvalopinion, approvalstate) => {
+  const url = `${Test}/dev/PojectdeviceApproval?deviceid=${deviceid}&approvalopinion=${approvalopinion}&approvalstate=${approvalstate}`
   return url
 }
 //  通过厂家获取到规格型号
@@ -619,6 +623,10 @@ export const findAllAreaTrees = () => {
   const url = `${Test}/areas/findAllAreaTrees`
   return url
 }
+export const areasFindAll = (projectid) => {
+  const url = `${Test}/areas/findAll?projectid=${projectid}`
+  return url
+}
 //  获取项目类型
 export const increasegetWorkTypes = () => {
   const url = `${Test}/projects/getWorkTypes`
@@ -701,5 +709,13 @@ export const getAllWorkcycle = () => {
 }
 export const getWorkModes = () => {
   const url = `${Test}/plan/getWorkModes`
+  return url
+}
+export const getApproveType = (token) => {
+  const url = `${Test}/dev/getApproveType?token=${token}`
+  return url
+}
+export const findAreasTree = (areaid) => {
+  const url = `${Test}/areas/findAreasTree?areaid=${areaid}`
   return url
 }

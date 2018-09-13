@@ -112,19 +112,27 @@
             <!--{{dataset.approvalstatecode}}-->
           </li>
           <li class="threelevel_litwo">
-            <p @click.stop="question" class="header_p_eight threelevel_litwo_p">
+            <p v-if="dataset.disabledBoolean" @click.stop="question(dataset.deviceid)" class="header_p_eight threelevel_litwo_p">
+              审核
+            </p>
+            <p v-if="!dataset.disabledBoolean" class="header_p_Eleven threelevel_litwo_p">
               审核
             </p>
             <p v-if="JurisdictionSelect" @click.stop="examine(dataset.deviceid)" class="header_p_ten">查看</p>
-            <p v-if="JurisdictionUpdate" @click.stop="modify(dataset, dataset.deviceid)" class="header_p_twelve">
+            <p v-if="JurisdictionUpdate && dataset.disabledBoolean" @click.stop="modify(dataset, dataset.deviceid)" class="header_p_twelve">
+              修改
+            </p>
+            <p v-if="JurisdictionUpdate && !dataset.disabledBoolean" class="header_p_Eleven">
               修改
             </p>
             <!--<p @click.stop="equipment" class="header_pe_quipment">-->
               <!--更换设备-->
             <!--</p>-->
-            <!--<p class="header_p_eleven" @click.stop="amputate($index, content)">删除</p>-->
-            <p v-if="JurisdictionDelete" class="header_p_eleven" @click.stop="">
+            <p v-if="JurisdictionDelete&&dataset.disabledBoolean" class="header_p_eleven" @click.stop="">
               <el-button type="text" @click="amputate($index, tabChild, dataset.deviceid)">删除</el-button>
+            </p>
+            <p v-if="JurisdictionDelete&&!dataset.disabledBoolean" class="header_p_Eleven" @click.stop="">
+             删除
             </p>
           </li>
         </ul>
@@ -132,7 +140,7 @@
     </ul>
     <section v-if="examineBoolean" @click.stop class="review">
       <!--审核-->
-      <childExamine :examine="examineBoolean" @mine="Mine"></childExamine>
+      <childExamine v-if="examineBoolean" :question="questionData" :examine="examineBoolean" @mine="Mine"></childExamine>
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
@@ -142,7 +150,7 @@
       <!--修改-->
       <childModify :msg="modifyBoolean" :modify="modifyDate" @say="Modify"></childModify>
     </section>
-    <section v-show="quipmentBoolean" class="review" @click.stop>
+    <section v-if="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
       <childquipment :msg="quipmentBoolean" @quipment="Quipment"></childquipment>
     </section>
@@ -200,7 +208,8 @@ export default {
       AuditstatusD: '',
       tabChild: '',
       checkedData: false,
-      checkedChangeData: []
+      checkedChangeData: [],
+      questionData: ''
     }
   },
   methods: {
@@ -299,15 +308,15 @@ export default {
     },
     examine (deviceid) {
       // 点击查看
-      this.lookoverBoolean = true
       this.axios.post(adminfindDeviceDetail(deviceid)).then((response) => {
         if (response.data.code === 0) {
           this.examineInformation = response.data.data
-        }
-      })
-      this.axios.post(adminFindInspectionMaintenance(deviceid)).then((response) => {
-        if (response.data.code === 0) {
-          this.examineInspection = response.data.data
+          this.axios.post(adminFindInspectionMaintenance(deviceid)).then((data) => {
+            if (data.data.code === 0) {
+              this.examineInspection = data.data.data
+              this.lookoverBoolean = true
+            }
+          })
         }
       })
     },
@@ -321,12 +330,43 @@ export default {
         }
       })
     },
-    question () {
+    question (question) {
       // 点击审核
-      this.examineBoolean = true
+      this.axios.post(adminfindDeviceDetail(question)).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response.data.data)
+          this.questionData = response.data.data
+          this.examineBoolean = true
+        }
+      })
     },
     Mine (ev) {
       // 审核 传递的参数
+      this.axios.post(admingetDevListDetailProjects(this.datasetAreaid)).then((response) => {
+        if (!response) {
+          // 请求失败关闭加载
+          this.closeLoadingDialog()
+          return
+        }
+        if (response.data.code === 0) {
+          response.data.data.forEach((val) => {
+            val.checked = false
+            if (val.approvalstate === 100) {
+              val.disabledBoolean = false
+              val.disabled = true
+            } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+              val.disabledBoolean = true
+              val.disabled = false
+            } else {
+              val.disabledBoolean = false
+              val.disabled = true
+            }
+          })
+          this.tabChild = response.data.data
+        }
+        // 请求成功关闭数据加载
+        this.closeLoadingDialog()
+      })
       this.examineBoolean = ev
     },
     Onlook (ev) {
@@ -335,9 +375,29 @@ export default {
     Modify (ev) {
       this.modifyBoolean = ev
       this.axios.post(admingetDevListDetailProjects(this.datasetAreaid)).then((response) => {
+        if (!response) {
+          // 请求失败关闭加载
+          this.closeLoadingDialog()
+          return
+        }
         if (response.data.code === 0) {
+          response.data.data.forEach((val) => {
+            val.checked = false
+            if (val.approvalstate === 100) {
+              val.disabledBoolean = false
+              val.disabled = true
+            } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+              val.disabledBoolean = true
+              val.disabled = false
+            } else {
+              val.disabledBoolean = false
+              val.disabled = true
+            }
+          })
           this.tabChild = response.data.data
         }
+        // 请求成功关闭数据加载
+        this.closeLoadingDialog()
       })
     },
     equipment () {
@@ -425,10 +485,13 @@ export default {
                 response.data.data.forEach((val) => {
                   val.checked = false
                   if (val.approvalstate === 100) {
+                    val.disabledBoolean = false
                     val.disabled = true
                   } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+                    val.disabledBoolean = true
                     val.disabled = false
                   } else {
+                    val.disabledBoolean = false
                     val.disabled = true
                   }
                 })
@@ -459,10 +522,13 @@ export default {
         response.data.data.forEach((val) => {
           val.checked = false
           if (val.approvalstate === 100) {
+            val.disabledBoolean = false
             val.disabled = true
           } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+            val.disabledBoolean = true
             val.disabled = false
           } else {
+            val.disabledBoolean = false
             val.disabled = true
           }
         })
@@ -482,7 +548,8 @@ export default {
       }
     })
     //  获取设备类别
-    this.axios.post(findAllDeviceType()).then((response) => {
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.equipmentinformation = response.data.data
       }
@@ -557,6 +624,8 @@ export default {
   .header_p_eleven .el-button--text
     color #83292b!important
     font-size 16px
+  .header_p_Eleven
+    color #444
   .header_p_twelve
     color $color-background-introduce
   .header_pe_quipment

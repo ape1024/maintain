@@ -171,7 +171,7 @@ export default {
       fileList: [],
       condition: true,
       // upload
-      uploadUrl: upload(),
+      uploadUrl: upload(JSON.parse(window.sessionStorage.token)),
       //  登陆名
       nameoflanding: '',
       //  用户姓名

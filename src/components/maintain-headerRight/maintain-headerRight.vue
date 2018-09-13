@@ -193,10 +193,13 @@ export default {
                margin-top -2px
                vertical-align middle
   .headerRight_left__img
+    width 45px
+    height 45px
+    display inline-block
     vertical-align middle
   .headerRight_leftImgLeft
     float left
-    margin 11px 8px 0 -6px
+    margin 11px 8px 0 0
     overflow hidden
     position relative
   .modifyInformation

@@ -59,31 +59,20 @@
               <p class="modify_li_p">设施位置：</p>
               <div class="modify_li_div">
                 <div class="content">
-                  <div @click.stop="accessarea" class="region">
-                    {{regionDate}}
-                  </div>
-                  <ul v-show="regionUl" class="region_ul">
-                    <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
-                      <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
-                      <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">
-                        <i @click.stop="count($event, data.cityid)" class="el-icon-circle-plus-outline region_itwo"></i>
-                        <span class="countSpen" @click="citySpan($event, data)">{{data.cityname}}</span>
-                        <ul class="countUl">
-                          <li @click="countytownSpan(coundata)" :key="coundata.countyid" :id="coundata.countyid" v-for="coundata in countytown" class="countLi">
-                            {{coundata.countyname}}
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
-                    </li>
-                  </ul>
+                  <el-cascader
+                    :options="facilityLocation"
+                    :props="facilityLocationProps"
+                    v-model="facilityLocationDate"
+                    size="mini"
+                    change-on-select
+                  ></el-cascader>
                 </div>
               </div>
             </div>
             <div class="modify_liDiv">
               <p class="modify_li_p">具体位置：</p>
               <div class="modify_li_div">
-                <el-input v-model="Specificposition" placeholder=""></el-input>
+                <el-input size="mini" v-model="Specificposition" placeholder=""></el-input>
               </div>
             </div>
           </li>
@@ -93,6 +82,7 @@
               <div class="modify_li_divtwo">
                 <el-date-picker
                   v-model="productionValue1"
+                  size="mini"
                   type="date"
                   value-format="yyyy-MM-dd"
                   @change="logTimeChange"
@@ -106,6 +96,7 @@
               </p>
               <div class="modify_li_divtwo">
                 <el-date-picker
+                  size="mini"
                   v-model="validity"
                   value-format="yyyy-MM-dd"
                   type="date"
@@ -120,6 +111,7 @@
               <div class="modify_li_divthree">
                 <el-input
                   type="textarea"
+                  size="mini"
                   :rows="2"
                   resize="none"
                   placeholder=""
@@ -135,6 +127,7 @@
                 <el-input
                   type="textarea"
                   :rows="2"
+                  size="mini"
                   resize="none"
                   placeholder=""
                   v-model="textarea">
@@ -168,8 +161,10 @@
 <script>
 import $ from 'jquery'
 import { fmtDate } from '../../common/js/utils'
-import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, getCitiesByProvinceId, getCountiesByCityId, findAllDeviceType, managementCreatedProvince } from '../../api/user'
+import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType, managementCreatedProvince } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [ projectMixin ],
   name: 'adminChild-modify',
   props: ['msg', 'modify', 'Examinedataset'],
   data () {
@@ -227,7 +222,14 @@ export default {
       technicalParameter: '',
       //  具体位置
       Specificposition: '',
-      categoryDateOne: []
+      categoryDateOne: [],
+      facilityLocation: [],
+      facilityLocationProps: {
+        children: 'areas',
+        label: 'areaname',
+        value: 'areaid'
+      },
+      facilityLocationDate: []
     }
   },
   beforeMount () {
@@ -291,9 +293,7 @@ export default {
                             message: '修改成功',
                             type: 'success'
                           })
-                          this.modifyBoolean = this.msg
-                          this.modifyBoolean = !this.modifyBoolean
-                          this.$emit('say', this.modifyBoolean)
+                          this.$emit('say', false)
                         }
                       })
                     }
@@ -437,69 +437,6 @@ export default {
     accessarea () {
       this.regionUl = !this.regionUl
     },
-    deploy (event, provinceid) {
-      if ($(event.currentTarget).siblings('.regionliUl').css('display') === 'block') {
-        $(event.currentTarget).siblings('.regionliUl').slideToggle()
-        $(event.currentTarget).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
-        return false
-      } else {
-        $('.region_i').each(function (index, item) {
-          if ($(item).hasClass('el-icon-circle-plus-outline')) {
-          } else {
-            $(item).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
-          }
-        })
-        $(event.currentTarget).removeClass('el-icon-circle-plus-outline').addClass('el-icon-remove-outline')
-        $('.regionliUl').each(function (index, item) {
-          $(item).css('display', 'none')
-        })
-        $(event.currentTarget).siblings('.regionliUl').slideDown()
-        this.axios.post(getCitiesByProvinceId(provinceid)).then((response) => {
-          if (response.data.code === 0) {
-            this.conurbation = response.data.data
-          }
-        })
-      }
-    },
-    count (event, countid) {
-      if ($(event.currentTarget).siblings('.countUl').css('display') === 'block') {
-        $(event.currentTarget).siblings('.countUl').slideToggle()
-        $(event.currentTarget).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
-        return false
-      } else {
-        $('.region_itwo').each(function (index, item) {
-          if ($(item).hasClass('el-icon-circle-plus-outline')) {
-          } else {
-            $(item).removeClass('el-icon-remove-outline').addClass('el-icon-circle-plus-outline')
-          }
-        })
-        $(event.currentTarget).removeClass('el-icon-circle-plus-outline').addClass('el-icon-remove-outline')
-        $('.countUl').each(function (index, item) {
-          $(item).css('display', 'none')
-        })
-        $(event.currentTarget).siblings('.countUl').slideDown()
-        this.axios.post(getCountiesByCityId(countid)).then((response) => {
-          if (response.data.code === 0) {
-            this.countytown = response.data.data
-          }
-        })
-      }
-    },
-    provinceSpan (event, provincename) {
-      //  直接选择省份
-      this.regionDate = provincename.provincename
-      this.provinceId = provincename.provinceid
-    },
-    citySpan (event, cityDate) {
-      let cout = $(event.currentTarget).parents('.region_li').children('.provinceSpan').text()
-      let city = cityDate.cityname
-      let url = `${cout} ${city}`
-      this.regionDate = url
-      //  省份id
-      this.conurbationId = cityDate.cityid
-      //  城市ID
-      this.provinceId = cityDate.provinceid
-    },
     countytownSpan (coundata) {
       let cout = $(event.currentTarget).parents('.region_li').children('.provinceSpan').text()
       let city = $(event.currentTarget).parents('.regionliul_li').children('.countSpen').text()
@@ -514,14 +451,19 @@ export default {
     }
   },
   created () {
-    console.log(this.modify)
-    this.axios.post(findAllDeviceType()).then((response) => {
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
+      if (response.data.code === 0) {
+        this.facilityLocation = response.data.data
+      }
+    })
+    this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.category = response.data.data
         this.categoryDate = (this.modify).devicetypeArray
+        console.log(this.categoryDate)
         this.manufactorModel = (this.modify).manufacturerid
         let region = this.categoryDate[this.categoryDate.length - 1]
-
         this.axios.post(maintainReportfindManufactures(region)).then((data) => {
           if (data.data.code === 0) {
             let arr = data.data.data
@@ -532,7 +474,6 @@ export default {
             })
           }
         })
-
         this.axios.post(maintainReportfindDivecemodels(region, (this.modify).manufacturerid)).then((response) => {
           if (response.data.code === 0) {
             this.version = response.data.data
