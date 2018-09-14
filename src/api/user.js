@@ -582,10 +582,16 @@ export const getOrganizationTreeByUser = (token) => {
   return url
 }
 //  获取角色列表
-export const getRolesList = (token, userId) => {
+export const getRolesList = (token) => {
+  const url = `${Test}/users/getRolesList?token=${token}`
+  return url
+}
+// 获取角色列表
+export const getRolesList3 = (token, userId) => {
   const url = `${Test}/users/getRolesList3?userid=${userId}&token=${token}`
   return url
 }
+
 //  getUserRoles
 export const getUserRoles = (userid) => {
   const url = `${Test}/users/getUserRoles?userid=${userid}`

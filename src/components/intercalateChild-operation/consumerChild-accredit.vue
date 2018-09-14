@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { setUserRoles, getRolesList, getUserRoles } from '../../api/user'
+import { setUserRoles, getRolesList3, getUserRoles } from '../../api/user'
 export default {
   name: 'consumerChild-accredit',
   props: ['userid'],
@@ -52,7 +52,7 @@ export default {
   created () {
     let token = JSON.parse(window.sessionStorage.token)
     let getUserRolesData = []
-    this.axios.post(getRolesList(token, this.userid)).then((response) => {
+    this.axios.post(getRolesList3(token, this.userid)).then((response) => {
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
           val.flag = false
