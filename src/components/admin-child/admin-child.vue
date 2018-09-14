@@ -342,7 +342,7 @@ export default {
     },
     Mine (ev) {
       // 审核 传递的参数
-      this.axios.post(admingetDevListDetailProjects(this.datasetAreaid)).then((response) => {
+      this.axios.post(admingetDevListDetailProjects(this.adminid)).then((response) => {
         if (!response) {
           // 请求失败关闭加载
           this.closeLoadingDialog()
