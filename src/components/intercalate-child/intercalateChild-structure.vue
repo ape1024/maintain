@@ -17,6 +17,7 @@
         <div v-if="amputateStr" class="subjectRightDiv">
         </div>
         <div class="information">
+          <!--1-->
           <ul class="informationUl">
             <li class="informationLi">
               <div class="informationDiv">
@@ -83,6 +84,25 @@
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="encrypt" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <!--单位联系人-->
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  单位联系人：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="linkman" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  联系人手机：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="CellPhone" placeholder=""  clearable>></el-input>
                 </div>
               </div>
             </li>
@@ -207,6 +227,173 @@
                 </div>
               </div>
             </li>
+            <!--上传图标-->
+            <li v-if="classification" class="informationLithree">
+              <div class="informationDivthree">
+                <p class="informationP">
+                  组织机构图标：
+                </p>
+                <div class="contenttwo">
+                  <el-upload
+                    class="avatar-uploader"
+                    :action="uploadUrlData"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  </el-upload>
+                </div>
+              </div>
+            </li>
+            <!--备注说明-->
+            <li class="informationLithree">
+              <div class="informationDivthree">
+                <p class="informationP">
+                  备注说明：
+                </p>
+                <div class="contentthree">
+                  <el-input
+                    size="mini"
+                    type="textarea"
+                    :rows="3"
+                    placeholder=""
+                    resize="none"
+                    v-model="textarea">
+                  </el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLifour">
+              <div v-show="conserveBoolean" @click="conserve" class="conserve">
+                保存
+              </div>
+              <div v-show="!conserveBoolean" @click="newConserve" class="conserve">
+                新增保存
+              </div>
+              <div v-show="conserveBoolean" class="amputateDIv" @click="amputate">
+                删除
+              </div>
+            </li>
+          </ul>
+          <!--维保单位-->
+          <ul v-show="false" class="informationUl">
+            <li class="informationLi">
+              <div class="informationDiv">
+                <p class="informationP">
+                  上级主管单位：
+                </p>
+                <div v-if="dataRoot" class="companyContent">
+                  <el-cascader
+                    size="mini"
+                    :options="data"
+                    :props="defaultProps"
+                    change-on-select
+                    v-model="companyDate"
+                  ></el-cascader>
+                </div>
+                <div v-if="!dataRoot" class="companyContent">
+                  <el-input
+                    size="mini"
+                    v-model="dataRootInput"
+                    :disabled="true">
+                  </el-input>
+                </div>
+              </div>
+            </li>
+            <!--所在区域-->
+            <li class="informationLifive">
+              <div class="informationDiv">
+                <p class="informationP">
+                  所在区域：
+                </p>
+                <div class="content">
+                  <div @click.stop="accessarea" class="region">
+                    {{regionDate}}
+                  </div>
+                  <ul v-show="regionUl" class="region_ul">
+                    <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
+                      <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
+                      <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">
+                        <i @click.stop="count($event, data.cityid)" class="el-icon-circle-plus-outline region_itwo"></i>
+                        <span class="countSpen" @click="citySpan($event, data)">{{data.cityname}}</span>
+                        <ul class="countUl">
+                          <li @click="countytownSpan(coundata)" :key="coundata.countyid" :id="coundata.countyid" v-for="coundata in countytown" class="countLi">
+                            {{coundata.countyname}}
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  所在地址：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="address" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <!--专业类别-->
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  专业类别：
+                </p>
+                <div class="content">
+                  <el-cascader
+                    size="mini"
+                    :options="business"
+                    :props="categoryProps"
+                    v-model="businessOptions"
+                    @change="handleChange">
+                  </el-cascader>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  业务类别：
+                </p>
+                <div class="content">
+                  <el-select size="mini" v-model="businessCategoryData" placeholder="请选择">
+                    <el-option
+                      v-for="item in businessCategory"
+                      :key="item.industrycategoryid"
+                      :label="item.industrycategoryname"
+                      :value="item.industrycategoryid">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+            </li>
+            <!--资质等级-->
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  资质等级：
+                </p>
+                <div class="content">
+                  <el-cascader
+                    size="mini"
+                    :options="category"
+                    :props="categoryProps"
+                    v-model="selectedOptions"
+                    @change="handleChange">
+                  </el-cascader>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  资质编号：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="identifier" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
             <!--单位联系人-->
             <li class="informationLitwo">
               <div class="informationDiv">
@@ -226,7 +413,6 @@
                 </div>
               </div>
             </li>
-
             <!--上传图标-->
             <li v-if="classification" class="informationLithree">
               <div class="informationDivthree">
@@ -243,6 +429,356 @@
                     <img v-if="imageUrl" :src="imageUrl" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                   </el-upload>
+                </div>
+              </div>
+            </li>
+            <!--备注说明-->
+            <li class="informationLithree">
+              <div class="informationDivthree">
+                <p class="informationP">
+                  备注说明：
+                </p>
+                <div class="contentthree">
+                  <el-input
+                    size="mini"
+                    type="textarea"
+                    :rows="3"
+                    placeholder=""
+                    resize="none"
+                    v-model="textarea">
+                  </el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLifour">
+              <div v-show="conserveBoolean" @click="conserve" class="conserve">
+                保存
+              </div>
+              <div v-show="!conserveBoolean" @click="newConserve" class="conserve">
+                新增保存
+              </div>
+              <div v-show="conserveBoolean" class="amputateDIv" @click="amputate">
+                删除
+              </div>
+            </li>
+          </ul>
+          <!--业主单位-->
+          <ul v-show="false" class="informationUl">
+            <li class="informationLi">
+              <div class="informationDiv">
+                <p class="informationP">
+                  上级主管单位：
+                </p>
+                <div v-if="dataRoot" class="companyContent">
+                  <el-cascader
+                    size="mini"
+                    :options="data"
+                    :props="defaultProps"
+                    change-on-select
+                    v-model="companyDate"
+                  ></el-cascader>
+                </div>
+                <div v-if="!dataRoot" class="companyContent">
+                  <el-input
+                    size="mini"
+                    v-model="dataRootInput"
+                    :disabled="true">
+                  </el-input>
+                </div>
+              </div>
+            </li>
+            <!--组织机构名称-->
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  组织机构名称：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="organizationname" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  单位简称：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="organizationshortname" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <!--单位简称-->
+            <li class="informationLitwo">
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  组织类别：
+                </p>
+                <div class="content">
+                  <el-select size="mini" v-model="regimentaValue" placeholder="请选择">
+                    <el-option
+                      v-for="item in regimentation"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+              <div class="informationDiv">
+                <p class="informationP">
+                  单位编码：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="encrypt" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <!--所在区域-->
+            <li class="informationLifive">
+              <div class="informationDiv">
+                <p class="informationP">
+                  所在区域：
+                </p>
+                <div class="content">
+                  <div @click.stop="accessarea" class="region">
+                    {{regionDate}}
+                  </div>
+                  <ul v-show="regionUl" class="region_ul">
+                    <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
+                      <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
+                      <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">
+                        <i @click.stop="count($event, data.cityid)" class="el-icon-circle-plus-outline region_itwo"></i>
+                        <span class="countSpen" @click="citySpan($event, data)">{{data.cityname}}</span>
+                        <ul class="countUl">
+                          <li @click="countytownSpan(coundata)" :key="coundata.countyid" :id="coundata.countyid" v-for="coundata in countytown" class="countLi">
+                            {{coundata.countyname}}
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  所在地址：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="address" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <!--单位联系人-->
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  单位联系人：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="linkman" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  联系人手机：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="CellPhone" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">消防监管机构:</p>
+                <div class="content">
+                  <el-select size="mini" v-model="superVisionData" placeholder="请选择">
+                    <el-option
+                      v-for="item in supervision"
+                      :key="item.firebrigadeid"
+                      :label="item.firebrigadename"
+                      :value="item.firebrigadeid">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">消防单位类别</p>
+                <div class="content">
+                  <el-select size="mini" v-model="categoryfireFightingData" placeholder="请选择">
+                    <el-option
+                      v-for="item in categoryfireFighting"
+                      :key="item.firecontrolcategoryid"
+                      :label="item.firecontrolcategoryname"
+                      :value="item.firecontrolcategoryid">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+            </li>
+            <!--上传图标-->
+            <li class="informationLithree">
+              <div class="informationDivthree">
+                <p class="informationP">
+                  组织机构图标：
+                </p>
+                <div class="contenttwo">
+                  <el-upload
+                    class="avatar-uploader"
+                    :action="uploadUrlData"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  </el-upload>
+                </div>
+              </div>
+            </li>
+            <!--备注说明-->
+            <li class="informationLithree">
+              <div class="informationDivthree">
+                <p class="informationP">
+                  备注说明：
+                </p>
+                <div class="contentthree">
+                  <el-input
+                    size="mini"
+                    type="textarea"
+                    :rows="3"
+                    placeholder=""
+                    resize="none"
+                    v-model="textarea">
+                  </el-input>
+                </div>
+              </div>
+            </li>
+            <li class="informationLifour">
+              <div v-show="conserveBoolean" @click="conserve" class="conserve">
+                保存
+              </div>
+              <div v-show="!conserveBoolean" @click="newConserve" class="conserve">
+                新增保存
+              </div>
+              <div v-show="conserveBoolean" class="amputateDIv" @click="amputate">
+                删除
+              </div>
+            </li>
+          </ul>
+          <!--部门-->
+          <ul v-show="false" class="informationUl">
+            <li class="informationLi">
+              <div class="informationDiv">
+                <p class="informationP">
+                  上级主管单位：
+                </p>
+                <div v-if="dataRoot" class="companyContent">
+                  <el-cascader
+                    size="mini"
+                    :options="data"
+                    :props="defaultProps"
+                    change-on-select
+                    v-model="companyDate"
+                  ></el-cascader>
+                </div>
+                <div v-if="!dataRoot" class="companyContent">
+                  <el-input
+                    size="mini"
+                    v-model="dataRootInput"
+                    :disabled="true">
+                  </el-input>
+                </div>
+              </div>
+            </li>
+            <!--组织机构名称-->
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  组织机构名称：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="organizationname" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  单位简称：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="organizationshortname" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <!--单位简称-->
+            <li class="informationLitwo">
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  组织类别：
+                </p>
+                <div class="content">
+                  <el-select size="mini" v-model="regimentaValue" placeholder="请选择">
+                    <el-option
+                      v-for="item in regimentation"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+              <div class="informationDiv">
+                <p class="informationP">
+                  单位编码：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="encrypt" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <!--单位联系人-->
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">
+                  单位联系人：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="linkman" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  联系人手机：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="CellPhone" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <!--所在区域-->
+            <li class="informationLitwo">
+              <div class="informationDiv">
+                <p class="informationP">消防监管机构:</p>
+                <div class="content">
+                  <el-select size="mini" v-model="superVisionData" placeholder="请选择">
+                    <el-option
+                      v-for="item in supervision"
+                      :key="item.firebrigadeid"
+                      :label="item.firebrigadename"
+                      :value="item.firebrigadeid">
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">消防单位类别</p>
+                <div class="content">
+                  <el-select size="mini" v-model="categoryfireFightingData" placeholder="请选择">
+                    <el-option
+                      v-for="item in categoryfireFighting"
+                      :key="item.firecontrolcategoryid"
+                      :label="item.firecontrolcategoryname"
+                      :value="item.firecontrolcategoryid">
+                    </el-option>
+                  </el-select>
                 </div>
               </div>
             </li>

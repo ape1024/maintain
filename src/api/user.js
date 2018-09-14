@@ -483,17 +483,17 @@ export const adminFindInspectionMaintenance = (deviceid) => {
   return url
 }
 //  admingetDevListDetailProjects
-export const admingetDevListDetailProjects = (areaid) => {
-  const url = `${Test}/dev/getDevListDetailProjects?areaid=${areaid}`
+export const admingetDevListDetailProjects = (areaid, projectid) => {
+  const url = `${Test}/dev/getDevListDetailProjects?areaid=${areaid}&projectid=${projectid}`
   return url
 }
 //  getDevListDetailProjectsTwo
-export const getDevListDetailProjectsTwo = (basedevicecode, areaid) => {
-  const url = `${Test}/dev/getDevListDetailProjects?basedevicecode=${basedevicecode}&areaid=${areaid}`
+export const getDevListDetailProjectsTwo = (basedevicecode, areaid, projectid) => {
+  const url = `${Test}/dev/getDevListDetailProjects?basedevicecode=${basedevicecode}&areaid=${areaid}&projectid=${projectid}`
   return url
 }
-export const getDevListDetailProjectsThree = (equipmentdata, runningState, AuditstatusD, adminid, manufactorModel) => {
-  const url = `${Test}/dev/getDevListDetailProjects?basedevicecode=${equipmentdata}&devicestate=${runningState}&approvalstate=${AuditstatusD}&areaid=${adminid}&manufacturerid=${manufactorModel}`
+export const getDevListDetailProjectsThree = (equipmentdata, runningState, AuditstatusD, adminid, manufactorModel, projectid) => {
+  const url = `${Test}/dev/getDevListDetailProjects?basedevicecode=${equipmentdata}&devicestate=${runningState}&approvalstate=${AuditstatusD}&areaid=${adminid}&manufacturerid=${manufactorModel}&projectid=${projectid}`
   return url
 }
 //  getApprovalItems

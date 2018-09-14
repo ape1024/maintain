@@ -54,10 +54,10 @@
           <li v-for="(item) in tableData" class="table_li" :key="item.deviceid" :id="item.areaid">
             <ul :id="item.id" class="inline_ul" @click="selectStyle (item)">
               <li class="header_lithree">{{item.areaname}}</li>
+              <li class="header_li">{{item.alldevcount}}</li>
               <li class="header_li">{{item.checkdevnum}}</li>
               <li class="header_li">{{item.filedevnum}}</li>
               <li class="header_li">{{item.updatedevnum}}</li>
-              <li class="header_li"> </li>
               <li class="header_li">{{item.stopdevnum}}</li>
             </ul>
             <transition enter-active-class="fadeInUp"

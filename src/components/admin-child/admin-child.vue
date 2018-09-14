@@ -242,7 +242,7 @@ export default {
       runningState = typeof runningState === 'number' ? runningState : ''
       AuditstatusD = AuditstatusD && AuditstatusD !== -1 ? AuditstatusD : ''
 
-      this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel)).then((response) => {
+      this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.tabChild = response.data.data
         }
@@ -342,7 +342,7 @@ export default {
     },
     Mine (ev) {
       // 审核 传递的参数
-      this.axios.post(admingetDevListDetailProjects(this.adminid)).then((response) => {
+      this.axios.post(admingetDevListDetailProjects(this.adminid, this.maintainProject)).then((response) => {
         if (!response) {
           // 请求失败关闭加载
           this.closeLoadingDialog()
@@ -374,7 +374,7 @@ export default {
     },
     Modify (ev) {
       this.modifyBoolean = ev
-      this.axios.post(admingetDevListDetailProjects(this.datasetAreaid)).then((response) => {
+      this.axios.post(admingetDevListDetailProjects(this.datasetAreaid, this.maintainProject)).then((response) => {
         if (!response) {
           // 请求失败关闭加载
           this.closeLoadingDialog()
@@ -475,7 +475,7 @@ export default {
               message: '审批成功',
               type: 'success'
             })
-            this.axios.post(admingetDevListDetailProjects(this.adminid)).then((response) => {
+            this.axios.post(admingetDevListDetailProjects(this.adminid, this.maintainProject)).then((response) => {
               if (!response) {
                 // 请求失败关闭加载
                 this.closeLoadingDialog()
@@ -512,7 +512,7 @@ export default {
   },
   created () {
     this.openLoadingDialog()
-    this.axios.post(admingetDevListDetailProjects(this.adminid)).then((response) => {
+    this.axios.post(admingetDevListDetailProjects(this.adminid, this.maintainProject)).then((response) => {
       if (!response) {
         // 请求失败关闭加载
         this.closeLoadingDialog()
