@@ -13,7 +13,7 @@
             <router-link to="/home/admin">
               <li>
                 <i class="headerAdmin"></i>
-                消防设施管理
+                消防设施
               </li>
             </router-link>
             <router-link to="/home/daily">
@@ -43,19 +43,19 @@
             <router-link to="/home/archives">
               <li v-if="false">
                 <i class="headerArchives"></i>
-                工作档案管理
+                工作档案
               </li>
             </router-link>
             <router-link to="/home/report">
               <li>
                 <i class="headerReport"></i>
-                上报问题管理
+                上报问题
               </li>
             </router-link>
             <router-link to="/home/plan">
               <li>
                 <i class="headerArranged"></i>
-                任务计划管理
+                任务计划
               </li>
             </router-link>
             <router-link to="/home/intercalate">

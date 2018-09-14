@@ -1,23 +1,70 @@
 <template>
   <div class="area-graph">
     <div class="title">{{title}}</div>
+    <div class="more">{{more}}</div>
     <div class="content">
-      <div class="each prev"></div>
-      <div class="each wrap"></div>
-      <div class="each next"></div>
+      <div class="each move" @click="prev" :class="{'error-style' : !prevState, 'normal-style': !switchState}">
+        <i class="el-icon-arrow-left" v-show="switchState"></i>
+      </div>
+      <div class="each wrap" ref="wrap">
+        <div class="graph-wrap" :style="{transform: `translateX(${moveVal}px)`}">
+          <div class="graph-wrap-item" ref="firstPie"></div>
+          <div class="graph-wrap-item"></div>
+          <div class="graph-wrap-item"></div>
+        </div>
+      </div>
+      <div class="each move" @click="next" :class="{'error-style' : !nextState, 'normal-style': !switchState}">
+        <i class="el-icon-arrow-right" v-show="switchState"></i>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+const STEP = 600
+const LONG = 1800
 export default {
+  data () {
+    return {
+      moveVal: 0,
+      switchState: false,
+      prevState: false,
+      nextState: true
+    }
+  },
   methods: {
-    drawLeftPie () {
-      const myChart = this.$echarts.init(this.$refs.graphLeftPie)
-      const option = {
+    prev () {
+      if (!this.switchState) return
+      const lastVal = this.moveVal
+      const currentVal = lastVal + STEP
+      if (currentVal >= 0) {
+        this.moveVal = 0
+        this.prevState = false
+      } else {
+        this.moveVal = currentVal
+      }
+      this.nextState = true
+    },
+    next () {
+      if (!this.switchState) return
+      const lastVal = this.moveVal
+      const currentVal = lastVal - STEP
+      const width = this.$refs.wrap.clientWidth
+      const long = LONG - width
+      if (currentVal <= -long) {
+        this.moveVal = -long
+        this.nextState = false
+      } else {
+        this.moveVal = currentVal
+      }
+      this.prevState = true
+    },
+    drawPie () {
+      const myChart = this.$echarts.init(this.$refs.firstPie)
+      myChart.setOption({
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
+          formatter: '{b}: {c} ({d}%)'
         },
         legend: {
           show: false,
@@ -49,7 +96,7 @@ export default {
             ]
           },
           {
-            name: '访问来源',
+            name: '',
             type: 'pie',
             radius: ['40%', '55%'],
             label: {
@@ -59,12 +106,24 @@ export default {
                 borderColor: '#aaa',
                 borderWidth: 1,
                 borderRadius: 4,
+                // shadowBlur:3,
+                // shadowOffsetX: 2,
+                // shadowOffsetY: 2,
+                // shadowColor: '#999',
+                // padding: [0, 7],
                 rich: {
                   a: {
                     color: '#999',
                     lineHeight: 22,
                     align: 'center'
                   },
+                  // abg: {
+                  //     backgroundColor: '#333',
+                  //     width: '100%',
+                  //     align: 'right',
+                  //     height: 22,
+                  //     borderRadius: [4, 4, 0, 0]
+                  // },
                   hr: {
                     borderColor: '#aaa',
                     width: '100%',
@@ -96,15 +155,17 @@ export default {
             ]
           }
         ]
-      }
-      myChart.setOption(option)
+      })
     }
   },
   mounted () {
-    // this.drawLeftPie()
+    const width = this.$refs.wrap.clientWidth
+    this.switchState = LONG > width
+    this.drawPie()
   },
   created () {
     this.title = '图表统计'
+    this.more = '更多'
   }
 }
 </script>
@@ -120,19 +181,45 @@ export default {
       padding-left 10px
       line-height 50px
       font-size $font-size-medium-x
+    .more
+      position absolute
+      right 25px
+      top 0
+      height 50px
+      line-height 50px
+      font-size $font-size-small
+      color aquamarine
+      cursor pointer
     .content
       position absolute
       left 0
       right 0
-      top 50px
-      bottom 0
+      height 245px
+      bottom 20px
+      text-align center
       .each
         float left
         height 100%
-        &.prev
+        &.move
           width 5%
+          line-height 245px
+          font-size $font-size-large-x
+          cursor pointer
+        &.error-style
+          cursor not-allowed
+        &.normal-style
+          cursor default
         &.wrap
+          box-sizing border-box
           width 90%
-        &.next
-          width 5%
+          overflow hidden
+          .graph-wrap
+            margin 0 auto
+            width 1500px
+            height 100%
+            transition transform 200ms linear
+            .graph-wrap-item
+              float left
+              width 600px
+              height 100%
 </style>
