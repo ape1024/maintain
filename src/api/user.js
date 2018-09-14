@@ -751,3 +751,7 @@ export const getReceivePer = () => {
 export const getMessageList = (pageIndex, pageSize, msg) => {
   return `${Test}/message/findMessageList?pageIndex=${pageIndex}&pageSize=${pageSize}&msgtitle=${msg}`
 }
+// 首页获取消息数量
+export const getMessageCount = () => {
+  return `${Test}/message/findMessageCount`
+}
