@@ -128,7 +128,9 @@
           </li>
         </ul>
       </div>
-      <div class="information_Maintain" v-show="proprietornameDate === -1 || proprieTor === -1">
+      <div class="information_Maintain"
+           :class="{'information_Maintain-change' : proprieTor === -1}"
+           v-show="proprietornameDate === -1 || proprieTor === -1">
         <ul class="informationUl">
           <li class="informationLi">
             <div class="informationDiv_Maintain">
@@ -769,7 +771,7 @@ export default {
       margin-bottom 15px
       border lightblue solid 1px
       border-radius 10px
-      height 120px
+      height 105px
       .informationUl
         width 100%
         position relative
@@ -1032,4 +1034,60 @@ export default {
               text-indent 5em
   .el-date-editor.el-input
     width 100%
+  /* DIV 指向符号 */
+  /*.angle-wrapper*/
+    /*height 120px*/
+    /*position: relative*/
+    /*margin: 20px auto*/
+    /*border: 1px solid lightblue*/
+    /*border-radius 10px*/
+    /*margin-left 55px*/
+  .information_Maintain:before
+    content: ''
+    width: 0
+    height: 0
+    border-top: 20px solid transparent
+    border-right: 20px solid transparent
+    border-bottom: 20px solid lightblue
+    border-left: 20px solid transparent
+    position: absolute
+    left: 53%
+    // top: 50%
+    margin-top: -40px
+  .information_Maintain-change:before
+    content: ''
+    width: 0
+    height: 0
+    border-top: 20px solid transparent
+    border-right: 20px solid transparent
+    border-bottom: 20px solid lightblue
+    border-left: 20px solid transparent
+    position: absolute
+    left: 20%
+    // top: 50%
+    margin-top: -40px
+  .information_Maintain:after
+    content: ''
+    width: 0
+    height: 0
+    border-top: 18px solid transparent
+    border-top: 20px solid transparent
+    border-right: 20px solid transparent
+    border-bottom: 20px solid #111a28
+    border-left: 20px solid transparent
+    position: absolute
+    left: 53%
+    margin-top: -38px
+  .information_Maintain-change:after
+    content: ''
+    width: 0
+    height: 0
+    border-top: 18px solid transparent
+    border-top: 20px solid transparent
+    border-right: 20px solid transparent
+    border-bottom: 20px solid #111a28
+    border-left: 20px solid transparent
+    position: absolute
+    left: 20%
+    margin-top: -38px
 </style>

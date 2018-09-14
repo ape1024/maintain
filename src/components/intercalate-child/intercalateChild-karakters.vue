@@ -25,13 +25,13 @@
             <div class="conserveRoleNameDiv" v-show="this.roleName">
                <span>{{this.roleName}}</span>
             </div>
-            <div v-if="JurisdictionUpdate" class="conserveDiv" @click="conserve">
+            <div v-if="JurisdictionUpdate" class="conserveDiv" @click="conserve" v-show="btnDisabled">
               保 存
             </div>
-            <div @click="amputate" class="amputateDIv">
+            <div @click="amputate" class="amputateDIv" v-show="btnDisabled">
               删除
             </div>
-            <div @click="increasd" class="increased">
+            <div @click="increasd" class="increased" >
               新增角色信息
             </div>
           </div>
@@ -152,7 +152,8 @@ export default {
       checkedFlag: false,
       seletedFlag: false,
       // 系统角色是否展开
-      ficationBoolean: false
+      ficationBoolean: false,
+      btnDisabled: false
     }
   },
   methods: {
@@ -341,6 +342,11 @@ export default {
       }
     },
     systemroleClick (roleid, data, visFlag) {
+      if (data.issystem === 1) {
+        this.btnDisabled = false
+      } else {
+        this.btnDisabled = true
+      }
       this.roleName = data.rolename
       this.checkedFlag = visFlag
       data.flag = true
@@ -556,6 +562,7 @@ export default {
       }
     })
     this.axios.post(karaktersFindAllRoles(token)).then((response) => {
+      console.log(response.data.data)
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
           val.flag = false

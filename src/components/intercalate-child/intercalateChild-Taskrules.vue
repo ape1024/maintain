@@ -575,6 +575,9 @@ export default {
           faulttype: this.faultinessData
         }
         this.tabulation.push(obj)
+        this.technical = ''
+        this.technicalNote = ''
+        this.faultinessData = ''
       }
     },
     closedown () {
@@ -626,7 +629,7 @@ export default {
       }
       let MinData = ''
       let MaxData = ''
-      if (reg.test(this.MinMeasuring)) {
+      if (reg.test(this.MinMeasuring) && parseFloat(this.MinMeasuring)) {
         MinData = this.MinMeasuring
       } else {
         this.$message({
