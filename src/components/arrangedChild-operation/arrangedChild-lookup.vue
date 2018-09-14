@@ -628,7 +628,8 @@ export default {
       }
     })
     //  获取消防设施
-    this.axios.post(findAllDeviceType()).then((response) => {
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         response.data.data.splice(0, 1)
         let recursion = (data) => {

@@ -187,11 +187,10 @@ export const AddDivecemodels = (manufactureId, Deviceid, versionCustom, technica
   return url
 }
 //  updateDevice
-export const updateDevice = (token, deviceid, devicetypeid, manufacturerid, devicemodel, position, parameters, memo, madedate, effectivedate, files) => {
-  const url = `${Test}/dev/updateDevice?token=${token}&deviceid=${deviceid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&devicemodel=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`
+export const updateDevice = (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, files) => {
+  const url = `${Test}/dev/updateDevice?token=${token}&deviceid=${deviceid}&projectid=${projectid}&areaid=${areaid}&manufacturerid=${manufacturerid}&basedeviceid=${basedeviceid}&devicemodelID=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`
   return url
 }
-
 //  daily
 export const maintainDailyCurrentTaskStat = (worktypeid, projectid) => {
   const url = `${Test}/task/getCurrentTaskStat?worktypeid=${worktypeid}&projectid=${projectid}`
@@ -376,7 +375,7 @@ export const maintainReportAddManufacture = (customManufacturerDate, devicetypei
 }
 //  增加上报问题
 export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate) => {
-  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodel=${devicemodel}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`
+  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`
   return url
 }
 export const PojectdeviceApprovals2 = (deviceids, approvalstate) => {
@@ -738,6 +737,7 @@ export const getApproveType = (token) => {
 export const findAreasTree = (areaid) => {
   const url = `${Test}/areas/findAreasTree?areaid=${areaid}`
   return url
+}
 // 发布通知
 export const deliverAnnouncement = (title, sendTime, effectTime, level, content, ids) => {
   return `${Test}/message/createMessage?msgtitle=${title}&sendtime=${sendTime}&effecttime=${effectTime}&msglevel=${level}&content=${content}&receiveids=${ids}`

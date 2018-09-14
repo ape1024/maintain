@@ -36,7 +36,7 @@
                 </el-select>
               </div>
               <div class="modify_lidivRight">
-                <el-input size="mini" v-show="customManufacturer" v-model="customManufacturerDate" placeholder="请输入厂家"></el-input>
+                <el-input size="mini" v-if="customManufacturer" v-model="customManufacturerDate" placeholder="请输入厂家"></el-input>
               </div>
             </div>
             <div class="modify_liDiv">
@@ -52,7 +52,7 @@
                 </el-select>
               </div>
               <div class="modify_lidivRight">
-                <el-input size="mini" v-show="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
+                <el-input size="mini" v-if="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
               </div>
             </div>
             <div class="modify_liDivtwo">
@@ -137,7 +137,7 @@
           </li>
           <li class="modify_right">
             <p class="modify_li_p">现场照片：</p>
-            <div :key="$index" v-for="(item, $index) in modify.photoArray" class="modify_rightDiv">
+            <div v-if="photoArrayBoolean" :key="$index" v-for="(item, $index) in photoArray" class="modify_rightDiv">
               <img class="modify_rightDivImg" :src="item" alt="">
               <div @click="myFileLidelete($index)" class="myFileDiv">
                 <i class="el-icon-delete"></i>
@@ -161,7 +161,7 @@
 <script>
 import $ from 'jquery'
 import { fmtDate } from '../../common/js/utils'
-import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType, managementCreatedProvince } from '../../api/user'
+import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   mixins: [ projectMixin ],
@@ -229,143 +229,107 @@ export default {
         label: 'areaname',
         value: 'areaid'
       },
-      facilityLocationDate: []
+      facilityLocationDate: [],
+      photoArray: [],
+      photoArrayBoolean: false
     }
   },
   beforeMount () {
   },
   methods: {
     myFileLidelete (index) {
-      this.modify.photoArray.splice(index, 1)
+      this.photoArray.splice(index, 1)
     },
     logTimeChange (val) {
       this.productionValue1 = val
     },
     conserve () {
+      let areaid = this.facilityLocationDate[this.facilityLocationDate.length - 1]
+      console.log(this.facilityLocationDate)
+      console.log(areaid)
       // token
       let token = JSON.parse(window.sessionStorage.token)
       //   设备 id
       let Deviceid = (this.modify).deviceid
       //  设施类别
       let devicetypeid = ''
-      if (this.categoryDate[0] === null) {
-        devicetypeid = ''
+      if (!this.categoryDate.length) {
+        this.$message({
+          message: '请先选择设备类型',
+          type: 'warning'
+        })
+        return false
       } else {
-        devicetypeid = this.categoryDate
-        devicetypeid = devicetypeid.shift()
+        devicetypeid = this.categoryDate[this.categoryDate.length - 1]
       }
       //  生产厂家
       let manufacturerid = ''
-
-      //  设备型号 devicemodel
+      //  设备型号
       let devicemodel = ''
-      if (this.versionManufacturer === true) {
-        // devicemodel = this.versionCustom
-      } else {
-        devicemodel = this.versionValue ? this.versionValue : ' '
-      }
       //  设施位置
-      let position = `${this.regionDate ? this.regionDate : ' '} ${this.Specificposition ? this.Specificposition : ' '}`
+      let position = this.Specificposition ? this.Specificposition : ''
       //  技术参数
-      let parameters = this.technicalParameter ? this.technicalParameter : ' '
+      let parameters = this.technicalParameter ? this.technicalParameter : ''
       //  备注说明
-      let memo = this.textarea ? this.textarea : ' '
+      let memo = this.textarea ? this.textarea : ''
       //  生产日期
       let madedate = this.productionValue1
       //  有效日期
       let effectivedate = this.validity
       //  图片
-      let files = this.modify.photoArray
-      if (this.customManufacturer === true) {
-        // manufacturerid = this.customManufacturerDate
-        if (devicetypeid.length !== 0) {
-          if (this.customManufacturer === true) {
-            this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
-              if (response.data.code === 0) {
-                manufacturerid = response.data.data.manufacturerid
-                if (this.versionManufacturer === true) {
-                  this.axios.post(AddDivecemodels(manufacturerid, Deviceid, this.versionCustom, this.technicalParameter)).then((response) => {
-                    if (response.data.code === 0) {
-                      devicemodel = response.data.data.divecemodelid
-                      this.axios.post(updateDevice(token, Deviceid, devicetypeid, manufacturerid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
-                        if (response.data.code === 0) {
-                          this.$message({
-                            message: '修改成功',
-                            type: 'success'
-                          })
-                          this.$emit('say', false)
-                        }
-                      })
-                    }
-                  })
-                } else {
+      let files = this.photoArray.length ? this.photoArray.join() : ''
 
+      // manufacturerid = this.customManufacturerDate
+      if (this.customManufacturer === true) {
+        this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
+          if (response.data.code === 0) {
+            manufacturerid = response.data.data.manufacturerid
+            if (this.versionManufacturer === true) {
+              this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
+                if (data.data.code === 0) {
+                  devicemodel = data.data.data.divecemodelid
+                  console.log('1')
+                  this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, files)
                 }
-              }
-            })
-          } else {
-            this.axios.post(updateDevice(token, Deviceid, devicetypeid, manufacturerid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
-              if (response.data.code === 0) {
-                this.$message({
-                  message: '修改成功',
-                  type: 'success'
-                })
-                this.modifyBoolean = this.msg
-                this.modifyBoolean = !this.modifyBoolean
-                this.$emit('say', this.modifyBoolean)
-              }
-            })
+              })
+            } else {
+              devicemodel = this.versionValue
+              this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, files)
+            }
           }
-        } else {
-          this.$message({
-            message: '请先选择设备类型',
-            type: 'warning'
-          })
-        }
+        })
+      } else if (this.versionManufacturer === true) {
+        this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((Item) => {
+          if (Item.data.code === 0) {
+            devicemodel = Item.data.data.divecemodelid
+            this.requestModification(token, Deviceid, this.maintainProject, areaid, this.manufactorModel, devicetypeid, devicemodel, position, parameters, memo, files)
+          }
+        })
       } else {
+        devicemodel = this.versionValue
         manufacturerid = this.manufactorModel
-        if (this.versionManufacturer === true) {
-          this.axios.post(AddDivecemodels(manufacturerid, Deviceid, this.versionCustom, this.technicalParameter)).then((response) => {
-            if (response.data.code === 0) {
-              devicemodel = response.data.data.divecemodelid
-              this.axios.post(updateDevice(token, Deviceid, devicetypeid, manufacturerid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
-                if (response.data.code === 0) {
-                  this.$message({
-                    message: '修改成功',
-                    type: 'success'
-                  })
-                  this.modifyBoolean = this.msg
-                  this.modifyBoolean = !this.modifyBoolean
-                  this.$emit('say', this.modifyBoolean)
-                }
-              })
-            }
-          })
-        } else {
-          this.axios.post(updateDevice(token, Deviceid, devicetypeid, manufacturerid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
-            if (response.data.code === 0) {
-              this.$message({
-                message: '修改成功',
-                type: 'success'
-              })
-              this.modifyBoolean = this.msg
-              this.modifyBoolean = !this.modifyBoolean
-              this.$emit('say', this.modifyBoolean)
-            }
-          })
-        }
+        this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, files)
       }
     },
+    requestModification (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, files) {
+      this.axios.post(updateDevice(token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
+        if (response.data.code === 0) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          this.$emit('say', false)
+        }
+      })
+    },
     closedown () {
-      this.modifyBoolean = this.msg
-      this.modifyBoolean = !this.modifyBoolean
-      this.$emit('say', this.modifyBoolean)
+      this.$emit('say', false)
     },
     focus (event) {
       let region = this.categoryDate
       if (region.length === 0) {
         this.$message({
-          message: '设备类型！',
+          message: '设备选择设备类型！',
           type: 'warning'
         })
         return false
@@ -381,7 +345,6 @@ export default {
         }
       } else {
         region = region[region.length - 1]
-
         this.axios.post(maintainReportfindManufactures(region)).then((response) => {
           if (response.data.code === 0) {
             this.manufactor = response.data.data
@@ -406,7 +369,6 @@ export default {
         this.versionManufacturer = false
         let region = this.categoryDate
         region = region[region.length - 1]
-
         this.axios.post(maintainReportfindDivecemodels(region, this.manufactorModel)).then((response) => {
           if (response.data.code === 0) {
             this.version = response.data.data
@@ -419,6 +381,7 @@ export default {
       }
     },
     versionChang (data) {
+      console.log(this.categoryDate)
       if (this.versionValue === '-9999') {
         this.versionManufacturer = true
         return false
@@ -457,21 +420,16 @@ export default {
         this.facilityLocation = response.data.data
       }
     })
+    console.log(this.modify)
     this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.category = response.data.data
         this.categoryDate = (this.modify).devicetypeArray
-        console.log(this.categoryDate)
         this.manufactorModel = (this.modify).manufacturerid
         let region = this.categoryDate[this.categoryDate.length - 1]
         this.axios.post(maintainReportfindManufactures(region)).then((data) => {
           if (data.data.code === 0) {
-            let arr = data.data.data
-            arr.forEach(val => {
-              if (val.manufacturerid === (this.modify).manufacturerid) {
-                this.manufactorModel = val.name
-              }
-            })
+            this.manufactor = data.data.data
           }
         })
         this.axios.post(maintainReportfindDivecemodels(region, (this.modify).manufacturerid)).then((response) => {
@@ -483,18 +441,27 @@ export default {
             })
           }
         })
-        this.versionValue = (this.modify).devicemodel
-        this.regionDate = (this.modify).position
+        this.versionValue = this.modify.devicemodel ? parseInt(this.modify.devicemodel) : ''
+        this.Specificposition = (this.modify).position
         this.productionValue1 = fmtDate((this.modify).madedate)
         this.validity = fmtDate((this.modify).effectivedate)
         this.textarea = (this.modify).memo
         this.technicalParameter = (this.modify).parameters
-      }
-    })
-    //  省份
-    this.axios.post(managementCreatedProvince()).then((response) => {
-      if (response.data.code === 0) {
-        this.province = response.data.data
+        if (this.modify.fullareaid.length) {
+          this.modify.fullareaid.forEach((val) => {
+            let nub = parseInt(val)
+            this.facilityLocationDate.push(nub)
+          })
+        } else {
+          this.facilityLocationDate = []
+        }
+        if (this.modify.photoArray.length) {
+          this.photoArrayBoolean = false
+          this.photoArray = []
+        } else {
+          this.photoArrayBoolean = true
+          this.photoArray = this.modify.photoArray
+        }
       }
     })
   }

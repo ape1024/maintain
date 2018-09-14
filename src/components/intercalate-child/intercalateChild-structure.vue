@@ -23,7 +23,7 @@
                 <p class="informationP">
                   上级主管单位：
                 </p>
-                <div class="companyContent">
+                <div v-if="dataRoot" class="companyContent">
                   <el-cascader
                     size="mini"
                     :options="data"
@@ -31,6 +31,13 @@
                     change-on-select
                     v-model="companyDate"
                   ></el-cascader>
+                </div>
+                <div v-if="!dataRoot" class="companyContent">
+                  <el-input
+                    size="mini"
+                    v-model="dataRootInput"
+                    :disabled="true">
+                  </el-input>
                 </div>
               </div>
             </li>
@@ -295,7 +302,7 @@ import Jurisdiction from '../intercalateChild-operation/structureChild-jurisdict
 import member from '../intercalateChild-operation/structureChild-member'
 import bluepencil from '../intercalateChild-operation/structureChild-bluepencil'
 import structureCopy from '../intercalateChild-operation/structureChild-copy'
-import {managementAuthority, managementhandleNodeClickOne, managementhandleNodeClickTwo, managementCreatedtree, managementCreatedProvince, managementCreatedcategory, managementCreatedbusiness, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, getCitiesByProvinceId, getCountiesByCityId, getAllHigherOrgIDs, organizationDelete, upload} from '../../api/user'
+import {managementAuthority, managementhandleNodeClickOne, managementhandleNodeClickTwo, managementCreatedtree, managementCreatedProvince, managementCreatedcategory, managementCreatedbusiness, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, getCitiesByProvinceId, getCountiesByCityId, getAllHigherOrgIDs, organizationDelete, upload, getOrganizationTrees} from '../../api/user'
 export default {
   name: 'intercalateChild-structure',
   components: {
@@ -400,7 +407,9 @@ export default {
       JurisdictionApproval: '',
       JurisdictionUpdate: '',
       DataorganizationId: '',
-      uploadUrlData: upload(JSON.parse(window.sessionStorage.token))
+      uploadUrlData: upload(JSON.parse(window.sessionStorage.token)),
+      dataRoot: false,
+      dataRootInput: ''
     }
   },
   watch: {
@@ -636,6 +645,15 @@ export default {
     handleNodeClick (data) {
       this.amputateStr = false
       this.DataorganizationId = data.organizationId
+      console.log('//////////////')
+      console.log(data.root)
+      if (data.root) {
+        this.dataRoot = false
+        this.dataRootInput = data.parentName
+      } else {
+        this.dataRoot = true
+        this.dataRootInput = ''
+      }
       this.axios.post(getAllHigherOrgIDs(data.organizationId)).then((response) => {
         this.companyDate = []
         if (response.data.code === 0) {
@@ -918,7 +936,7 @@ export default {
     })
     let token = JSON.parse(window.sessionStorage.token)
     //  左边的树状结构
-    this.axios.post(managementCreatedtree(token)).then((response) => {
+    this.axios.post(getOrganizationTrees(token)).then((response) => {
       if (response.data.code === 0) {
         this.data = response.data.data
       }
