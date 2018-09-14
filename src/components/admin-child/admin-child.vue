@@ -148,7 +148,7 @@
     </section>
     <section v-if="modifyBoolean" @click.stop class="review">
       <!--修改-->
-      <childModify :msg="modifyBoolean" :modify="modifyDate" @say="Modify"></childModify>
+      <childModify @click.stop v-if="modifyBoolean" :msg="modifyBoolean" :modify="modifyDate" @say="Modify"></childModify>
     </section>
     <section v-if="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
@@ -716,7 +716,7 @@ export default {
     width 100%
     height 100%
     background rgba(000,000,000,.4)
-    z-index 11
+    z-index 1111
     overflow hidden
   .threelevel_ensconce
     overflow hidden

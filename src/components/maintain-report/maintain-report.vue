@@ -386,7 +386,8 @@ export default {
       }
     })
     //  获取设备类别
-    this.axios.post(findAllDeviceType()).then((response) => {
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.equipment = response.data.data
       }

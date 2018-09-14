@@ -330,11 +330,13 @@
 
 <script>
 import { findAllDeviceType, getCheckStandardsByBasedevicecode, getCheckStandard, getStandardparams, getTechnicalRequirements, deleteCheckStandard, creatOrUpdateCheckStandard, getFaultTypes, getRevisionlevel, getAllWorkcycle, getWorkModes } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 const LEVEL = {
   level1: 1,
   level2: 2
 }
 export default {
+  mixins: [ projectMixin ],
   name: 'intercalateChild-structure',
   data () {
     return {
@@ -920,7 +922,8 @@ export default {
     }
   },
   created () {
-    this.axios.post(findAllDeviceType()).then((response) => {
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         if (response.data.data.length) {
           const filterArr = response.data.data.filter(t => t.name !== '全部')
@@ -948,8 +951,6 @@ export default {
     this.axios.post(getAllWorkcycle()).then((response) => {
       if (response.data.code === 0) {
         this.revolution = response.data.data
-        console.log('0000')
-        console.log(response.data.data)
       }
     })
     //  获取所有的工作方式

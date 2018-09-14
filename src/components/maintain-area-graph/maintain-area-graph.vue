@@ -1,7 +1,11 @@
 <template>
   <div class="area-graph">
-    <div class="area-graph-left" ref="graphLeftPie"></div>
-    <div class="area-graph-right"></div>
+    <div class="title">{{title}}</div>
+    <div class="content">
+      <div class="each prev"></div>
+      <div class="each wrap"></div>
+      <div class="each next"></div>
+    </div>
   </div>
 </template>
 
@@ -97,7 +101,10 @@ export default {
     }
   },
   mounted () {
-    this.drawLeftPie()
+    // this.drawLeftPie()
+  },
+  created () {
+    this.title = '图表统计'
   }
 }
 </script>
@@ -109,8 +116,23 @@ export default {
     width 100%
     height 319px
     background url("../../common/img/block.png")
-    .area-graph-left
-      float left
-      width 50%
-      height 100%
+    .title
+      padding-left 10px
+      line-height 50px
+      font-size $font-size-medium-x
+    .content
+      position absolute
+      left 0
+      right 0
+      top 50px
+      bottom 0
+      .each
+        float left
+        height 100%
+        &.prev
+          width 5%
+        &.wrap
+          width 90%
+        &.next
+          width 5%
 </style>

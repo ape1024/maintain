@@ -235,7 +235,7 @@
 <script>
 import $ from 'jquery'
 import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, findAllDeviceType,
-  maintainReportfindDivecemodels, findAreasTreeByProjectid } from '../../api/user'
+  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
@@ -459,9 +459,7 @@ export default {
     },
     calloff () {
       // 取消
-      this.lyaddedShow = this.msg
-      this.lyaddedShow = !this.lyaddedShow
-      this.$emit('say', this.lyaddedShow)
+      this.$emit('say', false)
     },
     categoryChange () {
       let organizationId = this.categoryDate[this.categoryDate.length - 1]
@@ -482,9 +480,6 @@ export default {
     },
     preser () {
       // 保存
-      // this.lyaddedShow = this.msg
-      // this.lyaddedShow = !this.lyaddedShow
-      // this.$emit('say', this.lyaddedShow)
       //  批量编码 个数
       let rowcount = this.tabulationtitle.length ? this.tabulationtitle.length : 0
       //  token
@@ -528,29 +523,37 @@ export default {
             if (response.data.code === 0) {
               // 厂家id
               manufacturerid = response.data.data.manufacturerid
-              this.axios.post(maintainReportAddDevice(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), tabulationtitle).then((data) => {
-                if (data.data.code === 0) {
-                  this.$message({
-                    message: '创建成功',
-                    type: 'success'
-                  })
-                  this.$emit('say', false)
-                }
-              })
+              if (this.versionManufacturer === true) {
+                this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
+                  if (data.data.code === 0) {
+                    devicemodel = data.data.data.divecemodelid
+                    console.log('1')
+                    this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
+                  }
+                })
+              } else {
+                devicemodel = this.versionValue
+                console.log('2')
+                this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
+              }
+            }
+          })
+        } else if (this.versionManufacturer === true) {
+          //  厂家 id
+          this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((Item) => {
+            if (Item.data.code === 0) {
+              devicemodel = Item.data.data.divecemodelid
+              console.log('3')
+              manufacturerid = this.manufactorModel
+              console.log(manufacturerid)
+              this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
             }
           })
         } else {
-          //  厂家 id
+          devicemodel = this.versionValue
           manufacturerid = this.manufactorModel
-          this.axios.post(maintainReportAddDevice(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), tabulationtitle).then((data) => {
-            if (data.data.code === 0) {
-              this.$message({
-                message: '创建成功',
-                type: 'success'
-              })
-              this.$emit('say', false)
-            }
-          })
+          console.log('4')
+          this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
         }
       } else {
         this.$message({
@@ -558,6 +561,17 @@ export default {
           type: 'warning'
         })
       }
+    },
+    requestCreation (rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle) {
+      this.axios.post(maintainReportAddDevice(rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), tabulationtitle).then((data) => {
+        if (data.data.code === 0) {
+          this.$message({
+            message: '创建成功',
+            type: 'success'
+          })
+          this.$emit('say', false)
+        }
+      })
     },
     accessarea () {
       this.regionUl = !this.regionUl
@@ -609,6 +623,7 @@ export default {
         this.axios.post(maintainReportfindDivecemodels(region, this.manufactorModel)).then((response) => {
           if (response.data.code === 0) {
             this.version = response.data.data
+            console.log(response)
             this.version.push({
               divecemodelname: '自定义',
               divecemodelid: '-9999'
