@@ -133,7 +133,7 @@
           <li class="informationLi">
             <div class="informationDiv_Maintain">
               <div class="content">
-                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="organizationcode" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 机构编码：
@@ -141,7 +141,7 @@
             </div>
             <div class="informationDiv_Maintain">
               <div class="content">
-                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="admin" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 用户名：
@@ -151,7 +151,7 @@
           <li class="informationLi">
             <div class="informationDiv_Maintain">
               <div class="content">
-                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="organizationname" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 机构名称：
@@ -159,7 +159,7 @@
             </div>
             <div class="informationDiv_Maintain">
               <div class="content">
-                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="pwd" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 用户密码：
@@ -169,7 +169,7 @@
           <li class="informationLi">
             <div class="informationDiv_Maintain">
               <div class="content">
-                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="shortname" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 机构简称：
@@ -177,7 +177,7 @@
             </div>
             <div class="informationDiv_Maintain">
               <div class="content">
-                <el-input size="mini" v-model="projectName" placeholder="请输入内容"  clearable>></el-input>
+                <el-input size="mini" v-model="tel" placeholder="请输入内容"  clearable>></el-input>
               </div>
               <p class="informationP">
                 电话：
@@ -311,7 +311,7 @@
 
 <script>
 import $ from 'jquery'
-import { managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload } from '../../api/user'
+import { managementCreate, managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload } from '../../api/user'
 export default {
   name: 'consumerChild-increase',
   props: ['edit', 'project'],
@@ -458,82 +458,116 @@ export default {
           })
           return false
         }
-      } else if (this.projectName === '' || this.startdate === '' || this.proprieTor === '' || this.projectCode === '' || this.endDate === '' || this.proprietornameDate === '' || this.projectDate.length === 0 || this.buildscope === '' || this.firecontrolda === '') {
+      }
+      if (this.projectName === '' || this.startdate === '' || this.proprieTor === '' || this.projectCode === '' || this.endDate === '' || this.proprietornameDate === '' || this.projectDate.length === 0 || this.buildscope === '' || this.firecontrolda === '') {
         this.$message({
           message: '您的信息没有填写完整',
           type: 'warning'
         })
         return false
       } else {
-        // this.fullscreenLoading = true
         let token = window.JSON.parse(window.sessionStorage.token)
-        let getCheckedNodes = this.$refs.one.getCheckedNodes()
-        let areas = []
-        getCheckedNodes.forEach((val) => {
-          let obj = {
-            areacode: val.areacode,
-            areaid: val.areaid,
-            areaname: val.areaname
-          }
-          areas.push(obj)
-        })
-        let getCheckedNodesData = this.$refs.tree.getCheckedNodes()
-        let baseDevices = []
-        getCheckedNodesData.forEach((val) => {
-          if (!val.children) {
-            let base = {
-              'basedeviceid': val.id,
-              'basedevicecode': val.code
+        if (this.proprieTor === -1) {
+          this.axios.post(managementCreate(token, this.organizationcode, this.organizationname, this.shortname, this.admin, this.pwd, this.tel, 1)).then((response) => {
+            if (response.data.code === 0) {
+              // this.getProprietorOrganization()
+              this.proprieTor = response.data.data
+              this.submitCurrentData()
+            } else {
+              this.$message({
+                message: response.data.message,
+                type: 'warm'
+              })
             }
-            baseDevices.push(base)
-          }
-        })
-        let worktypes = []
-        for (let i = 0; i < this.projectDate.length; i++) {
-          let work = {
-            'worktypeid': this.projectDate[i]
-          }
-          worktypes.push(work)
+          })
+        } else if (this.proprietornameDate === -1) {
+          this.axios.post(managementCreate(token, this.organizationcode, this.organizationname, this.shortname, this.admin, this.pwd, this.tel, 2)).then((response) => {
+            if (response.data.code === 0) {
+              // 服务机构
+              // this.getRootOrganizationsNotProprietor()
+              this.proprietornameDate = response.data.data
+              this.submitCurrentData()
+            } else {
+              this.$message({
+                message: response.data.message,
+                type: 'warm'
+              })
+            }
+          })
+        } else {
+          this.submitCurrentData()
         }
-        this.fileList.forEach((val) => {
-          let obj = {
-            'name': `${val.name}`,
-            'url': `${val.url}`
-          }
-          this.documentPapers.push(obj)
-        })
-        let rp = {
-          'areas': areas,
-          'baseDevices': baseDevices,
-          'files': this.documentPapers,
-          'project': {
-            'enddate': `${this.endDate}`,
-            'proprietor': `${this.proprieTor}`,
-            'startdate': `${this.startdate}`,
-            'vindicator': `${this.proprietornameDate}`,
-            'projectname': `${this.projectName}`,
-            'projectcode': `${this.projectCode}`
-          },
-          'projectInfo': {
-            'address': `${this.regionDate}`,
-            'comment': `${this.comment}`,
-            'content': `${this.conTent}`,
-            'projectrange': `${this.firecontrolda}`,
-            'requirement': `${this.requirement}`
-          },
-          'worktypes': worktypes
-        }
-        this.axios.post(createOrUpdateProject(token), rp).then((response) => {
-          if (response.data.code === 0) {
-            this.fullscreenLoading = false
-            this.$message({
-              message: '创建成功！',
-              type: 'success'
-            })
-            this.$emit('incr', false)
-          }
-        })
+        // this.fullscreenLoading = true
       }
+    },
+    submitCurrentData () {
+      let token = window.JSON.parse(window.sessionStorage.token)
+      let getCheckedNodes = this.$refs.one.getCheckedNodes()
+      let areas = []
+      getCheckedNodes.forEach((val) => {
+        let obj = {
+          areacode: val.areacode,
+          areaid: val.areaid,
+          areaname: val.areaname
+        }
+        areas.push(obj)
+      })
+      let getCheckedNodesData = this.$refs.tree.getCheckedNodes()
+      let baseDevices = []
+      getCheckedNodesData.forEach((val) => {
+        if (!val.children) {
+          let base = {
+            'basedeviceid': val.id,
+            'basedevicecode': val.code
+          }
+          baseDevices.push(base)
+        }
+      })
+      let worktypes = []
+      for (let i = 0; i < this.projectDate.length; i++) {
+        let work = {
+          'worktypeid': this.projectDate[i]
+        }
+        worktypes.push(work)
+      }
+      this.fileList.forEach((val) => {
+        let obj = {
+          'name': `${val.name}`,
+          'url': `${val.url}`
+        }
+        this.documentPapers.push(obj)
+      })
+      let rp = {
+        'areas': areas,
+        'baseDevices': baseDevices,
+        'files': this.documentPapers,
+        'project': {
+          'enddate': `${this.endDate}`,
+          'proprietor': `${this.proprieTor}`,
+          'startdate': `${this.startdate}`,
+          'vindicator': `${this.proprietornameDate}`,
+          'projectname': `${this.projectName}`,
+          'projectcode': `${this.projectCode}`
+        },
+        'projectInfo': {
+          'address': `${this.regionDate}`,
+          'comment': `${this.comment}`,
+          'content': `${this.conTent}`,
+          'projectrange': `${this.firecontrolda}`,
+          'requirement': `${this.requirement}`
+        },
+        'worktypes': worktypes
+      }
+      this.axios.post(createOrUpdateProject(token), rp).then((response) => {
+        if (response.data.code === 0) {
+          this.fullscreenLoading = false
+          this.$message({
+            message: '创建成功！',
+            type: 'success'
+          })
+          this.$emit('incr', false)
+        }
+      })
     },
     closedown () {
       this.$emit('incr', this.Thispage)
@@ -620,6 +654,28 @@ export default {
       this.arrayAddresses.push(Number(this.provinceId))
       this.arrayAddresses.push(this.conurbationId)
       this.arrayAddresses.push(this.countytownId)
+    },
+    getRootOrganizationsNotProprietor () {
+      //  服务机构
+      this.axios.post(getRootOrganizationsNotProprietor()).then((response) => {
+        if (response.data.code === 0) {
+          this.proprietorName = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])
+        }
+      })
+    },
+    getProprietorOrganization () {
+      //  获取业主单位
+      this.axios.post(getProprietorOrganization()).then((response) => {
+        if (response.data.code === 0) {
+          const data = response.data
+          if (data.count === 0) {
+            this.proprieTorDate = data.data.concat([{organizationid: -1, organizationname: ' -- 新增业主单位 --'}])
+          } else {
+            this.proprieTorDate = data.data
+            this.proprieTor = data.data[0].organizationid
+          }
+        }
+      })
     }
   },
   created () {
@@ -639,23 +695,13 @@ export default {
         this.projectType = response.data.data
       }
     })
-    //  服务机构
-    this.axios.post(getRootOrganizationsNotProprietor()).then((response) => {
-      if (response.data.code === 0) {
-        this.proprietorName = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])
-      }
-    })
-    //  获取业主单位
-    this.axios.post(getProprietorOrganization()).then((response) => {
-      if (response.data.code === 0) {
-        this.proprieTorDate = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增业主单位 --'}])
-      }
-    })
     this.axios.post(managementCreatedProvince()).then((response) => {
       if (response.data.code === 0) {
         this.province = response.data.data
       }
     })
+    this.getRootOrganizationsNotProprietor()
+    this.getProprietorOrganization()
     this.axios.post(managementgetUserOrganization(token)).then((response) => {
       if (response.data.code === 0) {
         const data = response.data.data
@@ -665,6 +711,7 @@ export default {
           this.organizationDisable = false
         } else {
           this.proprietornameDate = data.organizationid
+          this.organizationDisable = true
         }
       }
     })
