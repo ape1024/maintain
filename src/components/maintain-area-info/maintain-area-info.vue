@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { getMessageCount } from 'api/user'
 export default {
   data () {
     return {
@@ -26,10 +27,26 @@ export default {
       this.$router.push({
         path: '/home/intercalate/info'
       })
+    },
+    getMessageCount () {
+      this.axios.post(getMessageCount()).then((res) => {
+        if (res && res.data.code === 0) {
+          this.allInfo = res.data.data.messageCount
+          this.awaitInfo = res.data.data.unReadMessageCount
+        }
+      })
     }
   },
+  beforeDestroy () {
+    clearInterval(this.interVal)
+  },
   created () {
+    const delay = 1000 * 60 * 10
     this.title = '消息通知'
+    this.getMessageCount()
+    this.interVal = setInterval(() => {
+      this.getMessageCount()
+    }, delay)
   }
 }
 </script>

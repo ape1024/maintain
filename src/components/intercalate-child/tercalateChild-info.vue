@@ -25,13 +25,13 @@
         </div>
         <div class="content-body">
           <div class="content-body-wrap" :key="index" v-for="(item, index) in list">
-            <div class="item type">{{item.msgtitle}}</div>
+            <div class="item type">{{resetType(item.msgtype)}}</div>
             <div class="item title">{{item.msgtitle}}</div>
-            <div class="item person">发布人员</div>
+            <div class="item person">{{item.sendername}}</div>
             <div class="item time">{{resetTimeModel(item.createtime)}}</div>
-            <div class="item state">消息状态</div>
-            <div class="item important">重要程度</div>
-            <div class="item handle" @click="examineMsg(item.content)">查看</div>
+            <div class="item state">{{resetMsgState(item.msgtype, item.msgstate)}}</div>
+            <div class="item important">{{resetMsgLevel(item.msglevel)}}</div>
+            <div class="item handle" @click="examineMsg(item.msgtype, item.messageid, item.content)">查看</div>
           </div>
         </div>
       </div>
@@ -55,7 +55,8 @@
 <script>
 import InfoChildAdd from '../intercalateChild-operation/infoChild-add'
 import InfoChildExamine from '../intercalateChild-operation/infoChild-examine'
-import { getMessageList } from '../../api/user'
+import { getMessageList, updateMsgState } from '../../api/user'
+import { resetTime } from '../../common/js/utils'
 const LEN = 15
 export default {
   data () {
@@ -73,32 +74,67 @@ export default {
     add () {
       this.addState = true
     },
-    examineMsg (msg) {
-      this.examineMessage = msg
-      this.examineState = true
+    examineMsg (type, id, msg) {
+      if (type === this.msgType.send) {
+        this.examineMessage = msg
+        this.examineState = true
+      } else {
+        this.axios.post(updateMsgState(id)).then((res) => {
+          if (res.data.code === 0) {
+            this.examineMessage = msg
+            this.examineState = true
+          }
+        })
+      }
     },
     resetTimeModel (time) {
+      return resetTime(time, 'all')
+    },
+    resetType (type) {
+      switch (type) {
+        case this.msgType.receive:
+          return '收件'
+        case this.msgType.send:
+          return '发件'
+      }
+    },
+    resetMsgState (type, state) {
+      if (type === this.msgType.send) return '---'
+      switch (state) {
+        case 0:
+          return '未读'
+        case 1:
+          return '已读'
+      }
+    },
+    resetMsgLevel (level) {
+      switch (level) {
+        case 1:
+          return '紧急'
+        case 2:
+          return '重要'
+        case 3:
+          return '一般'
+      }
     },
     searchData () {
-      this.getMessageList(0, LEN, this.searchVal)
+      this.getMessageList(1, LEN, this.searchVal)
     },
     handleCurrentChange (val) {
-      this.getMessageList(val - 1, LEN, this.searchVal)
+      this.getMessageList(val, LEN, this.searchVal)
     },
     updateMessageList () {
-      this.getMessageList(0, LEN, '')
+      this.getMessageList(1, LEN, '')
     },
     getMessageList (pageIndex, pageSize, msg) {
       // 重置分页
       const totalPage = this.totalPage
       this.totalPage = 0
-      this.axios.post(getMessageList(pageIndex, pageSize, msg)).then((response) => {
-        console.log(response)
+      this.axios.post(getMessageList(this.msgType.total, pageIndex, pageSize, msg)).then((response) => {
         if (response && response.data.code === 0) {
           const data = response.data.data
-          console.log(data.data)
           this.totalPage = data.pageTotal
-          this.pageIndex = data.pageIndex + 1
+          this.pageIndex = data.pageIndex
           this.list = data.data
         } else {
           this.totalPage = totalPage
@@ -107,7 +143,12 @@ export default {
     }
   },
   created () {
-    this.getMessageList(0, LEN, '')
+    this.msgType = {
+      total: 2,
+      receive: 1,
+      send: 0
+    }
+    this.getMessageList(1, LEN, '')
   },
   components: {
     InfoChildAdd,
@@ -153,7 +194,7 @@ export default {
         top 70px
         left 10px
         right 10px
-        bottom 70px
+        bottom 60px
         .content-header
           overflow hidden
           background #354D76
@@ -164,6 +205,7 @@ export default {
             box-sizing border-box
             color #d5d5d5
             font-size $font-size-small-s
+            height 14px
         .content-body
           position relative
           .content-body-wrap
@@ -179,6 +221,7 @@ export default {
               box-sizing border-box
               color #d5d5d5
               font-size $font-size-small
+              height 14px
         .type
           width 12%
         .title
@@ -199,7 +242,7 @@ export default {
         left 10px
         right 10px
         bottom 0
-        height 70px
+        height 60px
         box-sizing border-box
         text-align center
         padding-top 15px

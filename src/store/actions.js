@@ -34,7 +34,7 @@ function replaceDataToNet (data) {
 
 function resetTree (tree) {
   let arr = []
-  tree.forEach(t => {
+  tree && tree.forEach(t => {
     arr.push(t)
     arr = arr.concat(resetTree(t.areas))
   })

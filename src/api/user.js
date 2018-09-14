@@ -747,6 +747,14 @@ export const getReceivePer = () => {
   return `${Test}/message/findReceiveUsers`
 }
 // 获取通知消息列表
-export const getMessageList = (pageIndex, pageSize, msg) => {
-  return `${Test}/message/findMessageList?pageIndex=${pageIndex}&pageSize=${pageSize}&msgtitle=${msg}`
+export const getMessageList = (msgType, pageIndex, pageSize, msg, projectId = '') => {
+  return `${Test}/message/findMessageList?msgtype=${msgType}&pageIndex=${pageIndex}&pageSize=${pageSize}&msgtitle=${msg}&projectid=${projectId}`
+}
+// 首页获取消息数量
+export const getMessageCount = () => {
+  return `${Test}/message/findMessageCount`
+}
+// 更新消息状态
+export const updateMsgState = (id) => {
+  return `${Test}/message/updataMessageState?messageid=${id}`
 }

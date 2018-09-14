@@ -7,7 +7,6 @@ import loginBlank from '../components/login/loginBlank'
 // 首页
 import home from '../components/home/home'
 // 首页
-// import maintainHome from '../components/maintain-home/maintain-home'
 import maintainHomeNew from '../components/maintain-home-new/maintain-home-new'
 import maintainHomeMap from '../components/maintain-home-map/maintain-home-map'
 import maintainHomeTable from '../components/maintain-home-table/maintain-home-table'

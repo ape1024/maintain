@@ -156,7 +156,7 @@ export default {
     },
     resetTree (data) {
       let arr = []
-      data.forEach((item) => {
+      data && data.forEach((item) => {
         const areas = this.resetTree(item.areas)
         let childAlarm = false
         areas.forEach((d) => {
@@ -172,7 +172,7 @@ export default {
     },
     getCurrentList (data) {
       let arr = []
-      data.forEach((item) => {
+      data && data.forEach((item) => {
         arr.push(new SearchData(item))
         arr = arr.concat(this.getCurrentList(item.areas))
       })

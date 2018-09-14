@@ -134,7 +134,10 @@
                   查看
                 </p>
                 <!--修改-->
-                <p v-if="JurisdictionUpdate" @click="moDify(item.userid)" class="modify">
+                <p v-if="JurisdictionUpdate && flagState" @click="moDify(item.userid)" class="modify">
+                  修改
+                </p>
+                <p v-if="JurisdictionUpdate && !flagState" class="content_gray">
                   修改
                 </p>
                 <!--授权-->
@@ -142,12 +145,18 @@
                   授权
                 </p>
                 <!--修改密码-->
-                <p v-if="JurisdictionUpdate" @click="infor(item.userid)" class="password">
+                <p v-if="JurisdictionUpdate && flagState" @click="infor(item.userid)" class="password">
+                  修改密码
+                </p>
+                <p v-if="JurisdictionUpdate && !flagState" class="content_gray">
                   修改密码
                 </p>
                 <!--删除-->
-                <p v-if="JurisdictionDelete" @click="amputate($index, information, item.userid)" class="amputate">
+                <p v-if="JurisdictionDelete && flagState" @click="amputate($index, information, item.userid)" class="amputate">
                   删除
+                </p>
+                <p v-if="JurisdictionUpdate && !flagState" class="content_gray">
+                  修改密码
                 </p>
               </li>
             </ul>
@@ -259,7 +268,8 @@ export default {
       JurisdictionUpdate: true,
       pageIndex: 1,
       pageSize: 12,
-      totalPage: 0
+      totalPage: 0,
+      flagState: false // 判断是否可以对用户进行操作
     }
   },
   methods: {
@@ -380,13 +390,14 @@ export default {
       const organization = data.organizationId
       this.organizationId = organization
       if (data.flagVal === 0) {
+        this.flagState = true
         this.search()
       } else {
+        this.flagState = false
         let token = JSON.parse(window.sessionStorage.token)
         this.axios.post(getAdminUsers(this.organizationId, token)).then((response) => {
-          console.log(response.data)
           if (response.data.code === 0) {
-            this.information = response.data.data.data
+            this.information = response.data.data
             this.totalPage = 1
           }
         })
@@ -749,4 +760,7 @@ export default {
     padding 10px 0
     font-size 14px
     color #999 !important
+  .content_gray
+    color #444
+    cursor initial
 </style>
