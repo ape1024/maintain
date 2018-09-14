@@ -269,7 +269,7 @@ export default {
       pageIndex: 1,
       pageSize: 12,
       totalPage: 0,
-      flagState: false // 判断是否可以对用户进行操作
+      flagState: true // 判断是否可以对用户进行操作
     }
   },
   methods: {
