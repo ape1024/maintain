@@ -8,9 +8,13 @@
       </div>
       <div class="each wrap" ref="wrap">
         <div class="graph-wrap" :style="{transform: `translateX(${moveVal}px)`}">
-          <div class="graph-wrap-item" ref="firstPie"></div>
-          <div class="graph-wrap-item"></div>
-          <div class="graph-wrap-item"></div>
+          <div class="graph-wrap-item" ref="nestedRing"></div>
+          <div class="graph-wrap-item">
+            <div :key="index" class="graph-wrap-item-circle" v-for="(item, index) in list">
+              <progress-circle :percent="item.percent" :desc="item.desc"></progress-circle>
+            </div>
+          </div>
+          <div class="graph-wrap-item" ref="lineGraph"></div>
         </div>
       </div>
       <div class="each move" @click="next" :class="{'error-style' : !nextState, 'normal-style': !switchState}">
@@ -21,6 +25,8 @@
 </template>
 
 <script>
+import ProgressCircle from 'base/progress-circle/progress-circle'
+import { getDevFaultCountForYear } from 'api/user'
 const STEP = 600
 const LONG = 1800
 export default {
@@ -29,7 +35,14 @@ export default {
       moveVal: 0,
       switchState: false,
       prevState: false,
-      nextState: true
+      nextState: true,
+      list: [
+        {percent: 0.5, desc: '图1'},
+        {percent: 0.4, desc: '图2'},
+        {percent: 0.2, desc: '图3'},
+        {percent: 0.7, desc: '图4'},
+        {percent: 0.9, desc: '图5'}
+      ]
     }
   },
   methods: {
@@ -59,8 +72,8 @@ export default {
       }
       this.prevState = true
     },
-    drawPie () {
-      const myChart = this.$echarts.init(this.$refs.firstPie)
+    drawNestedRing (dom) {
+      const myChart = this.$echarts.init(dom)
       myChart.setOption({
         tooltip: {
           trigger: 'item',
@@ -156,12 +169,47 @@ export default {
           }
         ]
       })
+    },
+    drawLineGraph (dom, data) {
+      const myChart = this.$echarts.init(dom)
+      myChart.setOption({
+        xAxis: {
+          axisLine: {
+            lineStyle: {
+              color: '#fff'
+            }
+          },
+          type: 'category',
+          data: data.map(t => t.month)
+        },
+        yAxis: {
+          axisLine: {
+            lineStyle: {
+              color: '#fff'
+            }
+          },
+          type: 'value'
+        },
+        series: [{
+          data: data.map(t => t.vcount),
+          type: 'line'
+        }]
+      })
     }
   },
   mounted () {
     const width = this.$refs.wrap.clientWidth
     this.switchState = LONG > width
-    this.drawPie()
+    // 嵌套环形
+    this.drawNestedRing(this.$refs.nestedRing)
+    // 折线图数据
+    const yearVal = new Date().getFullYear()
+    this.axios.post(getDevFaultCountForYear(yearVal)).then((res) => {
+      this.drawLineGraph(this.$refs.lineGraph, res.data.data)
+    })
+  },
+  components: {
+    ProgressCircle
   },
   created () {
     this.title = '图表统计'
@@ -215,11 +263,16 @@ export default {
           overflow hidden
           .graph-wrap
             margin 0 auto
-            width 1500px
+            width 1800px
             height 100%
             transition transform 200ms linear
             .graph-wrap-item
               float left
               width 600px
               height 100%
+              .graph-wrap-item-circle
+                display inline-block
+                margin 0 10px 20px
+                width 150px
+                height 100px
 </style>
