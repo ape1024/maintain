@@ -769,3 +769,7 @@ export const getMessageCount = () => {
 export const updateMsgState = (id) => {
   return `${Test}/message/updataMessageState?messageid=${id}`
 }
+// 获取折线图数据
+export const getDevFaultCountForYear = (year) => {
+  return `${Test}/dev/getDevFaultCountForYear?vyear=${year}`
+}
