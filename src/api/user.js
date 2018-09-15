@@ -546,6 +546,11 @@ export const increasedCreaterole = (roleName, organizationinfoid, token) => {
   const url = `${Test}/users/createrole?roleName=${roleName}&organizationid=${organizationinfoid}&token=${token}`
   return url
 }
+//  创建用户角色
+export const increasedcreateAdminRole = (roleName, organizationid, token) => {
+  const url = `${Test}/users/createAdminRole?roleName=${roleName}&organizationid=${organizationid}&token=${token}`
+  return url
+}
 //  查看用户信息
 export const consumerFindUser = (userid) => {
   const url = `${Test}/users/findUser?userid=${userid}`
@@ -763,4 +768,8 @@ export const getMessageCount = () => {
 // 更新消息状态
 export const updateMsgState = (id) => {
   return `${Test}/message/updataMessageState?messageid=${id}`
+}
+// 获取折线图数据
+export const getDevFaultCountForYear = (year) => {
+  return `${Test}/dev/getDevFaultCountForYear?vyear=${year}`
 }
