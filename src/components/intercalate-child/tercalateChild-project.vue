@@ -3,7 +3,7 @@
     <div class="subjectDiv">
       <!--v-if="JurisdictionApproval"-->
       <div @click="conserve" class="conserve">
-        增 加
+        新 增
       </div>
     </div>
     <div class="content">
@@ -42,7 +42,7 @@
               {{item.creatername}}
             </li>
             <li class="headerLithree">
-              <p v-if="JurisdictionSelect" @click="exaMine(item.projectid, item)" class="contentLi_ulP">查看明细</p>
+              <p v-if="JurisdictionSelect" @click="exaMine(item.projectid, item)" class="contentLi_ulP">查看</p>
               <p v-if="JurisdictionUpdate" @click="modify(item)" class="contentLi_ulPtwo">修改</p>
               <p v-if="JurisdictionDelete" @click="amputate($index, contentliDate, item.projectid)" class="contentLi_ulPthree">删除</p>
             </li>

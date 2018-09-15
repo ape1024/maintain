@@ -75,7 +75,7 @@
         </p>
         <div class="informationDiv">
           <div v-if="JurisdictionApproval" @click="induce" class="superinduce">
-            添加
+            新增
           </div>
         </div>
       </div>
@@ -387,6 +387,7 @@ export default {
       })
     },
     handleNodeClick (data) {
+      console.log(data)
       const organization = data.organizationId
       this.organizationId = organization
       if (data.flagVal === 0) {
@@ -397,7 +398,13 @@ export default {
         let token = JSON.parse(window.sessionStorage.token)
         this.axios.post(getAdminUsers(this.organizationId, token)).then((response) => {
           if (response.data.code === 0) {
-            this.information = response.data.data
+            const infodata = response.data.data
+            this.information = infodata.map(t => {
+              return {
+                ...t,
+                organizationname: data.organizationName
+              }
+            })
             this.totalPage = 1
           }
         })

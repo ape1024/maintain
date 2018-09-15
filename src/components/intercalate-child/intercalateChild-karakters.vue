@@ -8,7 +8,9 @@
       <div class="leftBottom">
         <ul class="leftBottomUl" :key="index" v-for="(item ,index) in customRoles" >
           <li>
-            <div @click="ficationClick(item)" class="leftBottomLl">{{item.organizationname}}</div>
+            <div @click="ficationClick(item)" class="leftBottomLl">{{item.organizationname}}
+              <div @click="increasd2(item)" class="addRole" v-show="index !== 0 && index !== 1 ">新增</div>
+            </div>
           </li>
           <li v-show="item.visflag"  @click="systemroleClick(iteminfo.roleid, iteminfo, false)" :key="indexinfo" v-for="(iteminfo, indexinfo) in item.roles" v-bind:class="seletedFlag === iteminfo.roleid ? 'leftBottomLlThree' : 'leftBottomLltwo'">
             {{iteminfo.rolename}}
@@ -32,7 +34,7 @@
               删除
             </div>
             <div @click="increasd" class="increased" >
-              新增角色信息
+              新增角色
             </div>
           </div>
           <div class="definition">
@@ -44,8 +46,8 @@
                 <li class="definitionHeaderlitwo">修改</li>
                 <li class="definitionHeaderlitwo">删除</li>
                 <li class="definitionHeaderlitwo">审批</li>
-                <li class="definitionHeaderlitwo">分配</li>
-                <li class="definitionHeaderlitwo">检验</li>
+                <li class="definitionHeaderlitwo">分配(授权)</li>
+                <li class="definitionHeaderlitwo">检验(归档)</li>
               </ul>
             </div>
             <div class="content">
@@ -117,21 +119,27 @@
     <section v-if="basis" class="popup">
       <increased v-if="basis" :increaSed="basis" @baSis="Basis"></increased>
     </section>
+    <section v-if="basisshow" class="popup">
+      <increased2 v-if="basisshow" :increaSed="basisshow" :organizationid="organizationid" @Basis2="Basis2"></increased2>
+    </section>
   </div>
 </template>
 
 <script>
 import { karaktersFindAllRoles, karaktersSetRoleFunctions, karaktersFindAllFunctions, karaktersFindRoleFunctions, DeleteRole } from '../../api/user'
 import increased from '../intercalateChild-operation/karaktersChild-increased'
+import increased2 from '../intercalateChild-operation/karaktersChild-increased2'
 export default {
   name: 'intercalateChild-karakters',
   components: {
-    increased
+    increased,
+    increased2
   },
   data () {
     return {
       customRoles: [],
       basis: false,
+      basisshow: false,
       value: '',
       checked: false,
       options: [],
@@ -153,7 +161,8 @@ export default {
       seletedFlag: false,
       // 系统角色是否展开
       ficationBoolean: false,
-      btnDisabled: false
+      btnDisabled: false,
+      organizationid: '' // 创建用户角色的机构ID
     }
   },
   methods: {
@@ -191,6 +200,10 @@ export default {
     increasd () {
       this.basis = true
     },
+    increasd2 (data) {
+      this.organizationid = data.organizationid
+      this.basisshow = true
+    },
     Basis (ev) {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(karaktersFindAllRoles(token)).then((response) => {
@@ -202,6 +215,20 @@ export default {
             this.customRoles.push(val)
           })
           this.basis = ev
+        }
+      })
+    },
+    Basis2 (ev) {
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(karaktersFindAllRoles(token)).then((response) => {
+        if (response.data.code === 0) {
+          this.customRoles = []
+          response.data.data.forEach((val) => {
+            val.visflag = false
+            val.flag = false
+            this.customRoles.push(val)
+          })
+          this.basisshow = ev
         }
       })
     },
@@ -776,4 +803,8 @@ export default {
     amputateDIv()
     float right
     margin-right 20px
+  .addRole
+    float: right
+    margin-right: 15px
+    color: #3acf76
 </style>

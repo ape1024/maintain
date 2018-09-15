@@ -11,7 +11,7 @@
             </i>
           </el-input>
         </div>
-        <div class="header-info-add" @click="add">增 加</div>
+        <div class="header-info-add" @click="add">新 增</div>
       </div>
       <div class="content">
         <div class="content-header">

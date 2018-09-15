@@ -308,10 +308,10 @@
         </div>
         <div class="manipulation">
           <div v-if="!maksConserve && technicalStandard" @click="newlyAdded" class="newlyAdded">
-            新增保存
+            保存
           </div>
           <div v-if="!maksConserve && !technicalStandard" class="newlyAddedTwo">
-            新增保存
+            保存
           </div>
           <div v-if="maksConserve && technicalStandard" @click="conserve" class="conserve">
             保存
