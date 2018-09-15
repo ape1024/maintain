@@ -11,7 +11,7 @@
           <div class="graph-wrap-item" ref="nestedRing"></div>
           <div class="graph-wrap-item">
             <div :key="index" class="graph-wrap-item-circle" v-for="(item, index) in list">
-              <progress-circle :percent="item.percent" :desc="item.desc"></progress-circle>
+              <progress-circle :show-color="item.color" :percent="item.percent" :desc="item.desc"></progress-circle>
             </div>
           </div>
           <div class="graph-wrap-item" ref="lineGraph"></div>
@@ -26,7 +26,7 @@
 
 <script>
 import ProgressCircle from 'base/progress-circle/progress-circle'
-import { getDevFaultCountForYear } from 'api/user'
+import { getDevFaultCountForYear, getTaskProgress } from 'api/user'
 const STEP = 600
 const LONG = 1800
 export default {
@@ -36,13 +36,7 @@ export default {
       switchState: false,
       prevState: false,
       nextState: true,
-      list: [
-        {percent: 0.5, desc: '图1'},
-        {percent: 0.4, desc: '图2'},
-        {percent: 0.2, desc: '图3'},
-        {percent: 0.7, desc: '图4'},
-        {percent: 0.9, desc: '图5'}
-      ]
+      list: []
     }
   },
   methods: {
@@ -207,6 +201,16 @@ export default {
     this.axios.post(getDevFaultCountForYear(yearVal)).then((res) => {
       this.drawLineGraph(this.$refs.lineGraph, res.data.data)
     })
+    // 饼图
+    this.axios.post(getTaskProgress()).then((res) => {
+      this.list = res.data.data.map((t, i) => {
+        return {
+          percent: t.progess,
+          desc: t.worktypename,
+          color: this.colorList[i]
+        }
+      })
+    })
   },
   components: {
     ProgressCircle
@@ -214,6 +218,7 @@ export default {
   created () {
     this.title = '图表统计'
     this.more = '更多'
+    this.colorList = ['#53DCAD', '#AD65D6', '#FC9E7D', '#F78540', '#69D4E2']
   }
 }
 </script>

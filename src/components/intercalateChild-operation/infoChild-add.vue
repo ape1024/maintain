@@ -30,7 +30,7 @@
                   class="long-change"
                   size="mini"
                   v-model="finishTimeVal"
-                  type="date"
+                  type="datetime"
                   placeholder="选择截止时间">
                 </el-date-picker>
               </div>
@@ -42,7 +42,7 @@
                   class="long-change"
                   size="mini"
                   v-model="sendTimeVal"
-                  type="date"
+                  type="datetime"
                   placeholder="选择发送时间">
                 </el-date-picker>
               </div>
@@ -187,8 +187,8 @@ export default {
         })
         return
       }
-      const sendTimeVal = resetTime(new Date(this.sendTimeVal).getTime(), 'date')
-      const finishTimeVal = resetTime(new Date(this.finishTimeVal).getTime(), 'date')
+      const sendTimeVal = resetTime(new Date(this.sendTimeVal).getTime(), 'all')
+      const finishTimeVal = resetTime(new Date(this.finishTimeVal).getTime(), 'all')
       const ids = this.maintenanceList.join(',')
 
       this.axios.post(deliverAnnouncement(this.titleName, sendTimeVal, finishTimeVal, this.messageLevel, this.messageDesc, ids)).then((response) => {
