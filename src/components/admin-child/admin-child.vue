@@ -44,19 +44,6 @@
       <li class="threelevel_lithree">
         生产时间
       </li>
-      <!--<li class="threelevel_lithree">-->
-        <!--运行状态 <i class="el-icon-caret-bottom"></i>-->
-        <!--<div class="threelevel_ensconce">-->
-          <!--<el-select @change="runningChange" v-model="runningState" size="mini" placeholder="">-->
-            <!--<el-option-->
-              <!--v-for="item in runningstateDate"-->
-              <!--:key="item.value"-->
-              <!--:label="item.name"-->
-              <!--:value="item.value">-->
-            <!--</el-option>-->
-          <!--</el-select>-->
-        <!--</div>-->
-      <!--</li>-->
       <li class="threelevel_lithree">
         审核状态 <i class="el-icon-caret-bottom"></i>
         <div class="threelevel_ensconce">
@@ -73,7 +60,7 @@
       <li class="threelevel_litwo">
         操作
       </li>
-      <li @click="approvalstateS" class="threelevel_lifive">
+      <li v-if="JurisdictionApproval" @click="approvalstateS" class="threelevel_lifive">
         批量审批
       </li>
     </ul>
@@ -91,13 +78,13 @@
             {{dataset.position}}
           </li>
           <li class="threelevel_lithree">
-            {{dataset.devicecount}}
+            {{dataset.devicecount2}}
           </li>
           <li class="threelevel_lithree">
             {{dataset.manufacturename}}
           </li>
           <li class="threelevel_lithree">
-            {{dataset.devicemodel}}
+            {{dataset.devicemodelName}}
           </li>
           <li class="threelevel_lithree">
             {{dataset.madedate}}
@@ -112,10 +99,10 @@
             <!--{{dataset.approvalstatecode}}-->
           </li>
           <li class="threelevel_litwo">
-            <p v-if="dataset.disabledBoolean" @click.stop="question(dataset.deviceid)" class="header_p_eight threelevel_litwo_p">
+            <p v-if="JurisdictionApproval && dataset.disabledBoolean" @click.stop="question(dataset.deviceid)" class="header_p_eight threelevel_litwo_p">
               审核
             </p>
-            <p v-if="!dataset.disabledBoolean" class="header_p_Eleven threelevel_litwo_p">
+            <p v-if="JurisdictionApproval && !dataset.disabledBoolean" class="header_p_Eleven threelevel_litwo_p">
               审核
             </p>
             <p v-if="JurisdictionSelect" @click.stop="examine(dataset.deviceid)" class="header_p_ten">查看</p>
@@ -125,9 +112,6 @@
             <p v-if="JurisdictionUpdate && !dataset.disabledBoolean" class="header_p_Eleven">
               修改
             </p>
-            <!--<p @click.stop="equipment" class="header_pe_quipment">-->
-              <!--更换设备-->
-            <!--</p>-->
             <p v-if="JurisdictionDelete&&dataset.disabledBoolean" class="header_p_eleven" @click.stop="">
               <el-button type="text" @click="amputate($index, tabChild, dataset.deviceid)">删除</el-button>
             </p>
@@ -140,7 +124,7 @@
     </ul>
     <section v-if="examineBoolean" @click.stop class="review">
       <!--审核-->
-      <childExamine v-if="examineBoolean" :question="questionData" :examine="examineBoolean" @mine="Mine"></childExamine>
+      <childExamine v-if="examineBoolean" :question="questionData" :examine="examineBoolean" @mine="Mine" @modifysay="modiFysay"></childExamine>
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
@@ -148,7 +132,7 @@
     </section>
     <section v-if="modifyBoolean" @click.stop class="review">
       <!--修改-->
-      <childModify @click.stop v-if="modifyBoolean" :msg="modifyBoolean" :modify="modifyDate" @say="Modify"></childModify>
+      <childModify @click.stop v-if="modifyBoolean" :msg="modifyBoolean" :modify="modifyDate" @say="Modify" @modifysay="modiFysay"></childModify>
     </section>
     <section v-if="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
@@ -213,6 +197,11 @@ export default {
     }
   },
   methods: {
+    modiFysay (ev) {
+      this.modifyBoolean = ev
+      this.examineBoolean = ev
+      this.$emit('transmission')
+    },
     AuditstatusChang () {
       this.jueryCurrent(this.equipmentDate, this.manufactorModel, this.runningState, this.AuditstatusD)
     },
@@ -475,31 +464,7 @@ export default {
               message: '审批成功',
               type: 'success'
             })
-            this.axios.post(admingetDevListDetailProjects(this.adminid, this.maintainProject)).then((response) => {
-              if (!response) {
-                // 请求失败关闭加载
-                this.closeLoadingDialog()
-                return
-              }
-              if (response.data.code === 0) {
-                response.data.data.forEach((val) => {
-                  val.checked = false
-                  if (val.approvalstate === 100) {
-                    val.disabledBoolean = false
-                    val.disabled = true
-                  } else if (val.approvalstate === 5 || val.approvalstate === 20) {
-                    val.disabledBoolean = true
-                    val.disabled = false
-                  } else {
-                    val.disabledBoolean = false
-                    val.disabled = true
-                  }
-                })
-                this.tabChild = response.data.data
-              }
-              // 请求成功关闭数据加载
-              this.closeLoadingDialog()
-            })
+            this.$emit('transmission')
           } else {
             this.$message({
               message: '审批失败',
@@ -541,7 +506,6 @@ export default {
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'device') {
         this.JurisdictionSelect = val.select
-        this.JurisdictionInsert = val.insert
         this.JurisdictionDelete = val.delete
         this.JurisdictionApproval = val.approval
         this.JurisdictionUpdate = val.update

@@ -26,7 +26,7 @@
           </li>
           <li class="lookover_li">
             <p class="lookover_p">生产日期：</p>
-            <div>{{tiemerIf(this.inspection.madedate)}}</div>
+            <div>{{tiemerIf(this.information.madedate)}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">技术参数：</p>
@@ -39,7 +39,7 @@
           </li>
           <li class="lookover_li">
             <p class="lookover_p">有效日期：</p>
-            <div>{{tiemerIf(this.inspection.effectivedate)}}</div>
+            <div>{{tiemerIf(this.information.effectivedate)}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">创建人员：</p>
@@ -52,7 +52,7 @@
           </li>
           <li class="lookover_li">
             <p class="lookover_p">设备数量：</p>
-            <div>{{information.devicecount}}</div>
+            <div>{{information.devicecount}}{{information.unit}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">编辑人员：</p>
@@ -179,6 +179,9 @@ export default {
         return false
       }
     })
+    console.log(this.inspection)
+    console.log(this.information)
+    console.log(this.msg)
   }
 }
 </script>

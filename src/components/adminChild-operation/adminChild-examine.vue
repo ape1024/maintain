@@ -157,7 +157,7 @@ export default {
             message: '审核成功',
             type: 'success'
           })
-          this.$emit('mine', false)
+          this.$emit('modifysay', false)
         }
       })
     },

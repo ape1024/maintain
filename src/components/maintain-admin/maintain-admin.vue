@@ -23,7 +23,7 @@
               查 询
             </div>
             <!--新增-->
-            <div v-if="JurisdictionApproval" @click.stop="auditing" class="newly">
+            <div v-if="JurisdictionInsert" @click.stop="auditing" class="newly">
               新 增
             </div>
           </div>
@@ -38,10 +38,10 @@
             设施总数量
           </li>
           <li class="header_li">
-            待审查数量
+            待审批数量
           </li>
           <li class="header_li">
-            已归档数量
+            已存档数量
           </li>
           <li class="header_li">
             需修改数量
@@ -63,14 +63,14 @@
             <transition enter-active-class="fadeInUp"
                         leave-active-class="fadeOutDown">
               <div v-if="item.flag" class="inline_div">
-                <adminchild :adminid="adminAreaid" :tabChild="tableChild"></adminchild>
+                <adminchild :adminid="adminAreaid" :tabChild="tableChild" @transmission="Transmission"></adminchild>
               </div>
             </transition>
           </li>
         </ul>
       </section>
       <section v-if="review_boolean" @click.stop class="review">
-        <increase v-if="review_boolean" :msg="review_boolean" @say="onSay" ></increase>
+        <increase v-if="review_boolean" :msg="review_boolean" @transmission="Transmission" @say="onSay" ></increase>
       </section>
     </div>
 </template>
@@ -89,6 +89,23 @@ export default {
     increase
   },
   methods: {
+    Transmission () {
+      this.review_boolean = false
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.regionDate = response.data.data
+          this.regionModel.push((this.regionDate)[0].areaid)
+          //  获取 列表数据 默认第一页 20个
+          let regionId = (this.regionModel).shift()
+          this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
+            if (data.data.code === 0) {
+              this.tableData = data.data.data.datas
+            }
+          })
+        }
+      })
+    },
     init () {
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
@@ -216,7 +233,7 @@ export default {
       // 获取点击的id
       click_id: '',
       tableData: [],
-      JurisdictionApproval: '',
+      JurisdictionInsert: '',
       adminAreaid: ''
     }
   },
@@ -226,7 +243,7 @@ export default {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'device') {
-        this.JurisdictionApproval = val.approval
+        this.JurisdictionInsert = val.insert
       }
     })
     //  获取区域

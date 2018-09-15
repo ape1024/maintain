@@ -90,7 +90,7 @@
             </li>
             <li class="header_litwo">{{item.assign}}</li>
             <li class="header_litwo">
-              <div v-if="timestamp > item.endTime ? true : false" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
+              <div v-if="timestamp > item.endTime && JurisdictionCheck ? true : false" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
                 归 档
               </div>
             </li>
@@ -303,10 +303,17 @@ export default {
       click_id: '',
       tableDatataskStat: [],
       dailyChild: '',
-      timestamp: ''
+      timestamp: '',
+      JurisdictionCheck: ''
     }
   },
   created () {
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'task_xj') {
+        this.JurisdictionCheck = val.check
+      }
+    })
     //  归档时间判断  + 86400  延迟一天
     let timestamp = Date.parse(new Date()) + 86400
     this.timestamp = timestamp
@@ -663,6 +670,9 @@ export default {
       width 100%
   .pigeonhole
     conserve()
+    width 70px
+    height 30px
+    line-height 30px
     -webkit-user-select none
     -moz-user-select none
     -ms-user-select none

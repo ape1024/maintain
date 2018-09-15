@@ -318,7 +318,7 @@ export default {
             message: '修改成功',
             type: 'success'
           })
-          this.$emit('say', false)
+          this.$emit('modifysay', false)
         }
       })
     },

@@ -543,7 +543,6 @@ export default {
           this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((Item) => {
             if (Item.data.code === 0) {
               devicemodel = Item.data.data.divecemodelid
-              console.log('3')
               manufacturerid = this.manufactorModel
               console.log(manufacturerid)
               this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
@@ -569,7 +568,7 @@ export default {
             message: '创建成功',
             type: 'success'
           })
-          this.$emit('say', false)
+          this.$emit('transmission', false)
         }
       })
     },

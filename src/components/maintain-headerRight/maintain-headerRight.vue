@@ -53,7 +53,7 @@
 <script>
 import { secede, findUserProjects, consumerFindUser } from '../../api/user'
 import { mapActions } from 'vuex'
-import Information from '../intercalateChild-operation/consumerChild-changeinfo'
+import Information from './consumerHeaderRight'
 export default {
   name: 'maintain-headerRight',
   components: {
@@ -206,7 +206,7 @@ export default {
     position fixed
     left 0
     top 0
-    z-index 1111
+    z-index 11111111
     background rgba(000,000,000,.8)
     height 100%
     width 100%
