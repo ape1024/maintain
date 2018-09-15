@@ -2,7 +2,7 @@
   <div class="subject">
     <div class="subjectDiv">
       <!--v-if="JurisdictionApproval"-->
-      <div @click="conserve" class="conserve">
+      <div v-if="JurisdictionInsert" @click="conserve" class="conserve">
         新 增
       </div>
     </div>
@@ -93,7 +93,8 @@ export default {
       JurisdictionSelect: '',
       JurisdictionDelete: '',
       JurisdictionApproval: '',
-      JurisdictionUpdate: ''
+      JurisdictionUpdate: '',
+      JurisdictionInsert: ''
     }
   },
   methods: {
@@ -148,10 +149,10 @@ export default {
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'device') {
+      if (val.functioncode === 'project') {
         this.JurisdictionSelect = val.select
         this.JurisdictionDelete = val.delete
-        this.JurisdictionApproval = val.approval
+        this.JurisdictionInsert = val.insert
         this.JurisdictionUpdate = val.update
       }
     })

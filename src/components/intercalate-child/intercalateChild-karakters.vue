@@ -9,7 +9,7 @@
         <ul class="leftBottomUl" :key="index" v-for="(item ,index) in customRoles" >
           <li>
             <div @click="ficationClick(item)" class="leftBottomLl">{{item.organizationname}}
-              <div @click="increasd2(item)" class="addRole" v-show="index !== 0 && index !== 1 ">新增</div>
+              <div v-if="JurisdictionInsert" @click="increasd2(item)" class="addRole" v-show="index !== 0 && index !== 1 ">新增</div>
             </div>
           </li>
           <li v-show="item.visflag"  @click="systemroleClick(iteminfo.roleid, iteminfo, false)" :key="indexinfo" v-for="(iteminfo, indexinfo) in item.roles" v-bind:class="seletedFlag === iteminfo.roleid ? 'leftBottomLlThree' : 'leftBottomLltwo'">
@@ -27,13 +27,13 @@
             <div class="conserveRoleNameDiv" v-show="this.roleName">
                <span>{{this.roleName}}</span>
             </div>
-            <div v-if="JurisdictionUpdate" class="conserveDiv" @click="conserve" v-show="btnDisabled">
+            <div v-if="JurisdictionUpdate && btnDisabled" class="conserveDiv" @click="conserve">
               保 存
             </div>
-            <div @click="amputate" class="amputateDIv" v-show="btnDisabled">
+            <div @click="amputate" class="amputateDIv" v-show="btnDisabled && JurisdictionDelete">
               删除
             </div>
-            <div @click="increasd" class="increased" >
+            <div v-if="JurisdictionInsert" @click="increasd" class="increased" >
               新增角色
             </div>
           </div>
@@ -154,15 +154,16 @@ export default {
       fullFunctionality: '',
       // 点击左侧获取其id值
       kayakersId: '',
-      JurisdictionApproval: true,
-      JurisdictionUpdate: true,
+      JurisdictionApproval: '',
+      JurisdictionUpdate: '',
       roleName: '', // 角色名称
       checkedFlag: false,
       seletedFlag: false,
       // 系统角色是否展开
       ficationBoolean: false,
       btnDisabled: false,
-      organizationid: '' // 创建用户角色的机构ID
+      organizationid: '', // 创建用户角色的机构ID
+      JurisdictionInsert: ''
     }
   },
   methods: {
@@ -494,8 +495,9 @@ export default {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'role') {
-        this.JurisdictionApproval = val.approval
+        this.JurisdictionInsert = val.insert
         this.JurisdictionUpdate = val.update
+        this.JurisdictionDelete = val.delete
       }
     })
     let token = JSON.parse(window.sessionStorage.token)

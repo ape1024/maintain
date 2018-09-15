@@ -4,7 +4,7 @@
       <header class="leftHeader">
         <img class="subjectImg" src="../../common/img/department.png" alt="">
         <p class="subjectP">设备</p>
-        <p @click="subjectptwo" class="subjectptwo">新增</p>
+        <p v-if="JurisdictionInsert" @click="subjectptwo" class="subjectptwo">新增</p>
       </header>
       <div class="leftBottom">
         <div class="leftBottomDiv">
@@ -307,19 +307,21 @@
           </ul>
         </div>
         <div class="manipulation">
-          <div v-if="!maksConserve && technicalStandard" @click="newlyAdded" class="newlyAdded">
-            保存
-          </div>
-          <div v-if="!maksConserve && !technicalStandard" class="newlyAddedTwo">
-            保存
-          </div>
-          <div v-if="maksConserve && technicalStandard" @click="conserve" class="conserve">
-            保存
-          </div>
-          <div v-if="maksConserve && !technicalStandard" class="conserveTwo">
-            保存
-          </div>
-          <div @click="closedown" class="closedown">
+         <div v-if="JurisdictionUpdate" class="manipulationaddedDiv">
+           <div v-if="!maksConserve && technicalStandard" @click="newlyAdded" class="newlyAdded">
+             保存
+           </div>
+           <div v-if="!maksConserve && !technicalStandard" class="newlyAddedTwo">
+             保存
+           </div>
+           <div v-if="maksConserve && technicalStandard" @click="conserve" class="conserve">
+             保存
+           </div>
+           <div v-if="maksConserve && !technicalStandard" class="conserveTwo">
+             保存
+           </div>
+         </div>
+          <div v-if="JurisdictionDelete" @click="closedown" class="closedown">
             删除
           </div>
         </div>
@@ -396,7 +398,11 @@ export default {
       tabulationID: '',
       basedeviceCode: '',
       checkStandardsNode: [],
-      technicalStandard: false
+      technicalStandard: false,
+      JurisdictionSelect: '',
+      JurisdictionDelete: '',
+      JurisdictionInsert: '',
+      JurisdictionUpdate: ''
     }
   },
   watch: {
@@ -925,6 +931,15 @@ export default {
     }
   },
   created () {
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'standard') {
+        this.JurisdictionSelect = val.select
+        this.JurisdictionDelete = val.delete
+        this.JurisdictionInsert = val.insert
+        this.JurisdictionUpdate = val.update
+      }
+    })
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
@@ -1297,4 +1312,6 @@ export default {
     transition .2s
     &:hover
       background #999
+  .manipulationaddedDiv
+     display inline-block
 </style>

@@ -74,7 +74,7 @@
           用户列表
         </p>
         <div class="informationDiv">
-          <div v-if="JurisdictionApproval" @click="induce" class="superinduce">
+          <div v-if="JurisdictionInsert" @click="induce" class="superinduce">
             新增
           </div>
         </div>
@@ -141,7 +141,7 @@
                   修改
                 </p>
                 <!--授权-->
-                <p v-if="JurisdictionInsert" @click="authorization(item.userid)" class="authorization">
+                <p v-if="JurisdictionAssign" @click="authorization(item.userid)" class="authorization">
                   授权
                 </p>
                 <!--修改密码-->
@@ -269,7 +269,8 @@ export default {
       pageIndex: 1,
       pageSize: 12,
       totalPage: 0,
-      flagState: true // 判断是否可以对用户进行操作
+      flagState: true, // 判断是否可以对用户进行操作
+      JurisdictionAssign: ''
     }
   },
   methods: {
@@ -427,13 +428,13 @@ export default {
     authority () {
       let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
       Jurisdiction.forEach((val) => {
-        if (val.functioncode === 'device') {
-          console.log(val)
+        if (val.functioncode === 'user') {
           this.JurisdictionSelect = val.select
+          this.JurisdictionUpdate = val.update
           this.JurisdictionInsert = val.insert
           this.JurisdictionDelete = val.delete
           this.JurisdictionApproval = val.approval
-          this.JurisdictionUpdate = val.update
+          this.JurisdictionAssign = val.assign
         }
       })
     }
