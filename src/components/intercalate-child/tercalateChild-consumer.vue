@@ -155,8 +155,8 @@
                 <p v-if="JurisdictionDelete && flagState" @click="amputate($index, information, item.userid)" class="amputate">
                   删除
                 </p>
-                <p v-if="JurisdictionUpdate && !flagState" class="content_gray">
-                  修改密码
+                <p v-if="JurisdictionDelete && !flagState" class="content_gray">
+                  删除
                 </p>
               </li>
             </ul>
@@ -387,7 +387,7 @@ export default {
       })
     },
     handleNodeClick (data) {
-      console.log(data)
+      this.authority()
       const organization = data.organizationId
       this.organizationId = organization
       if (data.flagVal === 0) {
@@ -422,6 +422,20 @@ export default {
         })
       })
       return arr
+    },
+    // 权限判断
+    authority () {
+      let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+      Jurisdiction.forEach((val) => {
+        if (val.functioncode === 'device') {
+          console.log(val)
+          this.JurisdictionSelect = val.select
+          this.JurisdictionInsert = val.insert
+          this.JurisdictionDelete = val.delete
+          this.JurisdictionApproval = val.approval
+          this.JurisdictionUpdate = val.update
+        }
+      })
     }
   },
   created () {
@@ -438,16 +452,7 @@ export default {
         this.data = this.data.concat(this.creatData)
       }
     })
-    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
-    Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'device') {
-        this.JurisdictionSelect = val.select
-        this.JurisdictionInsert = val.insert
-        this.JurisdictionDelete = val.delete
-        this.JurisdictionApproval = val.approval
-        this.JurisdictionUpdate = val.update
-      }
-    })
+    this.authority()
     this.axios.post(karaktersFindAllRoles(token)).then((response) => {
       if (response.data.code === 0) {
         this.roleData = response.data.data.map(t => {
@@ -768,6 +773,8 @@ export default {
     font-size 14px
     color #999 !important
   .content_gray
+    float left
+    margin-right 16px
     color #444
     cursor initial
 </style>

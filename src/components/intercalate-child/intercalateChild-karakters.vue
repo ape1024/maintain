@@ -45,7 +45,7 @@
                 <li class="definitionHeaderlitwo">新增</li>
                 <li class="definitionHeaderlitwo">修改</li>
                 <li class="definitionHeaderlitwo">删除</li>
-                <li class="definitionHeaderlitwo">审批</li>
+                <li class="definitionHeaderlitwo">审批(确认)</li>
                 <li class="definitionHeaderlitwo">分配(授权)</li>
                 <li class="definitionHeaderlitwo">检验(归档)</li>
               </ul>
