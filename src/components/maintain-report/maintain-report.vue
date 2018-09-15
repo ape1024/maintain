@@ -112,19 +112,19 @@
                  @click.stop="examine(item.ID)"
                  class="header_p_ten">查看
               </p>
-              <p v-if="JurisdictionInsert && item.comfirmstate === 2"
+              <p v-if="JurisdictionApproval && item.comfirmstate === 2"
                  @click.stop="modify(item.ID)" class="header_p_twelve">
                  确认
               </p>
-              <p v-if="item.comfirmstate !== 2"
+              <p v-if="JurisdictionApproval && item.comfirmstate !== 2"
                  class="header_p_fourteen" >确认
               </p>
-              <p v-if="JurisdictionInsert && item.comfirmstate === 4"
+              <p v-if="JurisdictionAssign && item.comfirmstate === 4"
                  @click.stop="question(item.ID)"
                  class="header_p_eight threelevel_litwo_p">
                  安排
               </p>
-              <p v-if="item.comfirmstate !== 4"
+              <p v-if="JurisdictionAssign && item.comfirmstate !== 4"
                  class="header_p_fourteen" >安排
               </p>
               <p v-if="JurisdictionDelete && item.comfirmstate === 2"
@@ -132,7 +132,7 @@
                  @click.stop="amputate(item.ID, index, exhibition)">
                  删除
               </p>
-              <p v-if="item.comfirmstate !== 2"
+              <p v-if="JurisdictionDelete && item.comfirmstate !== 2"
                  class="header_p_fourteen" >
                  删除
               </p>
@@ -305,35 +305,6 @@ export default {
       review_boolean: false,
       // 获取点击的id
       click_id: '',
-      tableData: [{
-        active: false,
-        // 审核按钮 显示 隐藏
-        auditin: true,
-        // 一级列表 审核  显示 隐藏
-        admin_show: false,
-        index: 0,
-        id: '1',
-        date: '1号车间',
-        quantum: '100',
-        await: '30',
-        normal: '1000',
-        child: [],
-        value: ''
-      }, {
-        active: false,
-        // 审核按钮 显示 隐藏
-        auditin: true,
-        // 一级列表 审核  显示 隐藏
-        admin_show: false,
-        index: 1,
-        id: '2',
-        date: '2号车间',
-        quantum: '10',
-        await: '303',
-        normal: '1',
-        child: [],
-        value: ''
-      }],
       examineBoolean: false,
       lookoverBoolean: false,
       modifyBoolean: false,
@@ -361,7 +332,9 @@ export default {
       arrangeData: '',
       JurisdictionSelect: '',
       JurisdictionInsert: '',
-      JurisdictionDelete: ''
+      JurisdictionDelete: '',
+      JurisdictionAssign: '',
+      JurisdictionApproval: ''
     }
   },
   created () {
@@ -370,8 +343,9 @@ export default {
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'task_wtcl') {
         this.JurisdictionSelect = val.select
-        this.JurisdictionInsert = val.insert
+        this.JurisdictionApproval = val.approval
         this.JurisdictionDelete = val.delete
+        this.JurisdictionAssign = val.assign
       }
     })
     this.axios.post(maintainReportfindFeedback(this.maintainProject)).then((response) => {

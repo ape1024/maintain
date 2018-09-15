@@ -52,7 +52,7 @@
               {{item.plandesc}}
             </li>
             <li class="repair_lithree">
-              <div v-if="JurisdictionInsert">
+              <div v-if="JurisdictionApproval">
                 <p v-if="item.planstate === 5"  @click.stop="question(item.checkplanid, item)" class="header_p_eight threelevel_litwo_p">
                   审核
                 </p>
@@ -78,7 +78,7 @@
     <section v-if="newlybuildBoolean" class="review">
       <newlybuild v-if="newlybuildBoolean" @build="Build"></newlybuild>
     </section>
-    <div @click="superinduce" class="superinduce">
+    <div v-if="JurisdictionInsert" @click="superinduce" class="superinduce">
       新 增
     </div>
   </div>
@@ -240,7 +240,8 @@ export default {
       planStateData: [],
       JurisdictionInsert: '',
       JurisdictionUpdate: '',
-      JurisdictionDelete: ''
+      JurisdictionDelete: '',
+      JurisdictionApproval: ''
     }
   },
   created () {
@@ -248,9 +249,10 @@ export default {
     Jurisdiction.forEach((val) => {
       console.log(val)
       if (val.functioncode === 'plan') {
-        this.JurisdictionInsert = val.insert
+        this.JurisdictionApproval = val.approval
         this.JurisdictionUpdate = val.update
         this.JurisdictionDelete = val.delete
+        this.JurisdictionInsert = val.insert
       }
     })
     this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {

@@ -84,7 +84,7 @@
             {{dataset.manufacturename}}
           </li>
           <li class="threelevel_lithree">
-            {{dataset.devicemodelName}}
+            {{dataset.devicemodelname}}
           </li>
           <li class="threelevel_lithree">
             {{dataset.madedate}}
@@ -684,7 +684,7 @@ export default {
     overflow hidden
   .threelevel_ensconce
     overflow hidden
-    z-index 1111
+    z-index 1
     position absolute
     top 0
     height 100%

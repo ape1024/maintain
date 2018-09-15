@@ -131,17 +131,17 @@
               {{approvalStatusfn(item.approvalstatename)}}
             </li>
             <li class="repair_lifive">
-              <p v-if="JurisdictionInsert && item.repairBoolean" @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
+              <p v-if="JurisdictionAssign && item.repairBoolean" @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
                 重新分配
               </p>
-              <p v-if="JurisdictionInsert && !item.repairBoolean" class="header_p_twelve threelevel_litwo_ptwo">
+              <p v-if="JurisdictionAssign && !item.repairBoolean" class="header_p_twelve threelevel_litwo_ptwo">
                 重新分配
               </p>
               <p v-if="JurisdictionSelect" @click.stop="examine(item)" class="header_p_ten">查看</p>
-              <p v-if="JurisdictionInsert && item.approvalBoolean" @click.stop="question(item.repairtaskid)" class="header_p_eight threelevel_litwo_p">
+              <p v-if="JurisdictionApproval && item.approvalBoolean" @click.stop="question(item.repairtaskid)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
-              <p v-if="JurisdictionInsert && !item.approvalBoolean" class="header_p_eight threelevel_litwo_p threelevel_litwo_ptwo">
+              <p v-if="JurisdictionApproval && !item.approvalBoolean" class="header_p_eight threelevel_litwo_p threelevel_litwo_ptwo">
                 审核
               </p>
               <p v-if="item.verification && JurisdictionCheck" @click.stop="verification(item.repairtaskid)" class="header_p_thirteen">
@@ -493,9 +493,10 @@ export default {
       JurisdictionSelect: '',
       JurisdictionInsert: '',
       JurisdictionDelete: '',
-      JurisdictionApproval: '',
       JurisdictionCheck: '',
-      repairtasksName: ''
+      repairtasksName: '',
+      JurisdictionApproval: '',
+      JurisdictionAssign: ''
     }
   },
   created () {
@@ -504,10 +505,10 @@ export default {
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'task_gzwx') {
         this.JurisdictionSelect = val.select
-        this.JurisdictionInsert = val.insert
-        this.JurisdictionDelete = val.delete
         this.JurisdictionApproval = val.approval
+        this.JurisdictionDelete = val.delete
         this.JurisdictionCheck = val.check
+        this.JurisdictionAssign = val.assign
       }
     })
     //  获取区域
