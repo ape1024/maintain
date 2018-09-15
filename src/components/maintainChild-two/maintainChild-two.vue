@@ -54,9 +54,9 @@
             {{item.assign}}
           </li>
           <li class="list_data_li">
-            <p v-if="JurisdictionInsert" @click.stop="examine(item.deviceID)" class="list_data_li_p">审核</p>
+            <p v-if="JurisdictionApproval" @click.stop="examine(item.deviceID)" class="list_data_li_p">审核</p>
             <!--<p @click.stop="distriBoolean" class="list_data_li_ptwo">快速分配</p>-->
-            <p @click.stop="ArrBoolean(item.deviceID)" class="list_data_li_ptwo">
+            <p v-if="JurisdictionAssign" @click.stop="ArrBoolean(item.deviceID)" class="list_data_li_ptwo">
               快速分配
             </p>
           </li>
@@ -113,10 +113,10 @@ export default {
       instructionData: '',
       // 点击哪个设备的id
       equipmentID: '',
-      JurisdictionInsert: '',
       JurisdictionAssign: '',
       checked: false,
-      dailyChild: ''
+      dailyChild: '',
+      JurisdictionApproval: ''
     }
   },
   methods: {
@@ -218,7 +218,7 @@ export default {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'task_xj') {
-        this.JurisdictionInsert = val.insert
+        this.JurisdictionApproval = val.approval
         this.JurisdictionAssign = val.assign
       }
     })

@@ -82,7 +82,7 @@
                     size="mini"
                     v-model="productionValue1"
                     type="date"
-                    value-format="yyyy-MM-dd"
+                    value-format="timestamp"
                     placeholder="选择日期">
                   </el-date-picker>
                 </div>
@@ -95,7 +95,7 @@
                   <el-date-picker
                     size="mini"
                     v-model="validity"
-                    value-format="yyyy-MM-dd"
+                    value-format="timestamp"
                     type="date"
                     placeholder="选择日期">
                   </el-date-picker>
