@@ -7,6 +7,8 @@
 </template>
 
 <script>
+const startVal = 3 / 4 * Math.PI
+const endVal = 9 / 4 * Math.PI
 export default {
   props: {
     percent: {
@@ -16,6 +18,14 @@ export default {
     desc: {
       type: String,
       default: ''
+    },
+    backColor: {
+      type: String,
+      default: '#666'
+    },
+    showColor: {
+      type: String,
+      default: '#f00'
     }
   },
   methods: {
@@ -44,20 +54,16 @@ export default {
   mounted () {
     this.init(this.$refs.canvasWrap)
     this.draw({
-      color: '#999',
+      color: this.backColor,
       lineWidth: 10,
-      startVal: this.startVal,
-      endVal: this.endVal
+      startVal: startVal,
+      endVal: endVal
     }, {
-      color: '#456541',
+      color: this.showColor,
       lineWidth: 10,
-      startVal: this.startVal,
-      endVal: this.endVal * 0.8
+      startVal: startVal,
+      endVal: ((endVal - startVal) * this.percent + startVal)
     })
-  },
-  created () {
-    this.startVal = 3 / 4 * Math.PI
-    this.endVal = 9 / 4 * Math.PI
   }
 }
 </script>

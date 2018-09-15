@@ -773,3 +773,7 @@ export const updateMsgState = (id) => {
 export const getDevFaultCountForYear = (year) => {
   return `${Test}/dev/getDevFaultCountForYear?vyear=${year}`
 }
+// 获取饼图数据
+export const getTaskProgress = () => {
+  return `${Test}/task/getTaskProgress?projectid=1&areaid=-1`
+}
