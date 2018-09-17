@@ -143,7 +143,7 @@ export default {
           arr.push(new SearchData(item))
           return arr
         }
-        const areas = this.resetMapData(item.areas, query)
+        const areas = this.resetMapData(item.areas ? item.areas : [], query)
         if (areas.length) {
           arr.push({
             ...new SearchData(item),
