@@ -440,39 +440,50 @@ export default {
       }
     },
     approvalstateS () {
-      let arr = []
-      this.tabChild.forEach((val) => {
-        if (!val.disabled) {
-          if (val.checked) {
-            arr.push(val.deviceid)
+      this.$confirm('是否进行批量审批?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let arr = []
+        this.tabChild.forEach((val) => {
+          if (!val.disabled) {
+            if (val.checked) {
+              arr.push(val.deviceid)
+            }
           }
+        })
+        if (!arr.length) {
+          this.$message({
+            message: '请选择对应的设备',
+            type: 'warning'
+          })
+          return false
+        } else {
+          let checkedChangeData = arr.join()
+          // 审批状态 设定为100
+          this.axios.post(PojectdeviceApprovals2(checkedChangeData, 100)).then((response) => {
+            console.log(response)
+            if (response.data.code === 0) {
+              this.$message({
+                message: '审批成功',
+                type: 'success'
+              })
+              this.$emit('transmission')
+            } else {
+              this.$message({
+                message: '审批失败',
+                type: 'warning'
+              })
+            }
+          })
         }
-      })
-      if (!arr.length) {
+      }).catch(() => {
         this.$message({
-          message: '请选择对应的设备',
-          type: 'warning'
+          type: 'info',
+          message: '已取消'
         })
-        return false
-      } else {
-        let checkedChangeData = arr.join()
-        // 审批状态 设定为100
-        this.axios.post(PojectdeviceApprovals2(checkedChangeData, 100)).then((response) => {
-          console.log(response)
-          if (response.data.code === 0) {
-            this.$message({
-              message: '审批成功',
-              type: 'success'
-            })
-            this.$emit('transmission')
-          } else {
-            this.$message({
-              message: '审批失败',
-              type: 'warning'
-            })
-          }
-        })
-      }
+      })
     }
   },
   created () {

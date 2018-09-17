@@ -97,8 +97,9 @@
           </ul>
           <transition enter-active-class="fadeInUp"
             leave-active-class="fadeOutDown">
-          <div v-if="item.flag" class="inline_div">
-              <dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" @examinationApproval="ExaminationApproval"></dailytwo>
+          <div @click.stop v-if="item.flag" class="inline_div">
+              <!--<dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" @examinationApproval="ExaminationApproval"></dailytwo>-->
+            <dailytwoNew></dailytwoNew>
           </div>
           </transition>
         </li>
@@ -113,6 +114,7 @@
 
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
+import dailytwoNew from '../dailyChild-Newmodification/dailyChild-Newmodification'
 import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat, SetCheckTaskFiled } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
@@ -122,7 +124,8 @@ export default {
   mixins: [projectMixin, loadingMixin],
   name: 'maintain-daily',
   components: {
-    dailytwo
+    dailytwo,
+    dailytwoNew
   },
   methods: {
     pigeonhole (taskID) {
@@ -152,7 +155,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: '已取消'
         })
       })
     },

@@ -130,32 +130,43 @@ export default {
     //   item.active = !item.active
     // },
     batch () {
-      let arr = []
-      this.dailyData.forEach((val) => {
-        if (val.judge === true) {
-          arr.push(val.deviceID)
-        }
-      })
-      if (!arr.length) {
-        this.$message({
-          message: '请选择',
-          type: 'warning'
+      this.$confirm('是否进行批量审批?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let arr = []
+        this.dailyData.forEach((val) => {
+          if (val.judge === true) {
+            arr.push(val.deviceID)
+          }
         })
-        return false
-      }
-      let token = JSON.parse(window.sessionStorage.token)
-      let taskid = this.taskid
-      let deviceids = arr.join(',')
-      this.axios.post(batchApprovalCheckTaskByDeviceids(token, taskid, deviceids)).then((response) => {
-        if (response.data.code === 0) {
+        if (!arr.length) {
           this.$message({
-            message: '审批成功',
-            type: 'success'
+            message: '请选择',
+            type: 'warning'
           })
-          this.$emit('examinationApproval', this.taskid)
-        } else {
-          this.$message.error('审批失败')
+          return false
         }
+        let token = JSON.parse(window.sessionStorage.token)
+        let taskid = this.taskid
+        let deviceids = arr.join(',')
+        this.axios.post(batchApprovalCheckTaskByDeviceids(token, taskid, deviceids)).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              message: '审批成功',
+              type: 'success'
+            })
+            this.$emit('examinationApproval', this.taskid)
+          } else {
+            this.$message.error('审批失败')
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
       })
     },
     arrangSwitch (ev) {

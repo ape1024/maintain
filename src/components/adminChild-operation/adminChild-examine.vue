@@ -26,7 +26,7 @@
           </li>
           <li class="lookover_li">
             <p class="lookover_p">生产日期：</p>
-            <div class="lookover_div">{{question.madedate}}</div>
+            <div class="lookover_div">{{fmtDate(question.madedate)}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">技术参数：</p>
@@ -39,7 +39,7 @@
           </li>
           <li class="lookover_li">
             <p class="lookover_p">有效日期：</p>
-            <div class="lookover_div">{{question.effectivedate}}</div>
+            <div class="lookover_div">{{fmtDate(question.effectivedate)}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">创建人员：</p>
@@ -177,6 +177,13 @@ export default {
         this.$refs.dialogImg.switchIndex(index)
         this.$refs.dialogImg.open()
       }, 200)
+    },
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = '0' + (date.getMonth() + 1)
+      let d = '0' + date.getDate()
+      return y + '-' + m.substring(m.length - 2, m.length) + '-' + d.substring(d.length - 2, d.length)
     }
   },
   components: {
