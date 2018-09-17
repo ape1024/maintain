@@ -21,14 +21,14 @@
               <div class="title code">{{item.deviceCode}}</div>
               <div class="title pos">{{item.locationDescription}}</div>
               <div class="title state">{{item.action}}</div>
-              <div class="title handle" @click.stop="toggle(index)">详情</div>
+              <div class="title handle" @click.stop="toggle(index, item.deviceId)">详情</div>
             </div>
             <div class="reason" v-show="index === selected">
-              <div :key="m" class="reason-desc" v-for="(t, m) in 5">
-                <div class="reason-desc-item">维保信息</div>
-                <div class="reason-desc-item">待审核</div>
-                <div class="reason-desc-item">2018-02-12</div>
+              <div :key="m" class="reason-desc" v-for="(t, m) in repairList">
+                <div class="reason-desc-item">{{t.worktypename}}</div>
+                <div class="reason-desc-item">{{t.lasttime}}</div>
               </div>
+              <div class="reason-loading" v-show="!repairList.length">{{loading}}</div>
             </div>
           </div>
         </div>
@@ -39,30 +39,75 @@
 </template>
 
 <script>
-let arr = []
-for (let i = 0; i < 30; i++) {
-  arr.push({
-    alarmTime: '2017-12-03',
-    deviceTypeName: '123',
-    controllerName: '1231',
-    deviceCode: '333',
-    locationDescription: '222',
-    action: '555'
-  })
-}
+import { getDeviceData, getDeviceRepair } from 'api/user'
+import { projectMixin, currentAreaMixin } from 'common/js/mixin'
+import { resetTime } from 'common/js/utils'
+import { stateCode, stateData, layer } from 'common/js/config'
 export default {
+  mixins: [projectMixin, currentAreaMixin],
   data () {
     return {
       selected: -1,
-      list: arr
+      list: [],
+      repairList: []
     }
   },
   methods: {
-    toggle (index) {
+    init () {
+      this.getDeviceData(this.maintainProject, this.currentAreaId)
+    },
+    getDeviceData (projectId, areaId) {
+      this.axios.post(getDeviceData(projectId, areaId)).then(res => {
+        if (res && res.data.code === 0) {
+          this.list = res.data.data.map(t => {
+            return {
+              alarmTime: resetTime(t.alarmtime, 'date'),
+              deviceTypeName: t.devicetypename,
+              controllerName: t.deviceController,
+              deviceCode: t.devicecode,
+              locationDescription: t.position,
+              action: this.getDeviceState(t.devicestate),
+              deviceId: t.deviceid
+            }
+          })
+        }
+      })
+    },
+    getDeviceState (stateVal) {
+      let state = ''
+      if ((stateVal & stateCode.shield) === stateCode.shield) {
+        state = stateData[layer.shield].name
+      } else if ((stateVal & stateCode.fire) === stateCode.fire) {
+        state = stateData[layer.fire].name
+      } else if ((stateVal & stateCode.supervise) === stateCode.supervise) {
+        state = stateData[layer.supervise].name
+      } else if ((stateVal & stateCode.start) === stateCode.start) {
+        state = stateData[layer.start].name
+      } else if ((stateVal & stateCode.feedback) === stateCode.feedback) {
+        state = stateData[layer.feedback].name
+      } else if ((stateVal & stateCode.fault) === stateCode.fault) {
+        state = stateData[layer.fault].name
+      } else if ((stateVal & stateCode.state) === stateCode.state) {
+        state = stateData[layer.state].name
+      } else if ((stateVal & stateCode.other) === stateCode.other) {
+        state = stateData[layer.other].name
+      } else {
+        state = layer.normal
+      }
+      return state
+    },
+    toggle (index, deviceId) {
       if (this.selected === index) {
         this.selected = -1
       } else {
-        this.selected = index
+        this.axios.post(getDeviceRepair(deviceId)).then(res => {
+          if (res && res.data.code === 0) {
+            this.repairList = res.data.data
+          } else {
+            this.repairList = []
+          }
+          this.selected = index
+        })
       }
     }
   },
@@ -77,6 +122,7 @@ export default {
     this.handleText = '操作'
     this.reasonText = '报警原因：'
     this.loading = '暂无数据'
+    this.init()
   }
 }
 </script>
@@ -157,8 +203,18 @@ export default {
                 &:nth-child(odd)
                   border-right 1px solid #999
                 .reason-desc-item
+                  width 50%
+                  box-sizing border-box
+                  text-align center
                   font-size $font-size-small
                   color #d5d5d5
+              .reason-loading
+                width 100%
+                height 100px
+                display flex
+                justify-content center
+                align-items center
+                color #777777
         .loading
           height 100%
           background rgba(0, 0, 0, .35)

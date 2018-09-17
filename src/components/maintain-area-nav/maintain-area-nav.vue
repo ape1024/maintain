@@ -32,7 +32,7 @@
 import SearchBox from 'base/search-box/search-box'
 import SearchList from 'base/search-list/search-list'
 import { findAreasTree } from 'api/tree'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { SearchData } from 'common/js/area'
 const SEARCH_LEN = 18
 
@@ -67,10 +67,14 @@ export default {
   },
   methods: {
     switchContent (r) {
+      if (!this.treeStructure.length) return
       this.switchState = !this.switchState
       this.$router.push({
         path: `/home/maintain-home-new/${r}`
       })
+      // 保存当前区域id
+      this.saveCurrentAreaId(-1)
+      // 更新地图
       this.$nextTick(() => {
         this.updateMap({treeData: new SearchData(this.treeStructure[0])})
       })
@@ -90,6 +94,8 @@ export default {
       })
     },
     handleNodeClick (data) {
+      // 保存当前区域id
+      this.saveCurrentAreaId(data.areaId)
       // 选择加载地图
       const treeData = this.resetMapData(this.treeStructure, data)[0]
       this.updateMap({treeData})
@@ -181,7 +187,10 @@ export default {
     ...mapActions([
       'updateMap',
       'updateTreeStructure'
-    ])
+    ]),
+    ...mapMutations({
+      saveCurrentAreaId: 'SAVE_CURRENT_AREA_ID'
+    })
   },
   watch: {
     treeStructure (newVal) {

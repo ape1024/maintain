@@ -45,7 +45,8 @@ const state = {
   allList: [],
   alarmMq: {},
   alarmId: '',
-  repairId: ''
+  repairId: '',
+  currentAreaId: -1
 }
 
 export default state

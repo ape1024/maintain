@@ -118,6 +118,7 @@ export default {
       }
     },
     searchData () {
+      this.searchVal = ''
       this.getMessageList(1, LEN, this.searchVal)
     },
     handleCurrentChange (val) {
