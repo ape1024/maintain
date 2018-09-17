@@ -431,7 +431,7 @@ export default {
                     message: '审批成功',
                     type: 'success'
                   })
-                  this.$emit('mine', this.examine_Boolean)
+                  this.$emit('mine', false)
                   return false
                 }
               })
@@ -446,9 +446,7 @@ export default {
       }
     },
     closeup () {
-      this.examine_Boolean = this.examine
-      this.examine_Boolean = !this.examine_Boolean
-      this.$emit('mine', this.examine_Boolean)
+      this.$emit('mine', false)
     },
     determine (event, checktaskdetailid) {
       let el = event.currentTarget

@@ -12,7 +12,7 @@
         <ul class="modify_ul">
           <li class="modify_li">
             <div class="modify_liDiv">
-              <p class="modify_li_p">设施类别：</p>
+              <p class="modify_li_p"><span class="increaseSpan">*</span>设施类别：</p>
               <div class="modify_li_div">
                    <el-cascader
                      size="mini"
@@ -24,7 +24,7 @@
               </div>
             </div>
             <div class="modify_liDiv">
-              <p class="modify_li_p">生产厂家：</p>
+              <p class="modify_li_p"><span class="increaseSpan">*</span>生产厂家：</p>
               <div class="modify_li_div">
                 <el-select size="mini" @focus="focus" @change="manufacturerChange" v-model="manufactorModel" placeholder="">
                   <el-option
@@ -40,7 +40,7 @@
               </div>
             </div>
             <div class="modify_liDiv">
-              <p class="modify_li_p">规格型号：</p>
+              <p class="modify_li_p"><span class="increaseSpan">*</span>规格型号：</p>
               <div class="modify_li_div">
                 <el-select size="mini" @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
                   <el-option
@@ -56,7 +56,7 @@
               </div>
             </div>
             <div class="modify_liDivtwo">
-              <p class="modify_li_p">设施位置：</p>
+              <p class="modify_li_p"><span class="modifySpantwo">*</span>设施位置：</p>
               <div class="modify_li_div">
                 <div class="content">
                   <el-cascader
@@ -70,7 +70,7 @@
               </div>
             </div>
             <div class="modify_liDiv">
-              <p class="modify_li_p">具体位置：</p>
+              <p class="modify_li_p"><span class="modifySpantwo">*</span>具体位置：</p>
               <div class="modify_li_div">
                 <el-input size="mini" v-model="Specificposition" placeholder=""></el-input>
               </div>
@@ -136,7 +136,7 @@
             </div>
           </li>
           <li class="modify_right">
-            <p class="modify_li_p">现场照片：</p>
+            <p class="modify_li_p"><span class="modifySpantwo">*</span>现场照片：</p>
             <div v-if="photoArrayBoolean" :key="$index" v-for="(item, $index) in photoArray" class="modify_rightDiv">
               <img class="modify_rightDivImg" :src="item" alt="">
               <div @click="myFileLidelete($index)" class="myFileDiv">
@@ -629,4 +629,8 @@ export default {
     transition .4s
   .modify_rightDiv:hover .myFileDiv
      opacity 1
+  .increaseSpan
+    color #dd514c
+  .modifySpantwo
+    opacity 0
 </style>

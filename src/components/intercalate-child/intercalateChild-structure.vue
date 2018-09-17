@@ -23,7 +23,7 @@
             <li class="informationLi">
               <div class="informationDiv">
                 <p class="informationP">
-                  上级主管单位：
+                  <span class="structureSpan">*</span>上级主管单位：
                 </p>
                 <div v-if="dataRoot" class="companyContent">
                   <el-cascader
@@ -47,7 +47,7 @@
             <li class="informationLifive">
               <div class="informationDiv">
                 <p class="informationP">
-                  所在区域：
+                  <span class="structureSpan">*</span>所在区域：
                 </p>
                 <div class="content">
                   <div @click.stop="accessarea" class="region">
@@ -72,7 +72,7 @@
               </div>
               <div class="informationDivtwo">
                 <p class="informationP">
-                  所在地址：
+                  <span class="structureSpan">*</span>所在地址：
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="address" placeholder=""  clearable>></el-input>
@@ -140,7 +140,7 @@
             <li class="informationLitwo">
               <div class="informationDiv">
                 <p class="informationP">
-                  单位联系人：
+                  <span class="structureSpan">*</span>单位联系人：
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="linkman" placeholder=""  clearable>></el-input>
@@ -148,7 +148,7 @@
               </div>
               <div class="informationDivtwo">
                 <p class="informationP">
-                  联系人手机：
+                  <span class="structureSpan">*</span>联系人手机：
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="CellPhone" placeholder=""  clearable>></el-input>
@@ -233,7 +233,7 @@
             <li class="informationLitwo">
               <div class="informationDiv">
                 <p class="informationP">
-                  组织机构名称：
+                  <span class="structureSpan">*</span>组织机构名称：
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="organizationname" placeholder=""  clearable>></el-input>
@@ -267,7 +267,7 @@
               </div>
               <div class="informationDiv">
                 <p class="informationP">
-                  单位编码：
+                  <span class="structureSpan">*</span>单位编码：
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="encrypt" placeholder=""  clearable>></el-input>
@@ -278,7 +278,7 @@
             <li class="informationLifive">
               <div class="informationDiv">
                 <p class="informationP">
-                  所在区域：
+                  <span class="structureSpan">*</span>所在区域：
                 </p>
                 <div class="content">
                   <div @click.stop="accessarea" class="region">
@@ -303,7 +303,7 @@
               </div>
               <div class="informationDivtwo">
                 <p class="informationP">
-                  所在地址：
+                  <span class="structureSpan">*</span>所在地址：
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="address" placeholder=""  clearable>></el-input>
@@ -342,7 +342,7 @@
             <li class="informationLitwo">
               <div class="informationDiv">
                 <p class="informationP">
-                  单位联系人：
+                  <span class="structureSpan">*</span>单位联系人：
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="linkman" placeholder=""  clearable>></el-input>
@@ -350,7 +350,7 @@
               </div>
               <div class="informationDivtwo">
                 <p class="informationP">
-                  联系人手机：
+                  <span class="structureSpan">*</span>联系人手机：
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="CellPhone" placeholder=""  clearable>></el-input>
@@ -411,7 +411,7 @@
             <li class="informationLi">
               <div class="informationDiv">
                 <p class="informationP">
-                  上级主管单位：
+                  <span class="structureSpan">*</span>上级主管单位：
                 </p>
                 <div v-if="dataRoot" class="companyContent">
                   <el-cascader
@@ -435,7 +435,7 @@
             <li class="informationLitwo">
               <div class="informationDiv">
                 <p class="informationP">
-                  组织机构名称：
+                  <span class="structureSpan">*</span>组织机构名称：
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="organizationname" placeholder=""  clearable>></el-input>
@@ -454,7 +454,7 @@
             <li class="informationLitwo">
               <div class="informationDivtwo">
                 <p class="informationP">
-                  组织类别：
+                  <span class="structureSpan">*</span>组织类别：
                 </p>
                 <div class="content">
                   <el-select size="mini" v-model="regimentaValue" placeholder="请选择">
@@ -1547,4 +1547,6 @@ export default {
     background rgba(000, 000, 000, .6)
     height 100%
     width 100%
+  .structureSpan
+    color #dd514c
 </style>
