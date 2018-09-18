@@ -15,7 +15,7 @@
           <ul class="modify_ul">
             <li class="modify_li">
               <div class="modify_liDivthree">
-                <p class="modify_li_p">设施类别：</p>
+                <p class="modify_li_p"><span class="increaseSpan">*</span>设施类别：</p>
                 <div class="modify_li_div">
                   <el-cascader
                     size="mini"
@@ -27,7 +27,7 @@
                 </div>
               </div>
               <div class="modify_liDivthree">
-                <p class="modify_li_p">生产厂家：</p>
+                <p class="modify_li_p"><span class="increaseSpan">*</span>生产厂家：</p>
                 <div class="modify_li_div">
                   <el-select size="mini" @focus="focus" @change="manufacturerChange" v-model="manufactorModel" placeholder="">
                     <el-option
@@ -43,7 +43,7 @@
                 </div>
               </div>
               <div class="modify_liDivthree">
-                <p class="modify_li_p">规格型号：</p>
+                <p class="modify_li_p"><span class="increaseSpan">*</span>规格型号：</p>
                 <div class="modify_li_div">
                   <el-select size="mini" @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
                     <el-option
@@ -131,7 +131,7 @@
           <li class="bottom_left">
             <div class="left_listTwo">
               <div class="modify_liDivtwo">
-                <p class="left_list_p">设施位置:</p>
+                <p class="left_list_p"><span class="increaseSpan">*</span>设施位置:</p>
                 <div class="modify_li_div">
                   <el-cascader
                     :options="facilityLocation"
@@ -527,7 +527,6 @@ export default {
                 this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
                   if (data.data.code === 0) {
                     devicemodel = data.data.data.divecemodelid
-                    console.log('1')
                     this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
                   }
                 })
@@ -569,6 +568,8 @@ export default {
             type: 'success'
           })
           this.$emit('transmission', false)
+        } else {
+          this.$message.error('添加失败')
         }
       })
     },
@@ -863,6 +864,7 @@ export default {
      text-align center
      margin-bottom 10px
      .preservation
+       margin-right 20px
        conserve()
      .cancel
        closedown()
@@ -1102,7 +1104,8 @@ export default {
      overflow hidden
      text-align center
      border-radius 5px
-
+  .increaseSpan
+    color #dd514c
 </style>
 <style>
   .title_liliTwoDiv  .el-input__inner{

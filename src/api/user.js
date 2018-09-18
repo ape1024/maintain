@@ -775,10 +775,22 @@ export const updateMsgState = (id) => {
   return `${Test}/message/updataMessageState?messageid=${id}`
 }
 // 获取折线图数据
-export const getDevFaultCountForYear = (year) => {
-  return `${Test}/dev/getDevFaultCountForYear?vyear=${year}`
+export const getDevFaultCountForYear = (projectId, areaId, year) => {
+  return `${Test}/dev/getDevFaultCountForYear?projectid=${projectId}&areaid=${areaId}&vyear=${year}`
 }
 // 获取饼图数据
-export const getTaskProgress = () => {
-  return `${Test}/task/getTaskProgress?projectid=1&areaid=-1`
+export const getTaskProgress = (projectId, areaId) => {
+  return `${Test}/task/getTaskProgress?projectid=${projectId}&areaid=${areaId}`
+}
+// 获取嵌套环形
+export const getCircleData = (projectId, areaId) => {
+  return `${Test}/dev/GroupDevIntactconditions?projectid=${projectId}&areaid=${areaId}`
+}
+// 首页获取设备信息
+export const getDeviceData = (projectId, areaId) => {
+  return `${Test}/areas/findAlarmDeviceData?projectid=${projectId}&areaid=${areaId}`
+}
+// 获取设备维保信息
+export const getDeviceRepair = (deviceId) => {
+  return `${Test}/app/tasks/getDevLastworktime?deviceid=${deviceId}`
 }

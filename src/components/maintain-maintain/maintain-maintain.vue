@@ -152,7 +152,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: '已取消'
         })
       })
     },
@@ -314,7 +314,7 @@ export default {
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'task_xj') {
+      if (val.functioncode === 'task_wb') {
         this.JurisdictionCheck = val.check
       }
     })

@@ -26,10 +26,12 @@
 
 <script>
 import ProgressCircle from 'base/progress-circle/progress-circle'
-import { getDevFaultCountForYear, getTaskProgress } from 'api/user'
+import { getDevFaultCountForYear, getTaskProgress, getCircleData } from 'api/user'
+import { projectMixin, currentAreaMixin } from 'common/js/mixin'
 const STEP = 600
 const LONG = 1800
 export default {
+  mixins: [projectMixin, currentAreaMixin],
   data () {
     return {
       moveVal: 0,
@@ -40,6 +42,36 @@ export default {
     }
   },
   methods: {
+    init () {
+      const width = this.$refs.wrap.clientWidth
+      this.switchState = LONG > width
+      // 嵌套环形
+      this.axios.post(getCircleData(this.maintainProject, this.currentAreaId)).then(res => {
+        if (res && res.data.code === 0) {
+          const data = res.data.data
+          this.drawNestedRing(this.$refs.nestedRing, data.devfaultcount, data.devstatecount)
+        }
+      })
+      // 折线图数据
+      const yearVal = new Date().getFullYear()
+      this.axios.post(getDevFaultCountForYear(this.maintainProject, this.currentAreaId, yearVal)).then((res) => {
+        if (res && res.data.code === 0) {
+          this.drawLineGraph(this.$refs.lineGraph, res.data.data)
+        }
+      })
+      // 饼图
+      this.axios.post(getTaskProgress(this.maintainProject, this.currentAreaId)).then((res) => {
+        if (res && res.data.code === 0) {
+          this.list = res.data.data.map((t, i) => {
+            return {
+              percent: t.progess,
+              desc: t.worktypename,
+              color: this.colorList[i]
+            }
+          })
+        }
+      })
+    },
     prev () {
       if (!this.switchState) return
       const lastVal = this.moveVal
@@ -66,7 +98,7 @@ export default {
       }
       this.prevState = true
     },
-    drawNestedRing (dom) {
+    drawNestedRing (dom, outsideData, innerData) {
       const myChart = this.$echarts.init(dom)
       myChart.setOption({
         tooltip: {
@@ -74,14 +106,17 @@ export default {
           formatter: '{b}: {c} ({d}%)'
         },
         legend: {
-          show: false,
-          orient: 'vertical',
+          // show: false,
+          // orient: 'vertical',
           x: 'left',
-          data: ['直达', '营销广告', '搜索引擎', '邮件营销', '联盟广告', '视频广告', '百度', '谷歌', '必应', '其他']
+          textStyle: {
+            color: '#fff'
+          },
+          data: outsideData.map(t => t.faulttypename).concat(innerData.map(t => t.name))
         },
         series: [
           {
-            name: '访问来源',
+            name: '',
             type: 'pie',
             selectedMode: 'single',
             radius: [0, '30%'],
@@ -96,11 +131,10 @@ export default {
                 show: false
               }
             },
-            data: [
-              {value: 335, name: '直达', selected: true},
-              {value: 679, name: '营销广告'},
-              {value: 1548, name: '搜索引擎'}
-            ]
+            center: ['50%', '60%'],
+            data: innerData.map(t => {
+              return {value: t.count, name: t.name}
+            })
           },
           {
             name: '',
@@ -108,58 +142,23 @@ export default {
             radius: ['40%', '55%'],
             label: {
               normal: {
-                formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+                formatter: ' {b|{b}：}{c}  {per|{d}%} ',
                 backgroundColor: '#eee',
                 borderColor: '#aaa',
                 borderWidth: 1,
                 borderRadius: 4,
-                // shadowBlur:3,
-                // shadowOffsetX: 2,
-                // shadowOffsetY: 2,
-                // shadowColor: '#999',
-                // padding: [0, 7],
                 rich: {
-                  a: {
-                    color: '#999',
-                    lineHeight: 22,
-                    align: 'center'
-                  },
-                  // abg: {
-                  //     backgroundColor: '#333',
-                  //     width: '100%',
-                  //     align: 'right',
-                  //     height: 22,
-                  //     borderRadius: [4, 4, 0, 0]
-                  // },
-                  hr: {
-                    borderColor: '#aaa',
-                    width: '100%',
-                    borderWidth: 0.5,
-                    height: 0
-                  },
                   b: {
-                    fontSize: 16,
-                    lineHeight: 33
-                  },
-                  per: {
-                    color: '#eee',
-                    backgroundColor: '#334455',
-                    padding: [2, 4],
-                    borderRadius: 2
+                    fontSize: 12,
+                    lineHeight: 30
                   }
                 }
               }
             },
-            data: [
-              {value: 335, name: '直达'},
-              {value: 310, name: '邮件营销'},
-              {value: 234, name: '联盟广告'},
-              {value: 135, name: '视频广告'},
-              {value: 1048, name: '百度'},
-              {value: 251, name: '谷歌'},
-              {value: 147, name: '必应'},
-              {value: 102, name: '其他'}
-            ]
+            center: ['50%', '60%'],
+            data: outsideData.map(t => {
+              return {value: t.devcount, name: t.faulttypename}
+            })
           }
         ]
       })
@@ -167,6 +166,13 @@ export default {
     drawLineGraph (dom, data) {
       const myChart = this.$echarts.init(dom)
       myChart.setOption({
+        title: {
+          text: '设备故障趋势统计图',
+          textStyle: {
+            color: '#fff'
+          },
+          left: 'center'
+        },
         xAxis: {
           axisLine: {
             lineStyle: {
@@ -192,25 +198,7 @@ export default {
     }
   },
   mounted () {
-    const width = this.$refs.wrap.clientWidth
-    this.switchState = LONG > width
-    // 嵌套环形
-    this.drawNestedRing(this.$refs.nestedRing)
-    // 折线图数据
-    const yearVal = new Date().getFullYear()
-    this.axios.post(getDevFaultCountForYear(yearVal)).then((res) => {
-      this.drawLineGraph(this.$refs.lineGraph, res.data.data)
-    })
-    // 饼图
-    this.axios.post(getTaskProgress()).then((res) => {
-      this.list = res.data.data.map((t, i) => {
-        return {
-          percent: t.progess,
-          desc: t.worktypename,
-          color: this.colorList[i]
-        }
-      })
-    })
+    this.init()
   },
   components: {
     ProgressCircle

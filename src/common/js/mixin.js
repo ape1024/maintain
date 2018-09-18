@@ -631,6 +631,19 @@ export const projectMixin = {
   }
 }
 
+export const currentAreaMixin = {
+  computed: {
+    ...mapGetters([
+      'currentAreaId'
+    ])
+  },
+  watch: {
+    currentAreaId () {
+      this.init()
+    }
+  }
+}
+
 export const loadingMixin = {
   methods: {
     openLoadingDialog () {

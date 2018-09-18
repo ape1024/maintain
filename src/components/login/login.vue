@@ -17,7 +17,7 @@
       <div class="contentDiv">
         <div class="fastener">
           <div @click="signin($event)" class="fastenerDiv">
-            登 录 1.2
+            登 录 1.3
           </div>
           <!--<span>2.3Bate</span>-->
         </div>

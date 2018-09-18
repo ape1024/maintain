@@ -127,6 +127,9 @@ const mutations = {
   },
   [types.UPDATE_ALARM_ID] (state, data) {
     state.alarmId = data
+  },
+  [types.SAVE_CURRENT_AREA_ID] (state, data) {
+    state.currentAreaId = data
   }
 }
 

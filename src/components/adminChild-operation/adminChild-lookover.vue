@@ -35,7 +35,7 @@
 
           <li class="lookover_litwo">
             <p class="lookover_p">规格型号：</p>
-            <div>{{information.devicemodel}}</div>
+            <div>{{information.devicemodelname}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">有效日期：</p>
