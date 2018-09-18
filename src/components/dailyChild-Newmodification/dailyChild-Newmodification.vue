@@ -6,6 +6,7 @@
         <div class="cephalosome">
           <ul class="cephalosomeUl">
             <li class="cephalosomeOne">
+              <span><el-checkbox v-model="checked" @change="checkedChang"></el-checkbox></span>
               设备名称
             </li>
             <li class="cephalosomeOne">
@@ -17,13 +18,17 @@
             <li class="cephalosomeOne">
               位置
             </li>
-            <li class="cephalosomeTwo">工作事项</li>
-            <li class="cephalosomeThree">工作人员</li>
-            <li class="cephalosomeFour">工作时间</li>
-            <li class="cephalosomeThree">工作结论</li>
-            <li class="cephalosomeThree">审核状态</li>
-            <li class="cephalosomeThree">处理状态</li>
-            <li class="cephalosomeOne">操作</li>
+            <div class="heavyPlayLiDiv">
+              <ul class="heavyPlayLiUl">
+                <li class="cephalosomeTwo">工作事项</li>
+                <li class="cephalosomeThree">工作人员</li>
+                <li class="cephalosomeThree">工作时间</li>
+                <li class="cephalosomeThree">工作结论</li>
+                <li class="cephalosomeThree">审核状态</li>
+                <li class="cephalosomeThree">处理状态</li>
+                <li class="cephalosomeFive">操作</li>
+              </ul>
+            </div>
           </ul>
         </div>
         <!--list-->
@@ -32,60 +37,43 @@
             <li :key="index" v-for="(item, index) in dailychild" class="listLi">
               <ul class="heavyPlay">
                 <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                  <el-checkbox v-model="item.choose"></el-checkbox>
                   {{item.deviceName}}
                 </li>
                 <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.deviceCode}}
                 </li>
                 <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  {{item.d}}
+                  <span>{{item.sumcount }}</span> / <span class="heavyPlayLiSpanThree">{{item.errcount}}</span>  / <span class="heavyPlayLiSpantwo">{{item.waitapprovalcount }}</span> / <span class="heavyPlayLiSpan">{{item.finshedcount }}</span> / <span>{{item.assigncount}}</span>
                 </li>
                 <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  {{item.f}}
+                  {{item.position}}
                 </li>
-                <li class="heavyPlayLi cephalosomeTwo">
-                  <ul class="heavyPlayDivUl">
-                    <li :key="indexG" v-for="(data, indexG) in item.g" class="heavyPlayDivLi">
-                      {{data}}
+                <div class="heavyPlayLiDiv">
+                  <ul>
+                    <li class="heavyPlayLi cephalosomeTwo">
+
+                    </li>
+                    <li class="heavyPlayLi cephalosomeThree">
+
+                    </li>
+                    <li class="heavyPlayLi cephalosomeFour">
+
+                    </li>
+                    <li class="heavyPlayLi cephalosomeThree">
+
+                    </li>
+                    <li class="heavyPlayLi cephalosomeThree">
+
+                    </li>
+                    <li class="heavyPlayLi cephalosomeThree">
+
+                    </li>
+                    <li class="heavyPlayLi cephalosomeOne">
+
                     </li>
                   </ul>
-                </li>
-                <li class="heavyPlayLi cephalosomeThree">
-                  <ul class="heavyPlayDivUl">
-                    <li :key="indexG" v-for="(data, indexG) in item.h" class="heavyPlayDivLi">
-                      {{data}}
-                    </li>
-                  </ul>
-                </li>
-                <li class="heavyPlayLi cephalosomeFour">
-                  <ul class="heavyPlayDivUl">
-                    <li :key="indexG" v-for="(data, indexG) in item.j" class="heavyPlayDivLi">
-                      {{data}}
-                    </li>
-                  </ul>
-                </li>
-                <li class="heavyPlayLi cephalosomeThree">
-                  <ul class="heavyPlayDivUl">
-                    <li :key="indexG" v-for="(data, indexG) in item.k" class="heavyPlayDivLi">
-                      {{data}}
-                    </li>
-                  </ul>
-                </li>
-                <li class="heavyPlayLi cephalosomeThree">
-                  <ul class="heavyPlayDivUl">
-                    <li :key="indexG" v-for="(data, indexG) in item.l" class="heavyPlayDivLi">
-                      {{data}}
-                    </li>
-                  </ul>
-                </li>
-                <li class="heavyPlayLi cephalosomeThree">
-                  <ul class="heavyPlayDivUl">
-                    <li :key="indexG" v-for="(data, indexG) in item.q" class="heavyPlayDivLi">
-                      {{data}}
-                    </li>
-                  </ul>
-                </li>
-                <li class="heavyPlayLi cephalosomeOne">操作</li>
+                </div>
               </ul>
             </li>
           </ul>
@@ -101,40 +89,28 @@ export default {
   props: [ 'dailychild' ],
   data () {
     return {
-      data: [
-        {
-          a: 1,
-          s: 2,
-          d: 3,
-          f: 4,
-          g: [1, 2, 3, 4],
-          h: [1, 2, 3, 4],
-          j: [1, 2, 3, 4],
-          k: [1, 2, 3, 4],
-          l: [1, 2, 3, 4],
-          q: [1, 2, 3, 4]
-        },
-        {
-          a: 11,
-          s: 22,
-          d: 33,
-          f: 44,
-          g: [11, 22, 33, 44],
-          h: [11, 22, 33, 44],
-          j: [11, 22, 33, 44],
-          k: [11, 22, 33, 44],
-          l: [11, 22, 33, 44],
-          q: [11, 22, 33, 44]
-        }
-      ]
+      information: [],
+      checked: false
     }
   },
   methods: {
+    checkedChang (ev) {
+      console.log(ev)
+      if (ev) {
 
+      }
+    }
   },
   created () {
     console.log('////////')
     console.log(this.dailychild)
+    this.information = this.dailychild
+    this.information.forEach((val) => {
+      val.choose = false
+      val.detail.forEach((data) => {
+        data.flag = false
+      })
+    })
   }
 }
 </script>
@@ -174,21 +150,28 @@ export default {
     border none
   .cephalosomeOne
     width 10%
+    text-indent .4em!important
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
   .cephalosomeTwo
-    width 18%
+    width 30%
+    text-align 2em!important
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
   .cephalosomeThree
-    width 6%
+    width 10%
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
   .cephalosomeFour
     width 8%
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+  .cephalosomeFive
+    width 20%
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
@@ -228,4 +211,19 @@ export default {
       box-sizing border-box
       border-bottom 1px solid rgba(255,255,255,.8)
       line-height 40px
+  .heavyPlayLiSpan
+    color #3abfcf
+  .heavyPlayLiSpantwo
+    color #3acf6b
+  .heavyPlayLiSpanThree
+     color #c7a038
+  .heavyPlayLiDiv
+    width 60%
+    overflow hidden
+    position relative
+    float left
+    .heavyPlayLiUl
+      overflow hidden
+      position relative
+      width 100%
 </style>

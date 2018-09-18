@@ -7,14 +7,18 @@
         <i class="el-icon-arrow-left" v-show="switchState"></i>
       </div>
       <div class="each wrap" ref="wrap">
-        <div class="graph-wrap" :style="{transform: `translateX(${moveVal}px)`}">
+        <div class="graph-wrap" :style="{transform: `translateX(${moveVal}px)`}" ref="graphWrap">
           <div class="graph-wrap-item" ref="nestedRing"></div>
           <div class="graph-wrap-item">
             <div :key="index" class="graph-wrap-item-circle" v-for="(item, index) in list">
               <progress-circle :show-color="item.color" :percent="item.percent" :desc="item.desc"></progress-circle>
             </div>
+            <div class="loading" v-show="!list.length">{{loadingText}}</div>
           </div>
-          <div class="graph-wrap-item" ref="lineGraph"></div>
+          <div class="graph-wrap-item">
+            <div class="graph-wrap-item-line" ref="lineGraph" v-show="!lineGraphLoading"></div>
+            <div class="loading" v-show="lineGraphLoading">{{loadingText}}</div>
+          </div>
         </div>
       </div>
       <div class="each move" @click="next" :class="{'error-style' : !nextState, 'normal-style': !switchState}">
@@ -29,7 +33,6 @@ import ProgressCircle from 'base/progress-circle/progress-circle'
 import { getDevFaultCountForYear, getTaskProgress, getCircleData } from 'api/user'
 import { projectMixin, currentAreaMixin } from 'common/js/mixin'
 const STEP = 600
-const LONG = 1800
 export default {
   mixins: [projectMixin, currentAreaMixin],
   data () {
@@ -38,13 +41,13 @@ export default {
       switchState: false,
       prevState: false,
       nextState: true,
-      list: []
+      list: [],
+      lineGraphLoading: true
     }
   },
   methods: {
     init () {
-      const width = this.$refs.wrap.clientWidth
-      this.switchState = LONG > width
+      this.resetCount()
       // 嵌套环形
       this.axios.post(getCircleData(this.maintainProject, this.currentAreaId)).then(res => {
         if (res && res.data.code === 0) {
@@ -56,6 +59,12 @@ export default {
       const yearVal = new Date().getFullYear()
       this.axios.post(getDevFaultCountForYear(this.maintainProject, this.currentAreaId, yearVal)).then((res) => {
         if (res && res.data.code === 0) {
+          console.log(res.data.data.length)
+          if (!res.data.data.length) {
+            this.lineGraphLoading = true
+          } else {
+            this.lineGraphLoading = false
+          }
           this.drawLineGraph(this.$refs.lineGraph, res.data.data)
         }
       })
@@ -89,6 +98,7 @@ export default {
       const lastVal = this.moveVal
       const currentVal = lastVal - STEP
       const width = this.$refs.wrap.clientWidth
+      const LONG = this.$refs.graphWrap.clientWidth
       const long = LONG - width
       if (currentVal <= -long) {
         this.moveVal = -long
@@ -195,10 +205,18 @@ export default {
           type: 'line'
         }]
       })
+    },
+    resetCount () {
+      const width = this.$refs.wrap.clientWidth
+      const LONG = this.$refs.graphWrap.clientWidth
+      this.switchState = LONG > width
     }
   },
   mounted () {
     this.init()
+  },
+  updated () {
+    this.resetCount()
   },
   components: {
     ProgressCircle
@@ -206,6 +224,7 @@ export default {
   created () {
     this.title = '图表统计'
     this.more = '更多'
+    this.loadingText = '暂无数据'
     this.colorList = ['#53DCAD', '#AD65D6', '#FC9E7D', '#F78540', '#69D4E2']
   }
 }
@@ -260,12 +279,25 @@ export default {
             height 100%
             transition transform 200ms linear
             .graph-wrap-item
+              position relative
               float left
               width 600px
               height 100%
+              .loading
+                position absolute
+                left 0
+                right 0
+                top 0
+                bottom 0
+                z-index $z-index-small-s
+                line-height 245px
+                text-align center
               .graph-wrap-item-circle
                 display inline-block
                 margin 0 10px 20px
                 width 150px
                 height 100px
+              .graph-wrap-item-line
+                width 600px
+                height 245px
 </style>

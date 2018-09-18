@@ -31,12 +31,14 @@
 <script>
 import SearchBox from 'base/search-box/search-box'
 import SearchList from 'base/search-list/search-list'
-import { findAreasTree } from 'api/tree'
+import { getTreeByProjectId } from 'api/user'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { SearchData } from 'common/js/area'
+import { projectMixin } from 'common/js/mixin'
 const SEARCH_LEN = 18
 
 export default {
+  mixins: [projectMixin],
   created () {
     this.title = '区域导航'
     this.subtitle = '玉溪卷烟厂总图'
@@ -58,12 +60,11 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'treeStructure',
-      'clientId'
+      'treeStructure'
     ])
   },
   mounted () {
-    this.getTree(this.clientId)
+    this.init()
   },
   methods: {
     switchContent (r) {
@@ -79,8 +80,9 @@ export default {
         this.updateMap({treeData: new SearchData(this.treeStructure[0])})
       })
     },
-    getTree (clientId) {
-      findAreasTree(clientId).then((data) => {
+    init () {
+      this.axios.post(getTreeByProjectId(this.maintainProject)).then((res) => {
+        const data = res.data.data
         // 获取数据失败
         if (!data || !data.length) return
         // 获取数据成功
