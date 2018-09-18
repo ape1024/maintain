@@ -57,13 +57,14 @@
                <div class="contentDivtwo">
                  <ul  class="definitionHeaderul">
                    <li @click.stop="definitionLi(item)" class="definitionHeaderli">
+                     <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1929"><path d="M433.230769 708.923077c0-53.169231 17.723077-114.215385 45.292308-161.476923 33.476923-59.076923 70.892308-82.707692 100.430769-126.030769 49.230769-72.861538 59.076923-177.230769 27.569231-256C575.015385 84.676923 500.184615 37.415385 413.538462 39.384615s-157.538462 55.138462-185.107693 135.876923c-31.507692 88.615385-17.723077 194.953846 53.169231 261.907693 29.538462 27.569231 57.107692 70.892308 41.353846 112.246154-13.784615 39.384615-61.046154 57.107692-94.523077 72.861538-76.8 33.476923-169.353846 80.738462-185.107692 171.323077C27.569231 868.430769 78.769231 945.230769 159.507692 945.230769h334.769231c15.753846 0 25.6-19.692308 15.753846-31.507692C460.8 856.615385 433.230769 783.753846 433.230769 708.923077z m315.076923-236.307692c-129.969231 0-236.307692 106.338462-236.307692 236.307692s106.338462 236.307692 236.307692 236.307692 236.307692-106.338462 236.307693-236.307692-106.338462-236.307692-236.307693-236.307692z m41.353846 257.96923c-5.907692 0-13.784615-1.969231-19.692307-3.938461l-90.584616 90.584615c-5.907692 5.907692-13.784615 7.876923-19.692307 7.876923-7.876923 0-13.784615-1.969231-19.692308-7.876923-9.846154-9.846154-9.846154-27.569231 0-39.384615l90.584615-90.584616c-1.969231-5.907692-3.938462-11.815385-3.938461-19.692307-3.938462-41.353846 29.538462-78.769231 70.892308-78.769231 5.907692 0 13.784615 1.969231 19.692307 3.938462 3.938462 0 3.938462 3.938462 1.969231 5.907692l-39.384615 41.353846c-3.938462 1.969231-3.938462 7.876923 0 9.846154l27.56923 27.569231c3.938462 3.938462 7.876923 3.938462 11.815385 0l39.384615-39.384616c1.969231-1.969231 5.907692-1.969231 5.907693 1.969231 1.969231 5.907692 3.938462 13.784615 3.938461 19.692308 0 41.353846-35.446154 74.830769-78.769231 70.892307z" p-id="1930"></path></svg>
                      {{item.first}}
                    </li>
                    <li class="definitionHeaderlitwo">
                      <el-checkbox :indeterminate="item.examinePart" v-if="item.examineShow" @change="definitionExamine(item, item.examine,0,item.examinePart)" :disabled="checkedFlag" v-model="item.examine"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox :indeterminate="item.insertPart" v-if="item.insertShow" @change="definitionExamine(item, item.insert,1,item.insertPart)" :disabled="checkedFlag" v-model="item.insert"></el-checkbox>
+                     <el-checkbox :indeterminate="item.insertPart" v-if="item.insertShow" @change="definitionExamine(item, item.insert,1,item.insertPart)" v-model="item.insert"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
                      <el-checkbox :indeterminate="item.modifyPart" v-if="item.modifyShow" @change="definitionExamine(item, item.modify,2,item.modifyPart)" :disabled="checkedFlag" v-model="item.modify"></el-checkbox>
@@ -92,7 +93,7 @@
                        <el-checkbox @change="definitionExamineChild(item, 'examinePart', 'examine', 'second', 'selectBoolean')" v-if="data.select === 1" :disabled="checkedFlag" v-model="data.selectBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" :disabled="checkedFlag" v-model="data.insertBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" v-model="data.insertBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
                        <el-checkbox @change="definitionExamineChild(item, 'modifyPart', 'update', 'second', 'updateBoolean')" v-if="data.update === 1" :disabled="checkedFlag" v-model="data.updateBoolean"></el-checkbox>
@@ -101,7 +102,7 @@
                        <el-checkbox @change="definitionExamineChild(item, 'deletePart', 'delete', 'second', 'deleteBoolean')" v-if="data.delete === 1" :disabled="checkedFlag" v-model="data.deleteBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox @change="definitionExamineChild(item, 'approvalPart', 'approval', 'second', 'approvalBoolean')" v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'approvalPart', 'approval', 'second', 'approvalBoolean')" v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.insertBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
                        <el-checkbox @change="definitionExamineChild(item, 'assignPart', 'assign', 'second', 'assignBoolean')" v-if="data.assign === 1" :disabled="checkedFlag" v-model="data.assignBoolean"></el-checkbox>
@@ -239,6 +240,7 @@ export default {
       item.flag = !item.flag
     },
     definitionExamine (data, flag, number, showflag) { // showflag 标识indeterminate 状态
+      console.log(number)
       if (number === 0) {
         if (showflag === true) {
           data.examinePart = false
@@ -354,7 +356,7 @@ export default {
             //  id
             obj.functionid = item.functionid
             //  增加
-            obj.approval = item.approvalBoolean
+            obj.insert = item.insertBoolean
             //  删除
             obj.delete = item.deleteBoolean
             //  查看
@@ -362,7 +364,7 @@ export default {
             //  修改
             obj.update = item.updateBoolean
             //  审批
-            obj.insert = item.insertBoolean
+            obj.approval = item.approvalBoolean
             //  分配
             obj.assign = item.assignBoolean
             //  检验
@@ -444,13 +446,13 @@ export default {
                   //  查看
                   data.selectBoolean = response.data.data[i].select
                   //  新增
-                  data.approvalBoolean = response.data.data[i].approval
+                  data.insertBoolean = response.data.data[i].insert
                   //  修改
                   data.updateBoolean = response.data.data[i].update
                   //  删除
                   data.deleteBoolean = response.data.data[i].delete
                   //  审批
-                  data.insertBoolean = response.data.data[i].insert
+                  data.approvalBoolean = response.data.data[i].approval
                   //  分配
                   data.assignBoolean = response.data.data[i].assign
                   //  检验

@@ -135,13 +135,25 @@
           </div>
           <div class="subjectDiv">
             <p class="subjectP">
+              重复密码：
+            </p>
+            <div class="subjectRigh">
+              <el-input
+                size="mini"
+                placeholder=""
+                type="password"
+                v-model="repwd"
+                clearable>
+              </el-input>
+            </div>
+          </div>
+          <div class="subjectDiv">
+            <p class="subjectP">
               备注信息：
             </p>
             <div class="subjectRigh">
               <el-input
-                type="textarea"
-                :rows="2"
-                resize="none"
+                size="mini"
                 placeholder=""
                 v-model="textarea">
               </el-input>
@@ -193,6 +205,8 @@ export default {
       Headportrait: '',
       //  密码
       Userpwd: '',
+      //  重复密码
+      repwd: '',
       imageUrl: '',
       imageUrlTwo: '',
       roleSelect: '',
@@ -251,6 +265,8 @@ export default {
       let headportrait = this.imageUrlTwo
       //  获取当前密码
       let Userpwd = this.Userpwd
+      //  获取当前重复密码
+      let reowd = this.repwd
       if (organizationid === '') {
         this.$message({
           message: '请选择所属组织',
@@ -284,6 +300,18 @@ export default {
       } else if (roleids.length === 0) {
         this.$message({
           message: '请选择用户角色',
+          type: 'warning'
+        })
+        return false
+      } else if (reowd === '') {
+        this.$message({
+          message: '重复密码不能为空',
+          type: 'warning'
+        })
+        return false
+      } else if (Userpwd !== reowd) {
+        this.$message({
+          message: '密码不一致!',
           type: 'warning'
         })
         return false

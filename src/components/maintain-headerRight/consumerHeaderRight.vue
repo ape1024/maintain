@@ -140,6 +140,15 @@
           <div class="subjectDiv">
             <!--原始密码-->
             <p class="subjectP">
+              旧密码：
+            </p>
+            <div class="subjectRigh">
+              <el-input size="mini" type="password" v-model="Oldcipher" placeholder=""></el-input>
+            </div>
+          </div>
+          <div class="subjectDiv">
+            <!--原始密码-->
+            <p class="subjectP">
               新密码：
             </p>
             <div class="subjectRigh">
@@ -170,7 +179,7 @@
 </template>
 
 <script>
-import { modifytheUser, getRolesList, getJobList, getOrganizationTrees, FindAllRolesByOrgID, upload } from '../../api/user'
+import { getRolesList, getJobList, getOrganizationTrees, FindAllRolesByOrgID, upload, updateUserWithPwd } from '../../api/user'
 export default {
   name: 'consumerHeaderRight',
   props: ['communication'],
@@ -218,7 +227,9 @@ export default {
       },
       organizeOptions: [],
       imageUrlTwo: '',
-      uploadUrlData: upload(JSON.parse(window.sessionStorage.token))
+      uploadUrlData: upload(JSON.parse(window.sessionStorage.token)),
+      Oldcipher: '',
+      passwordInput: ''
     }
   },
   watch: {
@@ -258,10 +269,31 @@ export default {
         })
         return
       }
+      if (this.Oldcipher) {
+        if (this.passwordInput && this.newrepeatPassword) {
+          if (this.passwordInput !== this.newrepeatPassword) {
+            this.$message({
+              message: '新密码与重复密码不相同',
+              type: 'warning'
+            })
+            return false
+          }
+        } else {
+          this.$message({
+            message: '新密码与重复密码都要填写',
+            type: 'warning'
+          })
+          return false
+        }
+      }
       //  获取当前用户id
       let userid = this.communication.userid
       //  获取组织id
       let organizationid = this.organizeOptions[this.organizeOptions.length - 1]
+      //  旧密码
+      let oldpwd = this.Oldcipher
+      //  新密码
+      let newpwd = this.passwordInput
       //  获取用户姓名
       let username = this.Username
       //  获取邮箱
@@ -278,9 +310,19 @@ export default {
       let roleids = this.userstate.length !== 0 ? this.userstate : []
       //  获取上传图片
       let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
-      this.axios.post(modifytheUser(userid, organizationid, username, email, tel, userstate, job, memo, roleids, file)).then((response) => {
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(updateUserWithPwd(token, userid, oldpwd, newpwd, organizationid, username, email, tel, userstate, job, memo, roleids, file)).then((response) => {
         if (response.data.code === 0) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
           this.$emit('informa', false)
+        } else {
+          this.$message({
+            message: `${response.message}`,
+            type: 'warning'
+          })
         }
       })
     },

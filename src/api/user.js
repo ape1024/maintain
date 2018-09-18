@@ -798,3 +798,6 @@ export const getDeviceRepair = (deviceId) => {
 export const getTreeByProjectId = (projectId) => {
   return `${Test}/areas/findAreasTreeByProjectid?projectid=${projectId}`
 }
+export const updateUserWithPwd = (token, userid, oldpwd, newpwd, organizationid, username, email, tel, userstate, job, memo, roleids, file) => {
+  return `${Test}/users/updateUserWithPwd?token=${token}&userid=${userid}&oldpwd=${oldpwd}&newpwd=${newpwd}&organizationid=${organizationid}&username=${username}&email=${email}&tel=${tel}&userstate=${userstate}&job=${job}&memo=${memo}&roleids=${roleids}&file=${file}`
+}

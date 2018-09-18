@@ -438,7 +438,9 @@ export default {
       let data = ''
       this.firecontrolDate = checkedKeys.checkedKeys
       for (let i = 0; i < checkedKeys.checkedNodes.length; i++) {
-        data += checkedKeys.checkedNodes[i].name + ' '
+        if (checkedKeys.checkedNodes[i].parentFlag !== true) {
+          data += checkedKeys.checkedNodes[i].name + ' '
+        }
       }
       this.firecontrolda = data
     },
@@ -470,6 +472,7 @@ export default {
       } else {
         let token = window.JSON.parse(window.sessionStorage.token)
         if (this.proprieTor === -1) {
+          // 创建业主单位
           this.axios.post(managementCreate(token, this.organizationcode, this.organizationname, this.shortname, this.admin, this.pwd, this.tel, 1)).then((response) => {
             if (response.data.code === 0) {
               // this.getProprietorOrganization()
@@ -482,6 +485,7 @@ export default {
               })
             }
           })
+          // 创建服务机构
         } else if (this.proprietornameDate === -1) {
           this.axios.post(managementCreate(token, this.organizationcode, this.organizationname, this.shortname, this.admin, this.pwd, this.tel, 2)).then((response) => {
             if (response.data.code === 0) {
@@ -506,6 +510,7 @@ export default {
       let token = window.JSON.parse(window.sessionStorage.token)
       let getCheckedNodes = this.$refs.one.getCheckedNodes()
       let areas = []
+      console.log(getCheckedNodes)
       getCheckedNodes.forEach((val) => {
         let obj = {
           areacode: val.areacode,
@@ -514,6 +519,7 @@ export default {
         }
         areas.push(obj)
       })
+      console.log(areas)
       let getCheckedNodesData = this.$refs.tree.getCheckedNodes()
       let baseDevices = []
       getCheckedNodesData.forEach((val) => {
@@ -684,7 +690,14 @@ export default {
     // 获取当前用户的组织机构信息
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(increasefindAllDevType()).then((response) => {
-      this.firecontrol = response.data
+      const data = response.data
+      this.firecontrol = data.map(t => {
+        return {
+          ...t,
+          parentFlag: true
+        }
+      })
+      console.log(this.firecontrol)
     })
     //  这个接口有问题  没有这个接口
     this.axios.post(findAllRootAreasTree()).then((response) => {
