@@ -288,7 +288,6 @@ export default {
               this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
                 if (data.data.code === 0) {
                   devicemodel = data.data.data.divecemodelid
-                  console.log('1')
                   this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, files)
                 }
               })

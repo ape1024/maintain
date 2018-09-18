@@ -5,7 +5,7 @@
         <img class="subjectImg" src="../../common/img/department.png" alt="">
         <p class="subjectP">角色管理</p>
       </header>
-      <div class="leftBottom">
+      <div v-if="JurisdictionSelect" class="leftBottom">
         <ul class="leftBottomUl" :key="index" v-for="(item ,index) in customRoles" >
           <li>
             <div @click="ficationClick(item)" class="leftBottomLl">{{item.organizationname}}
@@ -166,7 +166,8 @@ export default {
       ficationBoolean: false,
       btnDisabled: false,
       organizationid: '', // 创建用户角色的机构ID
-      JurisdictionInsert: ''
+      JurisdictionInsert: '',
+      JurisdictionSelect: ''
     }
   },
   methods: {
@@ -560,6 +561,7 @@ export default {
         this.JurisdictionInsert = val.insert
         this.JurisdictionUpdate = val.update
         this.JurisdictionDelete = val.delete
+        this.JurisdictionSelect = val.select
       }
     })
     let token = JSON.parse(window.sessionStorage.token)

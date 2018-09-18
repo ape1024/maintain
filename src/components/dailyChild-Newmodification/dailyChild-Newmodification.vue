@@ -50,27 +50,29 @@
                   {{item.position}}
                 </li>
                 <div class="heavyPlayLiDiv">
-                  <ul>
+                  <ul :key="$index" v-for="(data, $index) in item.detail" class="heavyPlayLiUl">
                     <li class="heavyPlayLi cephalosomeTwo">
-
+                      <el-checkbox v-model="data.flag"></el-checkbox>
+                      {{data.workItem}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
-
-                    </li>
-                    <li class="heavyPlayLi cephalosomeFour">
-
+                      {{data.users}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
-
+                      {{data.time}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
-
+                      {{data.conclusion}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
-
+                      {{data.state}}
                     </li>
-                    <li class="heavyPlayLi cephalosomeOne">
-
+                    <li class="heavyPlayLi cephalosomeThree">
+                      {{data.workrecord}}
+                    </li>
+                    <li class="heavyPlayLi cephalosomeFive">
+                      <span class="cephalosomeFiveSpan">审核</span>
+                      <span class="cephalosomeFiveSpanTwo">删除</span>
                     </li>
                   </ul>
                 </div>
@@ -97,20 +99,17 @@ export default {
     checkedChang (ev) {
       console.log(ev)
       if (ev) {
-
+        this.dailychild.forEach((val, index) => {
+          if (!val.choose) {
+          } else {
+            console.log(val)
+          }
+        })
       }
     }
   },
   created () {
-    console.log('////////')
     console.log(this.dailychild)
-    this.information = this.dailychild
-    this.information.forEach((val) => {
-      val.choose = false
-      val.detail.forEach((data) => {
-        data.flag = false
-      })
-    })
   }
 }
 </script>
@@ -126,7 +125,7 @@ export default {
       overflow hidden
       position relative
       box-sizing border-box
-      border 1px solid rgba(255,255,255,.6)
+      border 1px solid #3f4856
       margin 12px 10px
   .cephalosome
     overflow hidden
@@ -138,14 +137,14 @@ export default {
     font-size 16px
     color #999999
     width 100%
-    border-bottom 1px solid rgba(255,255,255,.6)
+    border-bottom 1px solid #3f4856
   .cephalosomeUl li
     float left
     height 40px
     line-height 40px
     box-sizing border-box
     text-indent 1em
-    border-right 1px solid rgba(255,255,255,.8)
+    border-right 1px solid #3f4856
   .cephalosomeUl li:last-child
     border none
   .cephalosomeOne
@@ -175,6 +174,10 @@ export default {
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
+  .cephalosomeFive span
+     margin-right 20px
+  .cephalosomeFive span:last-child
+    margin-right 0
   .list
     position relative
     width 100%
@@ -187,7 +190,7 @@ export default {
        overflow hidden
        position relative
        width 100%
-       border-bottom 1px solid rgba(255,255,255,.6)
+       border-bottom 1px solid #3f4856
   .heavyPlay
     width 100%
     line-height 40px
@@ -197,7 +200,7 @@ export default {
     min-height 40px
     text-indent 1em
     float left
-    border-right 1px solid rgba(255,255,255,.8)
+    border-right 1px solid #3f4856
     box-sizing border-box
   .listUl li:last-child
     border-bottom none
@@ -209,7 +212,7 @@ export default {
       width 100%
       height 40px
       box-sizing border-box
-      border-bottom 1px solid rgba(255,255,255,.8)
+      border-bottom 1px solid #3f4856
       line-height 40px
   .heavyPlayLiSpan
     color #3abfcf
@@ -225,5 +228,18 @@ export default {
     .heavyPlayLiUl
       overflow hidden
       position relative
+      box-sizing border-box
+      border-bottom 1px solid #3f4856
+      height 40px
       width 100%
+  .heavyPlayLiDiv .heavyPlayLiUl:last-child
+    border none
+  .cephalosomeFiveSpan
+    cursor pointer
+    color #3279a6
+  .cephalosomeFiveSpanTwo
+    color #a63232
+    cursor pointer
+  .heavyPlayLiUl li:last-child
+    border none
 </style>
