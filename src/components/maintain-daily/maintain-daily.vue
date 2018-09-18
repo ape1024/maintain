@@ -99,7 +99,7 @@
             leave-active-class="fadeOutDown">
           <div @click.stop v-if="item.flag" class="inline_div">
               <!--<dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" @examinationApproval="ExaminationApproval"></dailytwo>-->
-            <dailytwoNew></dailytwoNew>
+            <dailytwoNew :dailychild="dailyChild"></dailytwoNew>
           </div>
           </transition>
         </li>
@@ -239,22 +239,16 @@ export default {
         })
         let itemAreaid = item.taskID
         this.click_id = itemAreaid
+        let token = JSON.parse(window.sessionStorage.token)
         this.openLoadingDialog()
-        this.axios.post(maintainDailygetCurrentTaskDeviceStat(itemAreaid)).then((response) => {
+        this.axios.post(`http://172.16.6.81:8920/task/getCurrentTaskDeviceStatJson?token=${token}&taskid=${itemAreaid}`).then((response) => {
           if (!response) {
             this.closeLoadingDialog()
             return
           }
           if (response.data.code === 0) {
             if (response.data.data.length !== 0) {
-              response.data.data.forEach((val) => {
-                val.judge = false
-                if ((val.error + val.problem) <= 0 && (val.waitapproval > 0)) {
-                  val.available = false
-                } else {
-                  val.available = true
-                }
-              })
+              console.log(response.data.data)
               this.dailyChild = response.data.data
               item.flag = !item.flag
             } else {
