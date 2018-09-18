@@ -473,7 +473,7 @@
               </div>
               <div class="informationDiv">
                 <p class="informationP">
-                  单位编码：
+                  <span class="structureSpan">*</span>单位编码：
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="encrypt" placeholder=""  clearable>></el-input>
@@ -855,7 +855,7 @@ export default {
       const organizationcode = this.encrypt
       if (!organizationcode) {
         this.$message({
-          message: '请填写单位名称',
+          message: '请填写单位编码',
           type: 'warning'
         })
         return false
