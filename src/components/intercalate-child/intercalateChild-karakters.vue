@@ -64,7 +64,7 @@
                      <el-checkbox :indeterminate="item.examinePart" v-if="item.examineShow" @change="definitionExamine(item, item.examine,0,item.examinePart)" :disabled="checkedFlag" v-model="item.examine"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox :indeterminate="item.insertPart" v-if="item.insertShow" @change="definitionExamine(item, item.insert,1,item.insertPart)" :disabled="checkedFlag" v-model="item.insert"></el-checkbox>
+                     <el-checkbox :indeterminate="item.insertPart" v-if="item.insertShow" @change="definitionExamine(item, item.insert,1,item.insertPart)" v-model="item.insert"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
                      <el-checkbox :indeterminate="item.modifyPart" v-if="item.modifyShow" @change="definitionExamine(item, item.modify,2,item.modifyPart)" :disabled="checkedFlag" v-model="item.modify"></el-checkbox>
@@ -93,7 +93,7 @@
                        <el-checkbox @change="definitionExamineChild(item, 'examinePart', 'examine', 'second', 'selectBoolean')" v-if="data.select === 1" :disabled="checkedFlag" v-model="data.selectBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" v-model="data.insertBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
                        <el-checkbox @change="definitionExamineChild(item, 'modifyPart', 'update', 'second', 'updateBoolean')" v-if="data.update === 1" :disabled="checkedFlag" v-model="data.updateBoolean"></el-checkbox>
@@ -240,6 +240,7 @@ export default {
       item.flag = !item.flag
     },
     definitionExamine (data, flag, number, showflag) { // showflag 标识indeterminate 状态
+      console.log(number)
       if (number === 0) {
         if (showflag === true) {
           data.examinePart = false
