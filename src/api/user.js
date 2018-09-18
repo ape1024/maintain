@@ -794,3 +794,7 @@ export const getDeviceData = (projectId, areaId) => {
 export const getDeviceRepair = (deviceId) => {
   return `${Test}/app/tasks/getDevLastworktime?deviceid=${deviceId}`
 }
+// 获取区域树根据项目
+export const getTreeByProjectId = (projectId) => {
+  return `${Test}/areas/findAreasTreeByProjectid?projectid=${projectId}`
+}
