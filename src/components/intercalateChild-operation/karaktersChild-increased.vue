@@ -50,25 +50,25 @@
                         {{item.first}}
                       </li>
                       <li class="definitionHeaderlitwo">
-                        <el-checkbox :indeterminate="item.examinePart" v-if="item.examineShow" @change="definitionExamine(item, item.examine,0)" v-model="item.examine"></el-checkbox>
+                        <el-checkbox :indeterminate="item.examinePart" v-if="item.examineShow" @change="definitionExamine(item, item.examine,0,item.examinePart)" v-model="item.examine"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
-                        <el-checkbox :indeterminate="item.addPart" v-if="item.addShow" @change="definitionExamine(item, item.added,1)" v-model="item.added"></el-checkbox>
+                        <el-checkbox :indeterminate="item.insertPart" v-if="item.insertShow" @change="definitionExamine(item, item.insert,1,item.insertPart)" v-model="item.insert"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
-                        <el-checkbox :indeterminate="item.modifyPart" v-if="item.modifyShow" @change="definitionExamine(item, item.modify,2)" v-model="item.modify"></el-checkbox>
+                        <el-checkbox :indeterminate="item.modifyPart" v-if="item.modifyShow" @change="definitionExamine(item, item.modify,2,item.modifyPart)" v-model="item.modify"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
-                        <el-checkbox :indeterminate="item.deletePart" v-if="item.deleteShow" @change="definitionExamine(item, item.delete,3)" v-model="item.delete"></el-checkbox>
+                        <el-checkbox :indeterminate="item.deletePart" v-if="item.deleteShow" @change="definitionExamine(item, item.delete,3,item.deletePart)" v-model="item.delete"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
-                        <el-checkbox :indeterminate="item.insertPart" v-if="item.insertShow" @change="definitionExamine(item, item.insert,4)" v-model="item.insert"></el-checkbox>
+                        <el-checkbox :indeterminate="item.approvalPart" v-if="item.approvalShow" @change="definitionExamine(item, item.approval,4,item.approvalPart)" :disabled="checkedFlag" v-model="item.approval"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
-                        <el-checkbox :indeterminate="item.assignPart" v-if="item.assignShow" @change="definitionExamine(item, item.assign,5)" v-model="item.assign"></el-checkbox>
+                        <el-checkbox :indeterminate="item.assignPart" v-if="item.assignShow" @change="definitionExamine(item, item.assign,5,item.assignPart)" v-model="item.assign"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
-                        <el-checkbox :indeterminate="item.checkPart" v-if="item.checkShow" @change="definitionExamine(item, item.check,6)" v-model="item.check"></el-checkbox>
+                        <el-checkbox :indeterminate="item.checkPart" v-if="item.checkShow" @change="definitionExamine(item, item.check,6,item.checkPart)" v-model="item.check"></el-checkbox>
                       </li>
                     </ul>
                   </div>
@@ -82,7 +82,7 @@
                           <el-checkbox @change="definitionExamineChild(item, 'examinePart', 'examine', 'second', 'selectBoolean')" v-if="data.select === 1" v-model="data.selectBoolean"></el-checkbox>
                         </li>
                         <li class="definitionHeaderlitwo">
-                          <el-checkbox @change="definitionExamineChild(item, 'addPart', 'approval', 'second', 'approvalBoolean')" v-if="data.approval === 1" v-model="data.approvalBoolean"></el-checkbox>
+                          <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" v-model="data.insertBoolean"></el-checkbox>
                         </li>
                         <li class="definitionHeaderlitwo">
                           <el-checkbox @change="definitionExamineChild(item, 'modifyPart', 'update', 'second', 'updateBoolean')" v-if="data.update === 1" v-model="data.updateBoolean"></el-checkbox>
@@ -91,7 +91,7 @@
                           <el-checkbox @change="definitionExamineChild(item, 'deletePart', 'delete', 'second', 'deleteBoolean')" v-if="data.delete === 1" v-model="data.deleteBoolean"></el-checkbox>
                         </li>
                         <li class="definitionHeaderlitwo">
-                          <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" v-model="data.insertBoolean"></el-checkbox>
+                          <el-checkbox @change="definitionExamineChild(item, 'approvalPart', 'approval', 'second', 'approvalBoolean')" v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
                         </li>
                         <li class="definitionHeaderlitwo">
                           <el-checkbox @change="definitionExamineChild(item, 'assignPart', 'assign', 'second', 'assignBoolean')" v-if="data.assign === 1" v-model="data.assignBoolean"></el-checkbox>
@@ -198,8 +198,11 @@ export default {
     definitionLi (item) {
       item.flag = !item.flag
     },
-    definitionExamine (data, flag, number) {
+    definitionExamine (data, flag, number, showflag) { // showflag 标识indeterminate 状态
       if (number === 0) {
+        if (showflag === true) {
+          data.examinePart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.selectBoolean = true
@@ -209,7 +212,10 @@ export default {
             val.selectBoolean = false
           })
         }
-      } else if (number === 1) {
+      } else if (number === 4) {
+        if (showflag === true) {
+          data.approvalPart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.approvalBoolean = true
@@ -221,6 +227,9 @@ export default {
         }
       } else if (number === 2) {
         if (flag === true) {
+          if (showflag === true) {
+            data.modifyPart = false
+          }
           data.second.forEach((val) => {
             val.updateBoolean = true
           })
@@ -230,6 +239,9 @@ export default {
           })
         }
       } else if (number === 3) {
+        if (showflag === true) {
+          data.deletePart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.deleteBoolean = true
@@ -239,7 +251,10 @@ export default {
             val.deleteBoolean = false
           })
         }
-      } else if (number === 4) {
+      } else if (number === 1) {
+        if (showflag === true) {
+          data.insertPart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.insertBoolean = true
@@ -250,6 +265,9 @@ export default {
           })
         }
       } else if (number === 5) {
+        if (showflag === true) {
+          data.assignPart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.assignBoolean = true
@@ -260,6 +278,9 @@ export default {
           })
         }
       } else if (number === 6) {
+        if (showflag === true) {
+          data.checkPart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.checkBoolean = true
@@ -290,7 +311,7 @@ export default {
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
           let examineShow = 0
-          let addShow = 0
+          let approvalShow = 0
           let modifyShow = 0
           let deleteShow = 0
           let insertShow = 0
@@ -317,7 +338,7 @@ export default {
             }
 
             if (val.approval === 1) {
-              addShow = 1
+              approvalShow = 1
             }
 
             if (val.update === 1) {
@@ -346,10 +367,10 @@ export default {
           val.examine = false
           val.examinePart = false
           val.examineShow = examineShow
-          //  新增
-          val.added = false
-          val.addPart = false
-          val.addShow = addShow
+          //  审批
+          val.approval = false
+          val.approvalPart = false
+          val.approvalShow = approvalShow
           //  修改
           val.modify = false
           val.modifyPart = false

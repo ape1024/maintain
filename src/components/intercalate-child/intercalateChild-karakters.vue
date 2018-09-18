@@ -9,21 +9,23 @@
         <ul class="leftBottomUl" :key="index" v-for="(item ,index) in customRoles" >
           <li>
             <div @click="ficationClick(item)" class="leftBottomLl">{{item.organizationname}}
-              <div v-if="JurisdictionInsert" @click="increasd2(item)" class="addRole" v-show="index !== 0 && index !== 1 ">新增</div>
+              <!--<div v-if="JurisdictionInsert" @click="increasd2(item)" class="addRole" v-show="index !== 0 && index !== 1 ">新增</div>-->
             </div>
           </li>
           <li v-show="item.visflag"  @click="systemroleClick(iteminfo.roleid, iteminfo, false)" :key="indexinfo" v-for="(iteminfo, indexinfo) in item.roles" v-bind:class="seletedFlag === iteminfo.roleid ? 'leftBottomLlThree' : 'leftBottomLltwo'">
             {{iteminfo.rolename}}
-          </li>
-        </ul>
-      </div>
-    </section>
-    <section class="subjectRight">
-      <div class="rightHeader"></div>
-      <div class="karakters">
-        <div class="jurisdictionBottom">
-          <div class="header">
-            <!--角色名称-->
+            <div v-if="JurisdictionInsert && iteminfo.rolestate === 0" v-show="index !== 0 && index !== 1 && iteminfo.rolename" @click="enable(iteminfo)" class="enable" >禁用</div>
+            <div v-if="JurisdictionInsert && iteminfo.rolestate !== 0" v-show="index !== 0 && index !== 1 && iteminfo.rolename"  @click="enable(iteminfo)" class="unenable" >启用</div>
+         </li>
+       </ul>
+     </div>
+   </section>
+   <section class="subjectRight">
+     <div class="rightHeader"></div>
+     <div class="karakters">
+       <div class="jurisdictionBottom">
+         <div class="header">
+           <!--角色名称-->
             <div class="conserveRoleNameDiv" v-show="this.roleName">
                <span>{{this.roleName}}</span>
             </div>
@@ -58,25 +60,25 @@
                      {{item.first}}
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox :indeterminate="item.examinePart" v-if="item.examineShow" @change="definitionExamine(item, item.examine,0)" :disabled="checkedFlag" v-model="item.examine"></el-checkbox>
+                     <el-checkbox :indeterminate="item.examinePart" v-if="item.examineShow" @change="definitionExamine(item, item.examine,0,item.examinePart)" :disabled="checkedFlag" v-model="item.examine"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox :indeterminate="item.addPart" v-if="item.addShow" @change="definitionExamine(item, item.added,1)" :disabled="checkedFlag" v-model="item.added"></el-checkbox>
+                     <el-checkbox :indeterminate="item.insertPart" v-if="item.insertShow" @change="definitionExamine(item, item.insert,1,item.insertPart)" :disabled="checkedFlag" v-model="item.insert"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox :indeterminate="item.modifyPart" v-if="item.modifyShow" @change="definitionExamine(item, item.modify,2)" :disabled="checkedFlag" v-model="item.modify"></el-checkbox>
+                     <el-checkbox :indeterminate="item.modifyPart" v-if="item.modifyShow" @change="definitionExamine(item, item.modify,2,item.modifyPart)" :disabled="checkedFlag" v-model="item.modify"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox :indeterminate="item.deletePart" v-if="item.deleteShow" @change="definitionExamine(item, item.delete,3)" :disabled="checkedFlag" v-model="item.delete"></el-checkbox>
+                     <el-checkbox :indeterminate="item.deletePart" v-if="item.deleteShow" @change="definitionExamine(item, item.delete,3,item.deletePart)" :disabled="checkedFlag" v-model="item.delete"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox :indeterminate="item.insertPart" v-if="item.insertShow" @change="definitionExamine(item, item.insert,4)" :disabled="checkedFlag" v-model="item.insert"></el-checkbox>
+                     <el-checkbox :indeterminate="item.approvalPart" v-if="item.approvalShow" @change="definitionExamine(item, item.approval,4,item.approvalPart)" :disabled="checkedFlag" v-model="item.approval"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox :indeterminate="item.assignPart" v-if="item.assignShow"  @change="definitionExamine(item, item.assign,5)" :disabled="checkedFlag" v-model="item.assign"></el-checkbox>
+                     <el-checkbox :indeterminate="item.assignPart" v-if="item.assignShow"  @change="definitionExamine(item, item.assign,5,item.assignPart)" :disabled="checkedFlag" v-model="item.assign"></el-checkbox>
                    </li>
                    <li class="definitionHeaderlitwo">
-                     <el-checkbox :indeterminate="item.checkPart" v-if="item.checkShow"  @change="definitionExamine(item, item.check,6)" :disabled="checkedFlag" v-model="item.check"></el-checkbox>
+                     <el-checkbox :indeterminate="item.checkPart" v-if="item.checkShow"  @change="definitionExamine(item, item.check,6,item.checkPart)" :disabled="checkedFlag" v-model="item.check"></el-checkbox>
                    </li>
                  </ul>
                </div>
@@ -90,7 +92,7 @@
                        <el-checkbox @change="definitionExamineChild(item, 'examinePart', 'examine', 'second', 'selectBoolean')" v-if="data.select === 1" :disabled="checkedFlag" v-model="data.selectBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox @change="definitionExamineChild(item, 'addPart', 'approval', 'second', 'approvalBoolean')" v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" :disabled="checkedFlag" v-model="data.insertBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
                        <el-checkbox @change="definitionExamineChild(item, 'modifyPart', 'update', 'second', 'updateBoolean')" v-if="data.update === 1" :disabled="checkedFlag" v-model="data.updateBoolean"></el-checkbox>
@@ -99,7 +101,7 @@
                        <el-checkbox @change="definitionExamineChild(item, 'deletePart', 'delete', 'second', 'deleteBoolean')" v-if="data.delete === 1" :disabled="checkedFlag" v-model="data.deleteBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" :disabled="checkedFlag" v-model="data.insertBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'approvalPart', 'approval', 'second', 'approvalBoolean')" v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
                        <el-checkbox @change="definitionExamineChild(item, 'assignPart', 'assign', 'second', 'assignBoolean')" v-if="data.assign === 1" :disabled="checkedFlag" v-model="data.assignBoolean"></el-checkbox>
@@ -126,7 +128,7 @@
 </template>
 
 <script>
-import { karaktersFindAllRoles, karaktersSetRoleFunctions, karaktersFindAllFunctions, karaktersFindRoleFunctions, DeleteRole } from '../../api/user'
+import { karaktersFindAllRoles, karaktersSetRoleFunctions, karaktersFindAllFunctions, karaktersFindRoleFunctions, DeleteRole, SetRoleDisabledOrEnabled } from '../../api/user'
 import increased from '../intercalateChild-operation/karaktersChild-increased'
 import increased2 from '../intercalateChild-operation/karaktersChild-increased2'
 export default {
@@ -201,10 +203,10 @@ export default {
     increasd () {
       this.basis = true
     },
-    increasd2 (data) {
-      this.organizationid = data.organizationid
-      this.basisshow = true
-    },
+    // increasd2 (data) {
+    //   this.organizationid = data.organizationid
+    //   this.basisshow = true
+    // },
     Basis (ev) {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(karaktersFindAllRoles(token)).then((response) => {
@@ -236,8 +238,11 @@ export default {
     definitionLi (item) {
       item.flag = !item.flag
     },
-    definitionExamine (data, flag, number) {
+    definitionExamine (data, flag, number, showflag) { // showflag 标识indeterminate 状态
       if (number === 0) {
+        if (showflag === true) {
+          data.examinePart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.selectBoolean = true
@@ -247,7 +252,10 @@ export default {
             val.selectBoolean = false
           })
         }
-      } else if (number === 1) {
+      } else if (number === 4) {
+        if (showflag === true) {
+          data.approvalPart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.approvalBoolean = true
@@ -259,6 +267,9 @@ export default {
         }
       } else if (number === 2) {
         if (flag === true) {
+          if (showflag === true) {
+            data.modifyPart = false
+          }
           data.second.forEach((val) => {
             val.updateBoolean = true
           })
@@ -268,6 +279,9 @@ export default {
           })
         }
       } else if (number === 3) {
+        if (showflag === true) {
+          data.deletePart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.deleteBoolean = true
@@ -277,7 +291,10 @@ export default {
             val.deleteBoolean = false
           })
         }
-      } else if (number === 4) {
+      } else if (number === 1) {
+        if (showflag === true) {
+          data.insertPart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.insertBoolean = true
@@ -288,6 +305,9 @@ export default {
           })
         }
       } else if (number === 5) {
+        if (showflag === true) {
+          data.assignPart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.assignBoolean = true
@@ -298,6 +318,9 @@ export default {
           })
         }
       } else if (number === 6) {
+        if (showflag === true) {
+          data.checkPart = false
+        }
         if (flag === true) {
           data.second.forEach((val) => {
             val.checkBoolean = true
@@ -385,7 +408,7 @@ export default {
         }
       })
       this.fullFunctionality.forEach((val) => {
-        val.added = false
+        val.approval = false
         val.delete = false
         val.examine = false
         val.insert = false
@@ -394,7 +417,7 @@ export default {
         val.check = false
 
         val.examinePart = false
-        val.addPart = false
+        val.approvalPart = false
         val.modifyPart = false
         val.deletePart = false
         val.insertPart = false
@@ -438,7 +461,7 @@ export default {
           }
           this.fullFunctionality.forEach((val) => {
             let examinePart = 0
-            let addPart = 0
+            let approvalPart = 0
             let modifyPart = 0
             let deletePart = 0
             let insertPart = 0
@@ -450,7 +473,7 @@ export default {
                 examinePart += 1
               }
               if (data.approvalBoolean) {
-                addPart += 1
+                approvalPart += 1
               }
               if (data.updateBoolean) {
                 modifyPart += 1
@@ -469,14 +492,14 @@ export default {
               }
             })
             val.examinePart = examinePart > 0 && examinePart < len
-            val.addPart = addPart > 0 && addPart < len
+            val.approvalPart = approvalPart > 0 && approvalPart < len
             val.modifyPart = modifyPart > 0 && modifyPart < len
             val.deletePart = deletePart > 0 && deletePart < len
             val.insertPart = insertPart > 0 && insertPart < len
             val.assignPart = assignPart > 0 && assignPart < len
             val.checkPart = checkPart > 0 && checkPart < len
 
-            val.added = addPart === len
+            val.approval = approvalPart === len
             val.delete = deletePart === len
             val.examine = examinePart === len
             val.insert = insertPart === len
@@ -489,6 +512,43 @@ export default {
     },
     ficationClick (item) {
       item.visflag = !item.visflag
+    },
+    enable (data) {
+      let msg = ''
+      const stateVal = data.rolestate
+      if (stateVal === 0) {
+        msg = '禁用该角色后,此单位下所有用户将无法使用该系统,是否继续？'
+      } else {
+        msg = '是否启用该角色？'
+      }
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.post(SetRoleDisabledOrEnabled(data.roleid)).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            })
+            data.rolestate = stateVal === 0 ? -1 : 0
+          } else {
+            this.$message.error(response.data.message)
+          }
+        })
+      })
+    },
+    findAllRoles (token) {
+      this.axios.post(karaktersFindAllRoles(token)).then((response) => {
+        if (response.data.code === 0) {
+          response.data.data.forEach((val) => {
+            val.flag = false
+            val.visflag = false
+            this.customRoles.push(val)
+          })
+        }
+      })
     }
   },
   created () {
@@ -504,17 +564,18 @@ export default {
     this.axios.post(karaktersFindAllFunctions(token)).then((response) => {
       if (response.data.code === 0) {
         let data = response.data.data
+        console.log(data)
         data.forEach((val) => {
           let examineShow = 0
-          let addShow = 0
+          let insertShow = 0
           let modifyShow = 0
           let deleteShow = 0
-          let insertShow = 0
+          let approvalShow = 0
           let assignShow = 0
           let checkShow = 0
           val.second.forEach((val) => {
             //  添加
-            val.approvalBoolean = false
+            val.insertBoolean = false
             //  删除
             val.deleteBoolean = false
             //  修改
@@ -522,7 +583,7 @@ export default {
             //  查看
             val.selectBoolean = false
             //  审核
-            val.insertBoolean = false
+            val.approvalBoolean = false
             //  分配
             val.assignBoolean = false
             //  检验
@@ -533,7 +594,7 @@ export default {
             }
 
             if (val.approval === 1) {
-              addShow = 1
+              approvalShow = 1
             }
 
             if (val.update === 1) {
@@ -562,10 +623,10 @@ export default {
           val.examine = false
           val.examinePart = false
           val.examineShow = examineShow
-          //  新增
-          val.added = false
-          val.addPart = false
-          val.addShow = addShow
+          //  审批
+          val.approval = false
+          val.approvalPart = false
+          val.approvalShow = approvalShow
           //  修改
           val.modify = false
           val.modifyPart = false
@@ -574,7 +635,7 @@ export default {
           val.delete = false
           val.deletePart = false
           val.deleteShow = deleteShow
-          //  审核
+          //  新增
           val.insert = false
           val.insertPart = false
           val.insertShow = insertShow
@@ -590,16 +651,7 @@ export default {
         this.fullFunctionality = data
       }
     })
-    this.axios.post(karaktersFindAllRoles(token)).then((response) => {
-      console.log(response.data.data)
-      if (response.data.code === 0) {
-        response.data.data.forEach((val) => {
-          val.flag = false
-          val.visflag = false
-          this.customRoles.push(val)
-        })
-      }
-    })
+    this.findAllRoles(token)
   }
 }
 </script>
@@ -806,6 +858,14 @@ export default {
     float right
     margin-right 20px
   .addRole
+    float: right
+    margin-right: 15px
+    color: #3acf76
+  .enable
+    float: right
+    margin-right: 15px
+    color: #cf0505
+  .unenable
     float: right
     margin-right: 15px
     color: #3acf76

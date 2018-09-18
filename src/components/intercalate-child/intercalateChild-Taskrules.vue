@@ -13,6 +13,7 @@
               :props="facilitiesProps"
               @node-click="handleNodeClick"
               accordion
+              highlight-current
               node-key="id">
       <span class="custom-tree-node" slot-scope="{ node, data }">
         <span>{{ node.label }}</span>

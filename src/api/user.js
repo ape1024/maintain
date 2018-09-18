@@ -596,6 +596,11 @@ export const getRolesList3 = (token, userId) => {
   const url = `${Test}/users/getRolesList3?userid=${userId}&token=${token}`
   return url
 }
+// 禁用或启用角色
+export const SetRoleDisabledOrEnabled = (roleid) => {
+  const url = `${Test}/roles/SetRoleDisabledOrEnabled?roleID=${roleid}`
+  return url
+}
 
 //  getUserRoles
 export const getUserRoles = (userid) => {

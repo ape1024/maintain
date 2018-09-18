@@ -8,7 +8,11 @@
       </header>
       <div class="leftBottom">
         <div class="leftBottomDiv">
-          <el-tree node-click="changClick" :data="data" :props="defaultProps" @node-click="handleNodeClick">
+          <el-tree node-click="changClick"
+                   :data="data"
+                   :props="defaultProps"
+                   highlight-current
+                   @node-click="handleNodeClick">
           </el-tree>
         </div>
       </div>

@@ -13,6 +13,7 @@
             <div class="subjectRigh">
               <el-input
                 size="mini"
+                :disabled="nameoflanding"
                 placeholder=""
                 v-model="nameoflanding"
                 clearable>
@@ -50,7 +51,7 @@
               用户角色：
             </p>
             <div class="subjectRigh">
-              <el-select size="mini" v-model="userstate" multiple placeholder="请选择">
+              <el-select size="mini" v-model="userstate" multiple placeholder="请选择" :disabled="userstate">
                 <el-option
                   v-for="item in roleSelect"
                   :key="item.roleid"

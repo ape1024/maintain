@@ -3,12 +3,16 @@
       <section class="subjectLeft">
         <header class="leftHeader">
           <img class="subjectImg" src="../../common/img/department.png" alt="">
-          <p class="subjectP">结构组织</p>
+          <p class="subjectP">组织机构</p>
           <p v-if="JurisdictionInsert" @click="subjectpCreate" class="subjectptwo">新增</p>
         </header>
         <div class="leftBottom">
           <div class="leftBottomDiv">
-            <el-tree node-click="changClick" :data="data" :props="defaultProps" @node-click="handleNodeClick">
+            <el-tree node-click="changClick"
+                     :data="data"
+                     :props="defaultProps"
+                     highlight-current
+                     @node-click="handleNodeClick">
             </el-tree>
           </div>
         </div>
