@@ -179,7 +179,7 @@
 </template>
 
 <script>
-import { getRolesList, getJobList, getOrganizationTrees, FindAllRolesByOrgID, upload, updateUserWithPwd} from '../../api/user'
+import { getRolesList, getJobList, getOrganizationTrees, FindAllRolesByOrgID, upload, updateUserWithPwd } from '../../api/user'
 export default {
   name: 'consumerHeaderRight',
   props: ['communication'],
@@ -322,7 +322,7 @@ export default {
           this.$message({
             message: `${response.message}`,
             type: 'warning'
-          });
+          })
         }
       })
     },
