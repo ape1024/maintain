@@ -794,3 +794,6 @@ export const getDeviceData = (projectId, areaId) => {
 export const getDeviceRepair = (deviceId) => {
   return `${Test}/app/tasks/getDevLastworktime?deviceid=${deviceId}`
 }
+export const updateUserWithPwd = (token, userid, oldpwd, newpwd, organizationid, username, email, tel, userstate, job, memo, roleids, file) => {
+  return `${Test}/users/updateUserWithPwd?token=${token}&userid=${userid}&oldpwd=${oldpwd}&newpwd=${newpwd}&organizationid=${organizationid}&username=${username}&email=${email}&tel=${tel}&userstate=${userstate}&job=${job}&memo=${memo}&roleids=${roleids}&file=${file}`
+}

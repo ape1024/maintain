@@ -92,7 +92,7 @@
                        <el-checkbox @change="definitionExamineChild(item, 'examinePart', 'examine', 'second', 'selectBoolean')" v-if="data.select === 1" :disabled="checkedFlag" v-model="data.selectBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" :disabled="checkedFlag" v-model="data.insertBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
                        <el-checkbox @change="definitionExamineChild(item, 'modifyPart', 'update', 'second', 'updateBoolean')" v-if="data.update === 1" :disabled="checkedFlag" v-model="data.updateBoolean"></el-checkbox>
@@ -101,7 +101,7 @@
                        <el-checkbox @change="definitionExamineChild(item, 'deletePart', 'delete', 'second', 'deleteBoolean')" v-if="data.delete === 1" :disabled="checkedFlag" v-model="data.deleteBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
-                       <el-checkbox @change="definitionExamineChild(item, 'approvalPart', 'approval', 'second', 'approvalBoolean')" v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
+                       <el-checkbox @change="definitionExamineChild(item, 'approvalPart', 'approval', 'second', 'approvalBoolean')" v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.insertBoolean"></el-checkbox>
                      </li>
                      <li class="definitionHeaderlitwo">
                        <el-checkbox @change="definitionExamineChild(item, 'assignPart', 'assign', 'second', 'assignBoolean')" v-if="data.assign === 1" :disabled="checkedFlag" v-model="data.assignBoolean"></el-checkbox>
@@ -354,7 +354,7 @@ export default {
             //  id
             obj.functionid = item.functionid
             //  增加
-            obj.approval = item.approvalBoolean
+            obj.insert = item.insertBoolean
             //  删除
             obj.delete = item.deleteBoolean
             //  查看
@@ -362,7 +362,7 @@ export default {
             //  修改
             obj.update = item.updateBoolean
             //  审批
-            obj.insert = item.insertBoolean
+            obj.approval = item.approvalBoolean
             //  分配
             obj.assign = item.assignBoolean
             //  检验
@@ -444,13 +444,13 @@ export default {
                   //  查看
                   data.selectBoolean = response.data.data[i].select
                   //  新增
-                  data.approvalBoolean = response.data.data[i].approval
+                  data.insertBoolean = response.data.data[i].insert
                   //  修改
                   data.updateBoolean = response.data.data[i].update
                   //  删除
                   data.deleteBoolean = response.data.data[i].delete
                   //  审批
-                  data.insertBoolean = response.data.data[i].insert
+                  data.approvalBoolean = response.data.data[i].approval
                   //  分配
                   data.assignBoolean = response.data.data[i].assign
                   //  检验

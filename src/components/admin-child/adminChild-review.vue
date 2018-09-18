@@ -517,8 +517,16 @@ export default {
         }
         tabulationtitle.push(obj)
       })
+
       if (this.categoryDate.length !== 0) {
         if (this.customManufacturer === true) {
+          if (!this.customManufacturerDate) {
+            this.$message({
+              message: '请输入厂家',
+              type: 'warning'
+            })
+            return false
+          }
           this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
             if (response.data.code === 0) {
               // 厂家id
@@ -532,7 +540,6 @@ export default {
                 })
               } else {
                 devicemodel = this.versionValue
-                console.log('2')
                 this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
               }
             }
@@ -543,14 +550,12 @@ export default {
             if (Item.data.code === 0) {
               devicemodel = Item.data.data.divecemodelid
               manufacturerid = this.manufactorModel
-              console.log(manufacturerid)
               this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
             }
           })
         } else {
           devicemodel = this.versionValue
           manufacturerid = this.manufactorModel
-          console.log('4')
           this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
         }
       } else {

@@ -17,7 +17,7 @@
       <div class="contentDiv">
         <div class="fastener">
           <div @click="signin($event)" class="fastenerDiv">
-            登 录 1.3
+            登 录 1.4
           </div>
           <!--<span>2.3Bate</span>-->
         </div>
@@ -114,6 +114,7 @@ export default {
                   window.sessionStorage.setItem('showMap', showMap)
                   let newToken = JSON.parse(token)
                   this.axios.post(getUserFuncions(newToken)).then((data) => {
+                    console.log(data)
                     data.data.forEach((val) => {
                       let approval = ''
                       let deleteData = ''
@@ -169,6 +170,7 @@ export default {
                       }
                       this.authority.push(obj)
                     })
+                    console.log(this.authority)
                     let authority = JSON.stringify(this.authority)
                     window.sessionStorage.setItem('Jurisdiction', authority)
                   })

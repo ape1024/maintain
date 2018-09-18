@@ -78,7 +78,7 @@
             {{dataset.position}}
           </li>
           <li class="threelevel_lithree">
-            {{dataset.devicecount2}}
+            {{dataset.devcount2}}
           </li>
           <li class="threelevel_lithree">
             {{dataset.manufacturename}}
@@ -147,7 +147,7 @@ import childModify from '../adminChild-operation/adminChild-modify'
 import childExamine from '../adminChild-operation/adminChild-examine'
 import childquipment from '../adminChild-operation/adminChild-quipment'
 import {stateData, examineDate} from '../../common/js/utils'
-import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, FindDevAllApprovalstate, getDevListDetailProjectsThree, PojectdeviceApprovals2 } from '../../api/user'
+import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, getDevListDetailProjectsThree, PojectdeviceApprovals2, getApproveType } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin, loadingMixin],
@@ -535,7 +535,7 @@ export default {
         this.runningstateDate = response.data.data
       }
     })
-    this.axios.post(FindDevAllApprovalstate()).then((response) => {
+    this.axios.post(getApproveType(token)).then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data
       }
