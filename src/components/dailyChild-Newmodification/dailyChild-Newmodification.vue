@@ -29,18 +29,18 @@
         <!--list-->
         <div class="list">
           <ul class="listUl">
-            <li :key="index" v-for="(item, index) in data" class="listLi">
+            <li :key="index" v-for="(item, index) in dailychild" class="listLi">
               <ul class="heavyPlay">
-                <li :style="{height: item.g.length * 40 + 'px', lineHeight: item.g.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  {{item.a}}
+                <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                  {{item.deviceName}}
                 </li>
-                <li :style="{height: item.g.length * 40 + 'px', lineHeight: item.g.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  {{item.s}}
+                <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                  {{item.deviceCode}}
                 </li>
-                <li :style="{height: item.g.length * 40 + 'px', lineHeight: item.g.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.d}}
                 </li>
-                <li :style="{height: item.g.length * 40 + 'px', lineHeight: item.g.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.f}}
                 </li>
                 <li class="heavyPlayLi cephalosomeTwo">
@@ -98,6 +98,7 @@
 <script>
 export default {
   name: 'dailyChild-Newmodification',
+  props: [ 'dailychild' ],
   data () {
     return {
       data: [
@@ -130,6 +131,10 @@ export default {
   },
   methods: {
 
+  },
+  created () {
+    console.log('////////')
+    console.log(this.dailychild)
   }
 }
 </script>
