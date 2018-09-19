@@ -1,6 +1,6 @@
 import { resetTime } from './utils'
 import { alarmHandle, stateData, layer } from './config'
-import { getDeviceRecord, getGuide } from 'api/map'
+import { getDeviceRecord } from 'api/map'
 export class IconAlarmList {
   constructor ({alarmtime, devicename, memo, deviceState, recordid, deviceid, areaid}) {
     this.startTime = resetTime(alarmtime, 'time')
@@ -53,7 +53,8 @@ export const createBuildingData = function (building) {
 
 export const createFloorData = async function (floor) {
   const record = await getDeviceRecord(floor.deviceid).then((t) => t !== undefined ? t : [])
-  const guide = floor.acceptid ? (await getGuide(floor.acceptid, floor.basedevicecode).then((t) => t).operateguide) : ''
+  // const guide = floor.acceptid ? (await getGuide(floor.acceptid, floor.basedevicecode).then((t) => t).operateguide) : ''
+  const guide = ''
   const stateName = stateData[floor.deviceStateVal].name
 
   let handleState

@@ -4,7 +4,7 @@
     <section class="subjectLeft">
       <header class="leftHeader">
         <img class="subjectImg" src="../../common/img/department.png" alt="">
-        <p class="subjectP">结构组织</p>
+        <p class="subjectP">组织机构</p>
       </header>
       <div class="leftBottom">
         <div class="leftBottomDiv">
