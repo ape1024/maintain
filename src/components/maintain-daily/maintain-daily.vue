@@ -249,6 +249,12 @@ export default {
           if (response.data.code === 0) {
             if (response.data.data.length !== 0) {
               console.log(response.data.data)
+              response.data.data.forEach((val) => {
+                val.choose = false
+                val.detail.forEach((data) => {
+                  data.flag = false
+                })
+              })
               this.dailyChild = response.data.data
               item.flag = !item.flag
             } else {

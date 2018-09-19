@@ -29,8 +29,8 @@
             <div class="item title">{{item.msgtitle}}</div>
             <div class="item person">{{item.sendername}}</div>
             <div class="item time">{{resetTimeModel(item.createtime)}}</div>
-            <div class="item state">{{resetMsgState(item.msgtype, item.msgstate)}}</div>
-            <div class="item important">{{resetMsgLevel(item.msglevel)}}</div>
+            <div class="item state" :style="{'color' : resetMsgStateColor(item.msgtype, item.msgstate)}">{{resetMsgState(item.msgtype, item.msgstate)}}</div>
+            <div class="item important" :style="{'color' : resetMsgLevelColor(item.msglevel)}">{{resetMsgLevel(item.msglevel)}}</div>
             <div class="item handle" @click="examineMsg(item.msgtype, item.messageid, item.content)">查看</div>
           </div>
         </div>
@@ -107,6 +107,15 @@ export default {
           return '已读'
       }
     },
+    resetMsgStateColor (type, state) {
+      if (type === this.msgType.send) return ''
+      switch (state) {
+        case 0:
+          return '#E03D40'
+        case 1:
+          return ''
+      }
+    },
     resetMsgLevel (level) {
       switch (level) {
         case 1:
@@ -115,6 +124,16 @@ export default {
           return '重要'
         case 3:
           return '一般'
+      }
+    },
+    resetMsgLevelColor (level) {
+      switch (level) {
+        case 1:
+          return '#DC7634'
+        case 2:
+          return '#E9D369'
+        case 3:
+          return '#99D965'
       }
     },
     searchData () {
@@ -223,6 +242,8 @@ export default {
               color #d5d5d5
               font-size $font-size-small
               height 14px
+              &:last-child
+                color #296186
         .type
           width 12%
         .title
