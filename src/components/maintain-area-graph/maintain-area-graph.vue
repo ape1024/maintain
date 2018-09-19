@@ -59,7 +59,6 @@ export default {
       const yearVal = new Date().getFullYear()
       this.axios.post(getDevFaultCountForYear(this.maintainProject, this.currentAreaId, yearVal)).then((res) => {
         if (res && res.data.code === 0) {
-          console.log(res.data.data.length)
           if (!res.data.data.length) {
             this.lineGraphLoading = true
           } else {
