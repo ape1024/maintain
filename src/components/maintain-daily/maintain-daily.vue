@@ -93,13 +93,16 @@
               <div v-if="timestamp > item.endTime && JurisdictionCheck ? true : false" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
                 归 档
               </div>
+              <div class="batchDiv">
+                批量审核
+              </div>
             </li>
           </ul>
           <transition enter-active-class="fadeInUp"
             leave-active-class="fadeOutDown">
           <div @click.stop v-if="item.flag" class="inline_div">
               <!--<dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" @examinationApproval="ExaminationApproval"></dailytwo>-->
-            <dailytwoNew :dailychild="dailyChild"></dailytwoNew>
+            <dailytwoNew @requestdata="requestData" :dailychild="dailyChild" :clicktaskname="clicktaskName"></dailytwoNew>
           </div>
           </transition>
         </li>
@@ -115,7 +118,7 @@
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
 import dailytwoNew from '../dailyChild-Newmodification/dailyChild-Newmodification'
-import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat, SetCheckTaskFiled } from '../../api/user'
+import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat, SetCheckTaskFiled, getCurrentTaskDeviceStatJson } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
@@ -237,23 +240,49 @@ export default {
         this.tableDatataskStat.forEach((val) => {
           val.flag = false
         })
+        this.clicktaskName = item.taskName
         let itemAreaid = item.taskID
         this.click_id = itemAreaid
         let token = JSON.parse(window.sessionStorage.token)
         this.openLoadingDialog()
-        this.axios.post(`http://172.16.6.81:8920/task/getCurrentTaskDeviceStatJson?token=${token}&taskid=${itemAreaid}`).then((response) => {
+        this.axios.post(getCurrentTaskDeviceStatJson(token, itemAreaid)).then((response) => {
           if (!response) {
             this.closeLoadingDialog()
             return
           }
           if (response.data.code === 0) {
             if (response.data.data.length !== 0) {
-              console.log(response.data.data)
               response.data.data.forEach((val) => {
                 val.choose = false
-                val.detail.forEach((data) => {
-                  data.flag = false
-                })
+                console.log(val)
+                if (val.details) {
+                  val.details.forEach((data) => {
+                    data.flag = false
+                    if (data.photos) {
+                      data.photosArr = []
+                      if (data.photos.indexOf(',') !== -1) {
+                        let arr = data.photos.split(',')
+                        data.photosArr = arr
+                      } else {
+                        data.photosArr.push(data.photos)
+                      }
+                    }
+                    if (!data.iswaitapproval) {
+                      if (!data.isapproval) {
+                        data.iswaitapprovalName = ''
+                      } else {
+                        data.iswaitapprovalName = '已审批'
+                      }
+                    } else {
+                      data.iswaitapprovalName = '待审批'
+                    }
+                    if (data.isassigned) {
+                      data.isassignedName = '已安排'
+                    } else {
+                      data.isassignedName = '未安排'
+                    }
+                  })
+                }
               })
               this.dailyChild = response.data.data
               item.flag = !item.flag
@@ -282,6 +311,41 @@ export default {
     },
     Say (ev) {
       this.modifyBoolean = ev
+    },
+    requestData () {
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(getCurrentTaskDeviceStatJson(token, this.click_id)).then((response) => {
+        if (response.data.code === 0) {
+          if (response.data.data.length !== 0) {
+            response.data.data.forEach((val) => {
+              val.choose = false
+              if (val.details) {
+                val.details.forEach((data) => {
+                  data.flag = false
+                  if (!data.iswaitapproval) {
+                    if (!data.isapproval) {
+                      data.iswaitapprovalName = ''
+                    } else {
+                      data.iswaitapprovalName = '已审批'
+                    }
+                  } else {
+                    data.iswaitapprovalName = '待审批'
+                  }
+                  if (data.isassigned) {
+                    data.isassignedName = '已安排'
+                  } else {
+                    data.isassignedName = '未安排'
+                  }
+                })
+              }
+            })
+            this.dailyChild = response.data.data
+          } else {
+            this.dailyChild = response.data.data
+          }
+        }
+        this.closeLoadingDialog()
+      })
     }
   },
   data () {
@@ -313,6 +377,7 @@ export default {
       tableDatataskStat: [],
       dailyChild: '',
       timestamp: '',
+      clicktaskName: '',
       JurisdictionCheck: ''
     }
   },
@@ -690,4 +755,16 @@ export default {
     min-height 800px
     background rgba(0,0,0,0.35)
     margin 10px
+  .batchDiv
+    display inline-block
+    width 80px
+    height 30px
+    line-height 30px
+    border-radius 5px
+    text-align center
+    background $color-background-newly
+    cursor pointer
+    transition .2s
+    &:hover
+      background #4baabe
 </style>
