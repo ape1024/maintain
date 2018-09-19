@@ -108,10 +108,10 @@
 </template>
 
 <script>
-import { maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailyassignedTask } from '../../api/user'
+import { maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailyassignedTask, maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'dailyChild-distribution',
-  props: ['distriBoolean', 'getrepairDate', 'instruction', 'equipment'],
+  props: ['distriBoolean', 'instruction', 'equipment'],
   data () {
     return {
       radio2: '',
@@ -133,7 +133,8 @@ export default {
         label: 'organizationName'
       },
       proprietorCheckList: [],
-      maintenanceList: []
+      maintenanceList: [],
+      getrepairDate: ''
     }
   },
   methods: {
@@ -151,10 +152,7 @@ export default {
         let faultTypeId = this.radio2
         let usersNumber = this.maintenanceList.concat(this.repairCheckList)
         let users = []
-        this.instruction.forEach((val) => {
-          string += `${val.checktaskdetailid},`
-        })
-        string = string.substring(0, string.length - 1)
+        string = this.instruction.checktaskdetailid
         if (usersNumber.length !== 0) {
           usersNumber.forEach((val) => {
             let obj = {
@@ -176,10 +174,10 @@ export default {
               message: '分配成功',
               type: 'success'
             })
-            this.$emit('dist', false)
+            this.$emit('distribution')
           } else if (response.data.code === -1) {
             this.$message({
-              message: '异常状态!',
+              message: response.message,
               type: 'warning'
             })
           }
@@ -187,27 +185,27 @@ export default {
       }
     },
     closedown () {
-      this.distrBoolean = this.distriBoolean
-      this.distrBoolean = !this.distrBoolean
-      this.$emit('dist', this.distrBoolean)
+      this.$emit('dist', false)
     }
   },
   created () {
-    this.instruction.forEach((val, index) => {
-      let data = `${index},工作事项: ${val.matters} 工作结论: ${val.conclusion === null ? ' ' : val.conclusion}\n`
-      this.instrucTion += data
-    })
+    let data = `1,工作事项: ${this.instruction.matters} 工作结论: ${this.instruction.conclusion === null ? ' ' : this.instruction.conclusion}\n`
+    this.instrucTion += data
     //  业主单位
     this.axios.post(maintainDailygetProprietorOrgTree()).then((response) => {
       if (response.data.code === 0) {
         this.proprietor = response.data.data
       }
     })
-
     //  维保单位 this.equipment
-    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.equipment)).then((response) => {
+    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.instruction.checktaskdetailid)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
+      }
+    })
+    this.axios.post(maintainDailygetRepairTypes()).then((response) => {
+      if (response.data.code === 0) {
+        this.getrepairDate = response.data.data
       }
     })
   }
@@ -350,6 +348,7 @@ export default {
     max-height 150px
   .tree-wrapper
     float left
+    width 260px
     box-sizing border-box
     height 130px
     overflow auto

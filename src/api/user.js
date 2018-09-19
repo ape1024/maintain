@@ -239,6 +239,9 @@ export const maintainDailygetProprietorOrgTree = () => {
   const url = `${Test}/organization/getProprietorOrgTree`
   return url
 }
+export const getCurrentTaskDeviceStatJson = (token, itemAreaid) => {
+  return `${Test}/task/getCurrentTaskDeviceStatJson?token=${token}&taskid=${itemAreaid}`
+}
 //  安排任务 -> 维保单位
 export const maintainDailygetRepairOrgTreeByDeviceId = (deviceid) => {
   const url = `${Test}/organization/getRepairOrgTreeByDeviceId?deviceid=${deviceid}`

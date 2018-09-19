@@ -36,43 +36,43 @@
           <ul class="listUl">
             <li :key="index" v-for="(item, index) in dailychild" class="listLi">
               <ul class="heavyPlay">
-                <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   <el-checkbox v-model="item.choose"></el-checkbox>
-                  {{item.deviceName}}
+                  {{item.devicename}}
                 </li>
-                <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.deviceCode}}
                 </li>
-                <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   <span>{{item.sumcount }}</span> / <span class="heavyPlayLiSpanThree">{{item.errcount}}</span>  / <span class="heavyPlayLiSpantwo">{{item.waitapprovalcount }}</span> / <span class="heavyPlayLiSpan">{{item.finshedcount }}</span> / <span>{{item.assigncount}}</span>
                 </li>
-                <li :style="{height: item.detail.length * 40 + 'px', lineHeight: item.detail.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.position}}
                 </li>
                 <div class="heavyPlayLiDiv">
-                  <ul :key="$index" v-for="(data, $index) in item.detail" class="heavyPlayLiUl">
-                    <li class="heavyPlayLi cephalosomeTwo">
+                  <ul :key="$index" v-for="(data, $index) in item.details" class="heavyPlayLiUl">
+                    <li class="heavyPlayLi cephalosomeTwo" >
                       <el-checkbox v-model="data.flag"></el-checkbox>
-                      {{data.workItem}}
+                      {{data.workitem}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
-                      {{data.users}}
+                      {{data.checkperson}}{{data.others}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
-                      {{data.time}}
+                      {{!data.checktime ? '' : fmtDate(data.checktime)}}
+                    </li>
+                    <li class="heavyPlayLi cephalosomeThree" :class="data.conclusion !== 1 ? 'conkoutClass' : 'regularClass'">
+                      {{data.conclusionname}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
-                      {{data.conclusion}}
+                      {{data.iswaitapprovalName}}
                     </li>
-                    <li class="heavyPlayLi cephalosomeThree">
-                      {{data.state}}
-                    </li>
-                    <li class="heavyPlayLi cephalosomeThree">
-                      {{data.workrecord}}
+                    <li class="heavyPlayLi cephalosomeThree" :class="data.iswaitapprovalName === '未安排' ? 'UnarrangedClass': 'regularClass' ">
+                      {{data.isassignedName}}
                     </li>
                     <li class="heavyPlayLi cephalosomeFive">
-                      <span class="cephalosomeFiveSpan">审核</span>
-                      <span class="cephalosomeFiveSpanTwo">删除</span>
+                      <span @click.stop="particulars(item, data)" class="cephalosomeFiveSpan">详情</span>
+                      <span @click.stop="amputatematters(data.detailId)" v-if="!data.refid ? false : true" class="cephalosomeFiveSpanTwo">删除</span>
                     </li>
                   </ul>
                 </div>
@@ -82,34 +82,85 @@
         </div>
       </div>
     </div>
+    <section v-if="examineBoolean" class="review">
+      <childExamine :parentdata="parentData" :correspondingdata="correspondingData" :clicktaskName="clicktaskname" @mine="Mine" @examine="Examine"></childExamine>
+    </section>
+    <section v-if="distributionBoolean" class="review">
+      <childDistribution :instruction="DistributionData" @dist="Dist" @distribution="distriBution"></childDistribution>
+    </section>
   </div>
 </template>
 
 <script>
+import childExamine from '../dailyChild-operation/dailyChild-examine'
+import childDistribution from '../dailyChild-operation/dailyChild-distribution'
+import { deleteTaskDetail } from '../../api/user'
 export default {
   name: 'dailyChild-Newmodification',
-  props: [ 'dailychild' ],
+  props: [ 'dailychild', 'clicktaskname' ],
+  components: {
+    childExamine,
+    childDistribution
+  },
   data () {
     return {
       information: [],
-      checked: false
+      checked: false,
+      parentData: '',
+      correspondingData: '',
+      examineBoolean: false,
+      distributionBoolean: false,
+      DistributionData: ''
     }
   },
   methods: {
     checkedChang (ev) {
-      console.log(ev)
       if (ev) {
         this.dailychild.forEach((val, index) => {
           if (!val.choose) {
           } else {
-            console.log(val)
           }
         })
       }
+    },
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = `0` + (date.getMonth() + 1)
+      let d = `0` + date.getDate()
+      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    },
+    //  删除重复设备
+    amputatematters (detailId) {
+      this.axios.post(deleteTaskDetail(detailId)).then((response) => {
+        if (response.data.code === 0) {
+          this.$emit('requestdata')
+        }
+      })
+    },
+    particulars (item, data) {
+      this.parentData = item
+      this.correspondingData = data
+      this.examineBoolean = true
+    },
+    Mine (ev) {
+      this.$emit('requestdata')
+      this.examineBoolean = false
+    },
+    Dist (ev) {
+      this.distributionBoolean = ev
+    },
+    Examine (data) {
+      this.DistributionData = data
+      this.examineBoolean = false
+      this.distributionBoolean = true
+    },
+    distriBution () {
+      this.$emit('requestdata')
+      this.distributionBoolean = false
     }
   },
   created () {
-    console.log(this.dailychild)
   }
 }
 </script>
@@ -143,7 +194,6 @@ export default {
     height 40px
     line-height 40px
     box-sizing border-box
-    text-indent 1em
     border-right 1px solid #3f4856
   .cephalosomeUl li:last-child
     border none
@@ -155,12 +205,13 @@ export default {
     white-space nowrap
   .cephalosomeTwo
     width 30%
-    text-align 2em!important
+    text-indent .4em
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
   .cephalosomeThree
     width 10%
+    text-align center
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
@@ -174,6 +225,7 @@ export default {
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
+    text-indent 1em
   .cephalosomeFive span
      margin-right 20px
   .cephalosomeFive span:last-child
@@ -198,7 +250,6 @@ export default {
     color #cdcdcd
   .heavyPlay .heavyPlayLi
     min-height 40px
-    text-indent 1em
     float left
     border-right 1px solid #3f4856
     box-sizing border-box
@@ -242,4 +293,23 @@ export default {
     cursor pointer
   .heavyPlayLiUl li:last-child
     border none
+  .matters_problem
+    color #cfb53a
+  .martters_normal
+    color #3acf76
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background rgba(000,000,000,.4)
+    z-index 11
+    overflow hidden
+  .regularClass
+    color #3acf76!important
+  .conkoutClass
+    color #cfb53a!important
+  .UnarrangedClass
+     color #ffaa00!important
 </style>

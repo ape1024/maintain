@@ -36,6 +36,7 @@
                     :props="defaultProps"
                     change-on-select
                     v-model="companyDate"
+                    @change="comchange"
                   ></el-cascader>
                 </div>
                 <div v-if="!dataRoot" class="companyContent">
@@ -80,6 +81,32 @@
                 </p>
                 <div class="content">
                   <el-input size="mini" v-model="address" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+            </li>
+            <!--单位简称-->
+            <li class="informationLitwo" v-show="dataRoot">
+              <div class="informationDiv">
+                <p class="informationP">
+                  <span class="structureSpan">*</span>部门名称：
+                </p>
+                <div class="content">
+                  <el-input size="mini" v-model="organizationname" placeholder=""  clearable>></el-input>
+                </div>
+              </div>
+              <div class="informationDivtwo">
+                <p class="informationP">
+                  <span class="structureSpan">*</span>组织类别：
+                </p>
+                <div class="content">
+                  <el-select size="mini" v-model="regimentaValue" placeholder="请选择">
+                    <el-option
+                      v-for="item in regimentation"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
                 </div>
               </div>
             </li>
@@ -222,6 +249,7 @@
                     :props="defaultProps"
                     change-on-select
                     v-model="companyDate"
+                    @change="comchange"
                   ></el-cascader>
                 </div>
                 <div v-if="!dataRoot" class="companyContent">
@@ -256,7 +284,7 @@
             <li class="informationLitwo">
               <div class="informationDivtwo">
                 <p class="informationP">
-                  组织类别：
+                  <span class="structureSpan">*</span>组织类别：
                 </p>
                 <div class="content">
                   <el-select size="mini" v-model="regimentaValue" placeholder="请选择">
@@ -424,6 +452,7 @@
                     :props="defaultProps"
                     change-on-select
                     v-model="companyDate"
+                    @change="comchange"
                   ></el-cascader>
                 </div>
                 <div v-if="!dataRoot" class="companyContent">
@@ -595,6 +624,7 @@ export default {
   },
   data () {
     return {
+      organizationdata: [],
       amputateStr: true,
       selectedOptions: [],
       data: [],
@@ -700,7 +730,7 @@ export default {
   },
   watch: {
     regimentaValue (val) {
-      if (val === 4) {
+      if (val !== 3) {
         this.handoverClass = this.identificationVariable
         return
       }
@@ -708,6 +738,25 @@ export default {
     }
   },
   methods: {
+    // 上级单位变化事件
+    comchange (data) {
+      if (!data.length) return
+      const organizationId = data[data.length - 1]
+      this.axios.post(managementhandleNodeClickOne(organizationId)).then((response) => {
+        if (response.data.code === 0) {
+          let organization = JSON.parse(response.data.data)
+          console.log(organization)
+          if (organization.organizationtype === 1) {
+            this.regimentaValue = ''
+          }
+          if (organization.organizationtype === 5 || this.organizationtype === 4) {
+            this.regimentation = this.initRegimentation.filter(t => t.value !== 3)
+          } else {
+            this.regimentation = [...this.initRegimentation]
+          }
+        }
+      })
+    },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
@@ -725,6 +774,29 @@ export default {
     },
     subjectpCreate () {
       //  点击新增
+      this.axios.post(getAllHigherOrgIDs(this.organizationdata.organizationId)).then((response) => {
+        this.companyDate = []
+        if (response.data.code === 0) {
+          if (response.data.data.length <= 1) {
+            this.companyDate = []
+          } else {
+            let data = response.data.data
+            data.pop()
+            this.companyDate = data
+          }
+        }
+      })
+      if (this.organizationdata.organizationType === 1) {
+        this.regimentaValue = ''
+      } else {
+        this.regimentaValue = this.organizationdata.organizationType // 组织类别
+      }
+      if (this.regimentaValue === 5 || this.regimentaValue === 4) {
+        this.regimentation = this.initRegimentation.filter(t => t.value !== 3)
+      } else {
+        this.regimentation = [...this.initRegimentation]
+      }
+      this.dataRoot = true
       this.amputateStr = false
       this.ormatting()
     },
@@ -786,11 +858,22 @@ export default {
       const city = !this.conurbationId ? '' : this.conurbationId
       //  省
       const province = !this.provinceId ? '' : this.provinceId
-      //   组织缩写
+      //  组织缩写
       const organizationshortname = !this.organizationshortname ? this.organizationname : this.organizationshortname
       let scope = !this.grading ? '' : this.grading
       const url = managementAuthority(token, organizationtype, firebrigadeid, firecontrolcategoryid, industrycategoryid, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)
-      if (organizationcode !== '' && organizationname !== '') {
+      let commitflag = false
+      // 判断如果是部门，单位编码可以为空
+      if (organizationtype === 4 || organizationtype === 5) {
+        if (organizationname !== '') {
+          commitflag = true
+        }
+      } else {
+        if (organizationcode !== '' && organizationname !== '') {
+          commitflag = true
+        }
+      }
+      if (commitflag) {
         this.axios.post(url).then((response) => {
           if (response.data.code === 0) {
             this.$message({
@@ -814,7 +897,7 @@ export default {
         })
       } else {
         this.$message({
-          message: '名称和编码都不能为空！',
+          message: '红色星号标记不能为空！',
           type: 'warning'
         })
       }
@@ -929,6 +1012,7 @@ export default {
       }
     },
     handleNodeClick (data) {
+      this.organizationdata = data
       this.amputateStr = false
       this.DataorganizationId = data.organizationId
       if (data.root) {
@@ -951,6 +1035,12 @@ export default {
           }
         }
       })
+      // 判断组织类别
+      if (data.organizationType === 5 || data.organizationType === 4) {
+        this.regimentation = this.initRegimentation.filter(t => t.value !== 3)
+      } else {
+        this.regimentation = [...this.initRegimentation]
+      }
       this.conserveBoolean = true
       const organization = data.organizationId
       this.organizationId = organization
@@ -1208,10 +1298,12 @@ export default {
       this.textarea = ''
       this.organization = ''
       this.conserveBoolean = false
-      this.regimentaValue = ''
+      // this.regimentaValue = ''
     }
   },
   created () {
+    // 初始化组织类别
+    this.initRegimentation = []
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'organization') {
@@ -1253,8 +1345,10 @@ export default {
     const Createdorganization = managementCreatedorganization(token)
     this.axios.post(Createdorganization).then((response) => {
       let regimentaDate = response.data.data
+      // 给组织类别赋值
+      this.initRegimentation = regimentaDate
       // regimentaDate
-      this.regimentation = regimentaDate
+      this.regimentation = [...this.initRegimentation]
     })
     //  消防监管机构
     this.axios.post(getFirebrigades()).then((response) => {

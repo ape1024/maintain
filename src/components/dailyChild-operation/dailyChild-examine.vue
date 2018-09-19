@@ -8,26 +8,26 @@
         <header class="examine_header">
           <div class="header_left">
             <p class="examine_p">计划名称：</p>
-            <div class="header_div">{{examineName}}</div>
+            <div class="header_div">{{clicktaskName}}</div>
           </div>
         </header>
           <div class="examine_div">
             <ul class="examine_div_ul">
               <li class="examine_div_li">
                 <p>设施名称：</p>
-                <div>{{equipmentData.devicename}}</div>
+                <div>{{parentdata.devicename}}</div>
               </li>
               <li class="examine_div_li">
                 <p>设备编码：</p>
-                <div>{{equipmentData.devicecode}}</div>
+                <div>{{parentdata.devicecode}}</div>
               </li>
               <li class="examine_div_li">
                 <p>设备位置：</p>
-                <div>{{equipmentData.position}}</div>
+                <div>{{parentdata.position}}</div>
               </li>
               <li class="examine_div_li">
                 <p>设施数量：</p>
-                <div>{{equipmentData.devicecount}}</div>
+                <div>{{parentdata.devicecount}}</div>
               </li>
             </ul>
           </div>
@@ -37,7 +37,6 @@
               <header class="matters_header">
                 <ul class="matters_ul">
                   <li class="matters_lithree">
-                    <el-checkbox @change="checkedChang" v-model="checked"></el-checkbox>
                     工作事项
                   </li>
                   <li class="matters_li">
@@ -65,38 +64,37 @@
               </header>
             </div>
             <div class="content">
-              <ul class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)" :class="[!item.refid ? '' : 'content_repeat']">
-                <li class="matters_lithree" :title="item.workitem">
-                  <el-checkbox v-bind:disabled="item.disabled" v-model="item.fuleco"></el-checkbox>
-                  {{item.workitem}}
+              <ul class="content_ul" :class="[!correspondingdata.refid ? '' : 'content_repeat']">
+                <li class="matters_lithree" :title="correspondingdata.workitem">
+                  {{correspondingdata.workitem}}
                 </li>
                 <li class="matters_li">
-                  {{item.checkperson}}
-                  {{item.others}}
+                  {{correspondingdata.checkperson}}
+                  {{correspondingdata.others}}
                 </li>
                 <li class="matters_li">
-                  {{!item.checktime ? '' : fmtDate(item.checktime)}}
+                  {{!correspondingdata.checktime ? '' : fmtDate(correspondingdata.checktime)}}
                 </li>
-                <li class="matters_litwo" :title="item.workrecord">
-                  {{item.workrecord}}
+                <li class="matters_litwo" :title="correspondingdata.workrecord">
+                  {{correspondingdata.workrecord}}
                 </li>
-                <li class="matters_li" :class="[item.conclusion === 1 ? 'martters_normal' : 'matters_problem']">
-                  {{item.conclusionname}}
+                <li class="matters_li" :class="[correspondingdata.conclusion === 1 ? 'martters_normal' : 'matters_problem']">
+                  {{correspondingdata.conclusionname}}
                 </li>
                 <li class="matters_li">
                   <!--之前的处理状态,-->
                   <!--{{item.approvalstate}}-->
-                  {{item.iswaitapprovalName}}
+                  {{correspondingdata.iswaitapprovalName}}
                 </li>
                 <li class="matters_li">
-                  {{item.isassignedName}}
+                  {{correspondingdata.isassignedName}}
                 </li>
                 <li class="matters_litwo">
                   <!--{{item.photosArr}}-->
-                  <img class="photosImg" @click="selectImg(fieldphoto(item.photosArr, item.path), index)" :key="index" v-for="(data, index) in item.photosArr" :src="`${item.path}${data}`" alt="">
+                  <img class="photosImg" @click="selectImg(fieldphoto(correspondingdata.photosArr, correspondingdata.path), index)" :key="index" v-for="(data, index) in correspondingdata.photosArr" :src="`${correspondingdata.path}${data}`" alt="">
                 </li>
                 <li class="matters_lifour">
-                  <i @click.stop="amputatematters(item.checktaskdetailid)" v-if="!item.refid ? false : true" class="el-icon-close"></i>
+                  <i @click.stop="amputatematters(correspondingdata.checktaskdetailid)" v-if="!correspondingdata.refid ? false : true" class="el-icon-close"></i>
                 </li>
               </ul>
             </div>
@@ -227,16 +225,15 @@
 </template>
 
 <script>
-import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments2, maintainDailygetTaskApprovalItems, deleteTaskDetail, getTaskParams } from '../../api/user'
+import { maintainDailyapprovalTaskDetail, maintainDailygetEquirementjudgments2, maintainDailygetTaskApprovalItems, deleteTaskDetail, getTaskParams } from '../../api/user'
 import DialogImg from 'base/dialog-img/dialog-img'
-import $ from 'jquery'
 export default {
   name: 'dailyChild-examine',
-  props: ['examine', 'examineName', 'equipmentCode', 'taskidCode'],
+  props: ['parentdata', 'clicktaskName', 'correspondingdata'],
   data () {
     return {
       checked: false,
-      radio: 0,
+      radio: '',
       textarea: '同意归档',
       examine_Boolean: false,
       determinant: '',
@@ -269,75 +266,12 @@ export default {
     amputatematters (checktaskdetailid) {
       this.axios.post(deleteTaskDetail(checktaskdetailid)).then((response) => {
         if (response.data.code === 0) {
-          this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
-            if (response.data.code === 0) {
-              let arrData = []
-              response.data.data.details.forEach((val) => {
-                if (val.path !== '') {
-                  let arr = []
-                  if (val.path.indexOf(',') !== -1) {
-                    arr = val.path.split(',')
-                    val.path = arr
-                  } else {
-                    arr = [val.path]
-                    val.path = arr
-                  }
-                } else {
-                  val.path = []
-                }
-                val.fuleco = false
-                val.pathBoolem = false
-                if (val.conclusion) {
-                  if (!val.refid) {
-                    val.disabled = false
-                  } else {
-                    val.disabled = true
-                  }
-                } else {
-                  val.disabled = true
-                }
-                if (!val.iswaitapproval) {
-                  if (!val.isapproval) {
-                    val.iswaitapprovalName = ''
-                  } else {
-                    val.iswaitapprovalName = '已审批'
-                  }
-                } else {
-                  val.iswaitapprovalName = '待审批'
-                }
-                if (val.isassigned) {
-                  val.isassignedName = '已安排'
-                } else {
-                  val.isassignedName = '未安排'
-                }
-                arrData.push(val)
-                if (val.photos) {
-                  val.photosArr = []
-                  if (val.photos.indexOf(',') !== -1) {
-                    let arr = val.photos.split(',')
-                    val.photosArr = arr
-                  } else {
-                    val.photosArr.push(val.photos)
-                  }
-                }
-              })
-              this.equipment = arrData
-              this.equipmentData = response.data.data
-            }
+          this.$message({
+            message: '删除成功',
+            type: 'success'
           })
         }
       })
-    },
-    checkedChang () {
-      if (this.checked === true) {
-        this.equipment.forEach((val) => {
-          val.fuleco = true
-        })
-      } else {
-        this.equipment.forEach((val) => {
-          val.fuleco = false
-        })
-      }
     },
     fmtDate (obj) {
       let date = new Date(obj)
@@ -347,86 +281,67 @@ export default {
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     },
     assignment () {
-      let arrData = []
-      this.equipment.forEach((val) => {
-        if (val.fuleco === false || val.disabled === true) {
-          return false
-        } else {
-          let data = {
-            matters: val.workitem,
-            conclusion: val.conclusionname,
-            checktaskdetailid: val.checktaskdetailid,
-            isassigned: val.isassigned,
-            conclusionCode: val.conclusion
-          }
-          arrData.push(data)
-        }
-      })
-      let flga = true
-      arrData.forEach((val) => {
-        if (val.isassigned || val.conclusionCode > 0) {
-          if (!val.isapproval && !val.iswaitapproval) {
-            flga = false
-          }
-        }
-      })
-      if (arrData.length === 0) {
+      if (this.correspondingdata.conclusion === 1) {
         this.$message({
-          message: '请选择设备!',
+          message: '正常设备不可以安排任务',
           type: 'warning'
         })
         return false
-      } else if (flga) {
-        this.$emit('examineMine', arrData)
+      } else if (!this.correspondingdata.isassigned) {
+        if (!this.correspondingdata.iswaitapprovalName) {
+          this.$message({
+            message: '没有审核状态的工作项不可以安排',
+            type: 'warning'
+          })
+          return false
+        } else {
+          let data = {
+            matters: this.correspondingdata.workitem,
+            conclusion: this.correspondingdata.conclusionname,
+            checktaskdetailid: this.correspondingdata.checktaskdetailid,
+            isassigned: this.correspondingdata.isassigned,
+            conclusionCode: this.correspondingdata.conclusion
+          }
+          console.log('////////////')
+          console.log(data)
+          this.$emit('examine', data)
+        }
       } else {
         this.$message({
-          message: '已安排工作项与正常工作项,不能安排!',
+          message: '已安排任务不可以再次安排',
           type: 'warning'
         })
+        return false
       }
     },
     preservation () {
       let token = JSON.parse(window.sessionStorage.token)
       let radio = this.radio
-      let taskDetailArr = []
-      let flag = true
       let textarea = this.textarea
-      this.equipment.forEach((val) => {
-        if (val.fuleco === false) {
-          return false
-        } else if (!val.isapproval && val.iswaitapproval) {
-          taskDetailArr.push(val.checktaskdetailid)
-        } else {
-          flag = false
-        }
-      })
-      if (flag) {
-        if (taskDetailArr.length === 0) {
-          this.$message({
-            message: '请选择工作事项,只有待审批状态,才可以审批',
-            type: 'warning'
-          })
-          return false
-        } else {
-          if (radio === 0) {
+      if (!this.correspondingdata.isassigned) {
+        if (!this.correspondingdata.isapproval) {
+          if (this.correspondingdata.conclusion === 1) {
             this.$message({
-              message: '请选择审核结论',
-              type: 'warning'
-            })
-            return false
-          }
-          if (textarea === '') {
-            this.$message({
-              message: '请输入审核意见!',
+              message: '正常设备不可以安排审核',
               type: 'warning'
             })
             return false
           } else {
-            taskDetailArr.forEach((val) => {
-              this.axios.post(maintainDailyapprovalTaskDetail(token, val, textarea, radio)).then((response) => {
+            if (!radio) {
+              this.$message({
+                message: '请选择审核结论',
+                type: 'warning'
+              })
+              return false
+            } else if (!textarea) {
+              this.$message({
+                message: '请填写审核意见',
+                type: 'warning'
+              })
+              return false
+            } else {
+              this.axios.post(maintainDailyapprovalTaskDetail(token, this.correspondingdata.detailId, textarea, radio)).then((response) => {
                 if (response.data.code === 0) {
-                  this.examine_Boolean = this.examine
-                  this.examine_Boolean = !this.examine_Boolean
                   this.$message({
                     message: '审批成功',
                     type: 'success'
@@ -435,45 +350,25 @@ export default {
                   return false
                 }
               })
-            })
+            }
           }
+        } else {
+          this.$message({
+            message: '已审核的工作项不可以审核',
+            type: 'warning'
+          })
+          return false
         }
       } else {
         this.$message({
-          message: '请选择工作事项,只有待审批状态,才可以审批',
+          message: '已安排的工作项不可以安排与审核',
           type: 'warning'
         })
+        return false
       }
     },
     closeup () {
       this.$emit('mine', false)
-    },
-    determine (event, checktaskdetailid) {
-      let el = event.currentTarget
-      $('.content_ul').each(function (index, item) {
-        $(item).removeClass('content_ulBack')
-      })
-      $(el).addClass('content_ulBack')
-      this.axios.post(maintainDailygetEquirementjudgments2(checktaskdetailid)).then((response) => {
-        if (response.data.code === 0) {
-          if (response.data.data.length !== 0) {
-            response.data.data.forEach((val) => {
-              if (!val.checkvalue) {
-                val.Testvalue = ``
-              } else {
-                val.Testvalue = `${val.checkvalue}${val.unit}`
-              }
-            })
-          }
-          this.determinant = response.data.data
-        }
-      })
-
-      this.axios.post(getTaskParams(checktaskdetailid)).then((response) => {
-        if (response.data.code === 0) {
-          this.Testing = response.data.data
-        }
-      })
     },
     picturedetails (item) {
       item.pathBoolem = !item.pathBoolem
@@ -483,66 +378,29 @@ export default {
     DialogImg
   },
   created () {
-    this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
-      if (response.data.code === 0) {
-        let arrData = []
-        response.data.data.details.forEach((val) => {
-          if (val.path !== '') {
-            let arr = []
-            if (val.path.indexOf(',') !== -1) {
-              arr = val.path.split(',')
-              val.path = arr
-            } else {
-              arr = [val.path]
-              val.path = arr
-            }
-          } else {
-            val.path = []
-          }
-          val.fuleco = false
-          val.pathBoolem = false
-          if (val.conclusion) {
-            if (!val.refid) {
-              val.disabled = false
-            } else {
-              val.disabled = true
-            }
-          } else {
-            val.disabled = true
-          }
-          if (!val.iswaitapproval) {
-            if (!val.isapproval) {
-              val.iswaitapprovalName = ''
-            } else {
-              val.iswaitapprovalName = '已审批'
-            }
-          } else {
-            val.iswaitapprovalName = '待审批'
-          }
-          if (val.isassigned) {
-            val.isassignedName = '已安排'
-          } else {
-            val.isassignedName = '未安排'
-          }
-          arrData.push(val)
-          if (val.photos) {
-            val.photosArr = []
-            if (val.photos.indexOf(',') !== -1) {
-              let arr = val.photos.split(',')
-              val.photosArr = arr
-            } else {
-              val.photosArr.push(val.photos)
-            }
-          }
-        })
-        this.equipment = arrData
-        this.equipmentData = response.data.data
-      }
-    })
     //  任务审批选项
     this.axios.post(maintainDailygetTaskApprovalItems()).then((response) => {
       if (response.data.code === 0) {
         this.approvaloptions = response.data.data
+      }
+    })
+    this.axios.post(maintainDailygetEquirementjudgments2(this.correspondingdata.detailId)).then((response) => {
+      if (response.data.code === 0) {
+        if (response.data.data.length !== 0) {
+          response.data.data.forEach((val) => {
+            if (!val.checkvalue) {
+              val.Testvalue = ``
+            } else {
+              val.Testvalue = `${val.checkvalue}${val.unit}`
+            }
+          })
+        }
+        this.determinant = response.data.data
+      }
+    })
+    this.axios.post(getTaskParams(this.correspondingdata.detailId)).then((response) => {
+      if (response.data.code === 0) {
+        this.Testing = response.data.data
       }
     })
   }
