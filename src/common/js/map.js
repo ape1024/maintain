@@ -53,7 +53,8 @@ export const createBuildingData = function (building) {
 
 export const createFloorData = async function (floor) {
   const record = await getDeviceRecord(floor.deviceid).then((t) => t !== undefined ? t : [])
-  const guide = floor.acceptid ? (await getGuide(floor.acceptid, floor.basedevicecode).then((t) => t).operateguide) : ''
+  // const guide = floor.acceptid ? (await getGuide(floor.acceptid, floor.basedevicecode).then((t) => t).operateguide) : ''
+  const guide = ''
   const stateName = stateData[floor.deviceStateVal].name
 
   let handleState

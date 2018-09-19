@@ -242,6 +242,8 @@ export default {
               color #d5d5d5
               font-size $font-size-small
               height 14px
+              &:last-child
+                color #296186
         .type
           width 12%
         .title
