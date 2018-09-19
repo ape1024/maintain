@@ -1,6 +1,6 @@
 import { resetTime } from './utils'
 import { alarmHandle, stateData, layer } from './config'
-import { getDeviceRecord, getGuide } from 'api/map'
+import { getDeviceRecord } from 'api/map'
 export class IconAlarmList {
   constructor ({alarmtime, devicename, memo, deviceState, recordid, deviceid, areaid}) {
     this.startTime = resetTime(alarmtime, 'time')
