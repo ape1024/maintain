@@ -93,7 +93,7 @@
               <div v-if="timestamp > item.endTime && JurisdictionCheck ? true : false" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
                 归 档
               </div>
-              <div class="batchDiv">
+              <div @click="batchAudit" class="batchDiv">
                 批量审核
               </div>
             </li>
@@ -270,14 +270,18 @@ export default {
                     if (!data.iswaitapproval) {
                       if (!data.isapproval) {
                         data.iswaitapprovalName = ''
+                        data.disabled = true
                       } else {
                         data.iswaitapprovalName = '已审批'
+                        data.disabled = true
                       }
                     } else {
                       data.iswaitapprovalName = '待审批'
+                      data.disabled = false
                     }
                     if (data.isassigned) {
                       data.isassignedName = '已安排'
+                      data.disabled = true
                     } else {
                       data.isassignedName = '未安排'
                     }
@@ -346,6 +350,9 @@ export default {
         }
         this.closeLoadingDialog()
       })
+    },
+    batchAudit () {
+
     }
   },
   data () {

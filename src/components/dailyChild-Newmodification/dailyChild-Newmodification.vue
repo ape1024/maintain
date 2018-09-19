@@ -52,7 +52,7 @@
                 <div class="heavyPlayLiDiv">
                   <ul :key="$index" v-for="(data, $index) in item.details" class="heavyPlayLiUl">
                     <li class="heavyPlayLi cephalosomeTwo" >
-                      <el-checkbox v-model="data.flag"></el-checkbox>
+                      <el-checkbox v-model="data.flag" :disabled="data.disabled"></el-checkbox>
                       {{data.workitem}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
@@ -67,7 +67,7 @@
                     <li class="heavyPlayLi cephalosomeThree">
                       {{data.iswaitapprovalName}}
                     </li>
-                    <li class="heavyPlayLi cephalosomeThree" :class="data.iswaitapprovalName === '未安排' ? 'UnarrangedClass': 'regularClass' ">
+                    <li class="heavyPlayLi cephalosomeThree" :class="!data.isassigned ? 'UnarrangedClass': 'regularClass' ">
                       {{data.isassignedName}}
                     </li>
                     <li class="heavyPlayLi cephalosomeFive">
@@ -117,9 +117,21 @@ export default {
     checkedChang (ev) {
       if (ev) {
         this.dailychild.forEach((val, index) => {
-          if (!val.choose) {
-          } else {
-          }
+          val.choose = true
+          val.details.forEach((data) => {
+            if (!data.disabled) {
+              data.flag = true
+            }
+          })
+        })
+      } else {
+        this.dailychild.forEach((val, index) => {
+          val.choose = false
+          val.details.forEach((data) => {
+            if (!data.disabled) {
+              data.flag = false
+            }
+          })
         })
       }
     },
