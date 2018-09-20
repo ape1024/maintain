@@ -132,9 +132,13 @@ export const approvalCheckPlan = (token, checkPlanId, approvalOpinion, approvalS
 }
 export const findAllDeviceType = (token, projectid) => {
   //  获取设备类别
-  const url = `${Test}/dev/findAllDeviceType?token=${token}&projectid=${projectid}`
+  const url = `${Test}/dev/findAllDeviceType2?token=${token}&projectid=${projectid}`
   return url
 }
+export const findAllDeviceTypeTwo = (token) => {
+  return `${Test}/dev/findAllDeviceType2?token=${token}`
+}
+
 export const getTaskQueryApprovalItems = () => {
   //  审核状态
   const url = `${Test}/task/getTaskQueryApprovalItems`

@@ -323,7 +323,6 @@ export default {
       // 点击审核
       this.axios.post(adminfindDeviceDetail(question)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response.data.data)
           this.questionData = response.data.data
           this.examineBoolean = true
         }
@@ -424,7 +423,6 @@ export default {
       }
     },
     checkedChange (ev) {
-      console.log(ev === true)
       if (ev === true) {
         this.tabChild.forEach((val) => {
           if (val.disabled !== true) {
@@ -463,7 +461,6 @@ export default {
           let checkedChangeData = arr.join()
           // 审批状态 设定为100
           this.axios.post(PojectdeviceApprovals2(checkedChangeData, 100)).then((response) => {
-            console.log(response)
             if (response.data.code === 0) {
               this.$message({
                 message: '审批成功',
