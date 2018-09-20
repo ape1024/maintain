@@ -111,7 +111,7 @@
               工作职务：
             </p>
             <div class="subjectRigh">
-              <el-select size="mini" v-model="businesspostCode" placeholder="请选择">
+              <el-select size="mini" v-model="businesspostCode" placeholder="请选择" :disabled="businesspostCode ==='系统管理员'">
                 <el-option
                   v-for="item in businesspost"
                   :key="item.value"
@@ -247,6 +247,9 @@ export default {
       //  用户最后登录时间
       let userstate = []
       //  获取职位
+      if (this.businesspostCode === '系统管理员') {
+        this.businesspostCode = 3
+      }
       let job = this.businesspostCode !== null ? this.businesspostCode : ''
       //  获取备注
       let memo = this.textarea !== null ? this.textarea : ''
@@ -276,7 +279,7 @@ export default {
     if (this.communication.allorgid.length !== 0) {
       this.organizeOptions = this.communication.allorgid
     }
-    this.businesspostCode = this.communication.job
+    this.businesspostCode = this.communication.job === 3 ? '系统管理员' : this.communication.job
     // this.organizeOptions.push(this.communication)
     if (this.communication.roleid !== '') {
       let roleid = this.communication.roleid.split(';')
