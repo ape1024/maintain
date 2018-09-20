@@ -266,7 +266,7 @@ export default {
       }
     })
     // 获取计划状态
-    this.axios.post(maintainArranggetAllApprovalItems()).then((response) => {
+    this.axios.post(maintainArranggetAllApprovalItems(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.planStateData = response.data.data
       }

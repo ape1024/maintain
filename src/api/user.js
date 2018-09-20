@@ -431,8 +431,8 @@ export const maintainArranggetCheckPlan = (checkplanid) => {
   return url
 }
 //  获取所有计划类型
-export const maintainArranggetAllPlanTypes = () => {
-  const url = `${Test}/plan/getAllPlanTypes`
+export const maintainArranggetAllPlanTypes = (projectid) => {
+  const url = `${Test}/plan/getAllPlanTypes?projectid=${projectid}`
   return url
 }
 //  获取计划状态 20180803 rad
