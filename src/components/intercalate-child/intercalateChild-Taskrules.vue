@@ -332,7 +332,7 @@
 </template>
 
 <script>
-import { findAllDeviceType, getCheckStandardsByBasedevicecode, getCheckStandard, getStandardparams, getTechnicalRequirements, deleteCheckStandard, creatOrUpdateCheckStandard, getFaultTypes, getRevisionlevel, getAllWorkcycle, getWorkModes } from '../../api/user'
+import { findAllDeviceTypeTwo, getCheckStandardsByBasedevicecode, getCheckStandard, getStandardparams, getTechnicalRequirements, deleteCheckStandard, creatOrUpdateCheckStandard, getFaultTypes, getRevisionlevel, getAllWorkcycle, getWorkModes } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 const LEVEL = {
   level1: 1,
@@ -942,7 +942,7 @@ export default {
       }
     })
     let token = JSON.parse(window.sessionStorage.token)
-    this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
+    this.axios.post(findAllDeviceTypeTwo(token)).then((response) => {
       if (response.data.code === 0) {
         if (response.data.data.length) {
           const filterArr = response.data.data.filter(t => t.name !== '全部')
