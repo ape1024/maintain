@@ -786,7 +786,7 @@ export default {
           }
         }
       })
-      if (this.organizationdata.organizationType === 1) {
+      if (this.organizationdata.organizationType === 1 || this.organizationdata.organizationType === 2) {
         this.regimentaValue = ''
       } else {
         this.regimentaValue = this.organizationdata.organizationType // 组织类别
