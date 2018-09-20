@@ -510,7 +510,6 @@ export default {
       let token = window.JSON.parse(window.sessionStorage.token)
       let getCheckedNodes = this.$refs.one.getCheckedNodes()
       let areas = []
-      console.log(getCheckedNodes)
       getCheckedNodes.forEach((val) => {
         let obj = {
           areacode: val.areacode,
@@ -519,7 +518,6 @@ export default {
         }
         areas.push(obj)
       })
-      console.log(areas)
       let getCheckedNodesData = this.$refs.tree.getCheckedNodes()
       let baseDevices = []
       getCheckedNodesData.forEach((val) => {
@@ -675,12 +673,12 @@ export default {
       //  获取业主单位
       this.axios.post(getProprietorOrganization()).then((response) => {
         if (response.data.code === 0) {
-          const data = response.data
-          if (data.count === 0) {
-            this.proprieTorDate = data.data.concat([{organizationid: -1, organizationname: ' -- 新增业主单位 --'}])
+          const data = response.data.data
+          if (data.length === 0) {
+            this.proprieTorDate = data.concat([{organizationid: -1, organizationname: ' -- 新增业主单位 --'}])
           } else {
-            this.proprieTorDate = data.data
-            this.proprieTor = data.data[0].organizationid
+            this.proprieTorDate = data
+            this.proprieTor = data[0].organizationid
           }
         }
       })
@@ -697,7 +695,6 @@ export default {
           parentFlag: true
         }
       })
-      console.log(this.firecontrol)
     })
     //  这个接口有问题  没有这个接口
     this.axios.post(findAllRootAreasTree()).then((response) => {
