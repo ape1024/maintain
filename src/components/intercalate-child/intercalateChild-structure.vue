@@ -49,7 +49,7 @@
               </div>
             </li>
             <!--所在区域-->
-            <li class="informationLifive">
+            <li class="informationLifive" v-show="regimentaValue === 4 || regimentaValue ===5">
               <div class="informationDiv">
                 <p class="informationP">
                   <span class="structureSpan">*</span>所在区域：
@@ -60,7 +60,9 @@
                   </div>
                   <ul v-show="regionUl" class="region_ul">
                     <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
-                      <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
+                      <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i>
+                      <span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span>
+                      <ul class="regionliUl">
                       <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">
                         <i @click.stop="count($event, data.cityid)" class="el-icon-circle-plus-outline region_itwo"></i>
                         <span class="countSpen" @click="citySpan($event, data)">{{data.cityname}}</span>
@@ -261,33 +263,14 @@
                 </div>
               </div>
             </li>
-            <!--组织机构名称-->
+            <!--部门名称名称 组织类别-->
             <li class="informationLitwo">
-              <div class="informationDiv">
-                <p class="informationP">
-                  <span class="structureSpan">*</span>组织机构名称：
-                </p>
-                <div class="content">
-                  <el-input size="mini" v-model="organizationname" placeholder=""  clearable>></el-input>
-                </div>
-              </div>
-              <div class="informationDivtwo">
-                <p class="informationP">
-                  单位简称：
-                </p>
-                <div class="content">
-                  <el-input size="mini" v-model="organizationshortname" placeholder=""  clearable>></el-input>
-                </div>
-              </div>
-            </li>
-            <!--单位简称-->
-            <li class="informationLitwo">
-              <div class="informationDivtwo">
+              <div class="informationDivtwo" v-show="regimentaValue">
                 <p class="informationP">
                   <span class="structureSpan">*</span>组织类别：
                 </p>
                 <div class="content">
-                  <el-select size="mini" v-model="regimentaValue" placeholder="请选择">
+                  <el-select size="mini" v-model="regimentaValue" placeholder="请选择" >
                     <el-option
                       v-for="item in regimentation"
                       :key="item.value"
@@ -299,15 +282,16 @@
               </div>
               <div class="informationDiv">
                 <p class="informationP">
-                  <span class="structureSpan">*</span>单位编码：
+                  <span class="structureSpan">*</span>组织机构名称：
                 </p>
                 <div class="content">
-                  <el-input size="mini" v-model="encrypt" placeholder=""  clearable>></el-input>
+                  <el-input size="mini" v-model="organizationname" placeholder=""  clearable>></el-input>
                 </div>
               </div>
+
             </li>
             <!--所在区域-->
-            <li class="informationLifive">
+            <li class="informationLifive" v-show="regimentaValue === 4 || regimentaValue ===5">
               <div class="informationDiv">
                 <p class="informationP">
                   <span class="structureSpan">*</span>所在区域：
@@ -485,7 +469,7 @@
             </li>
             <!--单位简称-->
             <li class="informationLitwo">
-              <div class="informationDivtwo">
+              <div class="informationDivtwo" v-show="regimentaValue">
                 <p class="informationP">
                   <span class="structureSpan">*</span>组织类别：
                 </p>
@@ -554,6 +538,25 @@
                       :value="item.firecontrolcategoryid">
                     </el-option>
                   </el-select>
+                </div>
+              </div>
+            </li>
+            <!--上传图标-->
+            <li class="informationLithree">
+              <div class="informationDivthree">
+                <p class="informationP">
+                  组织机构图标：
+                </p>
+                <div class="contenttwo">
+                  <el-upload
+                    class="avatar-uploader"
+                    :action="uploadUrlData"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  </el-upload>
                 </div>
               </div>
             </li>
@@ -745,14 +748,12 @@ export default {
       this.axios.post(managementhandleNodeClickOne(organizationId)).then((response) => {
         if (response.data.code === 0) {
           let organization = JSON.parse(response.data.data)
-          console.log(organization)
-          if (organization.organizationtype === 1) {
-            this.regimentaValue = ''
-          }
-          if (organization.organizationtype === 5 || this.organizationtype === 4) {
+          if (organization.organizationtype === 5 || organization.organizationtype === 4) {
             this.regimentation = this.initRegimentation.filter(t => t.value !== 3)
+            this.regimentaValue = 4
           } else {
             this.regimentation = [...this.initRegimentation]
+            this.regimentaValue = 3
           }
         }
       })
@@ -774,6 +775,7 @@ export default {
     },
     subjectpCreate () {
       //  点击新增
+      this.ormatting()
       this.axios.post(getAllHigherOrgIDs(this.organizationdata.organizationId)).then((response) => {
         this.companyDate = []
         if (response.data.code === 0) {
@@ -920,13 +922,18 @@ export default {
       }
       //  组织节点parentid
       //  组织类型
-      const organizationtype = this.regimentaValue
-      if (organizationtype === '') {
-        this.$message({
-          message: '请选择组织机构',
-          type: 'warning'
-        })
-        return false
+      let organizationtype = ''
+      if (this.ownerType !== 1 && this.ownerType !== 2) {
+        organizationtype = this.regimentaValue
+        if (organizationtype === '') {
+          this.$message({
+            message: '请选择组织机构',
+            type: 'warning'
+          })
+          return false
+        }
+      } else {
+        organizationtype = this.ownerType
       }
       //  区县
       const countyid = this.countytownId === undefined ? '' : this.countytownId
@@ -1012,6 +1019,8 @@ export default {
       }
     },
     handleNodeClick (data) {
+      // 保存业主单位 维保单位的组织累心
+      this.ownerType = data.organizationType
       this.organizationdata = data
       this.amputateStr = false
       this.DataorganizationId = data.organizationId
@@ -1104,7 +1113,11 @@ export default {
         //  组织机构名称
         this.organizationname = urlData.organizationname === 'undefined' ? '' : urlData.organizationname
         //  组织类型
-        this.regimentaValue = urlData.organizationtype
+        if (data.organizationType === 1 || data.organizationType === 2) {
+          this.regimentaValue = ''
+        } else {
+          this.regimentaValue = urlData.organizationtype
+        }
         // 判断是否是根节点单位
         //  省份
         this.provinceId = urlData.provinceid
@@ -1193,6 +1206,7 @@ export default {
     accessarea () {
       this.regionUl = !this.regionUl
     },
+    // 省份点击事件
     deploy (event, provinceid) {
       if ($(event.currentTarget).siblings('.regionliUl').css('display') === 'block') {
         $(event.currentTarget).siblings('.regionliUl').slideToggle()
@@ -1217,6 +1231,7 @@ export default {
         })
       }
     },
+    // 城市点击事件
     count (event, countid) {
       if ($(event.currentTarget).siblings('.countUl').css('display') === 'block') {
         $(event.currentTarget).siblings('.countUl').slideToggle()
@@ -1241,21 +1256,29 @@ export default {
         })
       }
     },
+    // 省份
     provinceSpan (event, provincename) {
       //  直接选择省份
       this.regionDate = provincename.provincename
       this.provinceId = provincename.provinceid
+      // 清空城市 县城信息
+      this.conurbationId = ''
+      this.countytownId = ''
     },
+    // 城市
     citySpan (event, cityDate) {
       let cout = $(event.currentTarget).parents('.region_li').children('.provinceSpan').text()
       let city = cityDate.cityname
       let url = `${cout} ${city}`
       this.regionDate = url
-      //  省份id
-      this.conurbationId = cityDate.cityid
       //  城市ID
+      this.conurbationId = cityDate.cityid
+      //  省份id
       this.provinceId = cityDate.provinceid
+      // 清空县城
+      this.countytownId = ''
     },
+    // 县城
     countytownSpan (coundata) {
       let cout = $(event.currentTarget).parents('.region_li').children('.provinceSpan').text()
       let city = $(event.currentTarget).parents('.regionliul_li').children('.countSpen').text()

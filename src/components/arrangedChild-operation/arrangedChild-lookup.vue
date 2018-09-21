@@ -385,7 +385,6 @@ export default {
       }
       //  选择消防设施
       let newArr = []
-      console.log(this.judgementValue)
       if (this.judgementValue) {
         if (!this.handleCheckData.length) {
           this.$message({
@@ -656,7 +655,7 @@ export default {
       }
     })
     //  获取计划类型
-    this.axios.post(maintainArranggetAllPlanTypes()).then((response) => {
+    this.axios.post(maintainArranggetAllPlanTypes(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.schedule = response.data.data
       }

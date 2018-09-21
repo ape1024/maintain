@@ -572,7 +572,7 @@ export default {
       }
     })
     //  获取计划类型
-    this.axios.post(maintainArranggetAllPlanTypes()).then((response) => {
+    this.axios.post(maintainArranggetAllPlanTypes(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.schedule = response.data.data
       }

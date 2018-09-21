@@ -30,21 +30,6 @@
               <el-input size="mini"  v-model="Username" placeholder=""  clearable>></el-input>
             </div>
           </li>
-          <!--<li class="headerLi">-->
-            <!--<p class="headerP">-->
-              <!--所属部门-->
-            <!--</p>-->
-            <!--<div class="headerDiv">-->
-              <!--<el-cascader-->
-                <!--size="mini"-->
-                <!--clearable-->
-                <!--:options="options"-->
-                <!--:props="selectedProps"-->
-                <!--change-on-select-->
-                <!--v-model="selectedOptions">-->
-              <!--</el-cascader>-->
-            <!--</div>-->
-          <!--</li>-->
           <li class="headerLi">
             <p class="headerP">
               角 色
@@ -156,7 +141,10 @@
                   修改密码
                 </p>
                 <!--删除-->
-                <p v-if="JurisdictionDelete && flagState" @click="amputate($index, information, item.userid)" class="amputate">
+                <p v-if="JurisdictionDelete && flagState && item.job !== 3" @click="amputate($index, information, item.userid)" class="amputate">
+                  删除
+                </p>
+                <p v-if="JurisdictionDelete && flagState && item.job === 3" class="content_gray">
                   删除
                 </p>
                 <p v-if="JurisdictionDelete && !flagState" class="content_gray">
