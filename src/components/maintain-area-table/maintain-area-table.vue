@@ -61,7 +61,7 @@ export default {
         if (res && res.data.code === 0) {
           this.list = res.data.data.map(t => {
             return {
-              alarmTime: resetTime(t.alarmtime, 'date'),
+              alarmTime: t.alarmtime ? resetTime(t.alarmtime, 'date') : '----',
               deviceTypeName: t.devicetypename,
               controllerName: t.deviceController,
               deviceCode: t.devicecode,
