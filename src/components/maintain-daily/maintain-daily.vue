@@ -176,55 +176,11 @@ export default {
       })
     },
     ExaminationApproval (el) {
-      let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(getCurrentTaskDeviceStatJson(token, el)).then((response) => {
-        if (!response) {
-          this.closeLoadingDialog()
-          return
-        }
+      // let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(maintainDailyCurrentTaskStat(2, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
-          if (response.data.data.length !== 0) {
-            response.data.data.forEach((val) => {
-              val.choose = false
-              if (val.details) {
-                val.details.forEach((data) => {
-                  data.flag = false
-                  if (data.photos) {
-                    data.photosArr = []
-                    if (data.photos.indexOf(',') !== -1) {
-                      let arr = data.photos.split(',')
-                      data.photosArr = arr
-                    } else {
-                      data.photosArr.push(data.photos)
-                    }
-                  }
-                  if (!data.iswaitapproval) {
-                    if (!data.isapproval) {
-                      data.iswaitapprovalName = ''
-                      data.disabled = true
-                    } else {
-                      data.iswaitapprovalName = '已审批'
-                      data.disabled = true
-                    }
-                  } else {
-                    data.iswaitapprovalName = '待审批'
-                    data.disabled = false
-                  }
-                  if (data.isassigned) {
-                    data.isassignedName = '已安排'
-                    data.disabled = true
-                  } else {
-                    data.isassignedName = '未安排'
-                  }
-                })
-              }
-            })
-            this.dailyChild = response.data.data
-          } else {
-            this.dailyChild = response.data.data
-          }
+          this.tableDatataskStat = response.data.data
         }
-        this.closeLoadingDialog()
       })
     },
     query () {
