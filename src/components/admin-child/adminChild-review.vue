@@ -59,6 +59,22 @@
                 </div>
               </div>
               <div class="modify_liDivthree">
+                <p class="modify_li_p"><span class="increaseSpan"> </span>设施单位：</p>
+                <div class="modify_li_div">
+                  <el-select @change="CompanyChange" size="mini" v-model="Company" placeholder="请选择">
+                    <el-option
+                      v-for="item in CompanyData"
+                      :key="item.name"
+                      :label="item.name"
+                      :value="item.name">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div class="modify_lidivRight">
+                  <el-input v-if="CompanyShow" size="mini" v-model="CompanyInput" placeholder="请输入单位"></el-input>
+                </div>
+              </div>
+              <div class="modify_liDivthree">
                 <p class="modify_li_p">
                   技术参数：
                 </p>
@@ -235,7 +251,7 @@
 <script>
 import $ from 'jquery'
 import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, findAllDeviceType,
-  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels } from '../../api/user'
+  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
@@ -336,7 +352,11 @@ export default {
         label: 'areaname',
         value: 'areaid'
       },
-      facilityLocationDate: []
+      facilityLocationDate: [],
+      CompanyData: [],
+      Company: '',
+      CompanyInput: '',
+      CompanyShow: false
     }
   },
   methods: {
@@ -495,6 +515,19 @@ export default {
       } else {
         devicemodel = this.versionValue ? this.versionValue : ''
       }
+      //  单位
+      let unit = ''
+      if (!this.Company) {
+        if (!this.CompanyShow) {
+          unit = this.CompanyInput
+        } else {
+          unit = this.CompanyInput
+        }
+      } else if (this.Company === '自定义') {
+        unit = this.CompanyInput
+      } else {
+        unit = this.Company
+      }
       //  设备参数
       let parameters = this.technicalParameter ? this.technicalParameter : ''
       // 备注
@@ -535,12 +568,12 @@ export default {
                 this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
                   if (data.data.code === 0) {
                     devicemodel = data.data.data.divecemodelid
-                    this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
+                    this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
                   }
                 })
               } else {
                 devicemodel = this.versionValue
-                this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
+                this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
               }
             }
           })
@@ -550,13 +583,13 @@ export default {
             if (Item.data.code === 0) {
               devicemodel = Item.data.data.divecemodelid
               manufacturerid = this.manufactorModel
-              this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
+              this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
             }
           })
         } else {
           devicemodel = this.versionValue
           manufacturerid = this.manufactorModel
-          this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
+          this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
         }
       } else {
         this.$message({
@@ -565,8 +598,8 @@ export default {
         })
       }
     },
-    requestCreation (rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle) {
-      this.axios.post(maintainReportAddDevice(rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), tabulationtitle).then((data) => {
+    requestCreation (rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle) {
+      this.axios.post(maintainReportAddDevice(rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate), tabulationtitle).then((data) => {
         if (data.data.code === 0) {
           this.$message({
             message: '创建成功',
@@ -636,6 +669,13 @@ export default {
           }
         })
       }
+    },
+    CompanyChange (el) {
+      if (el === '自定义') {
+        this.CompanyShow = true
+      } else {
+        this.CompanyShow = false
+      }
     }
   },
   created () {
@@ -655,6 +695,16 @@ export default {
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.facilityLocation = response.data.data
+      }
+    })
+    this.axios.post(findAllDeviceUnit(token)).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response)
+        let obj = {
+          name: '自定义'
+        }
+        response.data.data.push(obj)
+        this.CompanyData = response.data.data
       }
     })
   }

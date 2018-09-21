@@ -255,8 +255,8 @@ export const batchApprovalCheckTaskByDetailIDs = (token, taskid, detailids) => {
   return `${Test}/task/batchApprovalCheckTaskByDetailIDs?token=${token}&taskid=${taskid}&detailids=${detailids}`
 }
 
-export const getCurrentTaskDeviceStatJsonTwo = (token, taskid, areaid, basedevicecode, approvalstates, pageindex, pagesize) => {
-  return `${Test}/task/getCurrentTaskDeviceStatJson?token=${token}&taskid=${taskid}&areaid=${areaid}&basedevicecode=${basedevicecode}&approvalstates=${approvalstates}&pageindex=${pageindex}&pagesize=${pagesize}`
+export const getCurrentTaskDeviceStatJsonTwo = (token, taskid, areaid, basedevicecode, approvalstates) => {
+  return `${Test}/task/getCurrentTaskDeviceStatJson?token=${token}&taskid=${taskid}&areaid=${areaid}&basedevicecode=${basedevicecode}&approvalstates=${approvalstates}&pageindex=&pagesize=`
 }
 //  安排任务 -> 维保单位
 export const maintainDailygetRepairOrgTreeByDeviceId = (deviceid) => {
@@ -399,9 +399,12 @@ export const maintainReportAddManufacture = (customManufacturerDate, devicetypei
   return url
 }
 //  增加上报问题
-export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate) => {
-  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`
+export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate) => {
+  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&unit=${unit}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`
   return url
+}
+export const findAllDeviceUnit = (token) => {
+  return `${Test}/dev/findAllDeviceUnit?token=${token}`
 }
 export const PojectdeviceApprovals2 = (deviceids, approvalstate) => {
   const url = `${Test}/dev/PojectdeviceApprovals2?deviceids=${deviceids}&approvalstate=${approvalstate}`

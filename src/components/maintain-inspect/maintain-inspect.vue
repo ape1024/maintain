@@ -90,26 +90,35 @@
             </li>
             <li class="header_litwo">{{item.assign}}</li>
             <li class="header_litwo">
-              <div v-if="timestamp > item.endTime && JurisdictionCheck ? true : false" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
+              <div v-if="(timestamp - (item.endTime + 86400000)) > 86400000  && JurisdictionCheck" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
                 归 档
+              </div>
+              <div v-if="JurisdictionApproval" @click.stop="batchAudit" class="batchDiv">
+                批量审核
               </div>
             </li>
           </ul>
           <transition enter-active-class="fadeInUp"
                       leave-active-class="fadeOutDown">
-            <div v-if="item.flag" class="inline_div">
-              <inspecttwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" @examinationApproval="ExaminationApproval"></inspecttwo>
+            <div @click.stop v-if="item.flag" class="inline_div">
+              <!--<dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" ></dailytwo>-->
+              <dailytwoNew :clickId="click_id" @requestdata="requestData" :dailychild="dailyChild" :clicktaskname="clicktaskName" @examinationApproval="ExaminationApproval"></dailytwoNew>
             </div>
           </transition>
         </li>
       </ul>
     </section>
+    <!--目前不需要修改-->
+    <!--<section v-show="modifyBoolean" class="review">-->
+    <!--<modify :sag="modifyBoolean" @say="Say"></modify>-->
+    <!--</section>-->
   </div>
 </template>
 
 <script>
-import inspecttwo from '../inspect-child/inspectChild-two'
-import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat, SetCheckTaskFiled } from '../../api/user'
+import dailytwo from '../dailyChild-two/dailyChild-two'
+import dailytwoNew from '../dailyChild-Newmodification/dailyChild-Newmodification'
+import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, SetCheckTaskFiled, getCurrentTaskDeviceStatJson, getCurrentTaskDeviceStatJsonTwo, batchApprovalCheckTaskByDetailIDs } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
@@ -117,8 +126,8 @@ export default {
   mixins: [projectMixin, loadingMixin],
   name: 'maintain-daily',
   components: {
-    inspecttwo
-    // modify
+    dailytwo,
+    dailytwoNew
   },
   methods: {
     pigeonhole (taskID) {
@@ -153,33 +162,24 @@ export default {
       })
     },
     init () {
-      this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.tableDatataskStat = response.data.data
-        }
-      })
+      //  获取区域
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.regionDate = response.data.data
         }
       })
+      //  展示任务
+      this.axios.post(maintainDailyCurrentTaskStat(3, (this.maintainProject))).then((response) => {
+        if (response.data.code === 0) {
+          this.tableDatataskStat = response.data.data
+        }
+      })
     },
     ExaminationApproval (el) {
-      this.axios.post(maintainDailygetCurrentTaskDeviceStat(el)).then((response) => {
+      // let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
-          if (response.data.data.length !== 0) {
-            response.data.data.forEach((val) => {
-              val.judge = false
-              if ((val.error + val.problem) <= 0 && (val.waitapproval > 0)) {
-                val.available = false
-              } else {
-                val.available = true
-              }
-            })
-            this.dailyChild = response.data.data
-          } else {
-            this.dailyChild = response.data.data
-          }
+          this.tableDatataskStat = response.data.data
         }
       })
     },
@@ -199,15 +199,44 @@ export default {
         let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         basedevicecode = basedevicecode === null ? '' : basedevicecode
         let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
-        this.axios.post(maintainDailygetCurrentTaskDeviceData(clickId, areaid, basedevicecode, approvalstates)).then((response) => {
+        this.openLoadingDialog()
+        let token = JSON.parse(window.sessionStorage.token)
+        this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, clickId, areaid, basedevicecode, approvalstates)).then((response) => {
           if (response.data.code === 0) {
             if (response.data.data.length !== 0) {
               response.data.data.forEach((val) => {
-                val.judge = false
-                if ((val.error + val.problem) > 0) {
-                  val.available = true
-                } else {
-                  val.available = false
+                val.choose = false
+                if (val.details) {
+                  val.details.forEach((data) => {
+                    data.flag = false
+                    if (data.photos) {
+                      data.photosArr = []
+                      if (data.photos.indexOf(',') !== -1) {
+                        let arr = data.photos.split(',')
+                        data.photosArr = arr
+                      } else {
+                        data.photosArr.push(data.photos)
+                      }
+                    }
+                    if (!data.iswaitapproval) {
+                      if (!data.isapproval) {
+                        data.iswaitapprovalName = ''
+                        data.disabled = true
+                      } else {
+                        data.iswaitapprovalName = '已审批'
+                        data.disabled = true
+                      }
+                    } else {
+                      data.iswaitapprovalName = '待审批'
+                      data.disabled = false
+                    }
+                    if (data.isassigned) {
+                      data.isassignedName = '已安排'
+                      data.disabled = true
+                    } else {
+                      data.isassignedName = '未安排'
+                    }
+                  })
                 }
               })
               this.dailyChild = response.data.data
@@ -215,6 +244,7 @@ export default {
               this.dailyChild = response.data.data
             }
           }
+          this.closeLoadingDialog()
         })
       } else {
         this.$message({
@@ -228,10 +258,12 @@ export default {
         this.tableDatataskStat.forEach((val) => {
           val.flag = false
         })
+        this.clicktaskName = item.taskName
         let itemAreaid = item.taskID
         this.click_id = itemAreaid
+        let token = JSON.parse(window.sessionStorage.token)
         this.openLoadingDialog()
-        this.axios.post(maintainDailygetCurrentTaskDeviceStat(itemAreaid)).then((response) => {
+        this.axios.post(getCurrentTaskDeviceStatJson(token, itemAreaid)).then((response) => {
           if (!response) {
             this.closeLoadingDialog()
             return
@@ -239,11 +271,40 @@ export default {
           if (response.data.code === 0) {
             if (response.data.data.length !== 0) {
               response.data.data.forEach((val) => {
-                val.judge = false
-                if ((val.error + val.problem) <= 0 && (val.waitapproval > 0)) {
-                  val.available = false
-                } else {
-                  val.available = true
+                val.choose = false
+                if (val.details) {
+                  val.details.forEach((data) => {
+                    data.flag = false
+                    if (data.photos) {
+                      data.photosArr = []
+                      if (data.photos.indexOf(',') !== -1) {
+                        let arr = data.photos.split(',')
+                        data.photosArr = arr
+                      } else {
+                        data.photosArr.push(data.photos)
+                      }
+                    }
+                    if (!data.iswaitapproval) {
+                      if (!data.isapproval) {
+                        data.iswaitapprovalName = ''
+                        data.disabled = true
+                      } else {
+                        data.iswaitapprovalName = '已审批'
+                        data.disabled = true
+                      }
+                    } else {
+                      data.iswaitapprovalName = '待审批'
+                      data.disabled = false
+                    }
+                    if (data.isassigned) {
+                      data.isassignedName = '已安排'
+                    } else {
+                      data.isassignedName = '未安排'
+                    }
+                    if (data.conclusion !== 1) {
+                      data.disabled = true
+                    }
+                  })
                 }
               })
               this.dailyChild = response.data.data
@@ -268,11 +329,75 @@ export default {
     },
     // 修改逻辑
     amend ($event) {
-      // $event.cancelBubble = true
       this.modifyBoolean = true
     },
     Say (ev) {
       this.modifyBoolean = ev
+    },
+    requestData () {
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(getCurrentTaskDeviceStatJson(token, this.click_id)).then((response) => {
+        if (response.data.code === 0) {
+          if (response.data.data.length !== 0) {
+            response.data.data.forEach((val) => {
+              val.choose = false
+              if (val.details) {
+                val.details.forEach((data) => {
+                  data.flag = false
+                  if (!data.iswaitapproval) {
+                    if (!data.isapproval) {
+                      data.iswaitapprovalName = ''
+                    } else {
+                      data.iswaitapprovalName = '已审批'
+                    }
+                  } else {
+                    data.iswaitapprovalName = '待审批'
+                  }
+                  if (data.isassigned) {
+                    data.isassignedName = '已安排'
+                  } else {
+                    data.isassignedName = '未安排'
+                  }
+                })
+              }
+            })
+            this.dailyChild = response.data.data
+          } else {
+            this.dailyChild = response.data.data
+          }
+        }
+        this.closeLoadingDialog()
+      })
+    },
+    batchAudit () {
+      let arr = []
+      this.dailyChild.forEach((val) => {
+        val.details.forEach((data) => {
+          if (data.flag === true) {
+            arr.push(data.detailId)
+          }
+        })
+      })
+      if (!arr.length) {
+        this.$message({
+          message: '请选择审核项!',
+          type: 'warning'
+        })
+        return false
+      } else {
+        arr = arr.join()
+        let token = JSON.parse(window.sessionStorage.token)
+        this.axios.post(batchApprovalCheckTaskByDetailIDs(token, this.click_id, arr)).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject)).then((response) => {
+              if (response.data.code === 0) {
+                this.tableDatataskStat = response.data.data
+              }
+            })
+          }
+        })
+      }
     }
   },
   data () {
@@ -304,19 +429,23 @@ export default {
       tableDatataskStat: [],
       dailyChild: '',
       timestamp: '',
-      JurisdictionCheck: ''
+      clicktaskName: '',
+      JurisdictionCheck: '',
+      JurisdictionApproval: ''
     }
   },
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'task_jc') {
+      if (val.functioncode === 'task_xj') {
         this.JurisdictionCheck = val.check
+        this.JurisdictionApproval = val.approval
       }
     })
     //  归档时间判断  + 86400  延迟一天
-    let timestamp = Date.parse(new Date()) + 86400
+    let timestamp = (new Date()).getTime()
     this.timestamp = timestamp
+    console.log(timestamp)
     //  获取区域
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
@@ -383,8 +512,8 @@ export default {
       line-height 40px
     .div_input
       float left
-      margin-top 5px
       width 167px
+      margin-top 5px
       display flex
 
   .button
@@ -608,11 +737,11 @@ export default {
     color $color-text-title
     font-size $font-size-medium
     .threelevel_header
-      margin: 4px;
-      overflow: hidden;
-      position: relative;
-      padding: 12px 0;
-      background: #354d76;
+      margin 4px
+      overflow hidden
+      position relative
+      padding 12px 0
+      background #354d76
       .threelevel_li
         float left
         width 11%
@@ -625,9 +754,9 @@ export default {
         width 9%
         padding-left 2%
     .threelevel_list
-      margin: 4px;
-      overflow: hidden;
-      position: relative;
+      margin 4px
+      overflow hidden
+      position relative
       .threelevel_list_li
         width 100%
         overflow hidden
@@ -635,7 +764,7 @@ export default {
         .threelevel_list_ul
           width 100%
           overflow hidden
-          padding: 12px 0;
+          padding 12px 0
           .threelevel_li
             float left
             width 11%
@@ -681,4 +810,16 @@ export default {
     min-height 800px
     background rgba(0,0,0,0.35)
     margin 10px
+  .batchDiv
+    display inline-block
+    width 80px
+    height 30px
+    line-height 30px
+    border-radius 5px
+    text-align center
+    background $color-background-newly
+    cursor pointer
+    transition .2s
+    &:hover
+      background #4baabe
 </style>

@@ -135,6 +135,7 @@ export default {
       })
     },
     init () {
+      this.numberPagesBoolean = false
       this.currentPage = 1
       console.log(this.currentPage)
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
@@ -148,6 +149,7 @@ export default {
             if (data.data.code === 0) {
               this.tableData = data.data.data.datas
               this.numberPages = data.data.data.totalPage
+              this.numberPagesBoolean = true
             }
           })
         } else {

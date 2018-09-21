@@ -201,7 +201,7 @@ export default {
         let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
         this.openLoadingDialog()
         let token = JSON.parse(window.sessionStorage.token)
-        this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, clickId, areaid, basedevicecode, approvalstates, 1, 30)).then((response) => {
+        this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, clickId, areaid, basedevicecode, approvalstates)).then((response) => {
           if (response.data.code === 0) {
             if (response.data.data.length !== 0) {
               response.data.data.forEach((val) => {
