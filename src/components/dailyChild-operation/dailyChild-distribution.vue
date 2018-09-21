@@ -108,10 +108,10 @@
 </template>
 
 <script>
-import { maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailyassignedTask, maintainDailygetRepairTypes } from '../../api/user'
+import { maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailyassignedTask } from '../../api/user'
 export default {
   name: 'dailyChild-distribution',
-  props: ['distriBoolean', 'instruction', 'equipment'],
+  props: ['distriBoolean', 'getrepairDate', 'instruction', 'equipment'],
   data () {
     return {
       radio2: '',
@@ -133,8 +133,7 @@ export default {
         label: 'organizationName'
       },
       proprietorCheckList: [],
-      maintenanceList: [],
-      getrepairDate: ''
+      maintenanceList: []
     }
   },
   methods: {
@@ -152,7 +151,10 @@ export default {
         let faultTypeId = this.radio2
         let usersNumber = this.maintenanceList.concat(this.repairCheckList)
         let users = []
-        string = this.instruction.checktaskdetailid
+        this.instruction.forEach((val) => {
+          string += `${val.checktaskdetailid},`
+        })
+        string = string.substring(0, string.length - 1)
         if (usersNumber.length !== 0) {
           usersNumber.forEach((val) => {
             let obj = {
@@ -174,10 +176,10 @@ export default {
               message: '分配成功',
               type: 'success'
             })
-            this.$emit('distribution')
+            this.$emit('distribution', false)
           } else if (response.data.code === -1) {
             this.$message({
-              message: response.message,
+              message: '异常状态!',
               type: 'warning'
             })
           }
@@ -189,23 +191,21 @@ export default {
     }
   },
   created () {
-    let data = `1,工作事项: ${this.instruction.matters} 工作结论: ${this.instruction.conclusion === null ? ' ' : this.instruction.conclusion}\n`
-    this.instrucTion += data
+    this.instruction.forEach((val, index) => {
+      let data = `${index},工作事项: ${val.matters} 工作结论: ${val.conclusion === null ? ' ' : val.conclusion}\n`
+      this.instrucTion += data
+    })
     //  业主单位
     this.axios.post(maintainDailygetProprietorOrgTree()).then((response) => {
       if (response.data.code === 0) {
         this.proprietor = response.data.data
       }
     })
+
     //  维保单位 this.equipment
-    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.instruction.checktaskdetailid)).then((response) => {
+    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.equipment)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
-      }
-    })
-    this.axios.post(maintainDailygetRepairTypes()).then((response) => {
-      if (response.data.code === 0) {
-        this.getrepairDate = response.data.data
       }
     })
   }
@@ -234,18 +234,18 @@ export default {
         margin-top 16px
         min-height 60px
       .distriButionDiv_div
-         init()
-        .distriButionDiv_p
-          float left
-        .distriButionDiv_line
-           float right
-           width 613px
-           height 1px
-           background #444d5b
-           margin-top 6px
+        init()
+      .distriButionDiv_p
+        float left
+      .distriButionDiv_line
+        float right
+        width 613px
+        height 1px
+        background #444d5b
+        margin-top 6px
       .distriButionOption
-         margin 22px 20px
-         overflow hidden
+        margin 22px 20px
+        overflow hidden
       .explain
         init()
         .distributionExplain
@@ -266,18 +266,18 @@ export default {
           .personChargeDiv
             float left
             width 228px
-            overflow-y scroll
+            overflow auto
             height 130px
         .explainBottom
-           init()
-           margin-top 50px
-           overflow hidden
-           text-align center
-           .conserve
-             conserve()
-             margin-right 110px
-           .closedown
-             closedown()
+          init()
+          margin-top 50px
+          overflow hidden
+          text-align center
+          .conserve
+            conserve()
+            margin-right 110px
+          .closedown
+            closedown()
   .data
     width 100%
     display flex
@@ -348,7 +348,6 @@ export default {
     max-height 150px
   .tree-wrapper
     float left
-    width 260px
     box-sizing border-box
     height 130px
     overflow auto

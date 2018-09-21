@@ -50,13 +50,13 @@
               </div>
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderP">
+                  <p class="tlefttopHeaderPPP" :title="examine.feedbackinfo">
                     <span class="tlefttopHeaderSpan">反馈情况：</span>
                     <span class="tlefttopli_Span">{{examine.feedbackinfo}}</span>
                   </p>
                 </li>
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderP">
+                  <p class="tlefttopHeaderPPP" :title="examine.disposeopinion">
                     <span class="tlefttopHeaderSpan">处理意见：</span>
                     <span class="tlefttopli_Span">{{examine.disposeopinion}}</span>
                   </p>
@@ -654,4 +654,8 @@ export default {
     width 120px
     padding-left 10px
     height 30px
+  .tlefttopHeaderPPP
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
 </style>

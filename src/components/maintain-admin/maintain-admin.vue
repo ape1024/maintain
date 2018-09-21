@@ -68,6 +68,15 @@
             </transition>
           </li>
         </ul>
+        <div class="numberPages" v-if="numberPagesBoolean">
+          <el-pagination
+            background
+            layout="prev, pager, next"
+            @current-change="numberPagesChange"
+            :current-page="currentPage"
+            :page-count="numberPages">
+          </el-pagination>
+        </div>
       </section>
       <section v-if="review_boolean" @click.stop class="review">
         <increase v-if="review_boolean" :msg="review_boolean" @transmission="Transmission" @say="onSay" ></increase>
@@ -89,6 +98,25 @@ export default {
     increase
   },
   methods: {
+    numberPagesChange (el) {
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.regionDate = response.data.data
+          this.regionModel.push((this.regionDate)[0].areaid)
+          //  获取 列表数据 默认第一页 20个
+          let regionId = (this.regionModel).shift()
+          this.axios.post(CalcDevCount(token, this.maintainProject, regionId, el, 20)).then((data) => {
+            if (data.data.code === 0) {
+              this.tableData = data.data.data.datas
+              this.numberPagesBoolean = true
+              this.numberPages = data.data.data.totalPage
+              console.log(this.numberPages)
+            }
+          })
+        }
+      })
+    },
     Transmission () {
       this.review_boolean = false
       let token = JSON.parse(window.sessionStorage.token)
@@ -107,6 +135,8 @@ export default {
       })
     },
     init () {
+      this.currentPage = 1
+      console.log(this.currentPage)
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.regionDate = response.data.data
@@ -117,6 +147,7 @@ export default {
           this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
             if (data.data.code === 0) {
               this.tableData = data.data.data.datas
+              this.numberPages = data.data.data.totalPage
             }
           })
         } else {
@@ -234,7 +265,10 @@ export default {
       click_id: '',
       tableData: [],
       JurisdictionInsert: '',
-      adminAreaid: ''
+      adminAreaid: '',
+      numberPages: 1,
+      numberPagesBoolean: false,
+      currentPage: 1
     }
   },
   created () {
@@ -256,6 +290,9 @@ export default {
         this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
           if (data.data.code === 0) {
             this.tableData = data.data.data.datas
+            this.numberPagesBoolean = true
+            this.numberPages = data.data.data.totalPage
+            console.log(this.numberPages)
           }
         })
       }
@@ -432,7 +469,9 @@ export default {
     color #333333
   .table_ul
     width 100%
-    overflow hidden
+    max-height 800px
+    min-height 800px
+    overflow auto
     position relative
     color $color-text
     font-size $font-size-medium
@@ -482,4 +521,8 @@ export default {
   margin 10px
   min-height 800px
   background rgba(000,000,000,.35)
+  .numberPages
+    overflow hidden
+    margin 20px 0
+    text-align center
 </style>

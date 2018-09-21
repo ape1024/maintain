@@ -143,7 +143,7 @@ export default {
        position relative
        overflow hidden
     .headerRight_left__p
-      margin-top 20px
+      margin-top 8px
       font-size 16px
       color $color-text
     .headerRight_left_h4
