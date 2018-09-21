@@ -176,7 +176,7 @@
                         处理结果:
                       </span>
                       <span class="ficationEnsconceLiSpantwo">
-                        {{obtainState(item.repairstatename)}}
+                        {{obtainState(item.repairstate)}}
                       </span>
                     </p>
                   </li>
@@ -604,6 +604,7 @@ export default {
     DialogImg
   },
   created () {
+    console.log(this.examine)
     if (this.examina) {
       this.AuditorsPersonnel = this.examina.approvername
       this.AuditorsTimer = fmtDate(this.examina.approvaltime)
@@ -641,6 +642,7 @@ export default {
         } else {
           this.ficationBoolean = true
         }
+        console.log(response)
       }
     })
   }

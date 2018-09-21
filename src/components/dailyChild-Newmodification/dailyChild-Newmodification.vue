@@ -36,22 +36,22 @@
           <ul class="listUl">
             <li :key="index" v-for="(item, index) in dailychild" class="listLi">
               <ul class="heavyPlay">
-                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :title="item.devicename" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   <el-checkbox @change="checkboxClick(item.choose, item)" v-model="item.choose"></el-checkbox>
                   {{item.devicename}}
                 </li>
-                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :title="item.deviceCode" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.deviceCode}}
                 </li>
                 <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  <span>{{item.sumcount }}</span> / <span class="heavyPlayLiSpanThree">{{item.errcount}}</span>  / <span class="heavyPlayLiSpantwo">{{item.waitapprovalcount }}</span> / <span class="heavyPlayLiSpan">{{item.finshedcount }}</span> / <span>{{item.assigncount}}</span>
+                  <span :title="总数量">{{item.sumcount }}</span> / <span class="heavyPlayLiSpanThree">{{item.errcount}}</span>  / <span class="heavyPlayLiSpantwo" :title="待巡检">{{item.waitapprovalcount }}</span> / <span class="heavyPlayLiSpan">{{item.finshedcount }}</span> / <span>{{item.assigncount}}</span>
                 </li>
-                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :title="item.position" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.position}}
                 </li>
                 <div class="heavyPlayLiDiv">
                   <ul :key="$index" v-for="(data, $index) in item.details" class="heavyPlayLiUl">
-                    <li class="heavyPlayLi cephalosomeTwo" >
+                    <li :title="data.workitem" class="heavyPlayLi cephalosomeTwo" >
                       <el-checkbox v-model="data.flag" :disabled="data.disabled"></el-checkbox>
                       {{data.workitem}}
                     </li>
@@ -85,7 +85,7 @@
       <childExamine :examineName="clicktaskname" @examineMine="examineDistribution" :taskidCode="clickId" :equipmentCode="equipmentID" @mine="mineSwitch" @mineupdate="mineSwitchupdate"></childExamine>
     </section>
     <section v-if="distributionBoolean" class="review">
-      <childDistribution :instruction="instructionData" @dist="Dist"  :getrepairDate="getrepair"  :equipment='equipmentID' @distribution="distriBution"></childDistribution>
+      <childDistribution :instruction="instructionData" @dist="Dist"  :getrepairDate="getrepair"  :equipment='equipmentID' @distribution="mineSwitchupdate"></childDistribution>
     </section>
   </div>
 </template>
@@ -137,6 +137,7 @@ export default {
     },
     mineSwitchupdate () {
       this.examineBoolean = false
+      this.distributionBoolean = false
       this.$emit('examinationApproval', this.clickId)
     },
     mineSwitch () {
@@ -234,6 +235,7 @@ export default {
     border-right 1px solid #3f4856
   .cephalosomeOne
     width 10%
+    padding-right .5%
     text-indent .4em!important
     overflow hidden
     text-overflow ellipsis
@@ -284,6 +286,9 @@ export default {
     overflow hidden
     color #cdcdcd
   .heavyPlay .heavyPlayLi
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
     min-height 40px
     float left
     border-right 1px solid #3f4856

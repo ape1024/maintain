@@ -107,7 +107,7 @@
               <li class="entryLitwo">
                 {{item.username?item.username:' '}}
               </li>
-              <li class="entryLitwo">
+              <li class="entryLitwo" :title="item.rolenames">
                 {{item.rolenames?item.rolenames:' '}}
               </li>
               <li class="entryLifive">{{item.email?item.email:' '}}</li>

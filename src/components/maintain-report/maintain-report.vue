@@ -341,7 +341,7 @@ export default {
     //  权限
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'task_wtcl') {
+      if (val.functioncode === 'feedback') {
         this.JurisdictionSelect = val.select
         this.JurisdictionApproval = val.approval
         this.JurisdictionDelete = val.delete

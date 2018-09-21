@@ -90,10 +90,10 @@
             </li>
             <li class="header_litwo">{{item.assign}}</li>
             <li class="header_litwo">
-              <div v-if="timestamp > item.endTime && JurisdictionCheck ? true : false" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
+              <div v-if="(timestamp - (item.endTime + 86400000)) > 86400000  && JurisdictionCheck" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
                 归 档
               </div>
-              <div @click.stop="batchAudit" class="batchDiv">
+              <div v-if="JurisdictionApproval" @click.stop="batchAudit" class="batchDiv">
                 批量审核
               </div>
             </li>
@@ -118,7 +118,7 @@
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
 import dailytwoNew from '../dailyChild-Newmodification/dailyChild-Newmodification'
-import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, SetCheckTaskFiled, getCurrentTaskDeviceStatJson } from '../../api/user'
+import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, SetCheckTaskFiled, getCurrentTaskDeviceStatJson, getCurrentTaskDeviceStatJsonTwo, batchApprovalCheckTaskByDetailIDs } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
@@ -243,15 +243,44 @@ export default {
         let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         basedevicecode = basedevicecode === null ? '' : basedevicecode
         let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
-        this.axios.post(maintainDailygetCurrentTaskDeviceData(clickId, areaid, basedevicecode, approvalstates)).then((response) => {
+        this.openLoadingDialog()
+        let token = JSON.parse(window.sessionStorage.token)
+        this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, clickId, areaid, basedevicecode, approvalstates, 1, 30)).then((response) => {
           if (response.data.code === 0) {
             if (response.data.data.length !== 0) {
               response.data.data.forEach((val) => {
-                val.judge = false
-                if ((val.error + val.problem) > 0) {
-                  val.available = true
-                } else {
-                  val.available = false
+                val.choose = false
+                if (val.details) {
+                  val.details.forEach((data) => {
+                    data.flag = false
+                    if (data.photos) {
+                      data.photosArr = []
+                      if (data.photos.indexOf(',') !== -1) {
+                        let arr = data.photos.split(',')
+                        data.photosArr = arr
+                      } else {
+                        data.photosArr.push(data.photos)
+                      }
+                    }
+                    if (!data.iswaitapproval) {
+                      if (!data.isapproval) {
+                        data.iswaitapprovalName = ''
+                        data.disabled = true
+                      } else {
+                        data.iswaitapprovalName = '已审批'
+                        data.disabled = true
+                      }
+                    } else {
+                      data.iswaitapprovalName = '待审批'
+                      data.disabled = false
+                    }
+                    if (data.isassigned) {
+                      data.isassignedName = '已安排'
+                      data.disabled = true
+                    } else {
+                      data.isassignedName = '未安排'
+                    }
+                  })
                 }
               })
               this.dailyChild = response.data.data
@@ -259,6 +288,7 @@ export default {
               this.dailyChild = response.data.data
             }
           }
+          this.closeLoadingDialog()
         })
       } else {
         this.$message({
@@ -312,9 +342,11 @@ export default {
                     }
                     if (data.isassigned) {
                       data.isassignedName = '已安排'
-                      data.disabled = true
                     } else {
                       data.isassignedName = '未安排'
+                    }
+                    if (data.conclusion !== 1) {
+                      data.disabled = true
                     }
                   })
                 }
@@ -399,7 +431,7 @@ export default {
       } else {
         arr = arr.join()
         let token = JSON.parse(window.sessionStorage.token)
-        this.axios.post(`http://172.16.6.181:8920/task/batchApprovalCheckTaskByDetailIDs?token=${token}&taskid=${this.click_id}&detailids=${arr}`).then((response) => {
+        this.axios.post(batchApprovalCheckTaskByDetailIDs(token, this.click_id, arr)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
             this.axios.post(maintainDailyCurrentTaskStat(2, this.maintainProject)).then((response) => {
@@ -442,7 +474,8 @@ export default {
       dailyChild: '',
       timestamp: '',
       clicktaskName: '',
-      JurisdictionCheck: ''
+      JurisdictionCheck: '',
+      JurisdictionApproval: ''
     }
   },
   created () {
@@ -450,11 +483,13 @@ export default {
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'task_xj') {
         this.JurisdictionCheck = val.check
+        this.JurisdictionApproval = val.approval
       }
     })
     //  归档时间判断  + 86400  延迟一天
-    let timestamp = Date.parse(new Date()) + 86400
+    let timestamp = (new Date()).getTime()
     this.timestamp = timestamp
+    console.log(timestamp)
     //  获取区域
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {

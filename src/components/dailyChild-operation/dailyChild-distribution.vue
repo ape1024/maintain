@@ -176,7 +176,7 @@ export default {
               message: '分配成功',
               type: 'success'
             })
-            this.$emit('dist', false)
+            this.$emit('distribution', false)
           } else if (response.data.code === -1) {
             this.$message({
               message: '异常状态!',

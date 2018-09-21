@@ -246,6 +246,13 @@ export const maintainDailygetProprietorOrgTree = () => {
 export const getCurrentTaskDeviceStatJson = (token, itemAreaid) => {
   return `${Test}/task/getCurrentTaskDeviceStatJson?token=${token}&taskid=${itemAreaid}`
 }
+export const batchApprovalCheckTaskByDetailIDs = (token, taskid, detailids) => {
+  return `${Test}/task/batchApprovalCheckTaskByDetailIDs?token=${token}&taskid=${taskid}&detailids=${detailids}`
+}
+
+export const getCurrentTaskDeviceStatJsonTwo = (token, taskid, areaid, basedevicecode, approvalstates, pageindex, pagesize) => {
+  return `${Test}/task/getCurrentTaskDeviceStatJson?token=${token}&taskid=${taskid}&areaid=${areaid}&basedevicecode=${basedevicecode}&approvalstates=${approvalstates}&pageindex=${pageindex}&pagesize=${pagesize}`
+}
 //  安排任务 -> 维保单位
 export const maintainDailygetRepairOrgTreeByDeviceId = (deviceid) => {
   const url = `${Test}/organization/getRepairOrgTreeByDeviceId?deviceid=${deviceid}`
