@@ -261,6 +261,7 @@ export const maintainDailygetDetailsByDeviceId = (taskid, deviceID) => {
   const url = `${Test}/task/getDetailsByDeviceId?taskId=${taskid}&deviceId=${deviceID}`
   return url
 }
+
 //  审核  分配任务
 export const maintainDailyassignedTask = (token, string, desc, disposeopinion, faultTypeId) => {
   const url = `${Test}/task/assignedTask?token=${token}&detailIDs=${string}&desc=${desc}&disposeopinion=${disposeopinion}&faultTypeId=${faultTypeId}`

@@ -26,9 +26,9 @@
                 <li class="cephalosomeThree">工作结论</li>
                 <li class="cephalosomeThree">审核状态</li>
                 <li class="cephalosomeThree">处理状态</li>
-                <li class="cephalosomeFive">操作</li>
               </ul>
             </div>
+            <li class="cephalosomeOne cephalosomelv">操作</li>
           </ul>
         </div>
         <!--list-->
@@ -37,7 +37,7 @@
             <li :key="index" v-for="(item, index) in dailychild" class="listLi">
               <ul class="heavyPlay">
                 <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  <el-checkbox v-model="item.choose"></el-checkbox>
+                  <el-checkbox @change="checkboxClick(item.choose, item)" v-model="item.choose"></el-checkbox>
                   {{item.devicename}}
                 </li>
                 <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
@@ -65,17 +65,16 @@
                       {{data.conclusionname}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
-                      {{data.iswaitapprovalName}}
+                      {{data.approvalstatename}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree" :class="!data.isassigned ? 'UnarrangedClass': 'regularClass' ">
                       {{data.isassignedName}}
                     </li>
-                    <li class="heavyPlayLi cephalosomeFive">
-                      <span @click.stop="particulars(item, data)" class="cephalosomeFiveSpan">详情</span>
-                      <span @click.stop="amputatematters(data.detailId)" v-if="!data.refid ? false : true" class="cephalosomeFiveSpanTwo">删除</span>
-                    </li>
                   </ul>
                 </div>
+                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne cephalosomelv">
+                  <span @click.stop="particulars(item.deviceid)" class="cephalosomeFiveSpan">详情</span>
+                </li>
               </ul>
             </li>
           </ul>
@@ -83,10 +82,10 @@
       </div>
     </div>
     <section v-if="examineBoolean" class="review">
-      <childExamine :parentdata="parentData" :correspondingdata="correspondingData" :clicktaskName="clicktaskname" @mine="Mine" @examine="Examine"></childExamine>
+      <childExamine :examineName="clicktaskname" @examineMine="examineDistribution" :taskidCode="clickId" :equipmentCode="equipmentID" @mine="mineSwitch" @mineupdate="mineSwitchupdate"></childExamine>
     </section>
     <section v-if="distributionBoolean" class="review">
-      <childDistribution :instruction="DistributionData" @dist="Dist" @distribution="distriBution"></childDistribution>
+      <childDistribution :instruction="instructionData" @dist="Dist"  :getrepairDate="getrepair"  :equipment='equipmentID' @distribution="distriBution"></childDistribution>
     </section>
   </div>
 </template>
@@ -94,10 +93,10 @@
 <script>
 import childExamine from '../dailyChild-operation/dailyChild-examine'
 import childDistribution from '../dailyChild-operation/dailyChild-distribution'
-import { deleteTaskDetail } from '../../api/user'
+import { maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'dailyChild-Newmodification',
-  props: [ 'dailychild', 'clicktaskname' ],
+  props: [ 'dailychild', 'clicktaskname', 'clickId' ],
   components: {
     childExamine,
     childDistribution
@@ -110,7 +109,8 @@ export default {
       correspondingData: '',
       examineBoolean: false,
       distributionBoolean: false,
-      DistributionData: ''
+      DistributionData: '',
+      equipmentID: ''
     }
   },
   methods: {
@@ -135,6 +135,13 @@ export default {
         })
       }
     },
+    mineSwitchupdate () {
+      this.examineBoolean = false
+      this.$emit('examinationApproval', this.clickId)
+    },
+    mineSwitch () {
+      this.examineBoolean = false
+    },
     fmtDate (obj) {
       let date = new Date(obj)
       let y = 1900 + date.getYear()
@@ -142,17 +149,8 @@ export default {
       let d = `0` + date.getDate()
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     },
-    //  删除重复设备
-    amputatematters (detailId) {
-      this.axios.post(deleteTaskDetail(detailId)).then((response) => {
-        if (response.data.code === 0) {
-          this.$emit('requestdata')
-        }
-      })
-    },
-    particulars (item, data) {
-      this.parentData = item
-      this.correspondingData = data
+    particulars (deviceID) {
+      this.equipmentID = deviceID
       this.examineBoolean = true
     },
     Mine (ev) {
@@ -170,9 +168,36 @@ export default {
     distriBution () {
       this.$emit('requestdata')
       this.distributionBoolean = false
+    },
+    examineDistribution (ev) {
+      this.instructionData = ev
+      this.ArrangetheviewBoolean = false
+      this.examineBoolean = false
+      this.axios.post(maintainDailygetRepairTypes()).then((response) => {
+        if (response.data.code === 0) {
+          this.getrepair = response.data.data
+          this.distributionBoolean = true
+        }
+      })
+    },
+    checkboxClick (ev, data) {
+      if (ev) {
+        data.details.forEach((val) => {
+          if (!val.disabled) {
+            val.flag = true
+          }
+        })
+      } else {
+        data.details.forEach((val) => {
+          if (!val.disabled) {
+            val.flag = false
+          }
+        })
+      }
     }
   },
   created () {
+    console.log(this.clickId)
   }
 }
 </script>
@@ -207,8 +232,6 @@ export default {
     line-height 40px
     box-sizing border-box
     border-right 1px solid #3f4856
-  .cephalosomeUl li:last-child
-    border none
   .cephalosomeOne
     width 10%
     text-indent .4em!important
@@ -216,13 +239,13 @@ export default {
     text-overflow ellipsis
     white-space nowrap
   .cephalosomeTwo
-    width 30%
+    width 40%
     text-indent .4em
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
   .cephalosomeThree
-    width 10%
+    width 12%
     text-align center
     overflow hidden
     text-overflow ellipsis
@@ -284,7 +307,7 @@ export default {
   .heavyPlayLiSpanThree
      color #c7a038
   .heavyPlayLiDiv
-    width 60%
+    width 50%
     overflow hidden
     position relative
     float left
@@ -303,8 +326,6 @@ export default {
   .cephalosomeFiveSpanTwo
     color #a63232
     cursor pointer
-  .heavyPlayLiUl li:last-child
-    border none
   .matters_problem
     color #cfb53a
   .martters_normal
@@ -324,4 +345,7 @@ export default {
     color #cfb53a!important
   .UnarrangedClass
      color #ffaa00!important
+  .cephalosomelv
+    text-indent 0!important
+    text-align center
 </style>

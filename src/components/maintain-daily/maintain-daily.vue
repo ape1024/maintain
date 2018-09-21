@@ -93,7 +93,7 @@
               <div v-if="timestamp > item.endTime && JurisdictionCheck ? true : false" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
                 归 档
               </div>
-              <div @click="batchAudit" class="batchDiv">
+              <div @click.stop="batchAudit" class="batchDiv">
                 批量审核
               </div>
             </li>
@@ -101,8 +101,8 @@
           <transition enter-active-class="fadeInUp"
             leave-active-class="fadeOutDown">
           <div @click.stop v-if="item.flag" class="inline_div">
-              <!--<dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" @examinationApproval="ExaminationApproval"></dailytwo>-->
-            <dailytwoNew @requestdata="requestData" :dailychild="dailyChild" :clicktaskname="clicktaskName"></dailytwoNew>
+              <!--<dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" ></dailytwo>-->
+            <dailytwoNew :clickId="click_id" @requestdata="requestData" :dailychild="dailyChild" :clicktaskname="clicktaskName" @examinationApproval="ExaminationApproval"></dailytwoNew>
           </div>
           </transition>
         </li>
@@ -118,11 +118,10 @@
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
 import dailytwoNew from '../dailyChild-Newmodification/dailyChild-Newmodification'
-import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, maintainDailygetCurrentTaskDeviceStat, SetCheckTaskFiled, getCurrentTaskDeviceStatJson } from '../../api/user'
+import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, maintainDailygetCurrentTaskDeviceData, SetCheckTaskFiled, getCurrentTaskDeviceStatJson } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
-
 export default {
   mixins: [projectMixin, loadingMixin],
   name: 'maintain-daily',
@@ -177,15 +176,47 @@ export default {
       })
     },
     ExaminationApproval (el) {
-      this.axios.post(maintainDailygetCurrentTaskDeviceStat(el)).then((response) => {
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(getCurrentTaskDeviceStatJson(token, el)).then((response) => {
+        if (!response) {
+          this.closeLoadingDialog()
+          return
+        }
         if (response.data.code === 0) {
           if (response.data.data.length !== 0) {
             response.data.data.forEach((val) => {
-              val.judge = false
-              if ((val.error + val.problem) <= 0 && (val.waitapproval > 0)) {
-                val.available = false
-              } else {
-                val.available = true
+              val.choose = false
+              if (val.details) {
+                val.details.forEach((data) => {
+                  data.flag = false
+                  if (data.photos) {
+                    data.photosArr = []
+                    if (data.photos.indexOf(',') !== -1) {
+                      let arr = data.photos.split(',')
+                      data.photosArr = arr
+                    } else {
+                      data.photosArr.push(data.photos)
+                    }
+                  }
+                  if (!data.iswaitapproval) {
+                    if (!data.isapproval) {
+                      data.iswaitapprovalName = ''
+                      data.disabled = true
+                    } else {
+                      data.iswaitapprovalName = '已审批'
+                      data.disabled = true
+                    }
+                  } else {
+                    data.iswaitapprovalName = '待审批'
+                    data.disabled = false
+                  }
+                  if (data.isassigned) {
+                    data.isassignedName = '已安排'
+                    data.disabled = true
+                  } else {
+                    data.isassignedName = '未安排'
+                  }
+                })
               }
             })
             this.dailyChild = response.data.data
@@ -193,6 +224,7 @@ export default {
             this.dailyChild = response.data.data
           }
         }
+        this.closeLoadingDialog()
       })
     },
     query () {
@@ -254,7 +286,6 @@ export default {
             if (response.data.data.length !== 0) {
               response.data.data.forEach((val) => {
                 val.choose = false
-                console.log(val)
                 if (val.details) {
                   val.details.forEach((data) => {
                     data.flag = false
@@ -310,7 +341,6 @@ export default {
     },
     // 修改逻辑
     amend ($event) {
-      // $event.cancelBubble = true
       this.modifyBoolean = true
     },
     Say (ev) {
@@ -352,7 +382,34 @@ export default {
       })
     },
     batchAudit () {
-
+      let arr = []
+      this.dailyChild.forEach((val) => {
+        val.details.forEach((data) => {
+          if (data.flag === true) {
+            arr.push(data.detailId)
+          }
+        })
+      })
+      if (!arr.length) {
+        this.$message({
+          message: '请选择审核项!',
+          type: 'warning'
+        })
+        return false
+      } else {
+        arr = arr.join()
+        let token = JSON.parse(window.sessionStorage.token)
+        this.axios.post(`http://172.16.6.181:8920/task/batchApprovalCheckTaskByDetailIDs?token=${token}&taskid=${this.click_id}&detailids=${arr}`).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            this.axios.post(maintainDailyCurrentTaskStat(2, this.maintainProject)).then((response) => {
+              if (response.data.code === 0) {
+                this.tableDatataskStat = response.data.data
+              }
+            })
+          }
+        })
+      }
     }
   },
   data () {
