@@ -42,6 +42,8 @@ import tercalateProject from '../components/intercalate-child/tercalateChild-pro
 import taskrules from '../components/intercalate-child/intercalateChild-Taskrules'
 // 我的消息
 import tercalateInfo from '../components/intercalate-child/tercalateChild-info'
+// 测试组织机构
+import structureNew from '../components/intercalate-child/intercalateChild-structureNew'
 
 Vue.use(Router)
 
@@ -140,6 +142,9 @@ const routes = [
         }, {
           path: 'info',
           component: tercalateInfo
+        }, {
+          path: 'structureNew',
+          component: structureNew
         }, {
           path: '/',
           component: intercalateStructure,

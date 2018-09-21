@@ -79,19 +79,24 @@ export const managementCreatedProvince = () => {
   const url = `${Test}/organization/getAllProvince`
   return url
 }
-//  组织结构权限管理  专业类别
+//  组织结构权限管理 专业类别
 export const managementCreatedcategory = () => {
   const url = `${Test}/organization/getAllLevels`
   return url
 }
-//  组织结构权限管理   业务类别
+//  组织结构权限管理 业务类别
 export const managementCreatedbusiness = () => {
   const url = `${Test}/organization/getAllProfessionalCategory`
   return url
 }
-//  组织结构权限管理   组织类别
+//  组织结构权限管理 组织类别
 export const managementCreatedorganization = (token) => {
   const url = `${Test}/organization/getOrganizationType?token=${token}`
+  return url
+}
+// 获取所有企业等级2
+export const getLevelsByProfessionalCategory = (id) => {
+  const url = `${Test}/organization/getLevelsByProfessionalCategory?id=${id}`
   return url
 }
 //  获取当前用户的组织机构信息
@@ -293,6 +298,11 @@ export const maintainRepairgetRepairStates = () => {
 //  审批状态
 export const maintainRepairgetRepariTaskApprovalItem = () => {
   const url = `${Test}/repairtasks/getRepariTaskApprovalItem`
+  return url
+}
+// 审核状态
+export const maintainRepairgetgetRepariTaskQueryApprovalItem = () => {
+  const url = `${Test}/repairtasks/getRepariTaskQueryApprovalItem`
   return url
 }
 //  根据id获取任务
