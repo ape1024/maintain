@@ -300,6 +300,11 @@ export const maintainRepairgetRepariTaskApprovalItem = () => {
   const url = `${Test}/repairtasks/getRepariTaskApprovalItem`
   return url
 }
+// 审核状态
+export const maintainRepairgetgetRepariTaskQueryApprovalItem = () => {
+  const url = `${Test}/repairtasks/getRepariTaskQueryApprovalItem`
+  return url
+}
 //  根据id获取任务
 export const maintainRepairfindTaskByTaskid = (repairtaskid) => {
   const url = `${Test}/repairtasks/findTaskByTaskid?repairtaskid=${repairtaskid}`
