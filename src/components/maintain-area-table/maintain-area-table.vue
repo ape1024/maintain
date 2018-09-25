@@ -9,6 +9,9 @@
           <div class="title control">{{controlText}}</div>
           <div class="title code">{{codeText}}</div>
           <div class="title pos">{{posText}}</div>
+          <div class="title made">{{madeDateText}}</div>
+          <div class="title model">{{modelText}}</div>
+          <div class="title manufacture">{{manufactureText}}</div>
           <div class="title state">{{stateText}}</div>
           <div class="title handle">{{handleText}}</div>
         </div>
@@ -20,6 +23,9 @@
               <div class="title control">{{item.controllerName}}</div>
               <div class="title code">{{item.deviceCode}}</div>
               <div class="title pos">{{item.locationDescription}}</div>
+              <div class="title made">{{item.madeDate}}</div>
+              <div class="title model">{{item.modelName}}</div>
+              <div class="title manufacture">{{item.manufactureName}}</div>
               <div class="title state">{{item.action}}</div>
               <div class="title handle" @click.stop="toggle(index, item.deviceId)">详情</div>
             </div>
@@ -59,6 +65,7 @@ export default {
     getDeviceData (projectId, areaId) {
       this.axios.post(getDeviceData(projectId, areaId)).then(res => {
         if (res && res.data.code === 0) {
+          console.log(res.data.data)
           this.list = res.data.data.map(t => {
             return {
               alarmTime: t.alarmtime ? resetTime(t.alarmtime, 'date') : '----',
@@ -67,7 +74,10 @@ export default {
               deviceCode: t.devicecode,
               locationDescription: t.position,
               action: this.getDeviceState(t.devicestate),
-              deviceId: t.deviceid
+              deviceId: t.deviceid,
+              madeDate: t.madedate,
+              modelName: t.devicemodelname,
+              manufactureName: t.manufacturename
             }
           })
         }
@@ -118,6 +128,9 @@ export default {
     this.controlText = '控制器'
     this.codeText = '设备编码'
     this.posText = '位置描述'
+    this.madeDateText = '生产日期'
+    this.modelText = '规格型号'
+    this.manufactureText = '厂商'
     this.stateText = '状态'
     this.handleText = '操作'
     this.reasonText = '报警原因：'
@@ -185,6 +198,7 @@ export default {
               .title
                 box-sizing border-box
                 line-height 38px
+                height 38px
                 padding-left 10px
                 font-size $font-size-small
                 color $color-text-2
@@ -223,18 +237,24 @@ export default {
           align-items center
           color #777777
         .time
-          width 12%
+          width 8%
         .type
           width 12%
         .control
-          width 15%
+          width 12%
         .code
           width 15%
         .pos
-          width 30%
+          width 20%
+        .made
+          width 8%
+        .model
+          width 10%
+        .manufacture
+          width 15%
         .state
-          width 8%
+          width 5%
         .handle
-          width 8%
+          width 5%
           cursor pointer
 </style>
