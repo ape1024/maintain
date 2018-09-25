@@ -370,33 +370,49 @@ export default {
       })
     },
     batchAudit () {
-      let arr = []
-      this.dailyChild.forEach((val) => {
-        val.details.forEach((data) => {
-          if (data.flag === true) {
-            arr.push(data.detailId)
-          }
+      this.$confirm('是否进行批量审核?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let arr = []
+        this.dailyChild.forEach((val) => {
+          val.details.forEach((data) => {
+            if (data.flag === true) {
+              arr.push(data.detailId)
+            }
+          })
+        })
+        if (!arr.length) {
+          console.log('2')
+          this.$message({
+            message: '请选择审核项!',
+            type: 'warning'
+          })
+          return false
+        } else {
+          arr = arr.join()
+          let token = JSON.parse(window.sessionStorage.token)
+          this.axios.post(batchApprovalCheckTaskByDetailIDs(token, this.click_id, arr)).then((response) => {
+            if (response.data.code === 0) {
+              this.$message({
+                message: '审批成功',
+                type: 'success'
+              })
+              this.axios.post(maintainDailyCurrentTaskStat(2, this.maintainProject)).then((response) => {
+                if (response.data.code === 0) {
+                  this.tableDatataskStat = response.data.data
+                }
+              })
+            }
+          })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
         })
       })
-      if (!arr.length) {
-        this.$message({
-          message: '请选择审核项!',
-          type: 'warning'
-        })
-        return false
-      } else {
-        arr = arr.join()
-        let token = JSON.parse(window.sessionStorage.token)
-        this.axios.post(batchApprovalCheckTaskByDetailIDs(token, this.click_id, arr)).then((response) => {
-          if (response.data.code === 0) {
-            this.axios.post(maintainDailyCurrentTaskStat(2, this.maintainProject)).then((response) => {
-              if (response.data.code === 0) {
-                this.tableDatataskStat = response.data.data
-              }
-            })
-          }
-        })
-      }
     }
   },
   data () {
@@ -426,7 +442,7 @@ export default {
       // 获取点击的id
       click_id: '',
       tableDatataskStat: [],
-      dailyChild: '',
+      dailyChild: [],
       timestamp: '',
       clicktaskName: '',
       JurisdictionData: {}

@@ -62,7 +62,8 @@
                 <p @click.stop="examine(item.checkplanid)" class="header_p_ten">修改</p>
               </div>
               <div v-if="JurisdictionInsert">
-                <p class="header_p_twelve" @click.stop="generate(item.checkplanid)">生成计划</p>
+                <p v-if="item.planstate !== 5" class="header_p_twelve" @click.stop="generate(item.checkplanid)">生成计划</p>
+                <p v-if="item.planstate === 5" class="header_p_fourteen">生成计划</p>
               </div>
               <div v-if="JurisdictionDelete">
                 <p class="header_p_eleven" @click.stop="amputate(index, arrangedData,item.checkplanid)">删除</p>
@@ -91,7 +92,7 @@
 import lookup from '../arrangedChild-operation/arrangedChild-lookup'
 import examination from '../arrangedChild-operation/arrangedChild-examination'
 import newlybuild from '../arrangedChild-operation/arrangedChild-newlybuild'
-import { maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes } from '../../api/user'
+import { maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes, createChecktask } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   name: 'maintain-arranged',
@@ -115,7 +116,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.axios.post(`http://172.16.6.181:8920/task/createChecktask?planid=${checkplanid}`).then((response) => {
+        this.axios.post(createChecktask(checkplanid)).then((response) => {
           if (response.data.code === 0) {
             console.log(response)
             this.$message({
@@ -287,7 +288,7 @@ export default {
         this.arrangedData = response.data.data
       }
     })
-    this.axios.post(maintainArranggetAllPlanTypes()).then((response) => {
+    this.axios.post(maintainArranggetAllPlanTypes(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.worktypeData = response.data.data
       }

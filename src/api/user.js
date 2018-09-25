@@ -403,6 +403,11 @@ export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid
   const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&unit=${unit}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`
   return url
 }
+
+export const createChecktask = (checkplanid) => {
+  return `${Test}/task/createChecktask?planid=${checkplanid}`
+}
+
 export const findAllDeviceUnit = (token) => {
   return `${Test}/dev/findAllDeviceUnit?token=${token}`
 }
