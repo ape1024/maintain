@@ -82,7 +82,7 @@
       </div>
     </div>
     <section v-if="examineBoolean" class="review">
-      <childExamine :examineName="clicktaskname" @examineMine="examineDistribution" :taskidCode="clickId" :equipmentCode="equipmentID" @mine="mineSwitch" @mineupdate="mineSwitchupdate"></childExamine>
+      <childExamine :JurisdictionData="Jurisdiction" :examineName="clicktaskname" @examineMine="examineDistribution" :taskidCode="clickId" :equipmentCode="equipmentID" @mine="mineSwitch" @mineupdate="mineSwitchupdate"></childExamine>
     </section>
     <section v-if="distributionBoolean" class="review">
       <childDistribution :instruction="instructionData" @dist="Dist"  :getrepairDate="getrepair"  :equipment='equipmentID' @distribution="mineSwitchupdate"></childDistribution>
@@ -96,7 +96,7 @@ import childDistribution from '../dailyChild-operation/dailyChild-distribution'
 import { maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'dailyChild-Newmodification',
-  props: [ 'dailychild', 'clicktaskname', 'clickId' ],
+  props: [ 'dailychild', 'clicktaskname', 'clickId', 'Jurisdiction' ],
   components: {
     childExamine,
     childDistribution
@@ -198,7 +198,6 @@ export default {
     }
   },
   created () {
-    console.log(this.clickId)
   }
 }
 </script>

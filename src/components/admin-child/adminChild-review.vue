@@ -191,6 +191,7 @@
         <div class="tabulation">
           <div class="tabulation_header">
             <ul class="tabulation_ul">
+              <li class="tabulation_li">设施编码</li>
               <li class="tabulation_li">设施位置</li>
               <li class="tabulation_li">设施数量</li>
               <li class="tabulation_liTwo">编码</li>
@@ -201,6 +202,11 @@
             <ul class="title_ul">
               <li v-for="(item,$index) in tabulationtitle" :key="item.id" :id="item.id" class="title_li">
                 <ul class="title_li_ul">
+                  <li class="title_lili">
+                    <div class="title_liliTwoDiv">
+                      <el-input size="mini" v-model="item.dCoding" placeholder="设备编码"></el-input>
+                    </div>
+                  </li>
                   <li class="title_lili">
                     {{item.positionName}}{{item.position}}
                   </li>
@@ -360,9 +366,6 @@ export default {
     }
   },
   methods: {
-    facilityLocationChang (ev) {
-      console.log(ev)
-    },
     versionChang (data) {
       if (this.versionValue === '-9999') {
         this.versionManufacturer = true
@@ -442,6 +445,8 @@ export default {
             areaid: areaid[areaid.length - 1],
             // 数量
             devcount: quantum,
+            //  设备编码
+            dCoding: '',
             //  控制器编码
             a: '',
             //  回路号
@@ -455,6 +460,7 @@ export default {
       } else {
         this.tabulationtitle.unshift({
           // // 编码
+          dCoding: '',
           // code: devicecoding,
           positionName: areaidName,
           // 位置
@@ -470,9 +476,9 @@ export default {
           c: '',
           //  地址编码
           d: ''
+
         })
       }
-      console.log(this.tabulationtitle)
     },
     amputate (index) {
       this.tabulationtitle.splice(index, 1)
@@ -541,10 +547,11 @@ export default {
       this.tabulationtitle.forEach((val) => {
         let obj = {
           a: val.a,
-          areaid: val.areaid,
+          areaid: val.areaid ? val.areaid : '',
           b: val.b,
           c: val.c,
           d: val.d,
+          devicecode: val.dCoding,
           devcount: val.devcount,
           position: val.position
         }
@@ -661,7 +668,6 @@ export default {
         this.axios.post(maintainReportfindDivecemodels(region, this.manufactorModel)).then((response) => {
           if (response.data.code === 0) {
             this.version = response.data.data
-            console.log(response)
             this.version.push({
               divecemodelname: '自定义',
               divecemodelid: '-9999'
@@ -681,13 +687,9 @@ export default {
   created () {
     //  设备类型
     // let token = JSON.parse(sessionStorage.token)
-    console.log('1///')
     let token = JSON.parse(window.sessionStorage.token)
-    console.log(this.maintainProject)
-    console.log(findAllDeviceType(token, this.maintainProject))
     this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         this.category = response.data.data
       }
     })
@@ -699,7 +701,6 @@ export default {
     })
     this.axios.post(findAllDeviceUnit(token)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         let obj = {
           name: '自定义'
         }
@@ -873,7 +874,7 @@ export default {
          padding 12px 0
          .tabulation_li
           float left
-          width 20%
+          width 15%
           text-align center
          .tabulation_liTwo
            float left
@@ -895,7 +896,7 @@ export default {
                position relative
              .title_lili
                line-height: 40px;
-               width 20%
+               width 15%
                height 40px
                float left
                text-align center
