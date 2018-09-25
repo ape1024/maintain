@@ -9,6 +9,7 @@
 <script>
 const startVal = 3 / 4 * Math.PI
 const endVal = 9 / 4 * Math.PI
+const lineWidth = 10
 export default {
   props: {
     percent: {
@@ -34,10 +35,20 @@ export default {
       this.width = dom.width = dom.offsetWidth
       this.height = dom.height = dom.offsetHeight
     },
-    draw (backOpt, showOpt) {
+    draw () {
       this.ctx.clearRect(0, 0, this.width, this.height)
-      this.drawCircle(backOpt)
-      this.drawCircle(showOpt)
+      this.drawCircle({
+        color: this.backColor,
+        lineWidth: lineWidth,
+        startVal: startVal,
+        endVal: endVal
+      })
+      this.drawCircle({
+        color: this.showColor,
+        lineWidth: lineWidth,
+        startVal: startVal,
+        endVal: ((endVal - startVal) * this.percent + startVal)
+      })
     },
     drawCircle (option) {
       this.ctx.beginPath()
@@ -53,17 +64,12 @@ export default {
   },
   mounted () {
     this.init(this.$refs.canvasWrap)
-    this.draw({
-      color: this.backColor,
-      lineWidth: 10,
-      startVal: startVal,
-      endVal: endVal
-    }, {
-      color: this.showColor,
-      lineWidth: 10,
-      startVal: startVal,
-      endVal: ((endVal - startVal) * this.percent + startVal)
-    })
+    this.draw()
+  },
+  watch: {
+    percent () {
+      this.draw()
+    }
   }
 }
 </script>
