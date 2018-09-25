@@ -132,6 +132,23 @@
                   </el-input>
                 </div>
               </div>
+              <div class="modify_liDiv">
+                <p class="modify_li_p">
+                  上传图片:
+                </p>
+                <div class="modify_li_divfour">
+                  <el-upload
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    list-type="picture-card"
+                    :on-preview="handlePictureCardPreview"
+                    :on-remove="handleRemove">
+                    <i class="el-icon-plus"></i>
+                  </el-upload>
+                  <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                  </el-dialog>
+                </div>
+              </div>
             </li>
           </ul>
         </section>
@@ -294,8 +311,6 @@ export default {
       // 点击添加
       tabulationtitle: [],
       regionUl: false,
-      dialogImageUrl: '',
-      dialogVisible: false,
       // 显示/隐藏
       modifyBoolean: true,
       // 类别
@@ -362,7 +377,9 @@ export default {
       CompanyData: [],
       Company: '',
       CompanyInput: '',
-      CompanyShow: false
+      CompanyShow: false,
+      dialogImageUrl: '',
+      dialogVisible: false
     }
   },
   methods: {
@@ -925,7 +942,7 @@ export default {
      .cancel
        closedown()
   .newlyadded
-    margin 70px 0 0
+    margin 40px 0 0
     width 100%
     background #111a28
   .increase
@@ -957,6 +974,7 @@ export default {
     display inline-block
     margin-bottom 10px
     .modify_ul
+      width 100%
       position relative
       display inline-block
       margin-left 20px
@@ -1162,12 +1180,19 @@ export default {
      border-radius 5px
   .increaseSpan
     color #dd514c
+  .modify_li_divfour
+    overflow hidden
+    position relative
+    width 100%
 </style>
 <style>
-  .title_liliTwoDiv  .el-input__inner{
-    padding: 0 10px;
-    height: 30px;
-    line-height: 30px;
+  .modify_li_divfour .el-upload-list--picture-card .el-upload-list__item{
+    width: 100px;
+    height: 100px;
   }
-
+  .modify_li_divfour .el-upload--picture-card{
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+  }
 </style>
