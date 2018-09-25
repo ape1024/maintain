@@ -90,10 +90,10 @@
             </li>
             <li class="header_litwo">{{item.assign}}</li>
             <li class="header_litwo">
-              <div v-if="(timestamp - (item.endTime + 86400000)) > 86400000  && JurisdictionCheck" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
+              <div v-if="(timestamp - (item.endTime + 86400000)) > 86400000  && JurisdictionData.check" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
                 归 档
               </div>
-              <div v-if="JurisdictionApproval" @click.stop="batchAudit" class="batchDiv">
+              <div v-if="JurisdictionData.approval" @click.stop="batchAudit" class="batchDiv">
                 批量审核
               </div>
             </li>
@@ -102,7 +102,7 @@
                       leave-active-class="fadeOutDown">
             <div @click.stop v-if="item.flag" class="inline_div">
               <!--<dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" ></dailytwo>-->
-              <dailytwoNew :clickId="click_id" @requestdata="requestData" :dailychild="dailyChild" :clicktaskname="clicktaskName" @examinationApproval="ExaminationApproval"></dailytwoNew>
+              <dailytwoNew :Jurisdiction="JurisdictionData" :clickId="click_id" @requestdata="requestData" :dailychild="dailyChild" :clicktaskname="clicktaskName" @examinationApproval="ExaminationApproval"></dailytwoNew>
             </div>
           </transition>
         </li>
@@ -388,7 +388,6 @@ export default {
         arr = arr.join()
         let token = JSON.parse(window.sessionStorage.token)
         this.axios.post(batchApprovalCheckTaskByDetailIDs(token, this.click_id, arr)).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject)).then((response) => {
               if (response.data.code === 0) {
@@ -430,22 +429,28 @@ export default {
       dailyChild: '',
       timestamp: '',
       clicktaskName: '',
-      JurisdictionCheck: '',
-      JurisdictionApproval: ''
+      JurisdictionData: ''
     }
   },
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'task_xj') {
-        this.JurisdictionCheck = val.check
-        this.JurisdictionApproval = val.approval
+      if (val.functioncode === 'task_jc') {
+        let obj = {
+          approval: val.approval,
+          check: val.check,
+          assign: val.assign,
+          delete: val.delete,
+          insert: val.insert,
+          select: val.select,
+          update: val.update
+        }
+        this.JurisdictionData = obj
       }
     })
     //  归档时间判断  + 86400  延迟一天
     let timestamp = (new Date()).getTime()
     this.timestamp = timestamp
-    console.log(timestamp)
     //  获取区域
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {

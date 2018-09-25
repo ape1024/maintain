@@ -210,10 +210,10 @@
           </div>
         </div>
         <div class="arrange">
-          <div @click="assignment" class="assignment">
+          <div v-if="JurisdictionData.assign" @click="assignment" class="assignment">
             安排任务
           </div>
-          <div @click="preservation" class="preservation">
+          <div v-if="JurisdictionData.approval" @click="preservation" class="preservation">
             审 核
           </div>
           <div @click="closeup" class="closeup">
@@ -232,7 +232,7 @@ import DialogImg from 'base/dialog-img/dialog-img'
 import $ from 'jquery'
 export default {
   name: 'dailyChild-examine',
-  props: ['examineName', 'equipmentCode', 'taskidCode'],
+  props: ['examineName', 'equipmentCode', 'taskidCode', 'JurisdictionData'],
   data () {
     return {
       checked: false,
@@ -482,9 +482,7 @@ export default {
     DialogImg
   },
   created () {
-    console.log(this.examineName)
-    console.log(this.equipmentCode)
-    console.log(this.taskidCode)
+    console.log(this.JurisdictionData)
     this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
       if (response.data.code === 0) {
         let arrData = []

@@ -118,6 +118,7 @@ export default {
       })
     },
     Transmission () {
+      this.numberPagesBoolean = false
       this.review_boolean = false
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
@@ -129,6 +130,7 @@ export default {
           this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
             if (data.data.code === 0) {
               this.tableData = data.data.data.datas
+              this.numberPagesBoolean = true
             }
           })
         }

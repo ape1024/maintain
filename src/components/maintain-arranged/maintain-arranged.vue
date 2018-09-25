@@ -61,6 +61,9 @@
               <div v-if="JurisdictionUpdate">
                 <p @click.stop="examine(item.checkplanid)" class="header_p_ten">修改</p>
               </div>
+              <div v-if="JurisdictionInsert">
+                <p class="header_p_twelve" @click.stop="generate(item.checkplanid)">生成计划</p>
+              </div>
               <div v-if="JurisdictionDelete">
                 <p class="header_p_eleven" @click.stop="amputate(index, arrangedData,item.checkplanid)">删除</p>
               </div>
@@ -104,6 +107,30 @@ export default {
         if (response.data.code === 0) {
           this.arrangedData = response.data.data
         }
+      })
+    },
+    generate (checkplanid) {
+      this.$confirm('此操作将生成该计划, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.post(`http://172.16.6.181:8920/task/createChecktask?planid=${checkplanid}`).then((response) => {
+          if (response.data.code === 0) {
+            console.log(response)
+            this.$message({
+              type: 'success',
+              message: '生成成功!'
+            })
+          } else {
+            this.$message.error(`${response.data.message}`)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删'
+        })
       })
     },
     superinduce () {
@@ -485,10 +512,15 @@ export default {
     margin-right 20px
     color #32a697
   .header_p_eleven
-    cursor:pointer
+    cursor pointer
     float left
     margin-right 20px
     color #83292b
+  .header_p_twelve
+    cursor pointer
+    float left
+    margin-right 20px
+    color #3acf76
   .subject_bottomDIv
     margin 12px
     background rgba(000,000,000,.35)
