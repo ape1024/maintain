@@ -152,7 +152,8 @@
               新密码：
             </p>
             <div class="subjectRigh">
-              <el-input size="mini" type="password" v-model="passwordInput" placeholder=""></el-input>
+              <el-input :disabled="OldcipherBoolean" size="mini" type="password" v-model="passwordInput" placeholder=""></el-input>
+
             </div>
           </div>
           <div class="subjectDiv">
@@ -161,7 +162,7 @@
               重复密码：
             </p>
             <div class="subjectRigh">
-              <el-input size="mini" type="password" v-model="newrepeatPassword" placeholder=""></el-input>
+              <el-input :disabled="OldcipherBoolean" size="mini" type="password" v-model="newrepeatPassword" placeholder=""></el-input>
             </div>
           </div>
         </div>
@@ -229,13 +230,23 @@ export default {
       imageUrlTwo: '',
       uploadUrlData: upload(JSON.parse(window.sessionStorage.token)),
       Oldcipher: '',
-      passwordInput: ''
+      passwordInput: '',
+      OldcipherBoolean: true
     }
   },
   watch: {
     organizeOptions (val) {
       let data = val[val.length - 1]
       this.FindAllRolesByOrg(data)
+    },
+    Oldcipher (val) {
+      if (!val) {
+        this.OldcipherBoolean = true
+        this.passwordInput = ''
+        this.newrepeatPassword = ''
+      } else {
+        this.OldcipherBoolean = false
+      }
     }
   },
   methods: {
@@ -262,30 +273,6 @@ export default {
       return isJPG && isLt2M
     },
     conserve () {
-      if (this.organizeOptions.length === 0) {
-        this.$message({
-          message: '请选择所属组织',
-          type: 'warning'
-        })
-        return
-      }
-      if (this.Oldcipher) {
-        if (this.passwordInput && this.newrepeatPassword) {
-          if (this.passwordInput !== this.newrepeatPassword) {
-            this.$message({
-              message: '新密码与重复密码不相同',
-              type: 'warning'
-            })
-            return false
-          }
-        } else {
-          this.$message({
-            message: '新密码与重复密码都要填写',
-            type: 'warning'
-          })
-          return false
-        }
-      }
       //  获取当前用户id
       let userid = this.communication.userid
       //  获取组织id
@@ -311,13 +298,56 @@ export default {
       //  获取上传图片
       let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
       let token = JSON.parse(window.sessionStorage.token)
+      if (this.organizeOptions.length === 0) {
+        this.$message({
+          message: '请选择所属组织',
+          type: 'warning'
+        })
+        return
+      }
+      if (this.Oldcipher) {
+        if (this.passwordInput !== this.Oldcipher) {
+          if (this.passwordInput && this.newrepeatPassword) {
+            if (this.passwordInput !== this.newrepeatPassword) {
+              this.$message({
+                message: '新密码与重复密码不相同',
+                type: 'warning'
+              })
+              return false
+            }
+          } else {
+            this.$message({
+              message: '新密码与重复密码都要填写',
+              type: 'warning'
+            })
+            return false
+          }
+        } else {
+          this.$message({
+            message: '新密码与旧密码不能相同',
+            type: 'warning'
+          })
+          return false
+        }
+      } else {
+        newpwd = ''
+      }
       this.axios.post(updateUserWithPwd(token, userid, oldpwd, newpwd, organizationid, username, email, tel, userstate, job, memo, roleids, file)).then((response) => {
         if (response.data.code === 0) {
-          this.$message({
-            message: '修改成功',
-            type: 'success'
-          })
-          this.$emit('informa', false)
+          if (!newpwd) {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            this.$emit('informa', false)
+          } else {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            this.$router.push({path: '/login'})
+            sessionStorage.clear()
+          }
         } else {
           this.$message({
             message: `${response.message}`,

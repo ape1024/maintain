@@ -4,7 +4,7 @@
       <header class="leftHeader">
         <img class="subjectImg" src="../../common/img/department.png" alt="">
         <p class="subjectP">组织机构</p>
-        <p v-if="JurisdictionInsert" class="subjectptwo">新增</p>
+        <p v-if="JurisdictionInsert" class="subjectptwo" @click="subjectpCreate">新增</p>
       </header>
       <div class="leftBottom">
         <div class="leftBottomDiv">
@@ -17,11 +17,13 @@
         </div>
       </div>
     </section>
-    <section class="subjectRight">
-      <proprietor-unit :info="proprietorInfo"></proprietor-unit>
+    <section class="subjectRight" v-show="showFlag">
+      <div v-if="amputateStr" class="subjectRightDiv"></div>
+      <proprietor-unit @refresh="refresh" :info="proprietorInfo"></proprietor-unit>
     </section>
-    <section class="subjectRight" v-show="false">
-      <vascular-unit :info="vascularInfo"></vascular-unit>
+    <section class="subjectRight" v-show="!showFlag">
+      <div v-if="amputateStr" class="subjectRightDiv"></div>
+      <vascular-unit @refresh="refresh" :info="vascularInfo"></vascular-unit>
     </section>
   </div>
 </template>
@@ -29,7 +31,7 @@
 <script>
 import VascularUnit from '../structure-child/vascular-unit'
 import ProprietorUnit from '../structure-child/proprietor-unit'
-import {managementhandleNodeClickOne, managementhandleNodeClickTwo, getAllHigherOrgIDs, getOrganizationTrees} from '../../api/user'
+import {getOrganizationTrees, managementCreatedtree, getOrgType} from '../../api/user'
 export default {
   name: 'intercalateChild-structureNew',
   components: {
@@ -39,129 +41,62 @@ export default {
   data () {
     return {
       proprietorInfo: {
-        name: '65+',
-        type: 123
+        organization: Object
       },
       vascularInfo: {
+        organization: Object
       },
       data: [],
       defaultProps: {
         children: 'subOrgnizations',
         label: 'organizationName',
         value: 'organizationId'
-      }
+      },
+      showFlag: false,
+      amputateStr: true // 蒙版
     }
   },
   methods: {
     handleNodeClick (data) {
-      // 保存业主单位 维保单位的组织累心
-      this.ownerType = data.organizationType
-      this.organizationdata = data
-      this.amputateStr = false
-      this.DataorganizationId = data.organizationId
-      if (data.root) {
-        this.dataRoot = false
-        this.identificationVariable = data.organizationType
-        this.dataRootInput = data.parentName
-      } else {
-        this.dataRoot = true
-        this.dataRootInput = ''
+      let obj = {
+        organizationId: data.organizationId,
+        organization: data
       }
-      this.axios.post(getAllHigherOrgIDs(data.organizationId)).then((response) => {
-        this.companyDate = []
+      this.proprietorInfo = obj
+      this.vascularInfo = obj
+      this.amputateStr = false
+    },
+    // 新增
+    subjectpCreate () {
+      let obj = {
+        organizationId: '',
+        organization: this.data[0]
+      }
+      this.proprietorInfo = obj
+      this.vascularInfo = obj
+      this.amputateStr = false
+    },
+    // 刷新
+    refresh () {
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(managementCreatedtree(token)).then((response) => {
         if (response.data.code === 0) {
-          if (response.data.data.length <= 1) {
-            this.companyDate = []
+          this.data = response.data.data
+          this.getType(this.data.organizationId)
+          this.subjectpCreate()
+        }
+      })
+    },
+    getType (organizationId) {
+      // 获取单位类型
+      this.axios.post(getOrgType(organizationId)).then((response) => {
+        if (response.data.code === 0) {
+          if (response.data.data === 1) {
+            this.showFlag = true
           } else {
-            let data = response.data.data
-            data.pop()
-            this.companyDate = data
+            this.showFlag = false
           }
         }
-      })
-      // 判断组织类别
-      if (data.organizationType === 5 || data.organizationType === 4) {
-        this.regimentation = this.initRegimentation.filter(t => t.value !== 3)
-      } else {
-        this.regimentation = [...this.initRegimentation]
-      }
-      this.conserveBoolean = true
-      const organization = data.organizationId
-      this.organizationId = organization
-      const url = managementhandleNodeClickOne(organization)
-      const urltwo = managementhandleNodeClickTwo(organization)
-      this.axios.post(urltwo).then((response) => {
-        let urlDate = response.data.data
-        if (!urlDate) {
-          this.address = ''
-          this.textarea = ''
-          this.identifier = ''
-          this.CellPhone = ''
-          this.businessOptions = []
-          this.categoryfireFightingData = ''
-          this.superVisionData = ''
-          return false
-        }
-        //  专业类别
-        // let categoryId = urlDate.professionalcategory
-        this.businessOptions = []
-        if (!urlDate.professionalcategory) {
-          this.businessOptions = []
-        } else {
-          this.businessOptions.push(urlDate.professionalcategory)
-        }
-        this.linkman = urlDate.linkman
-        //  上级主管单位
-        this.selectedOptions = []
-        this.selectedOptions.push(urlDate.level)
-        //  所在地址
-        this.address = urlDate.address
-        //  备注信息
-        this.textarea = !urlDate.memo ? '' : urlDate.memo
-        //  资格编号
-        this.identifier = !urlDate.qualificationnumber ? '' : urlDate.qualificationnumber
-        //  电话
-        this.CellPhone = !urlDate.tel ? '' : urlDate.tel
-        //  业务类别
-        this.businessOptions.push(urlDate.professionalcategory)
-        //  资质等级
-        this.grading = urlDate.scope
-        //  业务类别
-        this.businessCategoryData = urlDate.industrycategoryid === null ? '' : urlDate.industrycategoryid
-        //  消防单位类别
-        this.categoryfireFightingData = urlDate.firecontrolcategoryid === null ? '' : urlDate.firecontrolcategoryid
-        //  消防监管机构
-        this.superVisionData = urlDate.firebrigadeid === null ? '' : urlDate.firebrigadeid
-      })
-      this.axios.post(url).then((response) => {
-        let urlData = JSON.parse(response.data.data)
-        //  联系人
-        //  图标
-        this.imageUrl = urlData.icon.indexOf('null') === -1 ? urlData.icon : ''
-        this.imageUrlTwo = ''
-        //  所在区域
-        this.regionDate = urlData.pcc
-        //  单位简称
-        this.organizationshortname = urlData.organizationshortname === 'undefined' ? '' : urlData.organizationshortname
-        //  单位编码
-        this.encrypt = urlData.organizationcode
-        //  组织机构名称
-        this.organizationname = urlData.organizationname === 'undefined' ? '' : urlData.organizationname
-        //  组织类型
-        if (data.organizationType === 1 || data.organizationType === 2) {
-          this.regimentaValue = ''
-        } else {
-          this.regimentaValue = urlData.organizationtype
-        }
-        // 判断是否是根节点单位
-        //  省份
-        this.provinceId = urlData.provinceid
-        //  省下的市
-        this.conurbationId = urlData.cityid
-        //  县城
-        this.countytownId = urlData.countyid
-        //  父级id
-        this.parentid = urlData.parentid
       })
     }
   },
@@ -181,6 +116,8 @@ export default {
     this.axios.post(getOrganizationTrees(token)).then((response) => {
       if (response.data.code === 0) {
         this.data = response.data.data
+        console.log(this.data[0].organizationId)
+        this.getType(this.data[0].organizationId)
       }
     })
   }

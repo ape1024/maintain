@@ -3,7 +3,7 @@
     <div class="information">
       <ul class="informationUl">
         <!--上级主管单位-->
-        <li class="informationLi">
+        <li class="informationLi" v-show="dataRoot">
           <div class="informationDiv">
             <p class="informationP">
               <span class="structureSpan">*</span>上级主管单位：
@@ -38,7 +38,7 @@
               <el-input size="mini" v-model="organizationname" placeholder="请输入部门名称"  clearable>></el-input>
             </div>
           </div>
-          <div class="informationDiv">
+          <div class="informationDiv" v-show="dataRoot">
             <p class="informationP">
               <span class="structureSpan">*</span>组织机构类型：
             </p>
@@ -78,7 +78,7 @@
         <li class="informationLifive">
           <div class="informationDiv">
             <p class="informationP">
-              <span class="structureSpan">*</span>所在区域：
+              所在区域：
             </p>
             <div class="content">
               <div @click.stop="accessarea" class="region">
@@ -103,7 +103,7 @@
           </div>
           <div class="informationDivtwo">
             <p class="informationP">
-              <span class="structureSpan">*</span>所在地址：
+              所在地址：
             </p>
             <div class="content">
               <el-input size="mini" v-model="address" placeholder="请输入地址"  clearable>></el-input>
@@ -131,8 +131,15 @@
               业务范围：
             </p>
             <div class="content">
-              <el-select size="mini" v-model="businessCategoryData" placeholder="请选择" :disabled="true">
-              </el-select>
+              <div class="content">
+                <el-cascader
+                  size="mini"
+                  :disabled="true"
+                  :options="category"
+                  :props="rangeProps"
+                  v-model="businessCategoryData">
+                </el-cascader>
+              </div>
             </div>
           </div>
         </li>
@@ -218,6 +225,7 @@
             </div>
           </div>
         </li>
+        <!--操作按钮-->
         <li class="informationLifour">
           <div v-show="conserveBoolean" @click="conserve" class="conserve">
             保存
@@ -235,12 +243,115 @@
 </template>
 <script>
 import $ from 'jquery'
-import {managementCreatedProvince, getCitiesByProvinceId, getCountiesByCityId, getOrganizationTrees, managementCreatedbusiness, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, upload, organizationDelete, managementCreatedtree, managementhandleNodeClickOne, getLevelsByProfessionalCategory} from '../../api/user'
+import {managementAuthority, getAllHigherOrgIDs, managementCreatedProvince, managementhandleNodeClickTwo, getCitiesByProvinceId, getCountiesByCityId, managementCreatedbusiness, managementCreatedorganization, getIndustrycategory, upload, organizationDelete, managementhandleNodeClickOne, getLevelsByProfessionalCategory, getOrganizationTrees} from '../../api/user'
 export default {
   props: {
     info: {
-      type: Object,
+      organization: Object,
       required: true
+    }
+  },
+  watch: {
+    info (data) {
+      if (data.organizationId === '') {
+        this.conserveBoolean = false
+        this.dataRoot = true
+        if (data.organization.organizationType === 1 || data.organization.organizationType === 2) {
+          this.regimentaValue = ''
+        } else {
+          this.regimentaValue = data.organization.organizationType // 组织类别
+        }
+        if (this.regimentaValue === 5 || this.regimentaValue === 4) {
+          this.regimentation = this.initRegimentation.filter(t => t.value !== 3)
+        } else {
+          this.regimentation = [...this.initRegimentation]
+        }
+        // 初始化
+        this.ormatting()
+      } else {
+        this.ownerType = data.organization.organizationType
+        this.conserveBoolean = true
+        const organizationId = data.organizationId
+        this.DataorganizationId = data.organizationId
+        if (data.organization.root) {
+          this.dataRoot = false
+        } else {
+          this.dataRoot = true
+        }
+        this.organizationId = organizationId
+        const url = managementhandleNodeClickOne(organizationId)
+        const urlTwo = managementhandleNodeClickTwo(organizationId)
+        // 优先判断上级组织机构改变事件
+        this.getSuperiorOrganization(organizationId)
+        this.changeType(organizationId)
+        this.axios.post(urlTwo).then((response) => {
+          let urlDate = response.data.data
+          if (!urlDate) {
+            this.address = ''
+            this.textarea = ''
+            this.identifier = ''
+            this.CellPhone = ''
+            this.businessOptions = []
+            this.categoryfireFightingData = ''
+            this.superVisionData = ''
+            return false
+          }
+          // 专业类别
+          this.businessOptions = []
+          if (!urlDate.professionalcategory) {
+            this.businessOptions = []
+          } else {
+            this.businessOptions.push(urlDate.professionalcategory)
+            this.getLevels(urlDate.professionalcategory)
+          }
+          // 资质等级
+          if (!urlDate.level) {
+            this.selectedOptions = []
+          } else {
+            this.selectedOptions.push(urlDate.level)
+            this.businessCategoryData.push(urlDate.level)
+          }
+          // 所在地址
+          this.address = urlDate.address
+          // 资质编号
+          this.identifier = !urlDate.qualificationnumber ? '' : urlDate.qualificationnumber
+          // 联系人
+          this.linkman = urlDate.linkman
+          // 电话
+          this.CellPhone = !urlDate.tel ? '' : urlDate.tel
+          // 备注信息
+          this.textarea = !urlDate.memo ? '' : urlDate.memo
+        })
+        this.axios.post(url).then((response) => {
+          let urlData = JSON.parse(response.data.data)
+          // 图标
+          this.imageUrl = urlData.icon.indexOf('null') === -1 ? urlData.icon : ''
+          this.imageUrlTwo = ''
+          // 所在区域
+          this.regionDate = urlData.pcc
+          // 单位简称
+          this.organizationshortname = urlData.organizationshortname === 'undefined' ? '' : urlData.organizationshortname
+          // 单位编码
+          this.encrypt = urlData.organizationcode
+          // 组织机构名称
+          this.organizationname = urlData.organizationname === 'undefined' ? '' : urlData.organizationname
+          // 组织类型
+          if (data.organizationType === 1 || data.organizationType === 2) {
+            this.regimentaValue = ''
+          } else {
+            this.regimentaValue = urlData.organizationtype
+          }
+          // 判断是否是根节点单位
+          // 省份
+          this.provinceId = urlData.provinceid
+          // 省下的市
+          this.conurbationId = urlData.cityid
+          // 县城
+          this.countytownId = urlData.countyid
+          // 父级id
+          this.parentid = urlData.parentid
+        })
+      }
     }
   },
   data () {
@@ -266,14 +377,14 @@ export default {
       region: '',
       // 所在地址
       address: '',
-      // 专业类别
+      // 资质类别
       category: [],
-      // 业务类别
+      // 专业类别
       business: [],
       // 业务类别获取
       businessOptions: [],
-      // 资质等级
-      grading: '',
+      // 业务范围
+      businessCategoryData: [],
       // 资质编号
       identifier: '',
       // 单位联系人
@@ -302,7 +413,7 @@ export default {
       regionDate: '',
       // 组织机构名称
       organizationname: '',
-      // 设备类别
+      // 组织机构类型
       regimentation: [],
       regimentaValue: '',
       // 资质等级
@@ -311,18 +422,24 @@ export default {
         label: 'name',
         value: 'value'
       },
+      // 业务范围
+      rangeProps: {
+        label: 'stringValue',
+        value: 'value'
+      },
       // 组织机构图片
       imageUrl: '',
-      // 专业类别
-      businessCategoryData: '',
       // 上传
       uploadUrlData: upload(JSON.parse(window.sessionStorage.token)),
       // 备注说明
       textarea: '',
-      // 保存于新增保存
+      // 是否是新增保存
       conserveBoolean: true,
       // 是否可以选择资质等级
-      levelFlag: true
+      levelFlag: true,
+      dataRoot: true,
+      // 用于删除组织
+      DataorganizationId: ''
     }
   },
   methods: {
@@ -330,6 +447,10 @@ export default {
     comchange (data) {
       if (!data.length) return
       const organizationId = data[data.length - 1]
+      this.changeType(organizationId)
+    },
+    // 判断是否显示单位类别
+    changeType (organizationId) {
       this.axios.post(managementhandleNodeClickOne(organizationId)).then((response) => {
         if (response.data.code === 0) {
           let organization = JSON.parse(response.data.data)
@@ -348,13 +469,6 @@ export default {
     },
     // 资质等级改变事件
     levelChange (data) {
-      console.log(this.category.map(t => {
-        if (t.value === 10) {
-          return {
-            ...t
-          }
-        }
-      }))
       this.businessCategoryData = data
     },
     // 省份点击事件
@@ -442,11 +556,162 @@ export default {
       //  县城ID
       this.countytownId = coundata.countyid
     },
-    // 修改确认
-    conserve () {
-    },
     // 新增的确认
     newConserve () {
+      //  点击保存
+      const token = JSON.parse(window.sessionStorage.token)
+      //  组织类型
+      let organizationtype = this.regimentaValue
+      if (organizationtype === '') {
+        this.$message({
+          message: '组织机构类型不能为空',
+          type: 'warning'
+        })
+        return
+      }
+      //  区县
+      const countyid = this.countytownId === undefined ? '' : this.countytownId
+      //  城市
+      const city = this.conurbationId === undefined ? '' : this.conurbationId
+      //  省
+      const province = !this.provinceId ? '' : this.provinceId
+      //  单位编码
+      const organizationcode = this.encrypt
+      if (!organizationcode && organizationtype === 3) {
+        this.$message({
+          message: '请填写单位编码',
+          type: 'warning'
+        })
+        return false
+      }
+      // 单位名称
+      const organizationname = this.organizationname
+      //  组织缩写
+      const organizationshortname = !this.organizationshortname ? this.organizationname : this.organizationshortname
+      //  详细地址
+      const address = this.address === undefined ? '' : this.address
+      //  专业类别
+      let professionalcategory = !this.businessOptions[0] ? '' : this.businessOptions[0]
+      let scope = !this.grading ? '' : this.grading
+      //  组织机构的父节点ID  目前没有
+      //  资质等级  level
+      const level = !this.selectedOptions[0] ? '' : this.selectedOptions[0]
+      //  资质编号
+      const qualificationnumber = !this.identifier ? '' : this.identifier
+      //  联系人
+      const linkman = !this.linkman ? '' : this.linkman
+      //  联系电话
+      const tel = !this.CellPhone ? '' : this.CellPhone
+      //  图标
+      let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
+      //  备注
+      const memo = !this.textarea ? '' : this.textarea
+      //  新建组织id 可以为空
+      let organization = ''
+      let fireBrigadeId = ''
+      let fireControlCategoryId = ''
+      let industryCategoryId = ''
+      //  父级的id
+      let parentid = ''
+      if (this.companyDate.length === 0) {
+        parentid = ''
+      } else {
+        parentid = this.companyDate[this.companyDate.length - 1]
+      }
+      this.axios.post(managementAuthority(token, organizationtype, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
+        if (response.data.code === 0) {
+          this.$message({
+            message: '新增成功',
+            type: 'success'
+          })
+          this.$emit('refresh')
+        }
+      })
+    },
+    // 修改确认
+    conserve () {
+      //  点击保存
+      const token = JSON.parse(window.sessionStorage.token)
+      //  组织编号
+      const organization = this.organizationId
+      if (organization === '') {
+        this.$message({
+          message: '请选择组织机构',
+          type: 'warning'
+        })
+        return false
+      }
+      //  组织类型
+      let organizationType = ''
+      if (this.ownerType !== 1 && this.ownerType !== 2) {
+        organizationType = this.regimentaValue
+        if (organizationType === '') {
+          this.$message({
+            message: '组织机构类型不能为空',
+            type: 'warning'
+          })
+          return false
+        }
+      } else {
+        organizationType = this.ownerType
+      }
+      //  区县
+      const countyid = this.countytownId === undefined ? '' : this.countytownId
+      //  城市
+      const city = this.conurbationId === undefined ? '' : this.conurbationId
+      //  省
+      const province = !this.provinceId ? '' : this.provinceId
+      //  单位编码
+      const organizationcode = this.encrypt
+      if (!organizationcode && organizationType === 3) {
+        this.$message({
+          message: '请填写单位编码',
+          type: 'warning'
+        })
+        return false
+      }
+      // 单位名称
+      const organizationname = this.organizationname
+      //  组织缩写
+      const organizationshortname = !this.organizationshortname ? this.organizationname : this.organizationshortname
+      //  详细地址
+      const address = this.address === undefined ? '' : this.address
+      //  专业类别
+      let professionalcategory = !this.businessOptions[0] ? '' : this.businessOptions[0]
+      let scope = !this.grading ? '' : this.grading
+      //  组织机构的父节点ID  目前没有
+      //  资质等级  level
+      const level = !this.selectedOptions[0] ? '' : this.selectedOptions[0]
+      //  资质编号
+      const qualificationnumber = !this.identifier ? '' : this.identifier
+      //  联系人
+      const linkman = !this.linkman ? '' : this.linkman
+      //  联系电话
+      const tel = !this.CellPhone ? '' : this.CellPhone
+      //  图标
+      let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
+      //  备注
+      const memo = !this.textarea ? '' : this.textarea
+
+      let fireBrigadeId = ''
+      let fireControlCategoryId = ''
+      let industryCategoryId = ''
+      //  父级的id
+      let parentid = ''
+      if (this.companyDate.length === 0) {
+        parentid = ''
+      } else {
+        parentid = this.companyDate[this.companyDate.length - 1]
+      }
+      this.axios.post(managementAuthority(token, organizationType, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
+        if (response.data.code === 0) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          this.$emit('refresh')
+        }
+      })
     },
     // 删除
     amputate () {
@@ -468,14 +733,8 @@ export default {
                 message: '删除成功',
                 type: 'success'
               })
-              this.ormatting()
-              this.amputateStr = true
-              let token = JSON.parse(window.sessionStorage.token)
-              this.axios.post(managementCreatedtree(token)).then((response) => {
-                if (response.data.code === 0) {
-                  this.data = response.data.data
-                }
-              })
+              // 刷新
+              this.$emit('refresh')
             } else {
               this.$message.error('删除失败')
             }
@@ -506,6 +765,10 @@ export default {
       this.imageUrlTwo = response.data
     },
     getLevels (data) {
+      // 清空业务范围
+      this.businessCategoryData = []
+      // 清空专业类别
+      this.selectedOptions = []
       // 专业类别
       this.levelFlag = false
       const Createdcategory = getLevelsByProfessionalCategory(data)
@@ -514,24 +777,71 @@ export default {
           this.category = response.data.data
         }
       })
+    },
+    // 获取专业类别
+    getProfessional () {
+      // 专业类别
+      const Createdbusiness = managementCreatedbusiness()
+      this.axios.post(Createdbusiness).then((response) => {
+        if (response.data.code === 0) {
+          this.business = response.data.data
+        }
+      })
+    },
+    // 获取上级单位
+    getSuperiorOrganization (organizationId) {
+      this.axios.post(getAllHigherOrgIDs(organizationId)).then((response) => {
+        this.companyDate = []
+        if (response.data.code === 0) {
+          if (response.data.data.length <= 1) {
+            this.companyDate = []
+          } else {
+            let data = response.data.data
+            data.pop()
+            this.companyDate = data
+          }
+        }
+      })
+    },
+    // 初始化
+    ormatting () {
+      this.organizationshortname = ''
+      this.organizationname = ''
+      this.imageUrl = ''
+      this.imageUrlTwo = ''
+      this.categoryfireFightingData = ''
+      // 业务范围
+      this.businessCategoryData = []
+      this.superVisionData = ''
+      this.companyDate = []
+      this.abbreviation = ''
+      this.encrypt = ''
+      this.regionDate = ''
+      this.address = ''
+      this.selectedOptions = []
+      this.businessOptions = []
+      this.identifier = ''
+      this.linkman = ''
+      this.CellPhone = ''
+      this.fileList = []
+      this.textarea = ''
+      this.organization = ''
+      this.conserveBoolean = false
+    },
+    getOrganizationTree (token) {
+      // 左边的树状结构
+      this.axios.post(getOrganizationTrees(token)).then((response) => {
+        if (response.data.code === 0) {
+          this.data = response.data.data
+        }
+      })
     }
   },
   created () {
     let token = JSON.parse(window.sessionStorage.token)
-    //  左边的树状结构
-    this.axios.post(getOrganizationTrees(token)).then((response) => {
-      if (response.data.code === 0) {
-        this.data = response.data.data
-      }
-    })
-    // 业务类别
-    const Createdbusiness = managementCreatedbusiness()
-    this.axios.post(Createdbusiness).then((response) => {
-      if (response.data.code === 0) {
-        this.business = response.data.data
-      }
-    })
-    //  组织类别
+    this.getOrganizationTree(token)
+    this.getProfessional()
+    // 组织类别
     const Createdorganization = managementCreatedorganization(token)
     this.axios.post(Createdorganization).then((response) => {
       let regimentaDate = response.data.data
@@ -540,19 +850,7 @@ export default {
       // regimentaDate
       this.regimentation = [...this.initRegimentation]
     })
-    //  消防监管机构
-    this.axios.post(getFirebrigades()).then((response) => {
-      if (response.data.code === 0) {
-        this.supervision = response.data.data
-      }
-    })
-    //  消防单位类别
-    this.axios.post(getFirecontrolcategory()).then((response) => {
-      if (response.data.code === 0) {
-        this.categoryfireFighting = response.data.data
-      }
-    })
-    //  行业类别
+    // 行业类别
     this.axios.post(getIndustrycategory()).then((response) => {
       if (response.data.code === 0) {
         this.businessCategory = response.data.data

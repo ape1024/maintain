@@ -493,9 +493,16 @@ export default {
     scheduleChange (value) {
       this.axios.post(maintainArranggetWorkModesByWorkType(value)).then((response) => {
         if (response.data.code === 0) {
-          response.data.data.forEach(val => {
-            val.flag = false
-          })
+          console.log(response)
+          if (response.data.data.length === 1) {
+            response.data.data.forEach(val => {
+              val.flag = true
+            })
+          } else {
+            response.data.data.forEach(val => {
+              val.flag = false
+            })
+          }
           this.Worktype = response.data.data
         }
       })
@@ -572,6 +579,7 @@ export default {
       }
     })
     //  获取计划类型
+    console.log(this.maintainProject)
     this.axios.post(maintainArranggetAllPlanTypes(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.schedule = response.data.data

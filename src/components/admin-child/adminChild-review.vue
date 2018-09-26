@@ -119,6 +119,18 @@
               </div>
               <div class="modify_liDiv">
                 <p class="modify_li_p">
+                  业主单位：
+                </p>
+                <div class="modify_li_divtwo">
+                  <el-input
+                    size="mini"
+                    v-model="proprietorUnit"
+                    :disabled="true">
+                  </el-input>
+                </div>
+              </div>
+              <div class="modify_liDiv">
+                <p class="modify_li_p">
                   备注说明：
                 </p>
                 <div class="modify_li_divthree">
@@ -130,6 +142,27 @@
                     placeholder=""
                     v-model="textarea">
                   </el-input>
+                </div>
+              </div>
+              <div class="modify_liDiv">
+                <p class="modify_li_p">
+                  上传图片:
+                </p>
+                <div class="modify_li_divfour">
+                  <el-upload
+                    :action="uploadFun"
+                    list-type="picture-card"
+                    :on-success="handlesuccess"
+                    :on-preview="handlePictureCardPreview"
+                    :on-error="handlePictureerror"
+                    :on-exceed="handlePicturexceed"
+                    :limit='10'
+                    :on-remove="handleRemove">
+                    <i class="el-icon-plus"></i>
+                  </el-upload>
+                  <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                  </el-dialog>
                 </div>
               </div>
             </li>
@@ -257,7 +290,7 @@
 <script>
 import $ from 'jquery'
 import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, findAllDeviceType,
-  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit } from '../../api/user'
+  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
@@ -294,8 +327,6 @@ export default {
       // 点击添加
       tabulationtitle: [],
       regionUl: false,
-      dialogImageUrl: '',
-      dialogVisible: false,
       // 显示/隐藏
       modifyBoolean: true,
       // 类别
@@ -362,10 +393,44 @@ export default {
       CompanyData: [],
       Company: '',
       CompanyInput: '',
-      CompanyShow: false
+      CompanyShow: false,
+      dialogImageUrl: '',
+      dialogVisible: false,
+      proprietorUnit: '',
+      proprietorUnitData: '',
+      uploadFun: upload(JSON.parse(window.sessionStorage.token)),
+      uploadData: []
     }
   },
   methods: {
+    handlePicturexceed () {
+      this.$message({
+        message: '不可以超过十张照片',
+        type: 'warning'
+      })
+    },
+    handlePictureerror (err, file, fileList) {
+      if (!fileList.length) {
+        this.uploadData = []
+      } else {
+        fileList.forEach((val) => {
+          this.uploadData.push(val.response.data)
+        })
+      }
+    },
+    handlesuccess (response, file, fileList) {
+      this.uploadData.push(response.data)
+    },
+    handleRemove (file, fileList) {
+      this.uploadData = []
+      fileList.forEach((val) => {
+        this.uploadData.push(val.response.data)
+      })
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
     versionChang (data) {
       if (this.versionValue === '-9999') {
         this.versionManufacturer = true
@@ -428,6 +493,8 @@ export default {
       return result
     },
     addincrease () {
+      console.log(this.Company)
+      return
       let obtainCode = this.specific
       let areaid = this.facilityLocationDate
       let areaidName = this.ergodic(areaid)
@@ -544,6 +611,13 @@ export default {
       let effectivedate = this.validity ? this.validity : ''
       //  地址编码
       let tabulationtitle = []
+      //  图片
+      let icons = ''
+      if (!this.uploadData.length) {
+        icons = ''
+      } else {
+        icons = this.uploadData.join()
+      }
       this.tabulationtitle.forEach((val) => {
         let obj = {
           a: val.a,
@@ -557,7 +631,6 @@ export default {
         }
         tabulationtitle.push(obj)
       })
-
       if (this.categoryDate.length !== 0) {
         if (this.customManufacturer === true) {
           if (!this.customManufacturerDate) {
@@ -575,12 +648,12 @@ export default {
                 this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
                   if (data.data.code === 0) {
                     devicemodel = data.data.data.divecemodelid
-                    this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
+                    this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons, tabulationtitle)
                   }
                 })
               } else {
                 devicemodel = this.versionValue
-                this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
+                this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons, tabulationtitle)
               }
             }
           })
@@ -590,13 +663,13 @@ export default {
             if (Item.data.code === 0) {
               devicemodel = Item.data.data.divecemodelid
               manufacturerid = this.manufactorModel
-              this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
+              this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons, tabulationtitle)
             }
           })
         } else {
           devicemodel = this.versionValue
           manufacturerid = this.manufactorModel
-          this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
+          this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons, tabulationtitle)
         }
       } else {
         this.$message({
@@ -605,8 +678,8 @@ export default {
         })
       }
     },
-    requestCreation (rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle) {
-      this.axios.post(maintainReportAddDevice(rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate), tabulationtitle).then((data) => {
+    requestCreation (rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons, tabulationtitle) {
+      this.axios.post(maintainReportAddDevice(rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons), tabulationtitle).then((data) => {
         if (data.data.code === 0) {
           this.$message({
             message: '创建成功',
@@ -706,6 +779,14 @@ export default {
         }
         response.data.data.push(obj)
         this.CompanyData = response.data.data
+      }
+    })
+    this.axios.post(getProprietorOrganization()).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response.data.data)
+        this.proprietorUnit = response.data.data[0].organizationname
+        //  业主单位id
+        this.proprietorUnitData = response.data.data[0].organizationid
       }
     })
   }
@@ -925,7 +1006,7 @@ export default {
      .cancel
        closedown()
   .newlyadded
-    margin 70px 0 0
+    margin 30px 0 0
     width 100%
     background #111a28
   .increase
@@ -957,18 +1038,20 @@ export default {
     display inline-block
     margin-bottom 10px
     .modify_ul
+      width 100%
       position relative
       display inline-block
       margin-left 20px
       margin-top 25px
       .modify_li
+        width 46%
         float left
         margin 0 0 0 20px
         color $color-header-b-normal
         font-size $font-size-medium
       .modify_liDiv
         init()
-        margin-bottom 30px
+        margin-bottom 20px
       .modify_liDivtwo
         position relative
         display inline-block
@@ -977,12 +1060,14 @@ export default {
       .modify_li_p
         float left
         margin-right 6px
+        margin-bottom 10px
         line-height 30px
       .modify_li_div
         float left
         width 217px
         position relative
       .modify_li_divtwo
+        width 220px
         float left
         line-height 40px
         margin-top -6px
@@ -1119,7 +1204,7 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin-bottom 30px
+    margin-bottom 20px
   .upload
     display inline-block
     width 100px
@@ -1162,12 +1247,21 @@ export default {
      border-radius 5px
   .increaseSpan
     color #dd514c
+  .modify_li_divfour
+    overflow-x hidden
+    overflow-y auto
+    position relative
+    width 100%
+    height 90px
 </style>
 <style>
-  .title_liliTwoDiv  .el-input__inner{
-    padding: 0 10px;
-    height: 30px;
-    line-height: 30px;
+  .modify_li_divfour .el-upload-list--picture-card .el-upload-list__item{
+    width: 80px;
+    height: 80px;
   }
-
+  .modify_li_divfour .el-upload--picture-card{
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+  }
 </style>

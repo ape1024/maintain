@@ -399,10 +399,15 @@ export const maintainReportAddManufacture = (customManufacturerDate, devicetypei
   return url
 }
 //  增加上报问题
-export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate) => {
-  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&unit=${unit}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`
+export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons) => {
+  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&unit=${unit}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&icons=${icons}`
   return url
 }
+
+export const createChecktask = (checkplanid) => {
+  return `${Test}/task/createChecktask?planid=${checkplanid}`
+}
+
 export const findAllDeviceUnit = (token) => {
   return `${Test}/dev/findAllDeviceUnit?token=${token}`
 }
@@ -648,6 +653,11 @@ export const getJobList = () => {
 //  获取组织机构2 by rad 20180808
 export const getOrganizationTrees = (token) => {
   const url = `${Test}/organization/getOrganizationTreeByUser2?token=${token}`
+  return url
+}
+// 获取单位类型（如果是子单位会返回跟单位类型）
+export const getOrgType = (orgid) => {
+  const url = `${Test}/organization/getOrgType?orgid=${orgid}`
   return url
 }
 
