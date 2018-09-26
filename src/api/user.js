@@ -399,8 +399,8 @@ export const maintainReportAddManufacture = (customManufacturerDate, devicetypei
   return url
 }
 //  增加上报问题
-export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate) => {
-  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&unit=${unit}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}`
+export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons) => {
+  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&unit=${unit}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&icons=${icons}`
   return url
 }
 

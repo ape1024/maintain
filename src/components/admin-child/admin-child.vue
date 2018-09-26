@@ -26,17 +26,7 @@
         数量
       </li>
       <li class="threelevel_lithree">
-        生产厂家 <i class="el-icon-caret-bottom"></i>
-        <div class="threelevel_ensconce">
-          <el-select @change="manufactorChange(manufactorModel)" @focus="focus" size="mini" v-model="manufactorModel" placeholder=""  multiple collapse-tags>
-            <el-option
-              v-for="item in manufactor"
-              :key="item.manufacturerid"
-              :label="item.name"
-              :value="item.manufacturerid">
-            </el-option>
-          </el-select>
-        </div>
+        生产厂家
       </li>
       <li class="threelevel_lithree">
         规格型号
@@ -233,6 +223,19 @@ export default {
 
       this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
+          response.data.data.forEach((val) => {
+            val.checked = false
+            if (val.approvalstate === 100) {
+              val.disabledBoolean = false
+              val.disabled = true
+            } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+              val.disabledBoolean = true
+              val.disabled = false
+            } else {
+              val.disabledBoolean = false
+              val.disabled = true
+            }
+          })
           this.tabChild = response.data.data
         }
       })
@@ -687,7 +690,7 @@ export default {
     left 0
     width 100%
     height 100%
-    background rgba(000,000,000,.4)
+    background $color-barckground-transparent
     z-index 1111
     overflow hidden
   .threelevel_ensconce
