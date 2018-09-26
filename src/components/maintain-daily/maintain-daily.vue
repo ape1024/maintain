@@ -31,7 +31,7 @@
         <li class="li_input">
           <p class="div_p">审核状态：</p>
           <div class="div_input">
-            <el-select size="mini" v-model="Auditstatus" placeholder="" clearable>
+            <el-select size="mini" v-model="Auditstatus" placeholder="请选择" clearable>
               <el-option
                 v-for="item in AuditstatusDate"
                 :key="item.value"
@@ -90,7 +90,7 @@
     <section class="subject_bottom">
       <ul class="header_ul">
         <li class="header_lithree">
-         任务名称
+          计划名称
         </li>
         <li class="header_li">
           开始时间
@@ -99,19 +99,19 @@
           结束时间
         </li>
         <li class="header_litwo">
-          设备总数
+          任务总数
         </li>
         <li class="header_litwo">
           已完成项
         </li>
         <li class="header_litwo">
+          待审查项
+        </li>
+        <li class="header_litwo">
           故障问题
         </li>
         <li class="header_litwo">
-          待审核
-        </li>
-        <li class="header_litwo">
-          已分配任务项
+          已分配
         </li>
       </ul>
       <ul class="table_ul">
@@ -122,10 +122,10 @@
             <li class="header_li">{{fmtDate(item.endTime)}}</li>
             <li class="header_litwo">{{item.sum}}</li>
             <li class="header_li_five">{{item.finish}}</li>
-            <li class="header_li_six">{{item.error + item.problem}}</li>
             <li class="header_li_Seven">
               {{item.waitapproval}}
             </li>
+            <li class="header_li_six">{{item.error + item.problem}}</li>
             <li class="header_litwo">{{item.assign}}</li>
             <li class="header_litwo">
               <div v-if="(timestamp - (item.endTime + 86400000)) > 86400000  && JurisdictionData.check" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
@@ -146,10 +146,6 @@
         </li>
       </ul>
     </section>
-    <!--目前不需要修改-->
-    <!--<section v-show="modifyBoolean" class="review">-->
-      <!--<modify :sag="modifyBoolean" @say="Say"></modify>-->
-    <!--</section>-->
   </div>
 </template>
 
@@ -218,98 +214,16 @@ export default {
         selectStartDate: this.startTime,
         selectEndDate: this.endTime
       }
-      console.log(this.selectProps)
       this.DailyCurrentTaskStat()
-      // let flag = false
-      // this.tableDatataskStat.forEach((val) => {
-      //   if (val.flag === true) {
-      //     flag = true
-      //     return false
-      //   } else {
-      //     return false
-      //   }
-      // })
-      // if (flag === true) {
-      //   let clickId = this.click_id
-      //   let areaid = this.regionModel.length !== 0 ? this.regionModel[this.regionModel.length - 1] : ''
-      //   let basedevicecode = this.equipmentDatalength !== 0 ? this.equipmentData[this.equipmentData.length - 1] : ''
-      //   basedevicecode = basedevicecode === null ? '' : basedevicecode
-      //   let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
-      //   let conclusion = this.workconclusionData.length !== 0 ? this.workconclusionData[this.workconclusionData.length - 1] : ''
-      //   this.openLoadingDialog()
-      //   let token = JSON.parse(window.sessionStorage.token)
-      //   this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, conclusion, clickId, areaid, basedevicecode, approvalstates)).then((response) => {
-      //     if (response.data.code === 0) {
-      //       if (response.data.data.length !== 0) {
-      //         response.data.data.forEach((val) => {
-      //           val.choose = false
-      //           if (val.details) {
-      //             val.details.forEach((data) => {
-      //               data.flag = false
-      //               if (data.photos) {
-      //                 data.photosArr = []
-      //                 if (data.photos.indexOf(',') !== -1) {
-      //                   let arr = data.photos.split(',')
-      //                   data.photosArr = arr
-      //                 } else {
-      //                   data.photosArr.push(data.photos)
-      //                 }
-      //               }
-      //               if (!data.iswaitapproval) {
-      //                 if (!data.isapproval) {
-      //                   data.iswaitapprovalName = ''
-      //                   data.disabled = true
-      //                 } else {
-      //                   data.iswaitapprovalName = '已审批'
-      //                   data.disabled = true
-      //                 }
-      //               } else {
-      //                 data.iswaitapprovalName = '待审批'
-      //                 data.disabled = false
-      //               }
-      //               if (data.isassigned) {
-      //                 data.isassignedName = '已安排'
-      //                 data.disabled = true
-      //               } else {
-      //                 data.isassignedName = '未安排'
-      //               }
-      //             })
-      //           }
-      //         })
-      //         this.dailyChild = response.data.data
-      //       } else {
-      //         this.dailyChild = response.data.data
-      //       }
-      //     }
-      //     this.closeLoadingDialog()
-      //   })
-      // } else {
-      //   this.$message({
-      //     message: '请展开任务,才可对应查询',
-      //     type: 'warning'
-      //   })
-      // }
     },
     // 选中事件
     selectStyle (item, index, tableData, $event) {
-      console.log(this.selectProps)
-      console.log(this.selectProps.selectAuditstatus)
       let clickId = item.taskID
-      console.log('1')
       let areaid = this.selectProps.selectRegion.length !== 0 ? this.selectProps.selectRegion[this.selectProps.selectRegion.length - 1] : ''
-      console.log(areaid)
-      console.log('2')
-      console.log(this.selectProps.selectEquipmentData)
       let basedevicecode = this.selectProps.selectEquipmentData.length !== 0 ? this.selectProps.selectEquipmentData[this.selectProps.selectEquipmentData.length - 1] : ''
-      console.log(basedevicecode)
-      console.log('3')
       basedevicecode = !basedevicecode ? '' : basedevicecode
-      console.log(this.selectProps.selectAuditstatus)
       let approvalstates = !this.selectProps.selectAuditstatus ? '' : this.selectProps.selectAuditstatus
-      console.log(approvalstates)
-      console.log('4')
       let conclusion = this.selectProps.selectWorkConclusion.length !== 0 ? this.selectProps.selectWorkConclusion[this.selectProps.selectWorkConclusion.length - 1] : ''
-      console.log(conclusion)
       this.openLoadingDialog()
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, conclusion, clickId, areaid, basedevicecode, approvalstates)).then((response) => {
@@ -549,7 +463,7 @@ export default {
         this.AuditstatusDate = response.data.data
         response.data.data.forEach((val) => {
           if (val.isdefault === 1) {
-            this.Auditstatus.push(val.value)
+            this.Auditstatus = val.value
           }
         })
       }
@@ -559,7 +473,6 @@ export default {
     // 获得结论
     this.axios.post(getWorkconclusion()).then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data.data)
         this.workconclusion = response.data.data
       }
     })
