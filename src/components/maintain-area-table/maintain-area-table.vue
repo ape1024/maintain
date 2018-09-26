@@ -66,7 +66,6 @@ export default {
     getDeviceData (projectId, areaId) {
       this.axios.post(getDeviceData(projectId, areaId)).then(res => {
         if (res && res.data.code === 0) {
-          console.log(res.data.data)
           this.list = res.data.data.map(t => {
             return {
               alarmTime: t.alarmtime ? resetTime(t.alarmtime, 'date') : '----',
