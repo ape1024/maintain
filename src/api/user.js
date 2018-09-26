@@ -655,6 +655,11 @@ export const getOrganizationTrees = (token) => {
   const url = `${Test}/organization/getOrganizationTreeByUser2?token=${token}`
   return url
 }
+// 获取单位类型（如果是子单位会返回跟单位类型）
+export const getOrgType = (orgid) => {
+  const url = `${Test}/organization/getOrgType?orgid=${orgid}`
+  return url
+}
 
 //  根据ID 获取项目详情
 export const findDetailByProjectid = (projectId) => {

@@ -257,19 +257,22 @@ export default {
         // 初始化
         this.ormatting()
       } else {
+        console.log(data)
         this.ownerType = data.organization.organizationType
         this.conserveBoolean = true
         const organizationId = data.organizationId
         this.DataorganizationId = data.organizationId
         if (data.organization.root) {
           this.dataRoot = false
-          this.ormatting()
         } else {
           this.dataRoot = true
         }
         this.organizationId = organizationId
         const url = managementhandleNodeClickOne(organizationId)
         const urlTwo = managementhandleNodeClickTwo(organizationId)
+        // 优先判断上级组织机构改变事件
+        this.getSuperiorOrganization(organizationId)
+        this.changeType(organizationId)
         this.axios.post(urlTwo).then((response) => {
           let urlDate = response.data.data
           if (!urlDate) {
@@ -282,11 +285,11 @@ export default {
             this.superVisionData = ''
             return false
           }
-          //  业务类别
+          // 业务类别
           this.businessCategoryData = urlDate.industrycategoryid === null ? '' : urlDate.industrycategoryid
-          //  消防单位类别
+          // 消防单位类别
           this.categoryfireFightingData = urlDate.firecontrolcategoryid === null ? '' : urlDate.firecontrolcategoryid
-          //  消防监管机构
+          // 消防监管机构
           this.superVisionData = urlDate.firebrigadeid === null ? '' : urlDate.firebrigadeid
           // 所在地址
           this.address = urlDate.address
@@ -324,9 +327,6 @@ export default {
           // 县城
           this.countytownId = urlData.countyid
         })
-        this.getSuperiorOrganization(organizationId)
-        // 调用组织机构改变事件
-        this.changeType(organizationId)
       }
     }
   },
@@ -768,7 +768,6 @@ export default {
     // 获取上级单位
     getSuperiorOrganization (organizationId) {
       this.axios.post(getAllHigherOrgIDs(organizationId)).then((response) => {
-        console.log(response.data.data)
         this.companyDate = []
         if (response.data.code === 0) {
           if (response.data.data.length <= 1) {
@@ -799,6 +798,7 @@ export default {
       this.linkman = ''
       this.CellPhone = ''
       this.fileList = []
+      this.businessCategoryData = '' // 业务类别
       this.textarea = ''
       this.organization = ''
       this.conserveBoolean = false

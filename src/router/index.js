@@ -24,7 +24,7 @@ import repair from '../components/maintain-repair/maintain-repair'
 import archives from '../components/maintain-archives/maintain-archives'
 // 上报问题
 import report from '../components/maintain-report/maintain-report'
-//  计划
+// 计划
 import plan from '../components/maintain-arranged/maintain-arranged'
 // 系统设置
 import intercalate from '../components/maintain-intercalate/maintain-intercalate'
@@ -44,6 +44,14 @@ import taskrules from '../components/intercalate-child/intercalateChild-Taskrule
 import tercalateInfo from '../components/intercalate-child/tercalateChild-info'
 // 测试组织机构
 import structureNew from '../components/intercalate-child/intercalateChild-structureNew'
+// 消防设施归档
+import adminFile from '../components/archives-child/adminFile'
+// 日常巡检归档'
+import dailyFile from '../components/archives-child/dailyFile'
+// 检查测试归档
+import inspectFile from '../components/archives-child/inspectFile'
+// 维护保养归档
+import maintainFile from '../components/archives-child/maintainFile'
 
 Vue.use(Router)
 
@@ -111,7 +119,20 @@ const routes = [
       {
         // 档案
         path: 'archives',
-        component: archives
+        component: archives,
+        children: [{
+          path: 'adminFile',
+          component: adminFile
+        }, {
+          path: 'dailyFile',
+          component: dailyFile
+        }, {
+          path: 'inspectFile',
+          component: inspectFile
+        }, {
+          path: 'maintainFile',
+          component: maintainFile
+        }]
       },
       {
         // 上报
