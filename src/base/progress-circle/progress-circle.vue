@@ -1,7 +1,7 @@
 <template>
   <div class="progress-circle">
     <canvas class="canvas-wrap" ref="canvasWrap"></canvas>
-    <div class="progress-circle-percent">{{percent * 100}}%</div>
+    <div class="progress-circle-percent">{{parseInt(percent * 100)}}%</div>
     <div class="progress-circle-desc">{{desc}}</div>
   </div>
 </template>

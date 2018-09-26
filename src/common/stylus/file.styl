@@ -1,0 +1,341 @@
+@import "~common/stylus/variable"
+.subject
+  margin 12px
+  overflow hidden
+  position relative
+  background rgba(000,000,000, .47)
+.subject_top
+  margin 10px
+  overflow hidden
+  background #111a28
+  padding 20px 0
+  display flex
+.ul_input
+  margin-left 30px
+  overflow hidden
+  float left
+  position relative
+  display flex
+.li_input
+  float left
+  overflow hidden
+  margin-right 20px
+  display flex
+  .div_p
+    float left
+    font-size $color-text-title
+    color $color-text-title
+    margin-right 10px
+    line-height 40px
+  .div_input
+    float left
+    width 167px
+    margin-top 5px
+    display flex
+
+.button
+  display flex
+  float right
+  overflow hidden
+  position relative
+  margin-left 90px
+  text-align center
+  line-height 36px
+  font-size $font-size-medium
+  color $color-text-title
+  .query
+    width 106px
+    height 36px
+    border-radius 5px
+    float left
+    margin-right 30px
+    background $color-background-query
+    cursor pointer
+    transition .2s
+  .query:hover
+    background #4b92bf
+  .newly
+    width 106px
+    height 36px
+    border-radius 5px
+    float right
+    background $color-background-newly
+    cursor pointer
+    transition .2s
+  .newly:hover
+    background #4baabe
+.table
+  width 100%
+  overflow hidden
+  position relative
+  color $color-text-title
+  font-size $font-size-medium
+  text-align left
+  th,td
+    padding 10px 0
+  .table_header
+    background yellowgreen
+
+.header_ul
+  width 100%
+  overflow hidden
+  position relative
+  color $color-header-b-normal
+  font-size $font-size-medium
+  line-height 32px
+  height 32px
+  padding 4px 0
+  background #354d76
+.header_li
+  float left
+  width 10%
+  line-height 32px
+  height 32px
+.header_litwo
+  float left
+  width 10%
+  line-height 32px
+  text-align center
+  height 32px
+.header_lithree
+  float left
+  width 18%
+  line-height 32px
+  height 32px
+  padding-left 1%
+  padding-right 1%
+  overflow hidden
+  text-overflow ellipsis
+  display -webkit-box
+  -webkit-box-orient vertical
+  -webkit-line-clamp 2
+.header_li_five
+  float left
+  width 10%
+  line-height 32px
+  height 32px
+  text-align center
+  color  $color-text-tile-complete
+.header_li_six
+  float left
+  width 10%
+  line-height 32px
+  height 32px
+  text-align center
+  color  $color-text-tile-fault
+.header_li_Seven
+  float left
+  width 10%
+  line-height 32px
+  height 32px
+  text-align center
+  color  $color-text-tile-fault
+.header_p_one
+  color $color-text-tile-state
+.header_p_two
+  color $color-text-tile-state-two
+.header_p_three
+  color $color-text-tile-complete
+.header_p_four
+  color $color-text-tile-handle
+.header_p_six
+  color $color-text-tile-complete
+.header_p_seven
+  color $color-text
+.header_p_eight
+  color $color-background-query
+.header_p_nine
+  color #333333
+.table_ul
+  width 100%
+  overflow hidden
+  position relative
+  color $color-text
+  font-size $font-size-medium
+.table_li
+  width 100%
+  overflow hidden
+  position relative
+  .inline_ul
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 4px 0;
+    line-height: 32px;
+.table_ul .table_li:nth-child(odd)
+  background #1c273a
+.table_ul .table_li:nth-child(even)
+  background #141D2C
+.modify
+  width 106px
+  height 32px
+  background $color-background-newly
+  text-align center
+  line-height 32px
+  font-size $font-size-medium
+  color $color-text-title
+  cursor pointer
+  transition .2s
+.modify:hover
+  background #4baabe
+.examine
+  width 106px
+  height 32px
+  background $color-background-query
+  text-align center
+  line-height 32px
+  font-size $font-size-medium
+  color $color-text-title
+  cursor pointer
+  transition .2s
+.examine:hover
+  background #4b92bf
+.inline_div
+  width 100%
+  overflow hidden
+  position relative
+  .inline_fill
+    margin 6px 10px
+    overflow hidden
+    position relative
+    .list_heder
+      margin 4px
+      overflow hidden
+      position relative
+      background #354d76
+      padding 12px 0
+      .list_heder_li
+        float left
+        width 16%
+        overflow hidden
+      .list_heder_litwo
+        float left
+        width 14%
+        overflow hidden
+        padding-left 2%
+    .inline_list
+      width 100%
+      overflow hidden
+      position relative
+    .inline_list_li
+      width 100%
+      overflow hidden
+      position relative
+      font-size $font-size-medium
+      color $color-text-title
+    .list_data
+      width 100%
+      padding 12px 0
+      overflow hidden
+      .list_data_li
+        float left
+        overflow hidden
+        width 16%
+      .list_data_litwo
+        float: left;
+        width: 14%;
+        overflow: hidden;
+        padding-left: 2%;
+      .list_data_li_p
+        float left
+        color #3279A6
+        margin-right 37px
+        cursor pointer
+        text-decoration underline
+      .list_data_li_ptwo
+        float left
+        color $color-text-tile-project
+        cursor pointer
+        text-decoration underline
+.threelevel
+  margin 0 10px
+  overflow hidden
+  position relative
+  color $color-text-title
+  font-size $font-size-medium
+  .threelevel_header
+    margin 4px
+    overflow hidden
+    position relative
+    padding 12px 0
+    background #354d76
+    .threelevel_li
+      float left
+      width 11%
+    .threelevel_litwo
+      float left
+      width 17%
+      overflow hidden
+    .threelevel_lithree
+      float left
+      width 9%
+      padding-left 2%
+  .threelevel_list
+    margin 4px
+    overflow hidden
+    position relative
+    .threelevel_list_li
+      width 100%
+      overflow hidden
+      position relative
+      .threelevel_list_ul
+        width 100%
+        overflow hidden
+        padding 12px 0
+        .threelevel_li
+          float left
+          width 11%
+        .threelevel_litwo
+          float left
+          width 17%
+          overflow hidden
+        .threelevel_lithree
+          float left
+          width 9%
+          padding-left 2%
+.threelevel_litwo p
+  float left
+  margin-right 35px
+  text-decoration underline
+  cursor pointer
+.review
+  position fixed
+  top 0
+  left 0
+  width 100%
+  height 100%
+  background rgba(000,000,000,.4)
+  z-index 11
+  overflow hidden
+.div_inputTwo
+  float left
+  width 300px
+  margin-top 5px
+  display flex
+  .el-select
+    width 100%
+.pigeonhole
+  conserve()
+  width 70px
+  height 30px
+  line-height 30px
+  -webkit-user-select none
+  -moz-user-select none
+  -ms-user-select none
+  user-select none
+.subject_bottom
+  min-height 800px
+  background rgba(0,0,0,0.35)
+  margin 10px
+.batchDiv
+  display inline-block
+  width 80px
+  height 30px
+  line-height 30px
+  border-radius 5px
+  text-align center
+  background $color-background-newly
+  cursor pointer
+  transition .2s
+  &:hover
+    background #4baabe

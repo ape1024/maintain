@@ -43,7 +43,7 @@
               {{conversionPlanState(item.planstate)}}
             </li>
             <li class="repair_litwo">
-              {{item.createtime}}
+              {{fmtDate(item.createtime)}}
             </li>
             <li class="repair_litwo">
               {{item.creatername}}
@@ -52,33 +52,39 @@
               {{item.plandesc}}
             </li>
             <li class="repair_lithree">
-              <div v-if="JurisdictionApproval">
-                <p v-if="item.planstate === 5"  @click.stop="question(item.checkplanid, item)" class="header_p_eight threelevel_litwo_p">
-                  审核
+              <div v-if="JurisdictionUpdate">
+                <p v-if="item.planstate !== 100"  @click.stop="setPlan(item.checkplanid)" class="header_p_eight threelevel_litwo_p">
+                  启用
                 </p>
-                <p v-if="item.planstate !== 5" class="header_p_fourteen" >审核</p>
+                <p v-if="item.planstate === 100" class="header_p_eleven" @click.stop="setPlan(item.checkplanid)" >禁用</p>
               </div>
               <div v-if="JurisdictionUpdate">
                 <p @click.stop="examine(item.checkplanid)" class="header_p_ten">修改</p>
               </div>
-              <div v-if="JurisdictionInsert">
-                <p v-if="item.planstate !== 5" class="header_p_twelve" @click.stop="generate(item.checkplanid)">生成计划</p>
-                <p v-if="item.planstate === 5" class="header_p_fourteen">生成计划</p>
+              <div v-if="JurisdictionSelect">
+                <p @click.stop="selectPlan(item.checkplanid)" class="header_p_twelve">查看</p>
               </div>
-              <div v-if="JurisdictionDelete">
-                <p class="header_p_eleven" @click.stop="amputate(index, arrangedData,item.checkplanid)">删除</p>
-              </div>
+              <!--<div v-if="JurisdictionInsert">-->
+                <!--<p v-if="item.planstate !== 5" class="header_p_twelve" @click.stop="generate(item.checkplanid)">生成计划</p>-->
+                <!--<p v-if="item.planstate === 5" class="header_p_fourteen">生成计划</p>-->
+              <!--</div>-->
+              <!--<div v-if="JurisdictionDelete">-->
+                <!--<p class="header_p_eleven" @click.stop="amputate(index, arrangedData,item.checkplanid)">删除</p>-->
+              <!--</div>-->
             </li>
           </ul>
         </li>
       </ul>
     </section>
+    <!--修改-->
     <section v-if="review_boolean" @click.stop class="review">
-      <lookup @lookup="Lookup" v-if="review_boolean" :checkplan="CheckPlan" :Checkplanid="CheckPlanid"></lookup>
+      <lookup @lookup="Lookup" v-if="review_boolean" :showFlag="showFlag" :checkplan="CheckPlan" :Checkplanid="CheckPlanid"></lookup>
     </section>
+    <!--审批-->
     <section v-if="examinaBoolean" class="review">
       <examination :Checkplaniddata="itemCheckplanid" v-if="examinaBoolean" @closeup="Closeup"></examination>
     </section>
+    <!--新增-->
     <section v-if="newlybuildBoolean" class="review">
       <newlybuild v-if="newlybuildBoolean" @build="Build"></newlybuild>
     </section>
@@ -92,7 +98,7 @@
 import lookup from '../arrangedChild-operation/arrangedChild-lookup'
 import examination from '../arrangedChild-operation/arrangedChild-examination'
 import newlybuild from '../arrangedChild-operation/arrangedChild-newlybuild'
-import { maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes, createChecktask } from '../../api/user'
+import { maintainArrangsetPlan, maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes, createChecktask } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   name: 'maintain-arranged',
@@ -104,11 +110,7 @@ export default {
   },
   methods: {
     init () {
-      this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.arrangedData = response.data.data
-        }
-      })
+      this.initPlan()
     },
     generate (checkplanid) {
       this.$confirm('此操作将生成该计划, 是否继续?', '提示', {
@@ -118,7 +120,6 @@ export default {
       }).then(() => {
         this.axios.post(createChecktask(checkplanid)).then((response) => {
           if (response.data.code === 0) {
-            console.log(response)
             this.$message({
               type: 'success',
               message: '生成成功!'
@@ -177,11 +178,7 @@ export default {
       this.examinaBoolean = true
     },
     Closeup (ev) {
-      this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.arrangedData = response.data.data
-        }
-      })
+      this.initPlan()
       this.examinaBoolean = ev
     },
     Build (ev) {
@@ -202,6 +199,18 @@ export default {
     },
     examine (checkplanid) {
       this.CheckPlanid = checkplanid
+      this.showFlag = false
+      this.axios.post(maintainArranggetCheckPlan(checkplanid)).then((response) => {
+        if (response.data.code === 0) {
+          this.CheckPlan = response.data.data
+          this.review_boolean = true
+        }
+      })
+    },
+    // 查看计划
+    selectPlan (checkplanid) {
+      this.CheckPlanid = checkplanid
+      this.showFlag = true
       this.axios.post(maintainArranggetCheckPlan(checkplanid)).then((response) => {
         if (response.data.code === 0) {
           this.CheckPlan = response.data.data
@@ -222,8 +231,41 @@ export default {
           return this.planStateData[i].name
         }
       }
+    },
+    // 设置计划可用或不可用
+    setPlan (planId) {
+      this.$confirm('是否操作?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.post(maintainArrangsetPlan(planId)).then((response) => {
+          if (response.data.code === 0) {
+            this.initPlan()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    },
+    initPlan () {
+      this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.arrangedData = response.data.data
+        }
+      })
+    },
+    //  时间戳
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = '0' + (date.getMonth() + 1)
+      let d = '0' + date.getDate()
+      return y + '-' + m.substring(m.length - 2, m.length) + '-' + d.substring(d.length - 2, d.length)
     }
-
   },
   data () {
     return {
@@ -269,25 +311,22 @@ export default {
       JurisdictionInsert: '',
       JurisdictionUpdate: '',
       JurisdictionDelete: '',
-      JurisdictionApproval: ''
+      JurisdictionApproval: '',
+      showFlag: false // true查看计划信息 false 修改计划信息
     }
   },
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      console.log(val)
       if (val.functioncode === 'plan') {
         this.JurisdictionApproval = val.approval
         this.JurisdictionUpdate = val.update
         this.JurisdictionDelete = val.delete
         this.JurisdictionInsert = val.insert
+        this.JurisdictionSelect = val.select
       }
     })
-    this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
-      if (response.data.code === 0) {
-        this.arrangedData = response.data.data
-      }
-    })
+    this.initPlan()
     this.axios.post(maintainArranggetAllPlanTypes(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.worktypeData = response.data.data

@@ -275,13 +275,15 @@ export default {
         this.DataorganizationId = data.organizationId
         if (data.organization.root) {
           this.dataRoot = false
-          this.ormatting()
         } else {
           this.dataRoot = true
         }
         this.organizationId = organizationId
         const url = managementhandleNodeClickOne(organizationId)
         const urlTwo = managementhandleNodeClickTwo(organizationId)
+        // 优先判断上级组织机构改变事件
+        this.getSuperiorOrganization(organizationId)
+        this.changeType(organizationId)
         this.axios.post(urlTwo).then((response) => {
           let urlDate = response.data.data
           if (!urlDate) {
@@ -349,9 +351,6 @@ export default {
           // 父级id
           this.parentid = urlData.parentid
         })
-        this.getSuperiorOrganization(organizationId)
-        // 调用组织机构改变事件
-        this.changeType(organizationId)
       }
     }
   },
@@ -830,7 +829,7 @@ export default {
       this.conserveBoolean = false
     },
     getOrganizationTree (token) {
-      //  左边的树状结构
+      // 左边的树状结构
       this.axios.post(getOrganizationTrees(token)).then((response) => {
         if (response.data.code === 0) {
           this.data = response.data.data

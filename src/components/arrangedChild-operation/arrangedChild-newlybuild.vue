@@ -29,7 +29,7 @@
                   type="date"
                   value-format="yyyy-MM-dd"
                   placeholder="选择日期">
-    </el-date-picker>
+                </el-date-picker>
                 </span>
               </li>
               <li class="sectionTopli">
@@ -230,7 +230,7 @@
 
 <script>
 import { projectMixin } from 'common/js/mixin'
-import { createPlan, maintainArranggetWorkModesByWorkType, getRepairOrgTreeByProjectId, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
+import { createChecktask, createPlan, maintainArranggetWorkModesByWorkType, getRepairOrgTreeByProjectId, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
 export default {
   mixins: [projectMixin],
   name: 'arrangedChild-newlybuild',
@@ -291,11 +291,29 @@ export default {
       numbers: '1',
       monthsNumber: true,
       //  频次data
-      frequencyData: ''
+      frequencyData: '',
+      // 当前时间
+      dateNow: ''
     }
   },
   methods: {
+    getDate () {
+      let date = new Date()
+      let seperator1 = '-'
+      let year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let strDate = date.getDate()
+      if (month >= 1 && month <= 9) {
+        month = '0' + month
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = '0' + strDate
+      }
+      let currentdate = year + seperator1 + month + seperator1 + strDate
+      this.dateNow = currentdate
+    },
     conserve () {
+      this.getDate()
       let token = JSON.parse(window.sessionStorage.token)
       let worktypeid = this.scheduleData
       let projectid = this.maintainProject
@@ -339,7 +357,21 @@ export default {
         })
         return false
       }
-      //   workmodes  工作类型
+      if (startDate > endDate) {
+        this.$message({
+          message: '开始时间大于结束时间!',
+          type: 'warning'
+        })
+        return false
+      }
+      if (this.dateNow > endDate) {
+        this.$message({
+          message: '结束时间不能小于当前时间!',
+          type: 'warning'
+        })
+        return false
+      }
+      // workmodes  工作类型
       // let worktype = []
       let worktypeData = []
       if (this.Worktype.length !== 0) {
@@ -361,14 +393,14 @@ export default {
           return
         }
       } else {
-      //  没有选择任务类型
+      // 没有选择任务类型
         this.$message({
           message: '没有选择任务类型!',
           type: 'warning'
         })
         return false
       }
-      //  选择消防设施
+      // 选择消防设施
       let newArr = []
       if (this.handleCheckData.length !== 0) {
         this.handleCheckData.forEach((val) => {
@@ -392,7 +424,7 @@ export default {
         return false
       }
       // newArr = this.handleCheckData.filter((val) => wipeOff.indexOf(val) === -1)
-      //  执行人
+      // 执行人
       let users = []
       if (this.maintenanceList.length !== 0) {
         this.maintenanceList.forEach((val) => {
@@ -473,7 +505,7 @@ export default {
         users: users,
         workmodes: worktypeData
       }
-      //  频次
+      // 频次
       let checkFrequency = this.frequencyData
       this.axios.post(createPlan(token, worktypeid, projectid, planName, planCode, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime), param).then((response) => {
         if (response.data.code === 0) {
@@ -481,6 +513,25 @@ export default {
             message: '创建成功',
             type: 'success'
           })
+          let planId = response.data.data
+          if (this.dateNow >= startDate && this.dateNow <= endDate) {
+            this.$confirm('计划已创建成功, 是否立即生成任务?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.axios.post(createChecktask(planId)).then((response) => {
+                if (response.data.code === 0) {
+                  this.$message({
+                    type: 'success',
+                    message: '生成成功!'
+                  })
+                } else {
+                  this.$message.error(`${response.data.message}`)
+                }
+              })
+            })
+          }
           this.$emit('build', false)
         } else {
           this.$message.error('创建失败')

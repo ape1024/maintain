@@ -27,35 +27,36 @@
               <div class="title model">{{item.modelName}}</div>
               <div class="title manufacture">{{item.manufactureName}}</div>
               <div class="title state">{{item.action}}</div>
-              <div class="title handle" @click.stop="toggle(index, item.deviceId)">详情</div>
-            </div>
-            <div class="reason" v-show="index === selected">
-              <div :key="m" class="reason-desc" v-for="(t, m) in repairList">
-                <div class="reason-desc-item">{{t.worktypename}}</div>
-                <div class="reason-desc-item">{{t.lasttime}}</div>
-              </div>
-              <div class="reason-loading" v-show="!repairList.length">{{loading}}</div>
+              <div class="title handle" @click.stop="toggle(item.deviceId)">详情</div>
             </div>
           </div>
         </div>
         <div class="loading" v-show="!list.length">{{loading}}</div>
       </div>
     </div>
+    <section v-if="lookOverState" @click.stop class="area-table-review">
+      <!--查看-->
+      <look-over :inspection="examineInspection" :information="examineInformation" :msg="lookOverState" @look="close"></look-over>
+    </section>
   </div>
 </template>
 
 <script>
-import { getDeviceData, getDeviceRepair } from 'api/user'
+import { getDeviceData, adminfindDeviceDetail, adminFindInspectionMaintenance } from 'api/user'
 import { projectMixin, currentAreaMixin } from 'common/js/mixin'
 import { resetTime } from 'common/js/utils'
 import { stateCode, stateData, layer } from 'common/js/config'
+import LookOver from 'components/adminChild-operation/adminChild-lookover'
 export default {
   mixins: [projectMixin, currentAreaMixin],
   data () {
     return {
       selected: -1,
       list: [],
-      repairList: []
+      repairList: [],
+      lookOverState: false,
+      examineInspection: '',
+      examineInformation: ''
     }
   },
   methods: {
@@ -65,7 +66,6 @@ export default {
     getDeviceData (projectId, areaId) {
       this.axios.post(getDeviceData(projectId, areaId)).then(res => {
         if (res && res.data.code === 0) {
-          console.log(res.data.data)
           this.list = res.data.data.map(t => {
             return {
               alarmTime: t.alarmtime ? resetTime(t.alarmtime, 'date') : '----',
@@ -106,20 +106,25 @@ export default {
       }
       return state
     },
-    toggle (index, deviceId) {
-      if (this.selected === index) {
-        this.selected = -1
-      } else {
-        this.axios.post(getDeviceRepair(deviceId)).then(res => {
-          if (res && res.data.code === 0) {
-            this.repairList = res.data.data
-          } else {
-            this.repairList = []
-          }
-          this.selected = index
-        })
-      }
+    toggle (deviceId) {
+      this.axios.post(adminfindDeviceDetail(deviceId)).then((response) => {
+        if (response.data.code === 0) {
+          this.examineInformation = response.data.data
+          this.axios.post(adminFindInspectionMaintenance(deviceId)).then((data) => {
+            if (data.data.code === 0) {
+              this.examineInspection = data.data.data
+              this.lookOverState = true
+            }
+          })
+        }
+      })
+    },
+    close (ev) {
+      this.lookOverState = ev
     }
+  },
+  components: {
+    LookOver
   },
   created () {
     this.title = '设备信息'
@@ -142,6 +147,7 @@ export default {
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
   .area-table
     position relative
     width 100%
@@ -257,4 +263,8 @@ export default {
         .handle
           width 5%
           cursor pointer
+    .area-table-review
+      full-screen()
+      background $color-barckground-transparent
+      z-index $z-index-large
 </style>

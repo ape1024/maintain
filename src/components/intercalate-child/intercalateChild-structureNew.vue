@@ -17,10 +17,12 @@
         </div>
       </div>
     </section>
-    <section class="subjectRight" v-show="false">
+    <section class="subjectRight" v-show="showFlag">
+      <div v-if="amputateStr" class="subjectRightDiv"></div>
       <proprietor-unit @refresh="refresh" :info="proprietorInfo"></proprietor-unit>
     </section>
-    <section class="subjectRight" v-show="true">
+    <section class="subjectRight" v-show="!showFlag">
+      <div v-if="amputateStr" class="subjectRightDiv"></div>
       <vascular-unit @refresh="refresh" :info="vascularInfo"></vascular-unit>
     </section>
   </div>
@@ -29,7 +31,7 @@
 <script>
 import VascularUnit from '../structure-child/vascular-unit'
 import ProprietorUnit from '../structure-child/proprietor-unit'
-import {getOrganizationTrees, managementCreatedtree} from '../../api/user'
+import {getOrganizationTrees, managementCreatedtree, getOrgType} from '../../api/user'
 export default {
   name: 'intercalateChild-structureNew',
   components: {
@@ -49,7 +51,9 @@ export default {
         children: 'subOrgnizations',
         label: 'organizationName',
         value: 'organizationId'
-      }
+      },
+      showFlag: false,
+      amputateStr: true // 蒙版
     }
   },
   methods: {
@@ -60,6 +64,7 @@ export default {
       }
       this.proprietorInfo = obj
       this.vascularInfo = obj
+      this.amputateStr = false
     },
     // 新增
     subjectpCreate () {
@@ -69,6 +74,7 @@ export default {
       }
       this.proprietorInfo = obj
       this.vascularInfo = obj
+      this.amputateStr = false
     },
     // 刷新
     refresh () {
@@ -76,7 +82,20 @@ export default {
       this.axios.post(managementCreatedtree(token)).then((response) => {
         if (response.data.code === 0) {
           this.data = response.data.data
+          this.getType(this.data.organizationId)
           this.subjectpCreate()
+        }
+      })
+    },
+    getType (organizationId) {
+      // 获取单位类型
+      this.axios.post(getOrgType(organizationId)).then((response) => {
+        if (response.data.code === 0) {
+          if (response.data.data === 1) {
+            this.showFlag = true
+          } else {
+            this.showFlag = false
+          }
         }
       })
     }
@@ -96,8 +115,9 @@ export default {
     //  左边的树状结构
     this.axios.post(getOrganizationTrees(token)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data.data)
         this.data = response.data.data
+        console.log(this.data[0].organizationId)
+        this.getType(this.data[0].organizationId)
       }
     })
   }

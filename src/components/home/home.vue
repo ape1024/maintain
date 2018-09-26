@@ -41,7 +41,7 @@
               </li>
             </router-link>
             <router-link to="/home/archives">
-              <li v-if="false">
+              <li>
                 <i class="headerArchives"></i>
                 工作档案
               </li>
@@ -55,7 +55,7 @@
             <router-link to="/home/plan">
               <li>
                 <i class="headerArranged"></i>
-                任务计划
+                定制计划
               </li>
             </router-link>
             <router-link to="/home/intercalate">
