@@ -16,10 +16,10 @@
               <div class="modify_li_div">
                    <el-cascader
                      size="mini"
+                     @change="categoryChange"
                      :options="category"
                      :props="equipmentProps"
                      v-model="categoryDate"
-                     change-on-select
                    ></el-cascader>
               </div>
             </div>
@@ -53,6 +53,24 @@
               </div>
               <div class="modify_lidivRight">
                 <el-input size="mini" v-if="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
+              </div>
+            </div>
+            <div class="modify_liDiv">
+              <p class="modify_li_p">
+                <span class="modifySpantwo">*</span>设施单位：
+              </p>
+              <div class="modify_li_div">
+                <el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">
+                  <el-option
+                    v-for="item in CompanyData"
+                    :key="item.devunitId"
+                    :label="item.unitname"
+                    :value="item.devunitId">
+                  </el-option>
+                </el-select>
+              </div>
+              <div v-if="CompanyShow" class="modify_lidivRight">
+                <el-input size="mini" v-model="Companymake" placeholder="请输入设备单位"></el-input>
               </div>
             </div>
             <div class="modify_liDivtwo">
@@ -137,11 +155,22 @@
           </li>
           <li class="modify_right">
             <p class="modify_li_p"><span class="modifySpantwo">*</span>现场照片：</p>
-            <div v-if="photoArrayBoolean" :key="$index" v-for="(item, $index) in photoArray" class="modify_rightDiv">
-              <img class="modify_rightDivImg" :src="item" alt="">
-              <div @click="myFileLidelete($index)" class="myFileDiv">
-                <i class="el-icon-delete"></i>
-              </div>
+            <div class="modify_rightDiv">
+              <el-upload
+                :action="uploadFun"
+                list-type="picture-card"
+                :file-list="fileList"
+                :on-success="handlesuccess"
+                :on-preview="handlePictureCardPreview"
+                :on-error="handlePictureerror"
+                :on-exceed="handlePicturexceed"
+                :limit='10'
+                :on-remove="handleRemove">
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog :visible.sync="dialogVisible">
+                <img width="100%" :src="dialogImageUrl" alt="">
+              </el-dialog>
             </div>
           </li>
         </ul>
@@ -161,7 +190,7 @@
 <script>
 import $ from 'jquery'
 import { fmtDate } from '../../common/js/utils'
-import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType } from '../../api/user'
+import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType, upload, GetDevUnit, AddDevUnit } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   mixins: [ projectMixin ],
@@ -231,22 +260,107 @@ export default {
       },
       facilityLocationDate: [],
       photoArray: [],
-      photoArrayBoolean: false
+      photoArrayBoolean: false,
+      Company: '',
+      CompanyData: [],
+      watchequipment: '',
+      Companymake: '',
+      fileList: [],
+      dialogImageUrl: '',
+      dialogVisible: false,
+      uploadData: [],
+      uploadFun: upload(JSON.parse(window.sessionStorage.token)),
+      CompanyShow: false
     }
   },
-  beforeMount () {
+  watch: {
+    watchequipment (data) {
+      //  修改基础设备  单位 重新请求
+    }
   },
   methods: {
+    ompanyfocus () {
+      if (!this.categoryDate.length) {
+        this.$message({
+          message: '请先选择设备类别!',
+          type: 'warning'
+        })
+        return false
+      } else {
+        let token = JSON.parse(window.sessionStorage.token)
+        let devicetypeid = this.categoryDate[0]
+
+        this.axios.post(GetDevUnit(token, devicetypeid)).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            let obj = {
+              devunitId: -999,
+              unitname: '自定义'
+            }
+            response.data.data.push(obj)
+            this.CompanyData = response.data.data
+          }
+        })
+      }
+    },
+    CompanyChange (el) {
+      if (el === -999) {
+        this.CompanyShow = true
+      } else {
+        this.CompanyShow = false
+      }
+    },
+    handlePicturexceed () {
+      this.$message({
+        message: '不可以超过十张照片',
+        type: 'warning'
+      })
+    },
+    handlePictureerror (errText, file, fileList) {
+      if (!fileList.length) {
+        this.uploadData = []
+      } else {
+        fileList.forEach((val) => {
+          this.uploadData.push(val.response.data)
+        })
+      }
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    handlesuccess (response, file, fileList) {
+      this.uploadData.push(response.data)
+    },
+    handleRemove (file, fileList) {
+      this.uploadData = []
+      fileList.forEach((val) => {
+        this.uploadData.push(val.url)
+      })
+    },
+    categoryChange (data) {
+      this.watchequipment = data[0]
+    },
     myFileLidelete (index) {
       this.photoArray.splice(index, 1)
     },
     logTimeChange (val) {
       this.productionValue1 = val
     },
-    conserve () {
+    conserve: async function () {
+      //  图片
+      let files = []
+      if (!this.uploadData.length) {
+        this.fileList.forEach((val) => {
+          files.push(val.url)
+        })
+      } else {
+        this.uploadData.forEach((val) => {
+          files.push(val)
+        })
+      }
+      files = files.join()
       let areaid = this.facilityLocationDate[this.facilityLocationDate.length - 1]
-      console.log(this.facilityLocationDate)
-      console.log(areaid)
       // token
       let token = JSON.parse(window.sessionStorage.token)
       //   设备 id
@@ -260,7 +374,7 @@ export default {
         })
         return false
       } else {
-        devicetypeid = this.categoryDate[this.categoryDate.length - 1]
+        devicetypeid = this.categoryDate[0]
       }
       //  生产厂家
       let manufacturerid = ''
@@ -276,10 +390,38 @@ export default {
       let madedate = this.productionValue1
       //  有效日期
       let effectivedate = this.validity
-      //  图片
-      let files = this.photoArray.length ? this.photoArray.join() : ''
-
-      // manufacturerid = this.customManufacturerDate
+      if (!this.categoryDate.length) {
+        this.$message({
+          message: '请选择设施类别',
+          type: 'warning'
+        })
+        return false
+      }
+      //  单位
+      let devunitid = ''
+      if (!this.Company) {
+        this.$message({
+          message: '请选择设施单位',
+          type: 'warning'
+        })
+        return false
+      }
+      if (this.Company === -999) {
+        if (!this.CompanyInput) {
+          this.$message({
+            message: '请填写设施单位',
+            type: 'warning'
+          })
+          return false
+        } else {
+          const data = await this.axios.post(AddDevUnit(token, devicetypeid, this.CompanyInput)).then((Data) => Data)
+          if (data.data.code === 0) {
+            devunitid = data.data.data.devicetypeid
+          }
+        }
+      } else {
+        devunitid = this.Company
+      }
       if (this.customManufacturer === true) {
         this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
           if (response.data.code === 0) {
@@ -288,12 +430,12 @@ export default {
               this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
                 if (data.data.code === 0) {
                   devicemodel = data.data.data.divecemodelid
-                  this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, files)
+                  this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitid, files)
                 }
               })
             } else {
               devicemodel = this.versionValue
-              this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, files)
+              this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitid, files)
             }
           }
         })
@@ -301,17 +443,17 @@ export default {
         this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((Item) => {
           if (Item.data.code === 0) {
             devicemodel = Item.data.data.divecemodelid
-            this.requestModification(token, Deviceid, this.maintainProject, areaid, this.manufactorModel, devicetypeid, devicemodel, position, parameters, memo, files)
+            this.requestModification(token, Deviceid, this.maintainProject, areaid, this.manufactorModel, devicetypeid, devicemodel, position, parameters, memo, devunitid, files)
           }
         })
       } else {
         devicemodel = this.versionValue
         manufacturerid = this.manufactorModel
-        this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, files)
+        this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitid, files)
       }
     },
-    requestModification (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, files) {
-      this.axios.post(updateDevice(token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, files)).then((response) => {
+    requestModification (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitId, files) {
+      this.axios.post(updateDevice(token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitId, files)).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '修改成功',
@@ -380,7 +522,6 @@ export default {
       }
     },
     versionChang (data) {
-      console.log(this.categoryDate)
       if (this.versionValue === '-9999') {
         this.versionManufacturer = true
         return false
@@ -419,7 +560,6 @@ export default {
         this.facilityLocation = response.data.data
       }
     })
-    console.log(this.modify)
     this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.category = response.data.data
@@ -440,19 +580,33 @@ export default {
             })
           }
         })
+
         this.versionValue = this.modify.devicemodel ? parseInt(this.modify.devicemodel) : ''
         this.Specificposition = (this.modify).position
         this.productionValue1 = fmtDate((this.modify).madedate)
         this.validity = fmtDate((this.modify).effectivedate)
         this.textarea = (this.modify).memo
         this.technicalParameter = (this.modify).parameters
-        if (this.modify.fullareaid.length) {
+        this.Company = (this.modify).devunitid
+        console.log(this.modify)
+        if (!this.modify.photoArray.length) {
+          this.fileList = []
+        } else {
+          this.modify.photoArray.forEach((val, index) => {
+            let obj = {
+              name: index,
+              url: val
+            }
+            this.fileList.push(obj)
+          })
+        }
+        if (!this.modify.fullareaid.length) {
+          this.facilityLocationDate = []
+        } else {
           this.modify.fullareaid.forEach((val) => {
             let nub = parseInt(val)
             this.facilityLocationDate.push(nub)
           })
-        } else {
-          this.facilityLocationDate = []
         }
         if (this.modify.photoArray.length) {
           this.photoArrayBoolean = false
@@ -461,6 +615,16 @@ export default {
           this.photoArrayBoolean = true
           this.photoArray = this.modify.photoArray
         }
+        this.axios.post(GetDevUnit(token, this.modify.devicetypeid)).then((data) => {
+          if (data.data.code === 0) {
+            let obj = {
+              devunitId: -999,
+              unitname: '自定义'
+            }
+            data.data.data.push(obj)
+            this.CompanyData = data.data.data
+          }
+        })
       }
     })
   }
@@ -537,7 +701,6 @@ export default {
         position relative
       .modify_right
         width 100%
-        min-height 50px
         float left
         color $color-header-b-normal
         font-size $font-size-medium
@@ -546,14 +709,8 @@ export default {
           margin-left 20px
         .modify_rightDiv
            float left
-           width 50px
-           height 50px
            overflow hidden
            position relative
-           .modify_rightDivImg
-              display inline-block
-              width 100%
-              height 100%
   .modify_bottom
     init()
     text-align center
@@ -632,4 +789,15 @@ export default {
     color #dd514c
   .modifySpantwo
     opacity 0
+</style>
+<style>
+  .modify_rightDiv .el-upload-list--picture-card .el-upload-list__item{
+    width: 80px;
+    height: 80px;
+  }
+  .modify_rightDiv .el-upload--picture-card{
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+  }
 </style>

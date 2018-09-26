@@ -59,14 +59,14 @@
                 </div>
               </div>
               <div class="modify_liDivthree">
-                <p class="modify_li_p"><span class="increaseSpan"> </span>设施单位：</p>
+                <p class="modify_li_p"><span class="increaseSpan">*</span>设施单位：</p>
                 <div class="modify_li_div">
-                  <el-select @change="CompanyChange" size="mini" v-model="Company" placeholder="请选择">
+                  <el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">
                     <el-option
                       v-for="item in CompanyData"
-                      :key="item.name"
-                      :label="item.name"
-                      :value="item.name">
+                      :key="item.devunitId"
+                      :label="item.unitname"
+                      :value="item.devunitId">
                     </el-option>
                   </el-select>
                 </div>
@@ -290,7 +290,7 @@
 <script>
 import $ from 'jquery'
 import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, findAllDeviceType,
-  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload } from '../../api/user'
+  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload, AddDevUnit, GetDevUnit} from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
@@ -403,13 +403,37 @@ export default {
     }
   },
   methods: {
+    ompanyfocus () {
+      if (!this.categoryDate.length) {
+        this.$message({
+          message: '请先选择设备类别!',
+          type: 'warning'
+        })
+        return false
+      } else {
+        let token = JSON.parse(window.sessionStorage.token)
+        let devicetypeid = this.categoryDate[0]
+
+        this.axios.post(GetDevUnit(token, devicetypeid)).then((response) => {
+          console.log(response)
+          if (response.data.code === 0) {
+            let obj = {
+              devunitId: -999,
+              unitname: '自定义'
+            }
+            response.data.data.push(obj)
+            this.CompanyData = response.data.data
+          }
+        })
+      }
+    },
     handlePicturexceed () {
       this.$message({
         message: '不可以超过十张照片',
         type: 'warning'
       })
     },
-    handlePictureerror (err, file, fileList) {
+    handlePictureerror (errText, file, fileList) {
       if (!fileList.length) {
         this.uploadData = []
       } else {
@@ -493,8 +517,6 @@ export default {
       return result
     },
     addincrease () {
-      console.log(this.Company)
-      return
       let obtainCode = this.specific
       let areaid = this.facilityLocationDate
       let areaidName = this.ergodic(areaid)
@@ -571,14 +593,20 @@ export default {
       findData(this.category)
       this.basedevicecode = result
     },
-    preser () {
+    preser: async function () {
       // 保存
+      if (!this.categoryDate.length) {
+        this.$message({
+          message: '请选择设施类别',
+          type: 'warning'
+        })
+        return false
+      }
+      let devicetypeid = this.categoryDate[0]
       //  批量编码 个数
       let rowcount = this.tabulationtitle.length ? this.tabulationtitle.length : 0
       //  token
       let token = JSON.parse(window.sessionStorage.token)
-      //  设备id
-      let devicetypeid = this.categoryDate[this.categoryDate.length - 1]
       //  厂家id
       let manufacturerid = ''
       //  型号
@@ -587,19 +615,6 @@ export default {
         devicemodel = this.versionCustom ? this.versionCustom : ''
       } else {
         devicemodel = this.versionValue ? this.versionValue : ''
-      }
-      //  单位
-      let unit = ''
-      if (!this.Company) {
-        if (!this.CompanyShow) {
-          unit = this.CompanyInput
-        } else {
-          unit = this.CompanyInput
-        }
-      } else if (this.Company === '自定义') {
-        unit = this.CompanyInput
-      } else {
-        unit = this.Company
       }
       //  设备参数
       let parameters = this.technicalParameter ? this.technicalParameter : ''
@@ -631,6 +646,31 @@ export default {
         }
         tabulationtitle.push(obj)
       })
+      //  单位
+      let devunitid = ''
+      if (!this.Company) {
+        this.$message({
+          message: '请选择设施单位',
+          type: 'warning'
+        })
+        return false
+      }
+      if (this.Company === -999) {
+        if (!this.CompanyInput) {
+          this.$message({
+            message: '请填写设施单位',
+            type: 'warning'
+          })
+          return false
+        } else {
+          const data = await this.axios.post(AddDevUnit(token, devicetypeid, this.CompanyInput)).then((Data) => Data)
+          if (data.data.code === 0) {
+            devunitid = data.data.data.devicetypeid
+          }
+        }
+      } else {
+        devunitid = this.Company
+      }
       if (this.categoryDate.length !== 0) {
         if (this.customManufacturer === true) {
           if (!this.customManufacturerDate) {
@@ -648,12 +688,12 @@ export default {
                 this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
                   if (data.data.code === 0) {
                     devicemodel = data.data.data.divecemodelid
-                    this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons, tabulationtitle)
+                    this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, icons, devunitid, tabulationtitle)
                   }
                 })
               } else {
                 devicemodel = this.versionValue
-                this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons, tabulationtitle)
+                this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, icons, devunitid, tabulationtitle)
               }
             }
           })
@@ -663,13 +703,13 @@ export default {
             if (Item.data.code === 0) {
               devicemodel = Item.data.data.divecemodelid
               manufacturerid = this.manufactorModel
-              this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons, tabulationtitle)
+              this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, icons, devunitid, tabulationtitle)
             }
           })
         } else {
           devicemodel = this.versionValue
           manufacturerid = this.manufactorModel
-          this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons, tabulationtitle)
+          this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, icons, devunitid, tabulationtitle)
         }
       } else {
         this.$message({
@@ -678,8 +718,8 @@ export default {
         })
       }
     },
-    requestCreation (rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons, tabulationtitle) {
-      this.axios.post(maintainReportAddDevice(rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons), tabulationtitle).then((data) => {
+    requestCreation (rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, icons, devunitid, tabulationtitle) {
+      this.axios.post(maintainReportAddDevice(rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, icons, devunitid), tabulationtitle).then((data) => {
         if (data.data.code === 0) {
           this.$message({
             message: '创建成功',
@@ -750,7 +790,7 @@ export default {
       }
     },
     CompanyChange (el) {
-      if (el === '自定义') {
+      if (el === -999) {
         this.CompanyShow = true
       } else {
         this.CompanyShow = false

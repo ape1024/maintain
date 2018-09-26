@@ -196,8 +196,8 @@ export const AddDivecemodels = (manufactureId, Deviceid, versionCustom, technica
   return url
 }
 //  updateDevice
-export const updateDevice = (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, files) => {
-  const url = `${Test}/dev/updateDevice?token=${token}&deviceid=${deviceid}&projectid=${projectid}&areaid=${areaid}&manufacturerid=${manufacturerid}&basedeviceid=${basedeviceid}&devicemodelID=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`
+export const updateDevice = (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitId, files) => {
+  const url = `${Test}/dev/updateDevice?token=${token}&deviceid=${deviceid}&projectid=${projectid}&areaid=${areaid}&manufacturerid=${manufacturerid}&basedeviceid=${basedeviceid}&devicemodelID=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&devunitId=${devunitId}&files=${files}`
   return url
 }
 //  daily
@@ -399,9 +399,15 @@ export const maintainReportAddManufacture = (customManufacturerDate, devicetypei
   return url
 }
 //  增加上报问题
-export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons) => {
-  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&unit=${unit}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&icons=${icons}`
+export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, icons, devunitid) => {
+  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&icons=${icons}&devunitid=${devunitid}`
   return url
+}
+export const AddDevUnit = (token, devicetypeid, unitname) => {
+  return `${Test}/dev/AddDevUnit?token=${token}&devicetypeid=${devicetypeid}&unitname=${unitname}`
+}
+export const GetDevUnit = (token, devicetypeid) => {
+  return `${Test}/dev/GetDevUnit?token=${token}&devicetypeid=${devicetypeid}`
 }
 
 export const createChecktask = (checkplanid) => {
