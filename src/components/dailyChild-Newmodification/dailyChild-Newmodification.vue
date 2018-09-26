@@ -44,7 +44,7 @@
                   {{item.deviceCode}}
                 </li>
                 <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  <span :title="总数量">{{item.sumcount }}</span> / <span class="heavyPlayLiSpanThree">{{item.errcount}}</span>  / <span class="heavyPlayLiSpantwo" :title="待巡检">{{item.waitapprovalcount }}</span> / <span class="heavyPlayLiSpan">{{item.finshedcount }}</span> / <span>{{item.assigncount}}</span>
+                  <span title="总数量">{{item.sumcount }}</span> / <span class="heavyPlayLiSpan" title="已完成">{{item.finshedcount }}</span> / <span class="heavyPlayLiSpanThree" title="故障问题">{{item.errcount}}</span>  / <span class="heavyPlayLiSpantwo" title="待审核">{{item.waitapprovalcount }}</span> / <span title="已安排">{{item.assigncount}}</span>
                 </li>
                 <li :title="item.position" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.position}}
@@ -82,7 +82,7 @@
       </div>
     </div>
     <section v-if="examineBoolean" class="review">
-      <childExamine :examineName="clicktaskname" @examineMine="examineDistribution" :taskidCode="clickId" :equipmentCode="equipmentID" @mine="mineSwitch" @mineupdate="mineSwitchupdate"></childExamine>
+      <childExamine :JurisdictionData="Jurisdiction" :examineName="clicktaskname" @examineMine="examineDistribution" :taskidCode="clickId" :equipmentCode="equipmentID" @mine="mineSwitch" @mineupdate="mineSwitchupdate"></childExamine>
     </section>
     <section v-if="distributionBoolean" class="review">
       <childDistribution :instruction="instructionData" @dist="Dist"  :getrepairDate="getrepair"  :equipment='equipmentID' @distribution="mineSwitchupdate"></childDistribution>
@@ -96,7 +96,7 @@ import childDistribution from '../dailyChild-operation/dailyChild-distribution'
 import { maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'dailyChild-Newmodification',
-  props: [ 'dailychild', 'clicktaskname', 'clickId' ],
+  props: [ 'dailychild', 'clicktaskname', 'clickId', 'Jurisdiction' ],
   components: {
     childExamine,
     childDistribution
@@ -198,7 +198,6 @@ export default {
     }
   },
   created () {
-    console.log(this.clickId)
   }
 }
 </script>

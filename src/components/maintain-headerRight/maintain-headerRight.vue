@@ -82,8 +82,8 @@ export default {
       let signouttoken = JSON.parse(window.sessionStorage.token)
       this.axios.post(secede(signouttoken)).then((response) => {
       //   用户点击退出 清除sessionStorage
-        sessionStorage.clear()
         this.$router.push({path: '/login'})
+        sessionStorage.clear()
       })
     },
     ...mapActions([

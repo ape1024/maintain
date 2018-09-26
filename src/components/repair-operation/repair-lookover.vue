@@ -159,7 +159,7 @@
                         处理结果:
                       </span>
                     <span class="ficationEnsconceLiSpantwo">
-                        {{obtainState(item.repairstatename)}}
+                        {{obtainState(item.approvalstate)}}
                       </span>
                   </p>
                 </li>

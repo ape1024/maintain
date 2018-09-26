@@ -192,8 +192,6 @@ export default {
   created () {
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(findAreasTree(this.question.areaid)).then((response) => {
-      console.log('//////')
-      console.log(response)
     })
     this.axios.post(getProprietorOrganization()).then((response) => {
       if (response.data.code === 0) {

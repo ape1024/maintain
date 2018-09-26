@@ -61,6 +61,10 @@
               <div v-if="JurisdictionUpdate">
                 <p @click.stop="examine(item.checkplanid)" class="header_p_ten">修改</p>
               </div>
+              <div v-if="JurisdictionInsert">
+                <p v-if="item.planstate !== 5" class="header_p_twelve" @click.stop="generate(item.checkplanid)">生成计划</p>
+                <p v-if="item.planstate === 5" class="header_p_fourteen">生成计划</p>
+              </div>
               <div v-if="JurisdictionDelete">
                 <p class="header_p_eleven" @click.stop="amputate(index, arrangedData,item.checkplanid)">删除</p>
               </div>
@@ -88,7 +92,7 @@
 import lookup from '../arrangedChild-operation/arrangedChild-lookup'
 import examination from '../arrangedChild-operation/arrangedChild-examination'
 import newlybuild from '../arrangedChild-operation/arrangedChild-newlybuild'
-import { maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes } from '../../api/user'
+import { maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes, createChecktask } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   name: 'maintain-arranged',
@@ -104,6 +108,30 @@ export default {
         if (response.data.code === 0) {
           this.arrangedData = response.data.data
         }
+      })
+    },
+    generate (checkplanid) {
+      this.$confirm('此操作将生成该计划, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.post(createChecktask(checkplanid)).then((response) => {
+          if (response.data.code === 0) {
+            console.log(response)
+            this.$message({
+              type: 'success',
+              message: '生成成功!'
+            })
+          } else {
+            this.$message.error(`${response.data.message}`)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删'
+        })
       })
     },
     superinduce () {
@@ -260,7 +288,7 @@ export default {
         this.arrangedData = response.data.data
       }
     })
-    this.axios.post(maintainArranggetAllPlanTypes()).then((response) => {
+    this.axios.post(maintainArranggetAllPlanTypes(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.worktypeData = response.data.data
       }
@@ -485,10 +513,15 @@ export default {
     margin-right 20px
     color #32a697
   .header_p_eleven
-    cursor:pointer
+    cursor pointer
     float left
     margin-right 20px
     color #83292b
+  .header_p_twelve
+    cursor pointer
+    float left
+    margin-right 20px
+    color #3acf76
   .subject_bottomDIv
     margin 12px
     background rgba(000,000,000,.35)

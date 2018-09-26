@@ -59,6 +59,22 @@
                 </div>
               </div>
               <div class="modify_liDivthree">
+                <p class="modify_li_p"><span class="increaseSpan"> </span>设施单位：</p>
+                <div class="modify_li_div">
+                  <el-select @change="CompanyChange" size="mini" v-model="Company" placeholder="请选择">
+                    <el-option
+                      v-for="item in CompanyData"
+                      :key="item.name"
+                      :label="item.name"
+                      :value="item.name">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div class="modify_lidivRight">
+                  <el-input v-if="CompanyShow" size="mini" v-model="CompanyInput" placeholder="请输入单位"></el-input>
+                </div>
+              </div>
+              <div class="modify_liDivthree">
                 <p class="modify_li_p">
                   技术参数：
                 </p>
@@ -114,6 +130,23 @@
                     placeholder=""
                     v-model="textarea">
                   </el-input>
+                </div>
+              </div>
+              <div class="modify_liDiv">
+                <p class="modify_li_p">
+                  上传图片:
+                </p>
+                <div class="modify_li_divfour">
+                  <el-upload
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    list-type="picture-card"
+                    :on-preview="handlePictureCardPreview"
+                    :on-remove="handleRemove">
+                    <i class="el-icon-plus"></i>
+                  </el-upload>
+                  <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                  </el-dialog>
                 </div>
               </div>
             </li>
@@ -175,6 +208,7 @@
         <div class="tabulation">
           <div class="tabulation_header">
             <ul class="tabulation_ul">
+              <li class="tabulation_li">设施编码</li>
               <li class="tabulation_li">设施位置</li>
               <li class="tabulation_li">设施数量</li>
               <li class="tabulation_liTwo">编码</li>
@@ -185,6 +219,11 @@
             <ul class="title_ul">
               <li v-for="(item,$index) in tabulationtitle" :key="item.id" :id="item.id" class="title_li">
                 <ul class="title_li_ul">
+                  <li class="title_lili">
+                    <div class="title_liliTwoDiv">
+                      <el-input size="mini" v-model="item.dCoding" placeholder="设备编码"></el-input>
+                    </div>
+                  </li>
                   <li class="title_lili">
                     {{item.positionName}}{{item.position}}
                   </li>
@@ -235,7 +274,7 @@
 <script>
 import $ from 'jquery'
 import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, findAllDeviceType,
-  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels } from '../../api/user'
+  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
@@ -272,8 +311,6 @@ export default {
       // 点击添加
       tabulationtitle: [],
       regionUl: false,
-      dialogImageUrl: '',
-      dialogVisible: false,
       // 显示/隐藏
       modifyBoolean: true,
       // 类别
@@ -336,13 +373,16 @@ export default {
         label: 'areaname',
         value: 'areaid'
       },
-      facilityLocationDate: []
+      facilityLocationDate: [],
+      CompanyData: [],
+      Company: '',
+      CompanyInput: '',
+      CompanyShow: false,
+      dialogImageUrl: '',
+      dialogVisible: false
     }
   },
   methods: {
-    facilityLocationChang (ev) {
-      console.log(ev)
-    },
     versionChang (data) {
       if (this.versionValue === '-9999') {
         this.versionManufacturer = true
@@ -422,6 +462,8 @@ export default {
             areaid: areaid[areaid.length - 1],
             // 数量
             devcount: quantum,
+            //  设备编码
+            dCoding: '',
             //  控制器编码
             a: '',
             //  回路号
@@ -435,6 +477,7 @@ export default {
       } else {
         this.tabulationtitle.unshift({
           // // 编码
+          dCoding: '',
           // code: devicecoding,
           positionName: areaidName,
           // 位置
@@ -450,9 +493,9 @@ export default {
           c: '',
           //  地址编码
           d: ''
+
         })
       }
-      console.log(this.tabulationtitle)
     },
     amputate (index) {
       this.tabulationtitle.splice(index, 1)
@@ -495,6 +538,19 @@ export default {
       } else {
         devicemodel = this.versionValue ? this.versionValue : ''
       }
+      //  单位
+      let unit = ''
+      if (!this.Company) {
+        if (!this.CompanyShow) {
+          unit = this.CompanyInput
+        } else {
+          unit = this.CompanyInput
+        }
+      } else if (this.Company === '自定义') {
+        unit = this.CompanyInput
+      } else {
+        unit = this.Company
+      }
       //  设备参数
       let parameters = this.technicalParameter ? this.technicalParameter : ''
       // 备注
@@ -508,10 +564,11 @@ export default {
       this.tabulationtitle.forEach((val) => {
         let obj = {
           a: val.a,
-          areaid: val.areaid,
+          areaid: val.areaid ? val.areaid : '',
           b: val.b,
           c: val.c,
           d: val.d,
+          devicecode: val.dCoding,
           devcount: val.devcount,
           position: val.position
         }
@@ -535,12 +592,12 @@ export default {
                 this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
                   if (data.data.code === 0) {
                     devicemodel = data.data.data.divecemodelid
-                    this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
+                    this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
                   }
                 })
               } else {
                 devicemodel = this.versionValue
-                this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
+                this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
               }
             }
           })
@@ -550,13 +607,13 @@ export default {
             if (Item.data.code === 0) {
               devicemodel = Item.data.data.divecemodelid
               manufacturerid = this.manufactorModel
-              this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
+              this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
             }
           })
         } else {
           devicemodel = this.versionValue
           manufacturerid = this.manufactorModel
-          this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle)
+          this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle)
         }
       } else {
         this.$message({
@@ -565,8 +622,8 @@ export default {
         })
       }
     },
-    requestCreation (rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, tabulationtitle) {
-      this.axios.post(maintainReportAddDevice(rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate), tabulationtitle).then((data) => {
+    requestCreation (rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, tabulationtitle) {
+      this.axios.post(maintainReportAddDevice(rowcount, token, maintainProject, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate), tabulationtitle).then((data) => {
         if (data.data.code === 0) {
           this.$message({
             message: '创建成功',
@@ -628,7 +685,6 @@ export default {
         this.axios.post(maintainReportfindDivecemodels(region, this.manufactorModel)).then((response) => {
           if (response.data.code === 0) {
             this.version = response.data.data
-            console.log(response)
             this.version.push({
               divecemodelname: '自定义',
               divecemodelid: '-9999'
@@ -636,18 +692,21 @@ export default {
           }
         })
       }
+    },
+    CompanyChange (el) {
+      if (el === '自定义') {
+        this.CompanyShow = true
+      } else {
+        this.CompanyShow = false
+      }
     }
   },
   created () {
     //  设备类型
     // let token = JSON.parse(sessionStorage.token)
-    console.log('1///')
     let token = JSON.parse(window.sessionStorage.token)
-    console.log(this.maintainProject)
-    console.log(findAllDeviceType(token, this.maintainProject))
     this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         this.category = response.data.data
       }
     })
@@ -655,6 +714,15 @@ export default {
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.facilityLocation = response.data.data
+      }
+    })
+    this.axios.post(findAllDeviceUnit(token)).then((response) => {
+      if (response.data.code === 0) {
+        let obj = {
+          name: '自定义'
+        }
+        response.data.data.push(obj)
+        this.CompanyData = response.data.data
       }
     })
   }
@@ -823,7 +891,7 @@ export default {
          padding 12px 0
          .tabulation_li
           float left
-          width 20%
+          width 15%
           text-align center
          .tabulation_liTwo
            float left
@@ -845,7 +913,7 @@ export default {
                position relative
              .title_lili
                line-height: 40px;
-               width 20%
+               width 15%
                height 40px
                float left
                text-align center
@@ -874,7 +942,7 @@ export default {
      .cancel
        closedown()
   .newlyadded
-    margin 70px 0 0
+    margin 40px 0 0
     width 100%
     background #111a28
   .increase
@@ -906,6 +974,7 @@ export default {
     display inline-block
     margin-bottom 10px
     .modify_ul
+      width 100%
       position relative
       display inline-block
       margin-left 20px
@@ -1111,12 +1180,19 @@ export default {
      border-radius 5px
   .increaseSpan
     color #dd514c
+  .modify_li_divfour
+    overflow hidden
+    position relative
+    width 100%
 </style>
 <style>
-  .title_liliTwoDiv  .el-input__inner{
-    padding: 0 10px;
-    height: 30px;
-    line-height: 30px;
+  .modify_li_divfour .el-upload-list--picture-card .el-upload-list__item{
+    width: 100px;
+    height: 100px;
   }
-
+  .modify_li_divfour .el-upload--picture-card{
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+  }
 </style>
