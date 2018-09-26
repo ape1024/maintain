@@ -30,8 +30,6 @@ import plan from '../components/maintain-arranged/maintain-arranged'
 import intercalate from '../components/maintain-intercalate/maintain-intercalate'
 // 系统设置-维保部门管理
 import intercalateDepartment from '../components/intercalate-child/intercalateChild-department'
-// 系统设置-组织结构权限管理
-import intercalateStructure from '../components/intercalate-child/intercalateChild-structure'
 // 系统设置-角色管理
 import intercalateKarakters from '../components/intercalate-child/intercalateChild-karakters'
 // 系统设置-用户设置
@@ -146,9 +144,6 @@ const routes = [
           path: 'department',
           component: intercalateDepartment
         }, {
-          path: 'structure',
-          component: intercalateStructure
-        }, {
           path: 'karakters',
           component: intercalateKarakters
         }, {
@@ -168,8 +163,7 @@ const routes = [
           component: structureNew
         }, {
           path: '/',
-          component: intercalateStructure,
-          redirect: 'structure'
+          redirect: 'structureNew'
         }
         ]
       },
