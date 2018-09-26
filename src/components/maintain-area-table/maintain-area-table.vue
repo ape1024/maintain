@@ -36,13 +36,13 @@
     </div>
     <section v-if="lookOverState" @click.stop class="area-table-review">
       <!--查看-->
-      <look-over :inspection="examineInspection" :information="examineInformation" :msg="lookoverBoolean" @look="Onlook"></look-over>
+      <look-over :inspection="examineInspection" :information="examineInformation" :msg="lookOverState" @look="close"></look-over>
     </section>
   </div>
 </template>
 
 <script>
-import { getDeviceData, getDeviceRepair } from 'api/user'
+import { getDeviceData, adminfindDeviceDetail, adminFindInspectionMaintenance } from 'api/user'
 import { projectMixin, currentAreaMixin } from 'common/js/mixin'
 import { resetTime } from 'common/js/utils'
 import { stateCode, stateData, layer } from 'common/js/config'
@@ -54,7 +54,9 @@ export default {
       selected: -1,
       list: [],
       repairList: [],
-      lookOverState: false
+      lookOverState: false,
+      examineInspection: '',
+      examineInformation: ''
     }
   },
   methods: {
@@ -106,6 +108,20 @@ export default {
       return state
     },
     toggle (deviceId) {
+      this.axios.post(adminfindDeviceDetail(deviceId)).then((response) => {
+        if (response.data.code === 0) {
+          this.examineInformation = response.data.data
+          this.axios.post(adminFindInspectionMaintenance(deviceId)).then((data) => {
+            if (data.data.code === 0) {
+              this.examineInspection = data.data.data
+              this.lookOverState = true
+            }
+          })
+        }
+      })
+    },
+    close (ev) {
+      this.lookOverState = ev
     }
   },
   components: {
@@ -250,6 +266,6 @@ export default {
           cursor pointer
     .area-table-review
       full-screen()
-      background $color-background-black-o
+      background $color-barckground-transparent
       z-index $z-index-large
 </style>
