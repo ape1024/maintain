@@ -409,7 +409,7 @@ export default {
         type: 'warning'
       })
     },
-    handlePictureerror (err, file, fileList) {
+    handlePictureerror (er, file, fileList) {
       if (!fileList.length) {
         this.uploadData = []
       } else {
@@ -494,7 +494,6 @@ export default {
     },
     addincrease () {
       console.log(this.Company)
-      return
       let obtainCode = this.specific
       let areaid = this.facilityLocationDate
       let areaidName = this.ergodic(areaid)

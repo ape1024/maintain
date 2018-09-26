@@ -28,9 +28,9 @@
             ></el-cascader>
           </div>
         </li>
-        <li class="li_input">
+        <li class="li_input" v-show="false">
           <p class="div_p">审核状态：</p>
-          <div class="div_inputTwo">
+          <div class="div_input">
             <el-select size="small" v-model="Auditstatus" multiple placeholder="" :disabled="true">
               <el-option
                 v-for="item in AuditstatusDate"
@@ -39,6 +39,44 @@
                 :value="item.value">
               </el-option>
             </el-select>
+          </div>
+        </li>
+        <li class="li_input">
+          <p class="div_p">工作结论：</p>
+          <div class="div_input">
+            <el-cascader
+              size="mini"
+              clearable
+              change-on-select
+              v-model="workconclusionData"
+              :options="workconclusion"
+              :props="workconclusionProps">
+            </el-cascader>
+          </div>
+        </li>
+        <li class="li_input">
+          <p class="div_p">时间：</p>
+          <div class="div_input">
+            <el-date-picker
+              size="mini"
+              v-model="startTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+            </el-date-picker>
+          </div>
+        </li>
+        <li class="li_input">
+          <p class="div_p">—</p>
+          <p class="div_p"> </p>
+          <div class="div_input">
+            <el-date-picker
+              size="mini"
+              v-model="endTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+            </el-date-picker>
           </div>
         </li>
       </ul>
@@ -106,11 +144,15 @@
 </template>
 
 <script>
+import dailytwoNew from '../archivesChild-operation/dailyChild-modification'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
-import { getCurrentTaskDeviceStatJson, getCurrentTaskDeviceStatJsonTwo, findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat } from '../../api/user'
+import { getWorkconclusion, getCurrentTaskDeviceStatJson, getCurrentTaskDeviceStatJsonTwo, findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat } from '../../api/user'
 export default {
   mixins: [projectMixin, loadingMixin],
   name: 'dailyFile',
+  components: {
+    dailytwoNew
+  },
   methods: {
     init () {
       //  获取区域
@@ -310,7 +352,18 @@ export default {
       dailyChild: [],
       timestamp: '',
       clicktaskName: '',
-      JurisdictionData: {}
+      JurisdictionData: {},
+      // 工作结论
+      workconclusion: [],
+      workconclusionData: [],
+      workconclusionProps: {
+        label: 'name',
+        value: 'value'
+      },
+      // 开始时间
+      startTime: '',
+      // 结束时间
+      endTime: ''
     }
   },
   created () {
@@ -360,6 +413,13 @@ export default {
     this.axios.post(maintainDailyCurrentTaskStat(2, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.tableDatataskStat = response.data.data
+      }
+    })
+    // 获得结论
+    this.axios.post(getWorkconclusion()).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response.data.data)
+        this.workconclusion = response.data.data
       }
     })
   }

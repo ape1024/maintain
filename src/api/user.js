@@ -130,6 +130,11 @@ export const findAreasTreeByProjectid = (projectid) => {
   const url = `${Test}/areas/findAreasTreeByProjectid?projectid=${projectid}`
   return url
 }
+// 获得工作结论
+export const getWorkconclusion = () => {
+  const url = `${Test}/task/getWorkconclusion`
+  return url
+}
 //  approvalCheckPlan
 export const approvalCheckPlan = (token, checkPlanId, approvalOpinion, approvalState) => {
   const url = `${Test}/plan/approvalCheckPlan?token=${token}&checkPlanId=${checkPlanId}&approvalOpinion=${approvalOpinion}&approvalState=${approvalState}`
@@ -201,8 +206,8 @@ export const updateDevice = (token, deviceid, projectid, areaid, manufacturerid,
   return url
 }
 //  daily
-export const maintainDailyCurrentTaskStat = (worktypeid, projectid) => {
-  const url = `${Test}/task/getCurrentTaskStat?worktypeid=${worktypeid}&projectid=${projectid}`
+export const maintainDailyCurrentTaskStat = (worktypeid, projectid, begintime, endtime) => {
+  const url = `${Test}/task/getCurrentTaskStat?worktypeid=${worktypeid}&projectid=${projectid}&begintime=${begintime}&endtime=${endtime}`
   return url
 }
 //  通过一级的id获取二级数据
@@ -255,8 +260,8 @@ export const batchApprovalCheckTaskByDetailIDs = (token, taskid, detailids) => {
   return `${Test}/task/batchApprovalCheckTaskByDetailIDs?token=${token}&taskid=${taskid}&detailids=${detailids}`
 }
 
-export const getCurrentTaskDeviceStatJsonTwo = (token, taskid, areaid, basedevicecode, approvalstates) => {
-  return `${Test}/task/getCurrentTaskDeviceStatJson?token=${token}&taskid=${taskid}&areaid=${areaid}&basedevicecode=${basedevicecode}&approvalstates=${approvalstates}&pageindex=&pagesize=`
+export const getCurrentTaskDeviceStatJsonTwo = (token, conclusion, taskid, areaid, basedevicecode, approvalstates) => {
+  return `${Test}/task/getCurrentTaskDeviceStatJson?token=${token}&conclusion=${conclusion}&taskid=${taskid}&areaid=${areaid}&basedevicecode=${basedevicecode}&approvalstates=${approvalstates}&pageindex=&pagesize=`
 }
 //  安排任务 -> 维保单位
 export const maintainDailygetRepairOrgTreeByDeviceId = (deviceid) => {
@@ -463,6 +468,11 @@ export const maintainArranggetCheckPlan = (checkplanid) => {
 //  获取所有计划类型
 export const maintainArranggetAllPlanTypes = (projectid) => {
   const url = `${Test}/plan/getAllPlanTypes?projectid=${projectid}`
+  return url
+}
+// 设置计划可用或不可用
+export const maintainArrangsetPlan = (planid) => {
+  const url = `${Test}/plan/setPlanEnableOrDisable?planid=${planid}`
   return url
 }
 //  获取计划状态 20180803 rad
