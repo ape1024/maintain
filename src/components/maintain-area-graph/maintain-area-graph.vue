@@ -32,7 +32,7 @@
 import ProgressCircle from 'base/progress-circle/progress-circle'
 import { getDevFaultCountForYear, getTaskProgress, getCircleData } from 'api/user'
 import { projectMixin, currentAreaMixin } from 'common/js/mixin'
-const STEP = 600
+const STEP = 450
 export default {
   mixins: [projectMixin, currentAreaMixin],
   data () {
@@ -115,7 +115,7 @@ export default {
           formatter: '{b}: {c} ({d}%)'
         },
         legend: {
-          // show: false,
+          show: false,
           // orient: 'vertical',
           x: 'left',
           textStyle: {
@@ -128,7 +128,7 @@ export default {
             name: '',
             type: 'pie',
             selectedMode: 'single',
-            radius: [0, '30%'],
+            radius: [0, '70%'],
 
             label: {
               normal: {
@@ -140,7 +140,7 @@ export default {
                 show: false
               }
             },
-            center: ['50%', '60%'],
+            center: ['50%', '50%'],
             data: innerData.map(t => {
               return {value: t.count, name: t.name}
             })
@@ -148,23 +148,28 @@ export default {
           {
             name: '',
             type: 'pie',
-            radius: ['40%', '55%'],
-            label: {
+            radius: ['80%', '100%'],
+            // label: {
+            //   normal: {
+            //     formatter: ' {b|{b}：}{c}  {per|{d}%} ',
+            //     backgroundColor: '#eee',
+            //     borderColor: '#aaa',
+            //     borderWidth: 1,
+            //     borderRadius: 4,
+            //     rich: {
+            //       b: {
+            //         fontSize: 12,
+            //         lineHeight: 30
+            //       }
+            //     }
+            //   }
+            // },
+            labelLine: {
               normal: {
-                formatter: ' {b|{b}：}{c}  {per|{d}%} ',
-                backgroundColor: '#eee',
-                borderColor: '#aaa',
-                borderWidth: 1,
-                borderRadius: 4,
-                rich: {
-                  b: {
-                    fontSize: 12,
-                    lineHeight: 30
-                  }
-                }
+                show: false
               }
             },
-            center: ['50%', '60%'],
+            center: ['50%', '50%'],
             data: outsideData.map(t => {
               return {value: t.devcount, name: t.faulttypename}
             })
@@ -274,13 +279,13 @@ export default {
           overflow hidden
           .graph-wrap
             margin 0 auto
-            width 1800px
+            width 1350px
             height 100%
             transition transform 200ms linear
             .graph-wrap-item
               position relative
               float left
-              width 600px
+              width 450px
               height 100%
               .loading
                 position absolute
@@ -293,10 +298,10 @@ export default {
                 text-align center
               .graph-wrap-item-circle
                 display inline-block
-                margin 0 10px 20px
+                margin 0 0 20px
                 width 150px
                 height 100px
               .graph-wrap-item-line
-                width 600px
+                width 450px
                 height 245px
 </style>
