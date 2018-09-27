@@ -499,7 +499,12 @@ export const maintainArranggetWorkModesByWorkType = (workType) => {
   const url = `${Test}/plan/getWorkModesByWorkType?workType=${workType}`
   return url
 }
-//  插件频率类型
+// 获取计划编码
+export const maintainArranggetGetPlanCode = (projectid, worktypeid) => {
+  const url = `${Test}/plan/getPlanCode?projectid=${projectid}&worktypeid=${worktypeid}`
+  return url
+}
+// 插件频率类型
 export const maintainArranggetAllCheckFrequency = () => {
   const url = `${Test}/plan/getAllCheckFrequency`
   return url

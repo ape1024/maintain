@@ -230,7 +230,7 @@
 
 <script>
 import { projectMixin } from 'common/js/mixin'
-import { createChecktask, createPlan, maintainArranggetWorkModesByWorkType, getRepairOrgTreeByProjectId, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
+import { maintainArranggetGetPlanCode, createChecktask, createPlan, maintainArranggetWorkModesByWorkType, getRepairOrgTreeByProjectId, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
 export default {
   mixins: [projectMixin],
   name: 'arrangedChild-newlybuild',
@@ -293,7 +293,9 @@ export default {
       //  频次data
       frequencyData: '',
       // 当前时间
-      dateNow: ''
+      dateNow: '',
+      // 存储计划编号
+      planCodeTemp: ''
     }
   },
   methods: {
@@ -544,7 +546,6 @@ export default {
     scheduleChange (value) {
       this.axios.post(maintainArranggetWorkModesByWorkType(value)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response)
           if (response.data.data.length === 1) {
             response.data.data.forEach(val => {
               val.flag = true
@@ -561,6 +562,15 @@ export default {
         this.groupBoolean = true
       } else {
         this.groupBoolean = false
+      }
+      // 获取计划编号
+      if (!this.planCode || this.planCode !== this.planCodeTemp) {
+        this.axios.post(maintainArranggetGetPlanCode(this.maintainProject, value)).then((response) => {
+          if (response.data.code === 0) {
+            this.planCode = response.data.data
+            this.planCodeTemp = response.data.data
+          }
+        })
       }
     },
     closedown () {
@@ -630,7 +640,6 @@ export default {
       }
     })
     //  获取计划类型
-    console.log(this.maintainProject)
     this.axios.post(maintainArranggetAllPlanTypes(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.schedule = response.data.data
@@ -638,7 +647,6 @@ export default {
     })
     this.axios.post(maintainArranggetAllCheckFrequency()).then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data.data)
         this.frequency = response.data.data
       }
     })
