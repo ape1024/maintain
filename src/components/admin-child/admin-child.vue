@@ -314,11 +314,11 @@ export default {
     },
     modify (dataset, deviceId) {
       // 点击修改
-      this.datasetAreaid = dataset.areaid
-      this.modifyBoolean = true
       this.axios.post(adminfindDeviceDetail(deviceId)).then((response) => {
         if (response.data.code === 0) {
           this.modifyDate = response.data.data
+          this.datasetAreaid = dataset.areaid
+          this.modifyBoolean = true
         }
       })
     },

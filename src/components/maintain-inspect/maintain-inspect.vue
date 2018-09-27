@@ -22,7 +22,7 @@
               size="mini"
               clearable
               change-on-select
-              v-model="equipmentDate"
+              v-model="equipmentData"
               :options="equipment"
               :props="equipmentProps"
             ></el-cascader>
@@ -30,8 +30,8 @@
         </li>
         <li class="li_input">
           <p class="div_p">审核状态：</p>
-          <div class="div_inputTwo">
-            <el-select size="small" v-model="Auditstatus" multiple placeholder="">
+          <div class="div_input">
+            <el-select size="mini" v-model="Auditstatus" placeholder="请选择" clearable>
               <el-option
                 v-for="item in AuditstatusDate"
                 :key="item.value"
@@ -39,6 +39,44 @@
                 :value="item.value">
               </el-option>
             </el-select>
+          </div>
+        </li>
+        <li class="li_input">
+          <p class="div_p">工作结论：</p>
+          <div class="div_input">
+            <el-cascader
+              size="mini"
+              clearable
+              change-on-select
+              v-model="workconclusionData"
+              :options="workconclusion"
+              :props="workconclusionProps">
+            </el-cascader>
+          </div>
+        </li>
+        <li class="li_input">
+          <p class="div_p">时间：</p>
+          <div class="div_input">
+            <el-date-picker
+              size="mini"
+              v-model="startTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+            </el-date-picker>
+          </div>
+        </li>
+        <li class="li_input">
+          <p class="div_p">—</p>
+          <p class="div_p"> </p>
+          <div class="div_input">
+            <el-date-picker
+              size="mini"
+              v-model="endTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="选择日期">
+            </el-date-picker>
           </div>
         </li>
       </ul>
@@ -52,7 +90,7 @@
     <section class="subject_bottom">
       <ul class="header_ul">
         <li class="header_lithree">
-          任务名称
+          计划名称
         </li>
         <li class="header_li">
           开始时间
@@ -61,19 +99,19 @@
           结束时间
         </li>
         <li class="header_litwo">
-          设备总数
+          任务总数
         </li>
         <li class="header_litwo">
           已完成项
         </li>
         <li class="header_litwo">
+          待审查项
+        </li>
+        <li class="header_litwo">
           故障问题
         </li>
         <li class="header_litwo">
-          待审核
-        </li>
-        <li class="header_litwo">
-          已分配任务项
+          已分配
         </li>
       </ul>
       <ul class="table_ul">
@@ -84,10 +122,10 @@
             <li class="header_li">{{fmtDate(item.endTime)}}</li>
             <li class="header_litwo">{{item.sum}}</li>
             <li class="header_li_five">{{item.finish}}</li>
-            <li class="header_li_six">{{item.error + item.problem}}</li>
             <li class="header_li_Seven">
               {{item.waitapproval}}
             </li>
+            <li class="header_li_six">{{item.error + item.problem}}</li>
             <li class="header_litwo">{{item.assign}}</li>
             <li class="header_litwo">
               <div v-if="(timestamp - (item.endTime + 86400000)) > 86400000  && JurisdictionData.check" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
@@ -108,19 +146,13 @@
         </li>
       </ul>
     </section>
-    <!--目前不需要修改-->
-    <!--<section v-show="modifyBoolean" class="review">-->
-    <!--<modify :sag="modifyBoolean" @say="Say"></modify>-->
-    <!--</section>-->
   </div>
 </template>
 
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
 import dailytwoNew from '../dailyChild-Newmodification/dailyChild-Newmodification'
-import { findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, SetCheckTaskFiled, getCurrentTaskDeviceStatJson, getCurrentTaskDeviceStatJsonTwo, batchApprovalCheckTaskByDetailIDs } from '../../api/user'
-// 修改
-// import modify from '../dailyChild-operation/dailyChild-modify'
+import { getWorkconclusion, findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, SetCheckTaskFiled, getCurrentTaskDeviceStatJson, getCurrentTaskDeviceStatJsonTwo, batchApprovalCheckTaskByDetailIDs } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin, loadingMixin],
@@ -142,11 +174,7 @@ export default {
               type: 'success',
               message: '归档成功!'
             })
-            this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject)).then((response) => {
-              if (response.data.code === 0) {
-                this.tableDatataskStat = response.data.data
-              }
-            })
+            this.DailyCurrentTaskStat()
           } else {
             this.$message({
               type: 'info',
@@ -169,156 +197,81 @@ export default {
         }
       })
       //  展示任务
-      this.axios.post(maintainDailyCurrentTaskStat(3, (this.maintainProject))).then((response) => {
-        if (response.data.code === 0) {
-          this.tableDatataskStat = response.data.data
-        }
-      })
+      this.DailyCurrentTaskStat()
     },
     ExaminationApproval (el) {
       // let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.tableDatataskStat = response.data.data
-        }
-      })
+      this.DailyCurrentTaskStat()
     },
     query () {
-      let flag = false
-      this.tableDatataskStat.forEach((val) => {
-        if (val.flag === true) {
-          flag = true
-          return false
-        } else {
-          return false
-        }
-      })
-      if (flag === true) {
-        let clickId = this.click_id
-        let areaid = this.regionModel.length !== 0 ? this.regionModel[this.regionModel.length - 1] : ''
-        let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
-        basedevicecode = basedevicecode === null ? '' : basedevicecode
-        let approvalstates = this.Auditstatus.length !== 0 ? this.Auditstatus.join() : ''
-        this.openLoadingDialog()
-        let token = JSON.parse(window.sessionStorage.token)
-        this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, clickId, areaid, basedevicecode, approvalstates)).then((response) => {
-          if (response.data.code === 0) {
-            if (response.data.data.length !== 0) {
-              response.data.data.forEach((val) => {
-                val.choose = false
-                if (val.details) {
-                  val.details.forEach((data) => {
-                    data.flag = false
-                    if (data.photos) {
-                      data.photosArr = []
-                      if (data.photos.indexOf(',') !== -1) {
-                        let arr = data.photos.split(',')
-                        data.photosArr = arr
-                      } else {
-                        data.photosArr.push(data.photos)
-                      }
-                    }
-                    if (!data.iswaitapproval) {
-                      if (!data.isapproval) {
-                        data.iswaitapprovalName = ''
-                        data.disabled = true
-                      } else {
-                        data.iswaitapprovalName = '已审批'
-                        data.disabled = true
-                      }
-                    } else {
-                      data.iswaitapprovalName = '待审批'
-                      data.disabled = false
-                    }
-                    if (data.isassigned) {
-                      data.isassignedName = '已安排'
-                      data.disabled = true
-                    } else {
-                      data.isassignedName = '未安排'
-                    }
-                  })
-                }
-              })
-              this.dailyChild = response.data.data
-            } else {
-              this.dailyChild = response.data.data
-            }
-          }
-          this.closeLoadingDialog()
-        })
-      } else {
-        this.$message({
-          message: '请展开任务,才可对应查询',
-          type: 'warning'
-        })
+      this.selectProps = {
+        selectRegion: this.regionModel,
+        selectEquipmentData: this.equipmentData,
+        selectAuditstatus: this.Auditstatus,
+        selectWorkConclusion: this.workconclusionData,
+        selectStartDate: this.startTime,
+        selectEndDate: this.endTime
       }
+      this.DailyCurrentTaskStat()
     },
+    // 选中事件
     selectStyle (item, index, tableData, $event) {
-      if (item.flag === false) {
-        this.tableDatataskStat.forEach((val) => {
-          val.flag = false
-        })
-        this.clicktaskName = item.taskName
-        let itemAreaid = item.taskID
-        this.click_id = itemAreaid
-        let token = JSON.parse(window.sessionStorage.token)
-        this.openLoadingDialog()
-        this.axios.post(getCurrentTaskDeviceStatJson(token, itemAreaid)).then((response) => {
-          if (!response) {
-            this.closeLoadingDialog()
-            return
-          }
-          if (response.data.code === 0) {
-            if (response.data.data.length !== 0) {
-              response.data.data.forEach((val) => {
-                val.choose = false
-                if (val.details) {
-                  val.details.forEach((data) => {
-                    data.flag = false
-                    if (data.photos) {
-                      data.photosArr = []
-                      if (data.photos.indexOf(',') !== -1) {
-                        let arr = data.photos.split(',')
-                        data.photosArr = arr
-                      } else {
-                        data.photosArr.push(data.photos)
-                      }
-                    }
-                    if (!data.iswaitapproval) {
-                      if (!data.isapproval) {
-                        data.iswaitapprovalName = ''
-                        data.disabled = true
-                      } else {
-                        data.iswaitapprovalName = '已审批'
-                        data.disabled = true
-                      }
+      let clickId = item.taskID
+      this.click_id = item.taskID
+      let areaid = this.selectProps.selectRegion.length !== 0 ? this.selectProps.selectRegion[this.selectProps.selectRegion.length - 1] : ''
+      let basedevicecode = this.selectProps.selectEquipmentData.length !== 0 ? this.selectProps.selectEquipmentData[this.selectProps.selectEquipmentData.length - 1] : ''
+      basedevicecode = !basedevicecode ? '' : basedevicecode
+      let approvalstates = !this.selectProps.selectAuditstatus ? '' : this.selectProps.selectAuditstatus
+      let conclusion = this.selectProps.selectWorkConclusion.length !== 0 ? this.selectProps.selectWorkConclusion[this.selectProps.selectWorkConclusion.length - 1] : ''
+      this.openLoadingDialog()
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, conclusion, clickId, areaid, basedevicecode, approvalstates)).then((response) => {
+        if (response.data.code === 0) {
+          if (response.data.data.length !== 0) {
+            response.data.data.forEach((val) => {
+              val.choose = false
+              if (val.details) {
+                val.details.forEach((data) => {
+                  data.flag = false
+                  if (data.photos) {
+                    data.photosArr = []
+                    if (data.photos.indexOf(',') !== -1) {
+                      let arr = data.photos.split(',')
+                      data.photosArr = arr
                     } else {
-                      data.iswaitapprovalName = '待审批'
-                      data.disabled = false
+                      data.photosArr.push(data.photos)
                     }
-                    if (data.isassigned) {
-                      data.isassignedName = '已安排'
+                  }
+                  if (!data.iswaitapproval) {
+                    if (!data.isapproval) {
+                      data.iswaitapprovalName = ''
+                      data.disabled = true
                     } else {
-                      data.isassignedName = '未安排'
-                    }
-                    if (data.conclusion !== 1) {
+                      data.iswaitapprovalName = '已审批'
                       data.disabled = true
                     }
-                  })
-                }
-              })
-              this.dailyChild = response.data.data
-              item.flag = !item.flag
-            } else {
-              this.dailyChild = response.data.data
-              item.flag = !item.flag
-            }
+                  } else {
+                    data.iswaitapprovalName = '待审批'
+                    data.disabled = false
+                  }
+                  if (data.isassigned) {
+                    data.isassignedName = '已安排'
+                    data.disabled = true
+                  } else {
+                    data.isassignedName = '未安排'
+                  }
+                })
+              }
+            })
+            this.dailyChild = response.data.data
+            item.flag = !item.flag
+          } else {
+            this.dailyChild = response.data.data
+            item.flag = !item.flag
           }
-          this.closeLoadingDialog()
-        })
-      } else {
-        item.flag = !item.flag
-      }
+        }
+        this.closeLoadingDialog()
+      })
     },
     fmtDate (obj) {
       let date = new Date(obj)
@@ -394,11 +347,7 @@ export default {
           let token = JSON.parse(window.sessionStorage.token)
           this.axios.post(batchApprovalCheckTaskByDetailIDs(token, this.click_id, arr)).then((response) => {
             if (response.data.code === 0) {
-              this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject)).then((response) => {
-                if (response.data.code === 0) {
-                  this.tableDatataskStat = response.data.data
-                }
-              })
+              this.DailyCurrentTaskStat()
             }
           })
         }
@@ -407,6 +356,14 @@ export default {
           type: 'info',
           message: '已取消'
         })
+      })
+    },
+    // 获取日常巡检
+    DailyCurrentTaskStat () {
+      this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject, this.selectProps.selectStartDate, this.selectProps.selectEndDate)).then((response) => {
+        if (response.data.code === 0) {
+          this.tableDatataskStat = response.data.data
+        }
       })
     }
   },
@@ -430,7 +387,7 @@ export default {
       AuditstatusDate: [],
       Auditstatus: '',
       equipment: [],
-      equipmentDate: [],
+      equipmentData: [],
       modifyBoolean: false,
       options: [],
       value: '',
@@ -440,7 +397,27 @@ export default {
       dailyChild: [],
       timestamp: '',
       clicktaskName: '',
-      JurisdictionData: ''
+      JurisdictionData: '',
+      // 工作结论
+      workconclusion: [],
+      workconclusionData: [],
+      workconclusionProps: {
+        label: 'name',
+        value: 'value'
+      },
+      // 开始时间
+      startTime: '',
+      // 结束时间
+      endTime: '',
+      // 查询对象
+      selectProps: {
+        selectRegion: [],
+        selectEquipmentData: [],
+        selectAuditStatus: '',
+        selectWorkConclusion: [],
+        selectStartDate: '',
+        selectEndDate: ''
+      }
     }
   },
   created () {
@@ -481,15 +458,17 @@ export default {
         this.AuditstatusDate = response.data.data
         response.data.data.forEach((val) => {
           if (val.isdefault === 1) {
-            this.Auditstatus.push(val.value)
+            this.Auditstatus = val.value
           }
         })
       }
     })
     //  展示任务
-    this.axios.post(maintainDailyCurrentTaskStat(3, this.maintainProject)).then((response) => {
+    this.DailyCurrentTaskStat()
+    // 获得结论
+    this.axios.post(getWorkconclusion()).then((response) => {
       if (response.data.code === 0) {
-        this.tableDatataskStat = response.data.data
+        this.workconclusion = response.data.data
       }
     })
   }

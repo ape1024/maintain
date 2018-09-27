@@ -2,7 +2,7 @@
   <div class="intercalate">
     <header class="header">
       <ul class="headerUl">
-        <router-link to="/home/archives/adminFile"><li class="headerLi">消防设施归档</li></router-link>
+        <!--<router-link to="/home/archives/adminFile"><li class="headerLi">消防设施归档</li></router-link>-->
         <router-link to="/home/archives/dailyFile"><li class="headerLi">日常巡检归档</li></router-link>
         <router-link to="/home/archives/inspectFile"><li class="headerLi">检查测试归档</li></router-link>
         <router-link to="/home/archives/maintainFile"><li class="headerLi">维护保养归档</li></router-link>

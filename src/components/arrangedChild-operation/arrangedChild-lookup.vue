@@ -9,13 +9,13 @@
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">计划名称:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input size="mini" v-model="planName" placeholder="请输入内容"></el-input>
+                  <el-input size="mini" v-model="planName" placeholder="请输入内容" :disabled="showFlag"></el-input>
                 </span>
               </li>
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">计划编号:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input size="mini" v-model="planCode" placeholder="请输入内容"></el-input>
+                  <el-input size="mini" v-model="planCode" placeholder="请输入内容" :disabled="showFlag"></el-input>
                 </span>
               </li>
             </ul>
@@ -23,19 +23,21 @@
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">开始时间:</span>
                 <span class="sectionTopliSpantwo">
-                <el-date-picker
-                  size="mini"
-                  v-model="startTime"
-                  type="date"
-                  value-format="yyyy-MM-dd"
-                  placeholder="选择日期">
-    </el-date-picker>
+                  <el-date-picker
+                    :disabled="showFlag"
+                    size="mini"
+                    v-model="startTime"
+                    type="date"
+                    value-format="yyyy-MM-dd"
+                    placeholder="选择日期">
+                  </el-date-picker>
                 </span>
               </li>
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">结束时间:</span>
                 <span class="sectionTopliSpantwo">
                    <el-date-picker
+                     :disabled="showFlag"
                      size="mini"
                      v-model="endTime"
                      type="date"
@@ -54,6 +56,7 @@
                 <span class="sectionTopliSpanfour">计划说明:</span>
                 <span class="sectionTopliSpanfive">
                    <el-input
+                     :disabled="showFlag"
                      type="textarea"
                      :rows="2"
                      resize="none"
@@ -67,7 +70,7 @@
               <div class="sectionbottomRightDiv">
                 <span class="sectionTopliSpanSeven">任务类型:</span>
                 <span class="sectionTopliSpansix">
-                    <el-select size="mini" @change="scheduleChange" v-model="scheduleData" placeholder="请选择">
+                    <el-select size="mini" @change="scheduleChange" v-model="scheduleData" placeholder="请选择" :disabled="showFlag">
                       <el-option
                         v-for="item in schedule"
                         :key="item.worktypeid"
@@ -166,7 +169,7 @@
                 <p class="lookupChooseLiTop_p">选择巡检频次</p>
               </div>
               <div class="frequency">
-                <el-radio-group v-if="groupBoolean" v-model="frequencyradio">
+                <el-radio-group v-if="groupBoolean" v-model="frequencyradio" :disabled="showFlag">
                   <ul class="frequencyUl">
                     <li class="frequencyLi" @change="frequencyChange(item)" :key="index" v-for="(item,index) in frequency">
                       <el-radio class="nodeLabel" v-model="item.switch" :label="item.value">{{item.desc}}</el-radio>
@@ -195,7 +198,7 @@
                 </el-radio-group>
                 <ul v-if="!groupBoolean"  class="frequencyUl">
                   <li class="frequencyLi">
-                    <el-radio v-model="groupradio" label="3">巡检频次-按月</el-radio>
+                    <el-radio v-model="groupradio" label="3" :disabled="showFlag">巡检频次-按月</el-radio>
                     <p class="frequencyLi_P">
                         <span>
                         每月
@@ -212,7 +215,7 @@
               <div class="frequencytwo">
                 <ul class="frequencyUl">
                   <li :key="index" v-for="(item, index) in Worktype" class="frequencyLi">
-                    <el-checkbox v-model="item.flag">{{item.workmodename}}</el-checkbox>
+                    <el-checkbox v-model="item.flag" :disabled="showFlag">{{item.workmodename}}</el-checkbox>
                   </li>
                 </ul>
               </div>
@@ -220,7 +223,7 @@
           </ul>
         </div>
         <div class="fastener">
-          <div @click="conserve" class="conserve">
+          <div @click="conserve" class="conserve" v-show="!showFlag">
             保存
           </div>
           <div @click="closedown" class="closedown">
@@ -237,7 +240,7 @@ import { maintainArrangupdatePlan, maintainArranggetWorkModesByWorkType, getRepa
 export default {
   mixins: [projectMixin],
   name: 'arrangedChild-lookup',
-  props: ['checkplan', 'Checkplanid'],
+  props: ['checkplan', 'Checkplanid', 'showFlag'],
   data () {
     return {
       maintenanceData: '',
@@ -312,7 +315,6 @@ export default {
   },
   methods: {
     conserve () {
-      console.log(this.Plandevices)
       // return
       let worktypeid = this.scheduleData
       let planName = this.planName
@@ -487,7 +489,6 @@ export default {
         } else if (this.frequencyradio === 5) {
           interval = `${this.manyClasses}b`
           createTaskTime = `b${this.manyClasses}`
-          console.log(createTaskTime)
           this.frequencyData = 5
         }
       } else {
@@ -500,8 +501,6 @@ export default {
       //  消防设施  checkplandetails
       //  执行人   users
       //  工作模式  workmodes
-      console.log('=====')
-      console.log(newArr)
       let param = {
         areas: scopeInspection,
         checkplandetails: newArr,
@@ -598,8 +597,6 @@ export default {
     this.endTime = fmtDate(this.PlanData.enddate)
     this.planDescription = this.PlanData.plandesc
     this.scheduleData = this.PlanData.worktypeid
-    console.log('/////////////////////////////////')
-    console.log(this.PlanData.worktypeid)
     //   执行人
     // this.defaultCheckedPeople
     this.Planusers.forEach((val) => {
@@ -665,8 +662,6 @@ export default {
         response.data.data.forEach((val) => {
           val.switch = false
         })
-        console.log(response.data.data)
-        console.log(this.PlanData)
         this.frequency = response.data.data
         if (this.scheduleData !== 1 && this.scheduleData !== 3) {
           let string = this.PlanData.interval.substr(this.PlanData.interval.length - 1, 1)

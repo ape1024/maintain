@@ -130,6 +130,11 @@ export const findAreasTreeByProjectid = (projectid) => {
   const url = `${Test}/areas/findAreasTreeByProjectid?projectid=${projectid}`
   return url
 }
+// 获得工作结论
+export const getWorkconclusion = () => {
+  const url = `${Test}/task/getWorkconclusion`
+  return url
+}
 //  approvalCheckPlan
 export const approvalCheckPlan = (token, checkPlanId, approvalOpinion, approvalState) => {
   const url = `${Test}/plan/approvalCheckPlan?token=${token}&checkPlanId=${checkPlanId}&approvalOpinion=${approvalOpinion}&approvalState=${approvalState}`
@@ -196,13 +201,13 @@ export const AddDivecemodels = (manufactureId, Deviceid, versionCustom, technica
   return url
 }
 //  updateDevice
-export const updateDevice = (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, files) => {
-  const url = `${Test}/dev/updateDevice?token=${token}&deviceid=${deviceid}&projectid=${projectid}&areaid=${areaid}&manufacturerid=${manufacturerid}&basedeviceid=${basedeviceid}&devicemodelID=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&files=${files}`
+export const updateDevice = (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitId, files) => {
+  const url = `${Test}/dev/updateDevice?token=${token}&deviceid=${deviceid}&projectid=${projectid}&areaid=${areaid}&manufacturerid=${manufacturerid}&basedeviceid=${basedeviceid}&devicemodelID=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&devunitId=${devunitId}&files=${files}`
   return url
 }
 //  daily
-export const maintainDailyCurrentTaskStat = (worktypeid, projectid) => {
-  const url = `${Test}/task/getCurrentTaskStat?worktypeid=${worktypeid}&projectid=${projectid}`
+export const maintainDailyCurrentTaskStat = (worktypeid, projectid, begintime, endtime) => {
+  const url = `${Test}/task/getCurrentTaskStat?worktypeid=${worktypeid}&projectid=${projectid}&begintime=${begintime}&endtime=${endtime}`
   return url
 }
 //  通过一级的id获取二级数据
@@ -255,8 +260,8 @@ export const batchApprovalCheckTaskByDetailIDs = (token, taskid, detailids) => {
   return `${Test}/task/batchApprovalCheckTaskByDetailIDs?token=${token}&taskid=${taskid}&detailids=${detailids}`
 }
 
-export const getCurrentTaskDeviceStatJsonTwo = (token, taskid, areaid, basedevicecode, approvalstates) => {
-  return `${Test}/task/getCurrentTaskDeviceStatJson?token=${token}&taskid=${taskid}&areaid=${areaid}&basedevicecode=${basedevicecode}&approvalstates=${approvalstates}&pageindex=&pagesize=`
+export const getCurrentTaskDeviceStatJsonTwo = (token, conclusion, taskid, areaid, basedevicecode, approvalstates) => {
+  return `${Test}/task/getCurrentTaskDeviceStatJson?token=${token}&conclusion=${conclusion}&taskid=${taskid}&areaid=${areaid}&basedevicecode=${basedevicecode}&approvalstates=${approvalstates}&pageindex=&pagesize=`
 }
 //  安排任务 -> 维保单位
 export const maintainDailygetRepairOrgTreeByDeviceId = (deviceid) => {
@@ -398,10 +403,19 @@ export const maintainReportAddManufacture = (customManufacturerDate, devicetypei
   const url = `${Test}/dev/AddManufacture?name=${customManufacturerDate}&basedeviceid=${devicetypeid}`
   return url
 }
+export const getCurrentTaskFileDeviceStatJson = (token, worktypeid, maintainProject, startTime, endTime) => {
+  return `${Test}/task/getCurrentTaskFileDeviceStatJson?token=${token}&worktypeid=${worktypeid}&projectid=${maintainProject}&beginTime=${startTime}&endTime=${endTime}`
+}
 //  增加上报问题
-export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, unit, parameters, memo, madedate, effectivedate, icons) => {
-  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&unit=${unit}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&icons=${icons}`
+export const maintainReportAddDevice = (rowcount, token, projectid, devicetypeid, manufacturerid, basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, icons, devunitid) => {
+  const url = `${Test}/dev/AddDevice?rowcount=${rowcount}&token=${token}&projectid=${projectid}&devicetypeid=${devicetypeid}&manufacturerid=${manufacturerid}&basedevicecode=${basedevicecode}&devicemodelID=${devicemodel}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&icons=${icons}&devunitid=${devunitid}`
   return url
+}
+export const AddDevUnit = (token, devicetypeid, unitname) => {
+  return `${Test}/dev/AddDevUnit?token=${token}&devicetypeid=${devicetypeid}&unitname=${unitname}`
+}
+export const GetDevUnit = (token, devicetypeid) => {
+  return `${Test}/dev/GetDevUnit?token=${token}&devicetypeid=${devicetypeid}`
 }
 
 export const createChecktask = (checkplanid) => {
@@ -463,6 +477,11 @@ export const maintainArranggetCheckPlan = (checkplanid) => {
 //  获取所有计划类型
 export const maintainArranggetAllPlanTypes = (projectid) => {
   const url = `${Test}/plan/getAllPlanTypes?projectid=${projectid}`
+  return url
+}
+// 设置计划可用或不可用
+export const maintainArrangsetPlan = (planid) => {
+  const url = `${Test}/plan/setPlanEnableOrDisable?planid=${planid}`
   return url
 }
 //  获取计划状态 20180803 rad

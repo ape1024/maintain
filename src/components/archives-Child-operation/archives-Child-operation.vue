@@ -6,14 +6,10 @@
         <div class="cephalosome">
           <ul class="cephalosomeUl">
             <li class="cephalosomeOne">
-              <span><el-checkbox v-model="checked" @change="checkedChang"></el-checkbox></span>
               设备名称
             </li>
             <li class="cephalosomeOne">
               设备编码
-            </li>
-            <li class="cephalosomeOne">
-              进度
             </li>
             <li class="cephalosomeOne">
               位置
@@ -25,10 +21,8 @@
                 <li class="cephalosomeThree">工作时间</li>
                 <li class="cephalosomeThree">工作结论</li>
                 <li class="cephalosomeThree">审核状态</li>
-                <li class="cephalosomeThree">处理状态</li>
               </ul>
             </div>
-            <li class="cephalosomeOne cephalosomelv">操作</li>
           </ul>
         </div>
         <!--list-->
@@ -37,14 +31,10 @@
             <li :key="index" v-for="(item, index) in dailychild" class="listLi">
               <ul class="heavyPlay">
                 <li :title="item.devicename" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  <el-checkbox @change="checkboxClick(item.choose, item)" v-model="item.choose"></el-checkbox>
-                  {{item.devicename}}
+                  {{item.deviceName}}
                 </li>
                 <li :title="item.deviceCode" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  {{item.deviceCode}}
-                </li>
-                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  <span title="总数量">{{item.sumcount }}</span> / <span class="heavyPlayLiSpan" title="已完成">{{item.finshedcount }}</span> / <span class="heavyPlayLiSpanThree" title="故障问题">{{item.errcount}}</span>  / <span class="heavyPlayLiSpantwo" title="待审核">{{item.waitapprovalcount }}</span> / <span title="已安排">{{item.assigncount}}</span>
+                  {{item.devicecode}}
                 </li>
                 <li :title="item.position" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.position}}
@@ -52,7 +42,6 @@
                 <div class="heavyPlayLiDiv">
                   <ul :key="$index" v-for="(data, $index) in item.details" class="heavyPlayLiUl">
                     <li :title="data.workitem" class="heavyPlayLi cephalosomeTwo" >
-                      <el-checkbox v-model="data.flag" :disabled="data.disabled"></el-checkbox>
                       {{data.workitem}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
@@ -67,40 +56,21 @@
                     <li class="heavyPlayLi cephalosomeThree">
                       {{data.approvalstatename}}
                     </li>
-                    <li class="heavyPlayLi cephalosomeThree" :class="!data.isassigned ? 'UnarrangedClass': 'regularClass' ">
-                      {{data.isassignedName}}
-                    </li>
                   </ul>
                 </div>
-                <!--<li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne cephalosomelv">-->
-                  <!--<span @click.stop="particulars(item.deviceid)" class="cephalosomeFiveSpan">详情</span>-->
-                <!--</li>-->
               </ul>
             </li>
           </ul>
         </div>
       </div>
     </div>
-    <section v-if="examineBoolean" class="review">
-      <childExamine :JurisdictionData="Jurisdiction" :examineName="clicktaskname" @examineMine="examineDistribution" :taskidCode="clickId" :equipmentCode="equipmentID" @mine="mineSwitch" @mineupdate="mineSwitchupdate"></childExamine>
-    </section>
-    <section v-if="distributionBoolean" class="review">
-      <childDistribution :instruction="instructionData" @dist="Dist"  :getrepairDate="getrepair"  :equipment='equipmentID' @distribution="mineSwitchupdate"></childDistribution>
-    </section>
   </div>
 </template>
 
 <script>
-import childExamine from '../dailyChild-operation/dailyChild-examine'
-import childDistribution from '../dailyChild-operation/dailyChild-distribution'
-import { maintainDailygetRepairTypes } from '../../api/user'
 export default {
-  name: 'dailyChild-modification',
-  props: [ 'dailychild', 'clicktaskname', 'clickId', 'Jurisdiction' ],
-  components: {
-    childExamine,
-    childDistribution
-  },
+  name: 'archives-Child-operation',
+  props: ['dailychild'],
   data () {
     return {
       information: [],
@@ -114,87 +84,12 @@ export default {
     }
   },
   methods: {
-    checkedChang (ev) {
-      if (ev) {
-        this.dailychild.forEach((val, index) => {
-          val.choose = true
-          val.details.forEach((data) => {
-            if (!data.disabled) {
-              data.flag = true
-            }
-          })
-        })
-      } else {
-        this.dailychild.forEach((val, index) => {
-          val.choose = false
-          val.details.forEach((data) => {
-            if (!data.disabled) {
-              data.flag = false
-            }
-          })
-        })
-      }
-    },
-    mineSwitchupdate () {
-      this.examineBoolean = false
-      this.distributionBoolean = false
-      this.$emit('examinationApproval', this.clickId)
-    },
-    mineSwitch () {
-      this.examineBoolean = false
-    },
     fmtDate (obj) {
       let date = new Date(obj)
       let y = 1900 + date.getYear()
       let m = `0` + (date.getMonth() + 1)
       let d = `0` + date.getDate()
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
-    },
-    particulars (deviceID) {
-      this.equipmentID = deviceID
-      this.examineBoolean = true
-    },
-    Mine (ev) {
-      this.$emit('requestdata')
-      this.examineBoolean = false
-    },
-    Dist (ev) {
-      this.distributionBoolean = ev
-    },
-    Examine (data) {
-      this.DistributionData = data
-      this.examineBoolean = false
-      this.distributionBoolean = true
-    },
-    distriBution () {
-      this.$emit('requestdata')
-      this.distributionBoolean = false
-    },
-    examineDistribution (ev) {
-      this.instructionData = ev
-      this.ArrangetheviewBoolean = false
-      this.examineBoolean = false
-      this.axios.post(maintainDailygetRepairTypes()).then((response) => {
-        if (response.data.code === 0) {
-          this.getrepair = response.data.data
-          this.distributionBoolean = true
-        }
-      })
-    },
-    checkboxClick (ev, data) {
-      if (ev) {
-        data.details.forEach((val) => {
-          if (!val.disabled) {
-            val.flag = true
-          }
-        })
-      } else {
-        data.details.forEach((val) => {
-          if (!val.disabled) {
-            val.flag = false
-          }
-        })
-      }
     }
   },
   created () {
@@ -246,7 +141,7 @@ export default {
     text-overflow ellipsis
     white-space nowrap
   .cephalosomeThree
-    width 12%
+    width 15%
     text-align center
     overflow hidden
     text-overflow ellipsis
@@ -311,7 +206,7 @@ export default {
   .heavyPlayLiSpanThree
     color #c7a038
   .heavyPlayLiDiv
-    width 50%
+    width 70%
     overflow hidden
     position relative
     float left
