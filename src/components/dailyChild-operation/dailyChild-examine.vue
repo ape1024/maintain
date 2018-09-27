@@ -200,7 +200,7 @@
                         {{item.maxvalue ? item.maxvalue : ''}}
                       </li>
                       <li class="opinion_litwo">
-                        {{item.Testvalue}}
+                        {{item.checkvalue}}
                       </li>
                     </ul>
                   </li>

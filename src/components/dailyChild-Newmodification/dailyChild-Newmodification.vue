@@ -40,8 +40,8 @@
                   <el-checkbox @change="checkboxClick(item.choose, item)" v-model="item.choose"></el-checkbox>
                   {{item.devicename}}
                 </li>
-                <li :title="item.deviceCode" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  {{item.deviceCode}}
+                <li :title="item.devicecode" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                  {{item.devicecode}}
                 </li>
                 <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   <span title="总数量">{{item.sumcount }}</span> / <span class="heavyPlayLiSpan" title="已完成">{{item.finshedcount }}</span> / <span class="heavyPlayLiSpanThree" title="故障问题">{{item.errcount}}</span>  / <span class="heavyPlayLiSpantwo" title="待审核">{{item.waitapprovalcount }}</span> / <span title="已安排">{{item.assigncount}}</span>

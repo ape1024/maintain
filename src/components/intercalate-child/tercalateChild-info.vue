@@ -224,7 +224,7 @@ export default {
             padding-left 10px
             box-sizing border-box
             color #d5d5d5
-            font-size $font-size-small-s
+            font-size $font-size-small
             height 14px
         .content-body
           position relative
