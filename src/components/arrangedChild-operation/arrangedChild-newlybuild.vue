@@ -564,7 +564,7 @@ export default {
         this.groupBoolean = false
       }
       // 获取计划编号
-      if (!this.planCode || this.planCode !== this.planCodeTemp) {
+      if (!this.planCode || this.planCode === this.planCodeTemp) {
         this.axios.post(maintainArranggetGetPlanCode(this.maintainProject, value)).then((response) => {
           if (response.data.code === 0) {
             this.planCode = response.data.data
