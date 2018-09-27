@@ -289,7 +289,6 @@ export default {
       } else {
         let token = JSON.parse(window.sessionStorage.token)
         let devicetypeid = this.categoryDate[0]
-
         this.axios.post(GetDevUnit(token, devicetypeid)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
@@ -390,15 +389,9 @@ export default {
       let madedate = this.productionValue1
       //  有效日期
       let effectivedate = this.validity
-      if (!this.categoryDate.length) {
-        this.$message({
-          message: '请选择设施类别',
-          type: 'warning'
-        })
-        return false
-      }
       //  单位
       let devunitid = ''
+      let basedeviceid = this.categoryDate[this.categoryDate.length - 1]
       if (!this.Company) {
         this.$message({
           message: '请选择设施单位',
@@ -416,18 +409,18 @@ export default {
         } else {
           const data = await this.axios.post(AddDevUnit(token, devicetypeid, this.CompanyInput)).then((Data) => Data)
           if (data.data.code === 0) {
-            devunitid = data.data.data.devicetypeid
+            devunitid = data.data.data.devunitId
           }
         }
       } else {
         devunitid = this.Company
       }
       if (this.customManufacturer === true) {
-        this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
+        this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, basedeviceid)).then((response) => {
           if (response.data.code === 0) {
             manufacturerid = response.data.data.manufacturerid
             if (this.versionManufacturer === true) {
-              this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
+              this.axios.post(AddDivecemodels(manufacturerid, basedeviceid, this.versionCustom, this.technicalParameter)).then((data) => {
                 if (data.data.code === 0) {
                   devicemodel = data.data.data.divecemodelid
                   this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitid, files)

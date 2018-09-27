@@ -198,6 +198,12 @@ export default {
           this.regionDate = response.data.data
         }
       })
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.equipment = response.data.data
+        }
+      })
       //  展示任务
       this.DailyCurrentTaskStat()
     },
@@ -218,6 +224,10 @@ export default {
     },
     // 选中事件
     selectStyle (item, index) {
+      if (item.flag) {
+        item.flag = false
+        return
+      }
       this.tableDatataskStat.forEach((val) => {
         val.flag = false
       })
@@ -232,6 +242,7 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, conclusion, clickId, areaid, basedevicecode, approvalstates)).then((response) => {
         if (response.data.code === 0) {
+          console.log(response.data.data)
           if (response.data.data.length !== 0) {
             response.data.data.forEach((val) => {
               val.choose = false
@@ -264,6 +275,9 @@ export default {
                     data.disabled = true
                   } else {
                     data.isassignedName = '未安排'
+                  }
+                  if (data.conclusion !== 0) {
+                    data.disabled = true
                   }
                 })
               }

@@ -469,6 +469,9 @@ export const maintainArrangegetAllPlans = (projectid) => {
   const url = `${Test}/plan/getAllPlans?projectid=${projectid}`
   return url
 }
+export const maintainArrangegetAllPlansTwo = (projectid, worktypeid) => {
+  return `${Test}/plan/getAllPlans?projectid=${projectid}&worktypeid=${worktypeid}`
+}
 //  获取巡检计划
 export const maintainArranggetCheckPlan = (checkplanid) => {
   const url = `${Test}/plan/getCheckPlan?checkPlanId=${checkplanid}`

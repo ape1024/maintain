@@ -663,7 +663,7 @@ export default {
         } else {
           const data = await this.axios.post(AddDevUnit(token, devicetypeid, this.CompanyInput)).then((Data) => Data)
           if (data.data.code === 0) {
-            devunitid = data.data.data.devicetypeid
+            devunitid = data.data.data.devunitId
           }
         }
       } else {

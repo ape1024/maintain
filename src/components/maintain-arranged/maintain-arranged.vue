@@ -1,11 +1,14 @@
 <template>
   <div class="subject">
-    <section class="subject_top">
-      <ul class="ul_input">
-        <li class="li_input">
-          <p class="div_p">任务类型：</p>
-          <div class="div_input">
-            <el-select size="mini" v-model="scheduleData" placeholder="请选择" >
+    <section class="subject_bottomDIv">
+      <ul class="header_ul">
+        <li class="repair_li">
+          计划名称
+        </li>
+        <li class="repair_litwo">
+          任务类型 <i class="el-icon-caret-bottom"></i>
+          <div class="headerDiv">
+            <el-select size="mini" @change="scheduleChange" v-model="scheduleData" placeholder="请选择" >
               <el-option
                 v-for="item in worktypeData"
                 :key="item.worktypeid"
@@ -14,22 +17,6 @@
               </el-option>
             </el-select>
           </div>
-        </li>
-      </ul>
-      <div class="button">
-        <!--查询-->
-        <div @click.stop="query" class="query">
-          查 询
-        </div>
-      </div>
-    </section>
-    <section class="subject_bottomDIv">
-      <ul class="header_ul">
-        <li class="repair_li">
-          计划名称
-        </li>
-        <li class="repair_litwo">
-          任务类型
         </li>
         <li class="repair_litwo">
           计划编号
@@ -121,7 +108,7 @@
 import lookup from '../arrangedChild-operation/arrangedChild-lookup'
 import examination from '../arrangedChild-operation/arrangedChild-examination'
 import newlybuild from '../arrangedChild-operation/arrangedChild-newlybuild'
-import { maintainArrangsetPlan, maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes, createChecktask } from '../../api/user'
+import { maintainArrangsetPlan, maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes, createChecktask, maintainArrangegetAllPlansTwo } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   name: 'maintain-arranged',
@@ -132,6 +119,10 @@ export default {
     newlybuild
   },
   methods: {
+    scheduleChange (el) {
+      el = el === -999 ? '' : el
+      this.maintainArrangegetAll(this.maintainProject, el)
+    },
     init () {
       this.initPlan()
     },
@@ -290,7 +281,16 @@ export default {
       return y + '-' + m.substring(m.length - 2, m.length) + '-' + d.substring(d.length - 2, d.length)
     },
     // 查询事件
-    query () {
+    maintainArrangegetAll (maintainProject, el) {
+      el = !el ? '' : el
+      this.axios.post(maintainArrangegetAllPlansTwo(maintainProject, el)).then((response) => {
+        if (response.data.code === 0) {
+          this.arrangedData = response.data.data
+          this.review_boolean = false
+          this.examinaBoolean = false
+          this.newlybuildBoolean = false
+        }
+      })
     }
   },
   data () {
@@ -338,6 +338,7 @@ export default {
       JurisdictionUpdate: '',
       JurisdictionDelete: '',
       JurisdictionApproval: '',
+      scheduleData: '',
       showFlag: false // true查看计划信息 false 修改计划信息
     }
   },
@@ -355,6 +356,11 @@ export default {
     this.initPlan()
     this.axios.post(maintainArranggetAllPlanTypes(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
+        let obj = {
+          worktypename: '所有',
+          worktypeid: -999
+        }
+        response.data.data.unshift(obj)
         this.worktypeData = response.data.data
       }
     })
@@ -492,6 +498,7 @@ export default {
     text-overflow ellipsis
     white-space nowrap
     text-align center
+    position relative
   .repair_lithree
     width 19%
     padding-right 1%
@@ -669,4 +676,12 @@ export default {
       transition .2s
     .newly:hover
       background #4baabe
+  .headerDiv
+    position absolute
+    top 0
+    left 0
+    overflow hidden
+    opacity 0
+    z-index 11
+    width 100%
 </style>

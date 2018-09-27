@@ -27,7 +27,7 @@
             </li>
             <li class="examine_div_li">
               <p>设施数量：</p>
-              <div>{{equipmentData.devicecount}}</div>
+              <div>{{equipmentData.devicecount}}{{equipmentData.unit}}</div>
             </li>
           </ul>
         </div>
