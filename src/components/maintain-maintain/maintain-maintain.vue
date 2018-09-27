@@ -228,6 +228,7 @@ export default {
     // 选中事件
     selectStyle (item, index, tableData, $event) {
       let clickId = item.taskID
+      this.click_id = item.taskID
       let areaid = this.selectProps.selectRegion.length !== 0 ? this.selectProps.selectRegion[this.selectProps.selectRegion.length - 1] : ''
       let basedevicecode = this.selectProps.selectEquipmentData.length !== 0 ? this.selectProps.selectEquipmentData[this.selectProps.selectEquipmentData.length - 1] : ''
       basedevicecode = !basedevicecode ? '' : basedevicecode
