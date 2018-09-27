@@ -4,7 +4,7 @@ import { SearchData } from 'common/js/area'
 
 function resetMapData (data, areaId) {
   let arr = []
-  data.forEach((item) => {
+  data && data.forEach((item) => {
     if (item.areaid === areaId) {
       arr.push(new SearchData(item))
       return arr

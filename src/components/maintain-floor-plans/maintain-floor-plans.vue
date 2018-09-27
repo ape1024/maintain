@@ -2,7 +2,7 @@
   <div class="floor-plans" @keyup.esc="fullScreenESC">
     <div class="loading" v-show="loadingState">{{loadingText}}</div>
     <div class="header">
-      <div class="title">{{title}}</div>
+      <div class="title">{{currentTitle}}</div>
       <switch-sys class="switch" :list="list" @select="selectType" @switch="switchItem"></switch-sys>
     </div>
     <div ref="map" class="map" id="floorPlans1">
@@ -33,7 +33,9 @@ export default {
   mixins: [mapMixin],
   data () {
     return {
-      list: []
+      list: [],
+      currentTitle: '',
+      sysShowState: false
     }
   },
   computed: {
@@ -92,6 +94,7 @@ export default {
           this.$message.error(errorText.network)
         }
         this.list = data
+        this.sysShowState = true
       })
     },
     adjust () {
@@ -128,6 +131,7 @@ export default {
     },
     floorDataDelete (newVal) {
       if (newVal) {
+        this.sysShowState = false
         this.deleteMapHandle()
       }
     }

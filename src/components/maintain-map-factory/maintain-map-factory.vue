@@ -85,7 +85,7 @@ export default {
     this.maxSize = 0
     this.minSize = -2
     // 设置标题
-    this.title = '区域2'
+    this.title = '建筑区域'
   }
 }
 </script>
