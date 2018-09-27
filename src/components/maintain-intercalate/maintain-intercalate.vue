@@ -4,11 +4,11 @@
       <ul class="headerUl">
         <!--<router-link to="/intercalate/department"><li class="headerLi">维保部门管理</li></router-link>-->
         <!--<router-link to="/home/intercalate/structure"><li class="headerLi">组织机构</li></router-link>-->
-        <router-link to="/home/intercalate/structureNew"><li class="headerLi">组织机构</li></router-link>
-        <router-link to="/home/intercalate/karakters"><li class="headerLi">角色管理</li></router-link>
-        <router-link to="/home/intercalate/consumer"><li class="headerLi">用户设置</li></router-link>
-        <router-link to="/home/intercalate/project"><li class="headerLi">项目设置</li></router-link>
-        <router-link to="/home/intercalate/taskrules"><li v-if="true" class="headerLi">维管标准</li></router-link>
+        <router-link v-show="this.organizationSelect" to="/home/intercalate/structureNew"><li class="headerLi">组织机构</li></router-link>
+        <router-link v-show="this.roleSelect" to="/home/intercalate/karakters"><li class="headerLi">角色管理</li></router-link>
+        <router-link v-show="this.userSelect" to="/home/intercalate/consumer"><li class="headerLi">用户设置</li></router-link>
+        <router-link v-show="this.projectSelect" to="/home/intercalate/project"><li class="headerLi">项目设置</li></router-link>
+        <router-link v-show="this.standardSelect" to="/home/intercalate/taskrules"><li v-if="true" class="headerLi">维管标准</li></router-link>
         <router-link to="/home/intercalate/info"><li class="headerLi">消息管理</li></router-link>
       </ul>
     </header>
@@ -20,7 +20,34 @@
 
 <script>
 export default {
-  name: 'maintain-intercalate'
+  name: 'maintain-intercalate',
+  methods: {
+    // 权限判断
+    authority () {
+      let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+      console.log(Jurisdiction)
+      Jurisdiction.forEach((val) => {
+        if (val.functioncode === 'organization') {
+          this.organizationSelect = val.select
+        }
+        if (val.functioncode === 'role') {
+          this.roleSelect = val.select
+        }
+        if (val.functioncode === 'user') {
+          this.userSelect = val.select
+        }
+        if (val.functioncode === 'project') {
+          this.projectSelect = val.select
+        }
+        if (val.functioncode === 'standard') {
+          this.standardSelect = val.select
+        }
+      })
+    }
+  },
+  created () {
+    this.authority()
+  }
 }
 </script>
 

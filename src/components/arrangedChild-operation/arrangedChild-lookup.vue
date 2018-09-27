@@ -1,5 +1,7 @@
 <template>
   <div class="subjectlookup">
+    <div v-if="amputateStr" class="subjectRightDiv"></div>
+    <div v-if="showFlag" class="subjectRightDiv"></div>
     <div class="section">
       <div class="sectionDiv">
         <h4 class="sectionH4">修改计划</h4>
@@ -9,13 +11,13 @@
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">计划名称:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input size="mini" v-model="planName" placeholder="请输入内容" :disabled="showFlag"></el-input>
+                  <el-input size="mini" v-model="planName" placeholder="请输入内容" ></el-input>
                 </span>
               </li>
               <li class="sectionTopli">
                 <span class="sectionTopliSpan">计划编号:</span>
                 <span class="sectionTopliSpantwo">
-                  <el-input size="mini" v-model="planCode" placeholder="请输入内容" :disabled="showFlag"></el-input>
+                  <el-input size="mini" v-model="planCode" placeholder="请输入内容" ></el-input>
                 </span>
               </li>
             </ul>
@@ -24,7 +26,6 @@
                 <span class="sectionTopliSpan">开始时间:</span>
                 <span class="sectionTopliSpantwo">
                   <el-date-picker
-                    :disabled="showFlag"
                     size="mini"
                     v-model="startTime"
                     type="date"
@@ -37,7 +38,6 @@
                 <span class="sectionTopliSpan">结束时间:</span>
                 <span class="sectionTopliSpantwo">
                    <el-date-picker
-                     :disabled="showFlag"
                      size="mini"
                      v-model="endTime"
                      type="date"
@@ -56,7 +56,6 @@
                 <span class="sectionTopliSpanfour">计划说明:</span>
                 <span class="sectionTopliSpanfive">
                    <el-input
-                     :disabled="showFlag"
                      type="textarea"
                      :rows="2"
                      resize="none"
@@ -70,7 +69,7 @@
               <div class="sectionbottomRightDiv">
                 <span class="sectionTopliSpanSeven">任务类型:</span>
                 <span class="sectionTopliSpansix">
-                    <el-select size="mini" @change="scheduleChange" v-model="scheduleData" placeholder="请选择" :disabled="showFlag">
+                    <el-select size="mini" @change="scheduleChange" v-model="scheduleData" placeholder="请选择" >
                       <el-option
                         v-for="item in schedule"
                         :key="item.worktypeid"
@@ -170,10 +169,10 @@
                 <p class="lookupChooseLiTop_p">选择巡检频次</p>
               </div>
               <div class="frequency">
-                <el-radio-group v-if="groupBoolean" v-model="frequencyradio" :disabled="showFlag">
+                <el-radio-group v-if="groupBoolean" v-model="frequencyradio" >
                   <ul class="frequencyUl">
                     <li class="frequencyLi" @change="frequencyChange(item)" :key="index" v-for="(item,index) in frequency">
-                      <el-radio class="nodeLabel" v-model="item.switch" :label="item.value">{{item.desc}}</el-radio>
+                      <el-radio class="nodeLabel"  v-model="item.switch" :label="item.value">{{item.desc}}</el-radio>
                     </li>
                     <li v-show="monthsNumber" class="frequencyLi">
                       <p class="frequencyLi_P">
@@ -199,7 +198,7 @@
                 </el-radio-group>
                 <ul v-if="!groupBoolean"  class="frequencyUl">
                   <li class="frequencyLi">
-                    <el-radio v-model="groupradio" label="3" :disabled="showFlag">巡检频次-按月</el-radio>
+                    <el-radio v-model="groupradio" label="3">巡检频次-按月</el-radio>
                     <p class="frequencyLi_P">
                         <span>
                         每月
@@ -216,7 +215,7 @@
               <div class="frequencytwo">
                 <ul class="frequencyUl">
                   <li :key="index" v-for="(item, index) in Worktype" class="frequencyLi">
-                    <el-checkbox v-model="item.flag" :disabled="showFlag">{{item.workmodename}}</el-checkbox>
+                    <el-checkbox v-model="item.flag">{{item.workmodename}}</el-checkbox>
                   </li>
                 </ul>
               </div>
@@ -885,4 +884,18 @@ export default {
     font-size 14px
   .frequencyLi_P
     margin 20px 0
+  .disabled-true
+    border-color: #409EFF
+    background: #409EFF
+  .disabled-false
+    border-color: #e4e7ed
+    background: #e4e7ed
+  .subjectRightDiv
+    position absolute
+    left 0
+    top 55px
+    z-index 1111
+    background rgba(000, 000, 000, .3)
+    height 85%
+    width 100%
 </style>
