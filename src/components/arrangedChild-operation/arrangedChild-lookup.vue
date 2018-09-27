@@ -152,7 +152,8 @@
                       :data="facilities"
                       show-checkbox
                       node-key="id"
-                      accordion :default-checked-keys="defaultCheckedFacilities"
+                      accordion
+                      :default-checked-keys="defaultCheckedFacilities"
                       :default-expanded-keys="defaultCheckedFacilities"
                       @check="handleCheckChange"
                       :props="facilitiesProps">
@@ -609,7 +610,7 @@ export default {
     })
     //  消防设施
     this.Plandevices.forEach((val) => {
-      this.defaultCheckedFacilities.push(val.basedeviceid)
+      this.defaultCheckedFacilities.push(`${val.basedeviceid},${this.timeStamp}`)
     })
     this.axios.post(getRepairOrgTreeByProjectId(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
@@ -617,7 +618,6 @@ export default {
       }
     })
     //  获取巡检范围
-
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.purview = response.data.data
@@ -649,6 +649,7 @@ export default {
           'children': response.data.data
         }]
         this.facilities = arr
+        console.log(this.facilities)
       }
     })
     //  获取计划类型
