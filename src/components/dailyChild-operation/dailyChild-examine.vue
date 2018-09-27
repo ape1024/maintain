@@ -486,56 +486,62 @@ export default {
     this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
       if (response.data.code === 0) {
         let arrData = []
+        console.log(response.data.data)
         response.data.data.details.forEach((val) => {
-          if (val.path !== '') {
-            let arr = []
-            if (val.path.indexOf(',') !== -1) {
-              arr = val.path.split(',')
-              val.path = arr
+          console.log(response.data.data.details)
+          console.log('////')
+          if (val) {
+            if (val.path) {
+              let arr = []
+              if (val.path.indexOf(',') !== -1) {
+                arr = val.path.split(',')
+                val.path = arr
+              } else {
+                arr = [val.path]
+                val.path = arr
+              }
             } else {
-              arr = [val.path]
-              val.path = arr
+              val.path = []
             }
-          } else {
-            val.path = []
-          }
-          val.fuleco = false
-          val.pathBoolem = false
-          if (val.conclusion) {
-            if (!val.refid) {
-              val.disabled = false
+            val.fuleco = false
+            val.pathBoolem = false
+            if (val.conclusion) {
+              if (!val.refid) {
+                val.disabled = false
+              } else {
+                val.disabled = true
+              }
             } else {
               val.disabled = true
             }
-          } else {
-            val.disabled = true
-          }
-          if (!val.iswaitapproval) {
-            if (!val.isapproval) {
-              val.iswaitapprovalName = ''
+            if (!val.iswaitapproval) {
+              if (!val.isapproval) {
+                val.iswaitapprovalName = ''
+              } else {
+                val.iswaitapprovalName = '已审批'
+              }
             } else {
-              val.iswaitapprovalName = '已审批'
+              val.iswaitapprovalName = '待审批'
             }
-          } else {
-            val.iswaitapprovalName = '待审批'
-          }
-          if (val.isassigned) {
-            val.isassignedName = '已安排'
-          } else {
-            val.isassignedName = '未安排'
-          }
-          arrData.push(val)
-          if (val.photos) {
-            val.photosArr = []
-            if (val.photos.indexOf(',') !== -1) {
-              let arr = val.photos.split(',')
-              val.photosArr = arr
+            if (val.isassigned) {
+              val.isassignedName = '已安排'
             } else {
-              val.photosArr.push(val.photos)
+              val.isassignedName = '未安排'
+            }
+            arrData.push(val)
+            if (val.photos) {
+              val.photosArr = []
+              if (val.photos.indexOf(',') !== -1) {
+                let arr = val.photos.split(',')
+                val.photosArr = arr
+              } else {
+                val.photosArr.push(val.photos)
+              }
             }
           }
         })
         this.equipment = arrData
+        console.log(arrData)
         this.equipmentData = response.data.data
       }
     })
@@ -669,9 +675,11 @@ export default {
           width 10%
           height 30px
           text-overflow ellipsis
+          overflow hidden
           white-space nowrap
         .matters_litwo
           position relative
+          overflow hidden
           float left
           width 16%
           height 30px

@@ -130,6 +130,10 @@ const routes = [
         }, {
           path: 'maintainFile',
           component: maintainFile
+        },
+        {
+          path: '/',
+          redirect: 'dailyFile'
         }]
       },
       {

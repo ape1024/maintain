@@ -308,7 +308,6 @@ export default {
     .lookoverDiv
       float left
       color $color-text
-      width 300px
     .fastener
       init()
       text-align center
