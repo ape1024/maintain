@@ -1,12 +1,35 @@
 <template>
   <div class="subject">
+    <section class="subject_top">
+      <ul class="ul_input">
+        <li class="li_input">
+          <p class="div_p">任务类型：</p>
+          <div class="div_input">
+            <el-select size="mini" v-model="scheduleData" placeholder="请选择" >
+              <el-option
+                v-for="item in worktypeData"
+                :key="item.worktypeid"
+                :label="item.worktypename"
+                :value="item.worktypeid">
+              </el-option>
+            </el-select>
+          </div>
+        </li>
+      </ul>
+      <div class="button">
+        <!--查询-->
+        <div @click.stop="query" class="query">
+          查 询
+        </div>
+      </div>
+    </section>
     <section class="subject_bottomDIv">
       <ul class="header_ul">
         <li class="repair_li">
           计划名称
         </li>
         <li class="repair_litwo">
-          计划类型
+          任务类型
         </li>
         <li class="repair_litwo">
           计划编号
@@ -265,6 +288,9 @@ export default {
       let m = '0' + (date.getMonth() + 1)
       let d = '0' + date.getDate()
       return y + '-' + m.substring(m.length - 2, m.length) + '-' + d.substring(d.length - 2, d.length)
+    },
+    // 查询事件
+    query () {
     }
   },
   data () {
@@ -612,4 +638,35 @@ export default {
   .repair_lithree div
     float left
     overflow hidden
+  .button
+    display flex
+    float right
+    overflow hidden
+    position relative
+    margin-left 90px
+    text-align center
+    line-height 36px
+    font-size $font-size-medium
+    color $color-text-title
+    .query
+      width 106px
+      height 36px
+      border-radius 5px
+      float left
+      margin-right 30px
+      background $color-background-query
+      cursor pointer
+      transition .2s
+    .query:hover
+      background #4b92bf
+    .newly
+      width 106px
+      height 36px
+      border-radius 5px
+      float right
+      background $color-background-newly
+      cursor pointer
+      transition .2s
+    .newly:hover
+      background #4baabe
 </style>
