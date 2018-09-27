@@ -41,7 +41,7 @@ export default {
   mixins: [projectMixin],
   created () {
     this.title = '区域导航'
-    this.subtitle = '玉溪卷烟厂总图'
+    this.subtitle = '建筑区域列表'
     this.firstLoad = true
   },
   data () {
