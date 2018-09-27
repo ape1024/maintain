@@ -2,7 +2,7 @@
   <section class="distriBution">
     <div class="distriBution_div">
       <h4 class="distriButionH">
-        任务分配
+        安排任务
       </h4>
       <div class="distriButionDiv">
         <div class="distriButionDiv_div">

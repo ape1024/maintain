@@ -1,5 +1,6 @@
 <template>
   <div v-if="true" :style="{ background: 'url(static/img/weblogin.png) no-repeat top' }" class="subject">
+    <p class="subject__PPP">维 护 管 理 系 统 <span class="subject__PPPSpan">v1.2</span></p>
     <div class="subjectDiv">
       <div class="content">
         <el-input size="mini" v-model="account" placeholder="请输入账号"></el-input>
@@ -17,7 +18,7 @@
       <div class="contentDiv">
         <div class="fastener">
           <div @click="signin($event)" class="fastenerDiv">
-            登 录 1.1
+            登 录
           </div>
           <!--<span>2.3Bate</span>-->
         </div>
@@ -462,4 +463,12 @@ export default {
        box-shadow 0 0 8px #5497C2
        &:hover
          background #5da7d6
+  .subject__PPP
+    position absolute
+    bottom 10%
+    left 40%
+    color #fff
+    font-size 30px
+    .subject__PPPSpan
+     font-size 16px
 </style>

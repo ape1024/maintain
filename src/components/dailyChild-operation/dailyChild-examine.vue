@@ -140,7 +140,7 @@
             </div>
             <div class="opinion_right">
               <div class="left_header">
-                <p class="left_hederP">记录审计情况</p>
+                <p class="left_hederP">记录审查情况</p>
                 <p class="left_hederPtwo"></p>
               </div>
               <div class="choices">

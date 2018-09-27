@@ -207,7 +207,7 @@ export default {
       this.selectProps = {
         selectRegion: this.regionModel,
         selectEquipmentData: this.equipmentData,
-        selectAuditstatus: this.Auditstatus,
+        selectAuditstatus: this.Auditstatus === -999 ? '' : this.Auditstatus,
         selectWorkConclusion: this.workconclusionData,
         selectStartDate: this.startTime,
         selectEndDate: this.endTime
@@ -216,6 +216,9 @@ export default {
     },
     // 选中事件
     selectStyle (item, index, tableData, $event) {
+      this.tableDatataskStat.forEach((val) => {
+        val.flag = false
+      })
       let clickId = item.taskID
       this.click_id = item.taskID
       let areaid = this.selectProps.selectRegion.length !== 0 ? this.selectProps.selectRegion[this.selectProps.selectRegion.length - 1] : ''
@@ -455,6 +458,11 @@ export default {
     //  审核状态
     this.axios.post(getTaskQueryApprovalItems()).then((response) => {
       if (response.data.code === 0) {
+        let obj = {
+          name: '所有',
+          value: -999
+        }
+        response.data.data.unshift(obj)
         this.AuditstatusDate = response.data.data
         response.data.data.forEach((val) => {
           if (val.isdefault === 1) {

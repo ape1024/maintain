@@ -115,7 +115,7 @@
         </li>
       </ul>
       <ul class="table_ul">
-        <li v-for="(item,$index) in tableDatataskStat" class="table_li" :key="item.id" @click="selectStyle (item, $index, tableDatataskStat, $event)">
+        <li v-for="(item,$index) in tableDatataskStat" class="table_li" :key="item.id" @click="selectStyle (item, $index)">
           <ul class="inline_ul">
             <li :title="item.taskName" class="header_lithree">{{item.taskName}}</li>
             <li class="header_li">{{fmtDate(item.startTime)}}</li>
@@ -139,6 +139,7 @@
           <transition enter-active-class="fadeInUp"
                       leave-active-class="fadeOutDown">
             <div @click.stop v-if="item.flag" class="inline_div">
+              <!--<dailytwo :taskid="item.taskID" :taskName="item.taskName" :dailyData="dailyChild" ></dailytwo>-->
               <dailytwoNew :Jurisdiction="JurisdictionData" :clickId="click_id" @requestdata="requestData" :dailychild="dailyChild" :clicktaskname="clicktaskName" @examinationApproval="ExaminationApproval"></dailytwoNew>
             </div>
           </transition>
@@ -152,6 +153,8 @@
 import dailytwo from '../dailyChild-two/dailyChild-two'
 import dailytwoNew from '../dailyChild-Newmodification/dailyChild-Newmodification'
 import { getWorkconclusion, findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, SetCheckTaskFiled, getCurrentTaskDeviceStatJson, getCurrentTaskDeviceStatJsonTwo, batchApprovalCheckTaskByDetailIDs } from '../../api/user'
+// 修改
+// import modify from '../dailyChild-operation/dailyChild-modify'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin, loadingMixin],
@@ -173,11 +176,7 @@ export default {
               type: 'success',
               message: '归档成功!'
             })
-            this.axios.post(maintainDailyCurrentTaskStat(1, this.maintainProject)).then((response) => {
-              if (response.data.code === 0) {
-                this.tableDatataskStat = response.data.data
-              }
-            })
+            this.DailyCurrentTaskStat()
           } else {
             this.$message({
               type: 'info',
@@ -200,25 +199,17 @@ export default {
         }
       })
       //  展示任务
-      this.axios.post(maintainDailyCurrentTaskStat(1, (this.maintainProject))).then((response) => {
-        if (response.data.code === 0) {
-          this.tableDatataskStat = response.data.data
-        }
-      })
+      this.DailyCurrentTaskStat()
     },
     ExaminationApproval (el) {
       // let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(maintainDailyCurrentTaskStat(1, this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.tableDatataskStat = response.data.data
-        }
-      })
+      this.DailyCurrentTaskStat()
     },
     query () {
       this.selectProps = {
         selectRegion: this.regionModel,
         selectEquipmentData: this.equipmentData,
-        selectAuditstatus: this.Auditstatus,
+        selectAuditstatus: this.Auditstatus === -999 ? '' : this.Auditstatus,
         selectWorkConclusion: this.workconclusionData,
         selectStartDate: this.startTime,
         selectEndDate: this.endTime
@@ -226,7 +217,10 @@ export default {
       this.DailyCurrentTaskStat()
     },
     // 选中事件
-    selectStyle (item, index, tableData, $event) {
+    selectStyle (item, index) {
+      this.tableDatataskStat.forEach((val) => {
+        val.flag = false
+      })
       let clickId = item.taskID
       this.click_id = item.taskID
       let areaid = this.selectProps.selectRegion.length !== 0 ? this.selectProps.selectRegion[this.selectProps.selectRegion.length - 1] : ''
@@ -334,7 +328,7 @@ export default {
       })
     },
     batchAudit () {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      this.$confirm('是否进行批量审核?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -358,11 +352,11 @@ export default {
           let token = JSON.parse(window.sessionStorage.token)
           this.axios.post(batchApprovalCheckTaskByDetailIDs(token, this.click_id, arr)).then((response) => {
             if (response.data.code === 0) {
-              this.axios.post(maintainDailyCurrentTaskStat(1, this.maintainProject)).then((response) => {
-                if (response.data.code === 0) {
-                  this.tableDatataskStat = response.data.data
-                }
+              this.$message({
+                message: '审批成功',
+                type: 'success'
               })
+              this.DailyCurrentTaskStat()
             }
           })
         }
@@ -393,6 +387,8 @@ export default {
       regionDate: [],
       regionModel: [],
       //  设备类别
+      equipment: [],
+      equipmentData: [],
       equipmentProps: {
         children: 'children',
         label: 'name',
@@ -401,8 +397,6 @@ export default {
       //  审核状态
       AuditstatusDate: [],
       Auditstatus: '',
-      equipment: [],
-      equipmentData: [],
       modifyBoolean: false,
       options: [],
       value: '',
@@ -412,7 +406,7 @@ export default {
       dailyChild: [],
       timestamp: '',
       clicktaskName: '',
-      JurisdictionData: '',
+      JurisdictionData: {},
       // 工作结论
       workconclusion: [],
       workconclusionData: [],
@@ -470,6 +464,11 @@ export default {
     //  审核状态
     this.axios.post(getTaskQueryApprovalItems()).then((response) => {
       if (response.data.code === 0) {
+        let obj = {
+          name: '所有',
+          value: -999
+        }
+        response.data.data.unshift(obj)
         this.AuditstatusDate = response.data.data
         response.data.data.forEach((val) => {
           if (val.isdefault === 1) {

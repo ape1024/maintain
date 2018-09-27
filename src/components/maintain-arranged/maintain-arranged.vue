@@ -48,7 +48,7 @@
             <li class="repair_litwo">
               {{item.creatername}}
             </li>
-            <li class="repair_lithree">
+            <li :title="item.plandesc" class="repair_lithree">
               {{item.plandesc}}
             </li>
             <li class="repair_lithree">
@@ -467,9 +467,13 @@ export default {
     white-space nowrap
     text-align center
   .repair_lithree
-    width 20%
+    width 19%
+    padding-right 1%
     height 32px
     float left
+    white-space nowrap
+    overflow hidden
+    text-overflow ellipsis
     text-align left
   .header_p_one
     color $color-text-tile-state

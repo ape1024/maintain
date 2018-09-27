@@ -413,9 +413,7 @@ export default {
       } else {
         let token = JSON.parse(window.sessionStorage.token)
         let devicetypeid = this.categoryDate[0]
-
         this.axios.post(GetDevUnit(token, devicetypeid)).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             let obj = {
               devunitId: -999,
@@ -486,7 +484,6 @@ export default {
         }
       } else {
         region = region[region.length - 1]
-
         this.axios.post(maintainReportfindManufactures(region)).then((response) => {
           if (response.data.code === 0) {
             this.manufactor = response.data.data
@@ -602,6 +599,7 @@ export default {
         })
         return false
       }
+      let basedeviceid = this.categoryDate[this.categoryDate.length - 1]
       let devicetypeid = this.categoryDate[0]
       //  批量编码 个数
       let rowcount = this.tabulationtitle.length ? this.tabulationtitle.length : 0
@@ -680,12 +678,12 @@ export default {
             })
             return false
           }
-          this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, devicetypeid)).then((response) => {
+          this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, basedeviceid)).then((response) => {
             if (response.data.code === 0) {
               // 厂家id
               manufacturerid = response.data.data.manufacturerid
               if (this.versionManufacturer === true) {
-                this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((data) => {
+                this.axios.post(AddDivecemodels(manufacturerid, basedeviceid, this.versionCustom, this.technicalParameter)).then((data) => {
                   if (data.data.code === 0) {
                     devicemodel = data.data.data.divecemodelid
                     this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, icons, devunitid, tabulationtitle)
@@ -699,7 +697,7 @@ export default {
           })
         } else if (this.versionManufacturer === true) {
           //  厂家 id
-          this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((Item) => {
+          this.axios.post(AddDivecemodels(manufacturerid, basedeviceid, this.versionCustom, this.technicalParameter)).then((Item) => {
             if (Item.data.code === 0) {
               devicemodel = Item.data.data.divecemodelid
               manufacturerid = this.manufactorModel
@@ -823,7 +821,6 @@ export default {
     })
     this.axios.post(getProprietorOrganization()).then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data.data)
         this.proprietorUnit = response.data.data[0].organizationname
         //  业主单位id
         this.proprietorUnitData = response.data.data[0].organizationid
