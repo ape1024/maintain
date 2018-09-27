@@ -610,7 +610,7 @@ export default {
     })
     //  消防设施
     this.Plandevices.forEach((val) => {
-      this.defaultCheckedFacilities.push(val.basedeviceid)
+      this.defaultCheckedFacilities.push(`${val.basedeviceid},${this.timeStamp}`)
     })
     this.axios.post(getRepairOrgTreeByProjectId(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
@@ -649,6 +649,7 @@ export default {
           'children': response.data.data
         }]
         this.facilities = arr
+        console.log(this.facilities)
       }
     })
     //  获取计划类型
