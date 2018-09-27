@@ -52,7 +52,7 @@
     </div>
     <!--添加-->
     <section v-if="adhibitBoolean" class="adhibit">
-      <increase :increaseBoolean="adhibitBoolean" @incr="Incr"></increase>
+      <increase :increaseBoolean="adhibitBoolean" @incr="Incr" @superinduce="Superinduce"></increase>
     </section>
     <!--查看-->
     <section v-if="examineBoolean"  class="adhibit">
@@ -136,6 +136,14 @@ export default {
     },
     Incr (ev) {
       this.adhibitBoolean = ev
+    },
+    Superinduce (ev) {
+      this.adhibitBoolean = ev
+      this.axios.post(findAllProjects()).then((response) => {
+        if (response.data.code === 0) {
+          this.contentliDate = response.data.data
+        }
+      })
     },
     amputate (index, content, projectId) {
       this.axios.post(removeProjectById(projectId)).then((response) => {

@@ -45,7 +45,7 @@
                       {{data.workitem}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
-                      {{data.checkperson}}{{data.others}}
+                      {{data.checkperson}}, {{data.others}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
                       {{!data.checktime ? '' : fmtDate(data.checktime)}}
