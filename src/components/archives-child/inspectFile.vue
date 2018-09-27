@@ -56,6 +56,13 @@ export default {
   },
   methods: {
     init () {
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(getCurrentTaskFileDeviceStatJson(token, 3, this.maintainProject, this.startTime, this.endTime)).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response)
+          this.dailychildData = response.data.data
+        }
+      })
     },
     // 查询
     query () {

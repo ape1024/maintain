@@ -571,7 +571,7 @@ export default {
             message: '创建成功！',
             type: 'success'
           })
-          this.$emit('incr', false)
+          this.$emit('superinduce', false)
         }
       })
     },

@@ -56,7 +56,7 @@
         </li>
         <li class="li_input">
           <p class="div_p">时间：</p>
-          <div class="div_input">
+          <div class="div_input div_inputFFF">
             <el-date-picker
               size="mini"
               v-model="startTime"
@@ -69,7 +69,7 @@
         <li class="li_input">
           <p class="div_p">—</p>
           <p class="div_p"> </p>
-          <div class="div_input">
+          <div class="div_input div_inputFFF">
             <el-date-picker
               size="mini"
               v-model="endTime"
@@ -823,4 +823,9 @@ export default {
     transition .2s
     &:hover
       background #4baabe
+</style>
+<style>
+  .div_inputFFF .el-input__icon{
+    height: 84%;
+  }
 </style>
