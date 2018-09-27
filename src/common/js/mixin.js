@@ -303,6 +303,8 @@ export const mapMixin = {
           selectData: requestData.childTree ? {...requestData.childTree} : {areaId: list.length > 0 ? list[0].areaid : ''},
           deviceData
         })
+        // 设置标题
+        this.currentTitle = area ? area.areaname : ''
         // 设备是否定位
         this.devicePosition = true
         // 数据获取成功
@@ -549,7 +551,12 @@ export const mapMixin = {
       this.iconList.forEach((item) => {
         item.addTo(this.map)
       })
-      this.CRSState && this.setBaseDataCRS()
+      if (this.CRSState) {
+        this.setBaseDataCRS()
+        if (!(this.devicePosition && this.findDevice)) {
+          this.setMaxBounds(this.bounds)
+        }
+      }
     },
     setBaseData () {
       // 如果没有设备对应
@@ -577,13 +584,15 @@ export const mapMixin = {
     },
     close () {
       if (this.devicePosition && this.findDevice) {
+        // 重置状态
+        this.devicePosition = false
+        this.findDevice = false
+
         if (this.CRSState) {
           this.setBaseDataCRS()
         } else {
           this.setBaseData()
         }
-        this.devicePosition = false
-        this.findDevice = false
       }
       // 重置details数据
       this.details = {
