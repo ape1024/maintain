@@ -117,7 +117,10 @@
       <ul class="table_ul">
         <li v-for="(item,$index) in tableDatataskStat" class="table_li" :key="item.id" @click="selectStyle (item, $index)">
           <ul class="inline_ul">
-            <li :title="item.taskName" class="header_lithree">{{item.taskName}}</li>
+            <li :title="item.taskName" class="header_lithree">
+              <i class="header_lithreeII" :class="!item.flag ? 'el-icon-circle-plus-outline' : 'el-icon-remove-outline'"></i>
+              {{item.taskName}}
+            </li>
             <li class="header_li">{{fmtDate(item.startTime)}}</li>
             <li class="header_li">{{fmtDate(item.endTime)}}</li>
             <li class="header_litwo">{{item.sum}}</li>
@@ -276,7 +279,7 @@ export default {
                   } else {
                     data.isassignedName = '未安排'
                   }
-                  if (data.conclusion !== 0) {
+                  if (data.conclusion !== 1) {
                     data.disabled = true
                   }
                 })
@@ -845,6 +848,9 @@ export default {
     transition .2s
     &:hover
       background #4baabe
+  .header_lithreeII
+    color #4ea4db
+    margin-right 10px
 </style>
 <style>
   .div_inputFFF .el-input__icon{

@@ -292,11 +292,11 @@ export default {
         this.axios.post(GetDevUnit(token, devicetypeid)).then((response) => {
           console.log(response)
           if (response.data.code === 0) {
-            let obj = {
-              devunitId: -999,
-              unitname: '自定义'
-            }
-            response.data.data.push(obj)
+            // let obj = {
+            //   devunitId: -999,
+            //   unitname: '自定义'
+            // }
+            // response.data.data.push(obj)
             this.CompanyData = response.data.data
           }
         })
@@ -610,11 +610,11 @@ export default {
         }
         this.axios.post(GetDevUnit(token, this.modify.devicetypeid)).then((data) => {
           if (data.data.code === 0) {
-            let obj = {
-              devunitId: -999,
-              unitname: '自定义'
-            }
-            data.data.data.push(obj)
+            // let obj = {
+            //   devunitId: -999,
+            //   unitname: '自定义'
+            // }
+            // data.data.data.push(obj)
             this.CompanyData = data.data.data
           }
         })

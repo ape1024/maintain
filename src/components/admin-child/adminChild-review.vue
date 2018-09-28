@@ -415,11 +415,11 @@ export default {
         let devicetypeid = this.categoryDate[0]
         this.axios.post(GetDevUnit(token, devicetypeid)).then((response) => {
           if (response.data.code === 0) {
-            let obj = {
-              devunitId: -999,
-              unitname: '自定义'
-            }
-            response.data.data.push(obj)
+            // let obj = {
+            //   devunitId: -999,
+            //   unitname: '自定义'
+            // }
+            // response.data.data.push(obj)
             this.CompanyData = response.data.data
           }
         })
@@ -812,10 +812,10 @@ export default {
     })
     this.axios.post(findAllDeviceUnit(token)).then((response) => {
       if (response.data.code === 0) {
-        let obj = {
-          name: '自定义'
-        }
-        response.data.data.push(obj)
+        // let obj = {
+        //   name: '自定义'
+        // }
+        // response.data.data.push(obj)
         this.CompanyData = response.data.data
       }
     })
