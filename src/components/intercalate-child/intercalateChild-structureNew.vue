@@ -17,11 +17,11 @@
         </div>
       </div>
     </section>
-    <section class="subjectRight" v-show="showFlag">
+    <section class="subjectRight" v-show="!showFlag">
       <div v-if="amputateStr" class="subjectRightDiv"></div>
       <proprietor-unit @refresh="refresh" :info="proprietorInfo"></proprietor-unit>
     </section>
-    <section class="subjectRight" v-show="!showFlag">
+    <section class="subjectRight" v-show="showFlag">
       <div v-if="amputateStr" class="subjectRightDiv"></div>
       <vascular-unit @refresh="refresh" :info="vascularInfo"></vascular-unit>
     </section>
