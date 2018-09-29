@@ -143,8 +143,10 @@
               旧密码：
             </p>
             <div class="subjectRigh">
-              <el-input size="mini" type="password" v-model="Oldcipher" placeholder=""></el-input>
+              <el-input size="mini" @blur="passwordBlur" type="password" v-model="Oldcipher" placeholder=""></el-input>
             </div>
+            <i v-show="!showState" class="elIcon el-icon-error elIcon_error"></i>
+            <i v-show="showState" class="el-icon-success elIcon_success elIcon"></i>
           </div>
           <div class="subjectDiv">
             <!--原始密码-->
@@ -180,7 +182,7 @@
 </template>
 
 <script>
-import { getRolesList, getJobList, getOrganizationTrees, FindAllRolesByOrgID, upload, updateUserWithPwd } from '../../api/user'
+import { getRolesList, getJobList, getOrganizationTrees, FindAllRolesByOrgID, upload, updateUserWithPwd, steganogramCheckOldPwd } from '../../api/user'
 export default {
   name: 'consumerHeaderRight',
   props: ['communication'],
@@ -231,7 +233,8 @@ export default {
       uploadUrlData: upload(JSON.parse(window.sessionStorage.token)),
       Oldcipher: '',
       passwordInput: '',
-      OldcipherBoolean: true
+      OldcipherBoolean: true,
+      showState: false
     }
   },
   watch: {
@@ -250,6 +253,21 @@ export default {
     }
   },
   methods: {
+    passwordBlur (el) {
+      let usercode = JSON.parse(window.sessionStorage.userInfo).usercode
+      let password = this.Oldcipher
+      this.axios.post(steganogramCheckOldPwd(usercode, password)).then((response) => {
+        if (response.data.data === true) {
+          this.showState = true
+        } else {
+          this.$message({
+            message: '原始密码错误!',
+            type: 'warning'
+          })
+          this.showState = false
+        }
+      })
+    },
     FindAllRolesByOrg (data) {
       this.axios.post(FindAllRolesByOrgID(data)).then((response) => {
         if (response.data.code === 0) {
@@ -350,7 +368,7 @@ export default {
           }
         } else {
           this.$message({
-            message: `${response.message}`,
+            message: `${response.data.message}`,
             type: 'warning'
           })
         }
@@ -439,7 +457,7 @@ export default {
     .subject
       overflow hidden
       position relative
-      margin 0 120px 130px
+      margin 0 100px 130px
       .subjectLeft
         float left
         overflow hidden
@@ -557,5 +575,11 @@ export default {
     width 100px
     height 100px
     display block
-
+  .elIcon
+    margin-left 10px
+    line-height 28px
+  .elIcon_success
+    color #3acf76
+  .elIcon_error
+    color #a63232
 </style>

@@ -358,7 +358,8 @@ export default {
             conclusion: val.conclusionname,
             checktaskdetailid: val.checktaskdetailid,
             isassigned: val.isassigned,
-            conclusionCode: val.conclusion
+            conclusionCode: val.conclusion,
+            workrecord: val.workrecord
           }
           arrData.push(data)
         }

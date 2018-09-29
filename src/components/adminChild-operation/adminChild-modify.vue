@@ -55,24 +55,24 @@
                 <el-input size="mini" v-if="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
               </div>
             </div>
-            <div class="modify_liDiv">
-              <p class="modify_li_p">
-                <span class="modifySpantwo">*</span>设施单位：
-              </p>
-              <div class="modify_li_div">
-                <el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">
-                  <el-option
-                    v-for="item in CompanyData"
-                    :key="item.devunitId"
-                    :label="item.unitname"
-                    :value="item.devunitId">
-                  </el-option>
-                </el-select>
-              </div>
-              <div v-if="CompanyShow" class="modify_lidivRight">
-                <el-input size="mini" v-model="Companymake" placeholder="请输入设备单位"></el-input>
-              </div>
-            </div>
+            <!--<div class="modify_liDiv">-->
+              <!--<p class="modify_li_p">-->
+                <!--<span class="modifySpantwo">*</span>设施单位：-->
+              <!--</p>-->
+              <!--<div class="modify_li_div">-->
+                <!--<el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">-->
+                  <!--<el-option-->
+                    <!--v-for="item in CompanyData"-->
+                    <!--:key="item.devunitId"-->
+                    <!--:label="item.unitname"-->
+                    <!--:value="item.devunitId">-->
+                  <!--</el-option>-->
+                <!--</el-select>-->
+              <!--</div>-->
+              <!--<div v-if="CompanyShow" class="modify_lidivRight">-->
+                <!--<el-input size="mini" v-model="Companymake" placeholder="请输入设备单位"></el-input>-->
+              <!--</div>-->
+            <!--</div>-->
             <div class="modify_liDivtwo">
               <p class="modify_li_p"><span class="modifySpantwo">*</span>设施位置：</p>
               <div class="modify_li_div">
@@ -190,7 +190,7 @@
 <script>
 import $ from 'jquery'
 import { fmtDate } from '../../common/js/utils'
-import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType, upload, GetDevUnit, AddDevUnit } from '../../api/user'
+import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType, upload, GetDevUnit } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   mixins: [ projectMixin ],
@@ -392,29 +392,29 @@ export default {
       //  单位
       let devunitid = ''
       let basedeviceid = this.categoryDate[this.categoryDate.length - 1]
-      if (!this.Company) {
-        this.$message({
-          message: '请选择设施单位',
-          type: 'warning'
-        })
-        return false
-      }
-      if (this.Company === -999) {
-        if (!this.CompanyInput) {
-          this.$message({
-            message: '请填写设施单位',
-            type: 'warning'
-          })
-          return false
-        } else {
-          const data = await this.axios.post(AddDevUnit(token, devicetypeid, this.CompanyInput)).then((Data) => Data)
-          if (data.data.code === 0) {
-            devunitid = data.data.data.devunitId
-          }
-        }
-      } else {
-        devunitid = this.Company
-      }
+      // if (!this.Company) {
+      //   this.$message({
+      //     message: '请选择设施单位',
+      //     type: 'warning'
+      //   })
+      //   return false
+      // }
+      // if (this.Company === -999) {
+      //   if (!this.CompanyInput) {
+      //     this.$message({
+      //       message: '请填写设施单位',
+      //       type: 'warning'
+      //     })
+      //     return false
+      //   } else {
+      //     const data = await this.axios.post(AddDevUnit(token, devicetypeid, this.CompanyInput)).then((Data) => Data)
+      //     if (data.data.code === 0) {
+      //       devunitid = data.data.data.devunitId
+      //     }
+      //   }
+      // } else {
+      //   devunitid = this.Company
+      // }
       if (this.customManufacturer === true) {
         this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, basedeviceid)).then((response) => {
           if (response.data.code === 0) {
