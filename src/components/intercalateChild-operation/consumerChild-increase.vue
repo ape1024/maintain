@@ -344,7 +344,7 @@
 
 <script>
 import $ from 'jquery'
-import { managementCreate, managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload, getOrganizationTrees } from '../../api/user'
+import { managementCreate, managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload } from '../../api/user'
 export default {
   name: 'consumerChild-increase',
   props: ['edit', 'project'],

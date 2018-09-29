@@ -190,7 +190,7 @@
 <script>
 import $ from 'jquery'
 import { fmtDate } from '../../common/js/utils'
-import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType, upload, GetDevUnit, AddDevUnit } from '../../api/user'
+import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType, upload, GetDevUnit } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   mixins: [ projectMixin ],
