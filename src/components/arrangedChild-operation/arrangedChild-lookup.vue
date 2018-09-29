@@ -1,10 +1,9 @@
 <template>
   <div class="subjectlookup">
-    <div v-if="amputateStr" class="subjectRightDiv"></div>
-    <div v-if="showFlag" class="subjectRightDiv"></div>
     <div class="section">
       <div class="sectionDiv">
-        <h4 class="sectionH4">修改计划</h4>
+        <h4 v-if="!showFlag" class="sectionH4">修改计划</h4>
+        <h4 v-if="showFlag" class="sectionH4">查看计划</h4>
         <div class="section_div">
           <div class="sectionTop">
             <ul class="sectionTopul">
@@ -626,7 +625,6 @@ export default {
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
-        response.data.data.splice(0, 1)
         let recursion = (data) => {
           data.forEach((val) => {
             val.hierarchy = 1

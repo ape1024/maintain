@@ -19,6 +19,9 @@
           ></el-cascader>
         </div>
       </li>
+      <li class="threelevel_liL">
+        mac地址
+      </li>
       <li class="threelevel_lithree">
         设备位置
       </li>
@@ -63,6 +66,9 @@
           </li>
           <li :title="dataset.devicename" class="threelevel_lithree">
             {{dataset.devicename}}
+          </li>
+          <li :title="dataset.mac" class="threelevel_liL">
+            {{dataset.mac}}
           </li>
           <li :title="dataset.position" class="threelevel_lithree">
             {{dataset.position}}
@@ -632,16 +638,17 @@ export default {
     background #354d76
     .threelevel_li
       float left
-      width 8.5%
+      width 7.5%
     .threelevel_litwo
       float left
       width 18.5%
       overflow hidden
      .threelevel_lithree
        float left
-       width 8.5%
+       width 7.5%
        padding-left 1%
        position relative
+
   .threelevel_list
       margin: 4px;
       overflow: hidden;
@@ -672,7 +679,7 @@ export default {
             white-space nowrap
           .threelevel_lithree
             float left
-            width 8.5%
+            width 7.5%
             height 40px
             padding-left 1%
             overflow hidden
@@ -715,4 +722,10 @@ export default {
   .threelevel_header li
     height 40px
     line-height 40px
+  .threelevel_liL
+    float left
+    width 6.5%
+    overflow hidden
+    padding-left 1%
+    position relative
 </style>

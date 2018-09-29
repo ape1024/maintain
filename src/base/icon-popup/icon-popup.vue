@@ -2,7 +2,7 @@
   <div class="icon-popup" v-show="state" @click="close">
     <div class="wrapper" ref="wrapper" @click.stop>
       <div class="head">
-        <div class="title"></div>
+        <div class="title">{{details.deviceTypeName}}</div>
         <i class="el-icon-close" @click="close"></i>
       </div>
       <div class="body">

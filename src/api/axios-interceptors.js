@@ -22,7 +22,7 @@ export const interceptors = function () {
   })
 }
 
-export const interceptorsResponse = function (router) {
+export const interceptorsResponse = function (router, msg) {
   axios.interceptors.response.use(
     response => {
       // token已经失效的处理
@@ -47,6 +47,9 @@ export const interceptorsResponse = function (router) {
       }
     },
     error => {
+      msg.alert('发送数据失败', '错误提示', {
+        confirmButtonText: '确定'
+      })
       return Promise.reject(error.response.data)
     })
 }

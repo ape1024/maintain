@@ -892,7 +892,7 @@ export default {
         this.axios.post(creatOrUpdateCheckStandard(MinData, MaxData, unit), param).then((response) => {
           if (response.data.code === 0) {
             this.$message({
-              message: '修改成功',
+              message: '新增成功',
               type: 'success'
             })
             this.axios.post(getCheckStandardsByBasedevicecode(this.basedeviceCode)).then((data) => {

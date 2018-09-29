@@ -53,7 +53,10 @@
         <ul class="table_ul">
           <li v-for="(item) in tableData" class="table_li" :key="item.deviceid" :id="item.areaid">
             <ul :id="item.id" class="inline_ul" @click="selectStyle (item)">
-              <li class="header_lithree">{{item.areaname}}</li>
+              <li class="header_lithree">
+                <i class="header_lithreeII" :class="!item.flag ? 'el-icon-circle-plus-outline' : 'el-icon-remove-outline'"></i>
+                {{item.areaname}}
+              </li>
               <li class="header_li">{{item.alldevcount}}</li>
               <li class="header_li">{{item.checkdevnum}}</li>
               <li class="header_li">{{item.filedevnum}}</li>
@@ -511,7 +514,7 @@ export default {
     left 0
     width 100%
     height 100%
-    background rgba(000,000,000,.9)
+    background $color-barckground-transparent
     z-index 11
     overflow hidden
 .subject_top__div
@@ -529,4 +532,7 @@ export default {
     overflow hidden
     margin 20px 0
     text-align center
+  .header_lithreeII
+    color #4ea4db
+    margin-right 10px
 </style>

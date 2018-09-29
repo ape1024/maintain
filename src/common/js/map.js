@@ -69,6 +69,7 @@ export const createFloorData = async function (floor) {
     state: floor.deviceStateVal,
     handleState,
     alarmId: floor.acceptid,
+    deviceTypeName: floor.devicetypename,
     device: [
       {name: '运行状态：', val: stateName},
       {name: '位置描述：', val: floor.position},
