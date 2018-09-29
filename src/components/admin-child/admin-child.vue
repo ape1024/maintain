@@ -725,6 +725,7 @@ export default {
   .threelevel_liL
     float left
     width 6.5%
+    height 40px
     overflow hidden
     padding-left 1%
     position relative
