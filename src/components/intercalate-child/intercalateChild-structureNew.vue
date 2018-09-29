@@ -82,7 +82,8 @@ export default {
       this.axios.post(managementCreatedtree(token)).then((response) => {
         if (response.data.code === 0) {
           this.data = response.data.data
-          this.getType(this.data.organizationId)
+          console.log(this.data[0].organizationId)
+          this.getType(this.data[0].organizationId)
           this.subjectpCreate()
         }
       })
