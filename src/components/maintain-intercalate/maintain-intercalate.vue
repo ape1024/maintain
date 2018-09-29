@@ -25,7 +25,6 @@ export default {
     // 权限判断
     authority () {
       let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
-      console.log(Jurisdiction)
       Jurisdiction.forEach((val) => {
         if (val.functioncode === 'organization') {
           this.organizationSelect = val.select

@@ -12,20 +12,6 @@
               <el-input size="mini" v-model="designation" placeholder="请输入角色名称"></el-input>
             </div>
           </div>
-          <!--<div class="headerLeft">-->
-            <!--<p class="headerP">组织机构：</p>-->
-            <!--<div class="headerDiv">-->
-              <!--<el-select size="mini" v-model="organization" placeholder="请选择">-->
-                <!--<el-option-->
-                  <!--v-for="item in organizationData"-->
-                  <!--:key="item.organizationid"-->
-                  <!--:label="item.organizationname"-->
-                  <!--:value="item.organizationid">-->
-                <!--</el-option>-->
-              <!--</el-select>-->
-
-            <!--</div>-->
-          <!--</div>-->
         </div>
         <div class="karakters">
           <div class="jurisdictionBottom">
@@ -37,9 +23,9 @@
                   <li class="definitionHeaderlitwo">新增</li>
                   <li class="definitionHeaderlitwo">修改</li>
                   <li class="definitionHeaderlitwo">删除</li>
-                  <li class="definitionHeaderlitwo">审批</li>
-                  <li class="definitionHeaderlitwo">分配</li>
-                  <li class="definitionHeaderlitwo">检验</li>
+                  <li class="definitionHeaderlitwo">审批(确认)</li>
+                  <li class="definitionHeaderlitwo">分配(授权)</li>
+                  <li class="definitionHeaderlitwo">检验(归档)</li>
                 </ul>
               </div>
               <div class="content">
@@ -51,19 +37,19 @@
                         {{item.first}}
                       </li>
                       <li class="definitionHeaderlitwo">
-                        <el-checkbox :indeterminate="item.examinePart" v-if="item.examineShow" @change="definitionExamine(item, item.examine,0,item.examinePart)" v-model="item.examine"></el-checkbox>
+                        <el-checkbox :indeterminate="item.selectPart" v-if="item.selectShow" @change="definitionExamine(item, item.select,0,item.selectPart)" v-model="item.select"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
                         <el-checkbox :indeterminate="item.insertPart" v-if="item.insertShow" @change="definitionExamine(item, item.insert,1,item.insertPart)" v-model="item.insert"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
-                        <el-checkbox :indeterminate="item.modifyPart" v-if="item.modifyShow" @change="definitionExamine(item, item.modify,2,item.modifyPart)" v-model="item.modify"></el-checkbox>
+                        <el-checkbox :indeterminate="item.updatePart" v-if="item.updateShow" @change="definitionExamine(item, item.update,2,item.updatePart)" v-model="item.update"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
                         <el-checkbox :indeterminate="item.deletePart" v-if="item.deleteShow" @change="definitionExamine(item, item.delete,3,item.deletePart)" v-model="item.delete"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
-                        <el-checkbox :indeterminate="item.approvalPart" v-if="item.approvalShow" @change="definitionExamine(item, item.approval,4,item.approvalPart)" :disabled="checkedFlag" v-model="item.approval"></el-checkbox>
+                        <el-checkbox :indeterminate="item.approvalPart" v-if="item.approvalShow" @change="definitionExamine(item, item.approval,4,item.approvalPart)" v-model="item.approval"></el-checkbox>
                       </li>
                       <li class="definitionHeaderlitwo">
                         <el-checkbox :indeterminate="item.assignPart" v-if="item.assignShow" @change="definitionExamine(item, item.assign,5,item.assignPart)" v-model="item.assign"></el-checkbox>
@@ -80,25 +66,25 @@
                           {{data.functionname}}
                         </li>
                         <li class="definitionHeaderlitwo">
-                          <el-checkbox @change="definitionExamineChild(item, 'examinePart', 'examine', 'second', 'selectBoolean')" v-if="data.select === 1" v-model="data.selectBoolean"></el-checkbox>
+                          <el-checkbox @change="definitionExamineChild(item, 'selectPart', 'select', 'second', 'selectBoolean',  index)" v-if="data.select === 1" v-model="data.selectBoolean"></el-checkbox>
                         </li>
                         <li class="definitionHeaderlitwo">
-                          <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean')" v-if="data.insert === 1" v-model="data.insertBoolean"></el-checkbox>
+                          <el-checkbox @change="definitionExamineChild(item, 'insertPart', 'insert', 'second', 'insertBoolean', index)" v-if="data.insert === 1" v-model="data.insertBoolean"></el-checkbox>
                         </li>
                         <li class="definitionHeaderlitwo">
-                          <el-checkbox @change="definitionExamineChild(item, 'modifyPart', 'update', 'second', 'updateBoolean')" v-if="data.update === 1" v-model="data.updateBoolean"></el-checkbox>
+                          <el-checkbox @change="definitionExamineChild(item, 'updatePart', 'update', 'second', 'updateBoolean', index)" v-if="data.update === 1" v-model="data.updateBoolean"></el-checkbox>
                         </li>
                         <li class="definitionHeaderlitwo">
-                          <el-checkbox @change="definitionExamineChild(item, 'deletePart', 'delete', 'second', 'deleteBoolean')" v-if="data.delete === 1" v-model="data.deleteBoolean"></el-checkbox>
+                          <el-checkbox @change="definitionExamineChild(item, 'deletePart', 'delete', 'second', 'deleteBoolean', index)" v-if="data.delete === 1" v-model="data.deleteBoolean"></el-checkbox>
                         </li>
                         <li class="definitionHeaderlitwo">
-                          <el-checkbox @change="definitionExamineChild(item, 'approvalPart', 'approval', 'second', 'approvalBoolean')" v-if="data.approval === 1" :disabled="checkedFlag" v-model="data.approvalBoolean"></el-checkbox>
+                          <el-checkbox @change="definitionExamineChild(item, 'approvalPart', 'approval', 'second', 'approvalBoolean', index)" v-if="data.approval === 1" v-model="data.approvalBoolean"></el-checkbox>
                         </li>
                         <li class="definitionHeaderlitwo">
-                          <el-checkbox @change="definitionExamineChild(item, 'assignPart', 'assign', 'second', 'assignBoolean')" v-if="data.assign === 1" v-model="data.assignBoolean"></el-checkbox>
+                          <el-checkbox @change="definitionExamineChild(item, 'assignPart', 'assign', 'second', 'assignBoolean', index)" v-if="data.assign === 1" v-model="data.assignBoolean"></el-checkbox>
                         </li>
                         <li class="definitionHeaderlitwo">
-                          <el-checkbox @change="definitionExamineChild(item, 'checkPart', 'check', 'second', 'checkBoolean')" v-if="data.check === 1" v-model="data.checkBoolean"></el-checkbox>
+                          <el-checkbox @change="definitionExamineChild(item, 'checkPart', 'check', 'second', 'checkBoolean', index)" v-if="data.check === 1" v-model="data.checkBoolean"></el-checkbox>
                         </li>
                       </ul>
                     </li>
@@ -143,15 +129,15 @@ export default {
       this.fullFunctionality.forEach((val) => {
         val.second.forEach((item) => {
           let obj = {
-            //  id
+            // id
             'functionid': item.functionid,
-            //  增加
+            // 增加
             'approval': item.approvalBoolean,
-            //  删除
+            // 删除
             'delete': item.deleteBoolean,
-            //  查看
+            // 查看
             'select': item.selectBoolean,
-            //  修改
+            // 修改
             'update': item.updateBoolean,
             // 审批
             'insert': item.insertBoolean,
@@ -163,14 +149,6 @@ export default {
           roleFunctions.push(obj)
         })
       })
-      // roleFunctions = JSON.stringify(roleFunctions)
-      // if (organizationinfoid === '') {
-      //   this.$message({
-      //     message: '请选择组织机构',
-      //     type: 'warning'
-      //   })
-      //   return false
-      // } else
       if (roleName === '') {
         this.$message({
           message: '请填写角色名称',
@@ -178,7 +156,6 @@ export default {
         })
         return false
       }
-
       this.axios.post(increasedCreaterole(roleName, organizationinfoid, token), roleFunctions).then((response) => {
         if (response.data.code === 0) {
           this.$message({
@@ -201,8 +178,45 @@ export default {
     },
     definitionExamine (data, flag, number, showflag) { // showflag 标识indeterminate 状态
       if (number === 0) {
-        if (showflag === true) {
-          data.examinePart = false
+        // 判断是否是非全选状态
+        if (showflag) {
+          data.selectPart = false
+        }
+        if (!flag && (data.insertPart || data.insert || data.deletePart || data.delete || data.updatePart || data.update || data.approvalPart || data.approval || data.assignPart || data.assign || data.checkPart || data.check)) {
+          this.$confirm('查看权限取消后，该功能其余权限一并取消！', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            data.second.forEach((val) => {
+              val.insertBoolean = false
+              val.deleteBoolean = false
+              val.updateBoolean = false
+              val.selectBoolean = false
+              val.checkBoolean = false
+              val.approvalBoolean = false
+              val.assignBoolean = false
+              data.selectPart = false
+              data.insertPart = false
+              data.deletePart = false
+              data.updatePart = false
+              data.approvalPart = false
+              data.assignPart = false
+              data.checkPart = false
+              data.select = false
+              data.insert = false
+              data.delete = false
+              data.update = false
+              data.approval = false
+              data.assign = false
+              data.check = false
+            })
+          }).catch(() => {
+            data.select = true
+            data.second.forEach((val) => {
+              val.selectBoolean = true
+            })
+          })
         }
         if (flag === true) {
           data.second.forEach((val) => {
@@ -213,26 +227,34 @@ export default {
             val.selectBoolean = false
           })
         }
-      } else if (number === 4) {
+      } else if (number === 1) {
         if (showflag === true) {
-          data.approvalPart = false
+          data.insertPart = false
         }
         if (flag === true) {
           data.second.forEach((val) => {
-            val.approvalBoolean = true
+            val.insertBoolean = true
+            if (val.select === 1) {
+              val.selectBoolean = true
+            }
           })
         } else {
           data.second.forEach((val) => {
-            val.approvalBoolean = false
+            val.insertBoolean = false
           })
         }
       } else if (number === 2) {
         if (flag === true) {
           if (showflag === true) {
-            data.modifyPart = false
+            data.updatePart = false
           }
           data.second.forEach((val) => {
             val.updateBoolean = true
+            if (val.update === 1) {
+              if (val.select === 1) {
+                val.selectBoolean = true
+              }
+            }
           })
         } else {
           data.second.forEach((val) => {
@@ -246,23 +268,33 @@ export default {
         if (flag === true) {
           data.second.forEach((val) => {
             val.deleteBoolean = true
+            if (val.delete === 1) {
+              if (val.select === 1) {
+                val.selectBoolean = true
+              }
+            }
           })
         } else {
           data.second.forEach((val) => {
             val.deleteBoolean = false
           })
         }
-      } else if (number === 1) {
+      } else if (number === 4) {
         if (showflag === true) {
-          data.insertPart = false
+          data.approvalPart = false
         }
         if (flag === true) {
           data.second.forEach((val) => {
-            val.insertBoolean = true
+            val.approvalBoolean = true
+            if (val.approval === 1) {
+              if (val.select === 1) {
+                val.selectBoolean = true
+              }
+            }
           })
         } else {
           data.second.forEach((val) => {
-            val.insertBoolean = false
+            val.approvalBoolean = false
           })
         }
       } else if (number === 5) {
@@ -272,6 +304,11 @@ export default {
         if (flag === true) {
           data.second.forEach((val) => {
             val.assignBoolean = true
+            if (val.assign === 1) {
+              if (val.select === 1) {
+                val.selectBoolean = true
+              }
+            }
           })
         } else {
           data.second.forEach((val) => {
@@ -285,6 +322,11 @@ export default {
         if (flag === true) {
           data.second.forEach((val) => {
             val.checkBoolean = true
+            if (val.check === 1) {
+              if (val.select === 1) {
+                val.selectBoolean = true
+              }
+            }
           })
         } else {
           data.second.forEach((val) => {
@@ -292,17 +334,114 @@ export default {
           })
         }
       }
+      this.checkSelectFlag(data, 'selectPart', 'select', 'second', 'selectBoolean')
     },
-    definitionExamineChild (data, part, parentFlag, currentFlag, childFlag) {
+    definitionExamineChild (data, part, parentFlag, currentFlag, childFlag, functionId) {
+      let tempData = data[currentFlag][functionId]
+      // 判断查看状态取消选中
+      if (childFlag === 'selectBoolean') {
+        if (!tempData.selectBoolean & (tempData.insertBoolean || tempData.deleteBoolean || tempData.updateBoolean || tempData.deleteBoolean || tempData.checkBoolean || tempData.approvalBoolean || tempData.assignBoolean)) {
+          this.$confirm('查看权限取消后，该功能其余权限一并取消！', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            // 增加
+            if (tempData.insertBoolean) {
+              tempData.insertBoolean = false
+              this.definitionExamineChild(data, 'insertPart', 'insert', 'second', 'insertBoolean', functionId)
+            }
+            // 删除
+            if (tempData.deleteBoolean) {
+              tempData.deleteBoolean = false
+              this.definitionExamineChild(data, 'deletePart', 'delete', 'second', 'deleteBoolean', functionId)
+            }
+            // 修改
+            if (tempData.updateBoolean) {
+              tempData.updateBoolean = false
+              this.definitionExamineChild(data, 'updatePart', 'update', 'second', 'updateBoolean', functionId)
+            }
+            // 检验
+            if (tempData.checkBoolean) {
+              tempData.checkBoolean = false
+              this.definitionExamineChild(data, 'checkPart', 'check', 'second', 'checkBoolean', functionId)
+            }
+            // 审批
+            if (tempData.approvalBoolean) {
+              tempData.approvalBoolean = false
+              this.definitionExamineChild(data, 'approvalPart', 'approval', 'second', 'approvalBoolean', functionId)
+            }
+            // 分配
+            if (tempData.assignBoolean) {
+              tempData.assignBoolean = false
+              this.definitionExamineChild(data, 'assignPart', 'assign', 'second', 'assignBoolean', functionId)
+            }
+            // 查看
+            tempData.selectBoolean = false
+          }).catch(() => {
+            tempData.selectBoolean = true
+            this.definitionExamineChild(data, 'selectPart', 'select', 'second', 'selectBoolean', functionId)
+          })
+        } else {
+        }
+      } else {
+        if (!tempData.selectBoolean & (tempData.insertBoolean || tempData.deleteBoolean || tempData.updateBoolean || tempData.deleteBoolean || tempData.checkBoolean || tempData.approvalBoolean || tempData.assignBoolean)) {
+          tempData.selectBoolean = true
+          this.definitionExamineChild(data, 'selectPart', 'select', 'second', 'selectBoolean', functionId)
+        }
+      }
+      // let flag = true
+      // let indeterminateFlag = true
+      // let len = 0
+      // // 比较值
+      // let comparisonVal = 0
+      // data[currentFlag].forEach(t => {
+      //   flag = flag && t[childFlag]
+      //   if (t[childFlag]) {
+      //     len += 1
+      //   }
+      //   if (t[parentFlag] === 1) {
+      //     comparisonVal += 1
+      //   }
+      // })
+      // if (len > 0 && len < comparisonVal) {
+      //   indeterminateFlag = true
+      // } else if (len === 0) {
+      //   indeterminateFlag = false
+      //   flag = false
+      // } else {
+      //   indeterminateFlag = false
+      //   flag = true
+      // }
+      // data[part] = indeterminateFlag
+      // data[parentFlag] = flag
+      this.checkSelectFlag(data, part, parentFlag, currentFlag, childFlag)
+    },
+    checkSelectFlag (data, part, parentFlag, currentFlag, childFlag) {
       let flag = true
+      let indeterminateFlag = true
       let len = 0
+      // 比较值
+      let comparisonVal = 0
       data[currentFlag].forEach(t => {
         flag = flag && t[childFlag]
         if (t[childFlag]) {
           len += 1
         }
+        if (t[parentFlag] === 1) {
+          comparisonVal += 1
+        }
       })
-      data[part] = len > 0 && len < data[currentFlag].length
+      if (len > 0 && len < comparisonVal) {
+        indeterminateFlag = true
+      } else if (len === 0) {
+        indeterminateFlag = false
+        flag = false
+      } else {
+        indeterminateFlag = false
+        flag = true
+      }
+      data[part] = indeterminateFlag
       data[parentFlag] = flag
     }
   },
@@ -311,9 +450,9 @@ export default {
     this.axios.post(karaktersFindAllFunctions(token)).then((response) => {
       if (response.data.code === 0) {
         response.data.data.forEach((val) => {
-          let examineShow = 0
+          let selectShow = 0
           let approvalShow = 0
-          let modifyShow = 0
+          let updateShow = 0
           let deleteShow = 0
           let insertShow = 0
           let assignShow = 0
@@ -335,7 +474,7 @@ export default {
             val.checkBoolean = false
             // 显示状态
             if (val.select === 1) {
-              examineShow = 1
+              selectShow = 1
             }
 
             if (val.approval === 1) {
@@ -343,7 +482,7 @@ export default {
             }
 
             if (val.update === 1) {
-              modifyShow = 1
+              updateShow = 1
             }
 
             if (val.delete === 1) {
@@ -365,17 +504,17 @@ export default {
           //  二级开关
           val.flag = false
           //  查看
-          val.examine = false
-          val.examinePart = false
-          val.examineShow = examineShow
+          val.select = false
+          val.selectPart = false
+          val.selectShow = selectShow
           //  审批
           val.approval = false
           val.approvalPart = false
           val.approvalShow = approvalShow
           //  修改
-          val.modify = false
-          val.modifyPart = false
-          val.modifyShow = modifyShow
+          val.update = false
+          val.updatePart = false
+          val.updateShow = updateShow
           //  删除
           val.delete = false
           val.deletePart = false
