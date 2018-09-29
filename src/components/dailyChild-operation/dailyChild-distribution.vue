@@ -192,7 +192,7 @@ export default {
   },
   created () {
     this.instruction.forEach((val, index) => {
-      let data = `${index},工作事项: ${val.matters} 工作结论: ${val.conclusion === null ? ' ' : val.conclusion}\n`
+      let data = `${index + 1},工作事项: ${val.matters},工作记录:${val.workrecord}, 工作结论: ${val.conclusion === null ? ' ' : val.conclusion}\n`
       this.instrucTion += data
     })
     //  业主单位

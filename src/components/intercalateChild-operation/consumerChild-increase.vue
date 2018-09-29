@@ -244,6 +244,37 @@
       </div>
       <div class="purview">
         <header class="contentHeader">
+          <p class="headerP">组织机构</p>
+          <p class="headerLine"></p>
+        </header>
+        <div class="purviewDiv">
+          <div class="substance">
+            <div class="substanceDiv">
+              <div class="firecontrol">
+
+              </div>
+              <div class="firecontrolDiv">
+                <div class="firecontrolDiv_div">
+                  <el-tree
+                    :data="firecontrol"
+                    :props="firecontrolProps"
+                    node-key="id"
+                    ref="tree"
+                    show-checkbox
+                    default-expand-all
+                    @check="firecontrolCheck">
+                  </el-tree>
+                </div>
+              </div>
+            </div>
+            <p class="substanceP">
+              建筑范围：
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="purview">
+        <header class="contentHeader">
           <p class="headerP">维保内容</p>
           <p class="headerLine"></p>
         </header>
@@ -313,7 +344,7 @@
 
 <script>
 import $ from 'jquery'
-import { managementCreate, managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload } from '../../api/user'
+import { managementCreate, managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload, getOrganizationTrees } from '../../api/user'
 export default {
   name: 'consumerChild-increase',
   props: ['edit', 'project'],
@@ -734,8 +765,8 @@ export default {
   @import "~common/stylus/variable"
   .subject
     init()
-    padding 20px 0 20px
-    margin-top 20px
+    padding 40px 0
+    margin-top 50px
     background #111a28
     .section
       width 1245px

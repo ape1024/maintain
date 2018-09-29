@@ -100,6 +100,7 @@ export default {
             message: '原始密码错误!',
             type: 'warning'
           })
+          this.showState = !this.showState
         }
       })
     },
@@ -114,6 +115,7 @@ export default {
         if (this.newcode !== this.barbarism) {
           if (this.newcode === this.duplicate) {
             this.axios.post(modifytheUserPwd(useridCurrent, this.barbarism, this.newcode)).then((response) => {
+              console.log(response)
               if (response.data.code === 0) {
                 if (userId === useridCurrent) {
                   this.$message({
@@ -124,9 +126,7 @@ export default {
                   this.$router.push({path: '/login'})
                   return false
                 } else {
-                  this.thisPage = this.edit
-                  this.thisPage = !this.thisPage
-                  this.$emit('edit', this.thisPage)
+                  this.$emit('edit', false)
                   return false
                 }
               } else {
@@ -172,9 +172,7 @@ export default {
       return isJPG && isLt2M
     },
     closedown () {
-      this.thisPage = this.edit
-      this.thisPage = !this.thisPage
-      this.$emit('edit', this.thisPage)
+      this.$emit('edit', false)
       return false
     }
   }

@@ -43,7 +43,7 @@
                 </div>
               </div>
               <div class="modify_liDivthree">
-                <p class="modify_li_p"><span class="increaseSpan">*</span>规格型号：</p>
+                <p class="modify_li_p"><span class="increaseSpan"> </span>规格型号：</p>
                 <div class="modify_li_div">
                   <el-select size="mini" @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
                     <el-option
@@ -58,22 +58,22 @@
                   <el-input size="mini" v-show="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
                 </div>
               </div>
-              <div class="modify_liDivthree">
-                <p class="modify_li_p"><span class="increaseSpan">*</span>设施单位：</p>
-                <div class="modify_li_div">
-                  <el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">
-                    <el-option
-                      v-for="item in CompanyData"
-                      :key="item.devunitId"
-                      :label="item.unitname"
-                      :value="item.devunitId">
-                    </el-option>
-                  </el-select>
-                </div>
-                <div class="modify_lidivRight">
-                  <el-input v-if="CompanyShow" size="mini" v-model="CompanyInput" placeholder="请输入单位"></el-input>
-                </div>
-              </div>
+              <!--<div class="modify_liDivthree">-->
+                <!--<p class="modify_li_p"><span class="increaseSpan">*</span>设施单位：</p>-->
+                <!--<div class="modify_li_div">-->
+                  <!--<el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">-->
+                    <!--<el-option-->
+                      <!--v-for="item in CompanyData"-->
+                      <!--:key="item.devunitId"-->
+                      <!--:label="item.unitname"-->
+                      <!--:value="item.devunitId">-->
+                    <!--</el-option>-->
+                  <!--</el-select>-->
+                <!--</div>-->
+                <!--<div class="modify_lidivRight">-->
+                  <!--<el-input v-if="CompanyShow" size="mini" v-model="CompanyInput" placeholder="请输入单位"></el-input>-->
+                <!--</div>-->
+              <!--</div>-->
               <div class="modify_liDivthree">
                 <p class="modify_li_p">
                   技术参数：
@@ -89,6 +89,7 @@
                   </el-input>
                 </div>
               </div>
+
             </li>
             <li class="modify_li">
               <div class="modify_liDiv">
@@ -144,29 +145,30 @@
                   </el-input>
                 </div>
               </div>
-              <div class="modify_liDiv">
-                <p class="modify_li_p">
-                  上传图片:
-                </p>
-                <div class="modify_li_divfour">
-                  <el-upload
-                    :action="uploadFun"
-                    list-type="picture-card"
-                    :on-success="handlesuccess"
-                    :on-preview="handlePictureCardPreview"
-                    :on-error="handlePictureerror"
-                    :on-exceed="handlePicturexceed"
-                    :limit='10'
-                    :on-remove="handleRemove">
-                    <i class="el-icon-plus"></i>
-                  </el-upload>
-                  <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                  </el-dialog>
-                </div>
-              </div>
+
             </li>
           </ul>
+          <div class="UploadPicture">
+            <p class="UploadPictureP">
+              上传图片:
+            </p>
+            <div class="modify_li_divfour">
+              <el-upload
+                :action="uploadFun"
+                list-type="picture-card"
+                :on-success="handlesuccess"
+                :on-preview="handlePictureCardPreview"
+                :on-error="handlePictureerror"
+                :on-exceed="handlePicturexceed"
+                :limit='10'
+                :on-remove="handleRemove">
+                <i class="el-icon-plus"></i>
+              </el-upload>
+              <el-dialog :visible.sync="dialogVisible">
+                <img width="100%" :src="dialogImageUrl" alt="">
+              </el-dialog>
+            </div>
+          </div>
         </section>
       </div>
       <div class="increase_bottom">
@@ -290,7 +292,7 @@
 <script>
 import $ from 'jquery'
 import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, findAllDeviceType,
-  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload, AddDevUnit, GetDevUnit} from '../../api/user'
+  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload, GetDevUnit} from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
@@ -646,29 +648,29 @@ export default {
       })
       //  单位
       let devunitid = ''
-      if (!this.Company) {
-        this.$message({
-          message: '请选择设施单位',
-          type: 'warning'
-        })
-        return false
-      }
-      if (this.Company === -999) {
-        if (!this.CompanyInput) {
-          this.$message({
-            message: '请填写设施单位',
-            type: 'warning'
-          })
-          return false
-        } else {
-          const data = await this.axios.post(AddDevUnit(token, devicetypeid, this.CompanyInput)).then((Data) => Data)
-          if (data.data.code === 0) {
-            devunitid = data.data.data.devunitId
-          }
-        }
-      } else {
-        devunitid = this.Company
-      }
+      // if (!this.Company) {
+      //   this.$message({
+      //     message: '请选择设施单位',
+      //     type: 'warning'
+      //   })
+      //   return false
+      // }
+      // if (this.Company === -999) {
+      //   if (!this.CompanyInput) {
+      //     this.$message({
+      //       message: '请填写设施单位',
+      //       type: 'warning'
+      //     })
+      //     return false
+      //   } else {
+      //     const data = await this.axios.post(AddDevUnit(token, devicetypeid, this.CompanyInput)).then((Data) => Data)
+      //     if (data.data.code === 0) {
+      //       devunitid = data.data.data.devunitId
+      //     }
+      //   }
+      // } else {
+      //   devunitid = this.Company
+      // }
       if (this.categoryDate.length !== 0) {
         if (this.customManufacturer === true) {
           if (!this.customManufacturerDate) {
@@ -1290,6 +1292,13 @@ export default {
     position relative
     width 100%
     height 90px
+  .UploadPicture
+    position relative
+    overflow height
+    margin 0 0 0 20px
+  .UploadPictureP
+    margin-bottom 20px
+    color #d5d5d5
 </style>
 <style>
   .modify_li_divfour .el-upload-list--picture-card .el-upload-list__item{
