@@ -18,6 +18,9 @@
             <li class="cephalosomeOne">
               位置
             </li>
+            <li class="cephalosomeOne">
+              设备数量
+            </li>
             <div class="heavyPlayLiDiv">
               <ul class="heavyPlayLiUl">
                 <li class="cephalosomeTwo">工作事项</li>
@@ -48,6 +51,8 @@
                 <li :title="item.position" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.position}}
                 </li>
+                <li :title="item.devicecount" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                  {{item.devicecount}}                </li>
                 <div class="heavyPlayLiDiv">
                   <ul :key="$index" v-for="(data, $index) in item.details" class="heavyPlayLiUl">
                     <li :title="data.workitem" class="heavyPlayLi cephalosomeTwo" >
@@ -71,6 +76,7 @@
                     </li>
                   </ul>
                 </div>
+                <!--操作-->
                 <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne cephalosomelv">
                   <span @click.stop="particulars(item.deviceid)" class="cephalosomeFiveSpan">详情</span>
                 </li>
@@ -232,7 +238,7 @@ export default {
     box-sizing border-box
     border-right 1px solid #3f4856
   .cephalosomeOne
-    width 10%
+    width 8%
     padding-right .5%
     text-indent .4em!important
     overflow hidden
