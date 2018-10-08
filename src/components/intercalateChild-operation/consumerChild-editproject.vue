@@ -70,7 +70,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-select size="mini" v-model="proprietornameDate" placeholder="请选择">
+                <el-select size="mini" v-model="proprietornameDate" @change="proprietornameChange" placeholder="请选择">
                   <el-option
                     v-for="item in proprietorName"
                     :key="item.organizationid"
@@ -184,6 +184,36 @@
       </div>
       <div class="purview">
         <header class="contentHeader">
+          <p class="headerP">组织机构</p>
+          <p class="headerLine"></p>
+        </header>
+        <div class="purviewDiv">
+          <div class="substance">
+            <div class="substanceDiv">
+              <div @click.stop="organizeChange" class="firecontrol">
+                {{organizeText}}
+              </div>
+              <div @click.stop v-show="organizeboolean" class="firecontrolDiv">
+                <div class="firecontrolDiv_div">
+                  <el-checkbox-group v-model="checkedCities">
+                    <el-tree :data="organize" :props="organizeProps" node-key="id" :expand-on-click-node="false">
+                      <div class="custom-tree-node" slot-scope="{ node, data }">
+                        <el-checkbox :label="data.organizationId">{{checkboxDefaultVal}}</el-checkbox>
+                        <div class="custom-tree-node-expand" @click="checkboxClick(node)">               {{data.organizationName}}</div>
+                      </div>
+                    </el-tree>
+                    </el-checkbox-group>
+                </div>
+              </div>
+            </div>
+            <p class="substanceP">
+              组织机构：
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="purview">
+        <header class="contentHeader">
           <p class="headerP">维保内容</p>
           <p class="headerLine"></p>
         </header>
@@ -256,9 +286,11 @@
 
 <script>
 import $ from 'jquery'
-import { getProjectDevices, increasefindAllDevType, increasegetWorkTypes, getProprietorOrganization, getRootOrganizationsNotProprietor, managementCreatedProvince, getCountiesByCityId, getCitiesByProvinceId, createOrUpdateProject, findAllRootAreasTree, upload } from '../../api/user'
+import { getProjectDevices, increasefindAllDevType, increasegetWorkTypes, getProprietorOrganization, getRootOrganizationsNotProprietor, getCountiesByCityId, getCitiesByProvinceId, createOrUpdateProject, findAllRootAreasTree, upload, getOrganizationTreeTion } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'consumerChild-editproject',
+  mixins: [projectMixin],
   props: ['edit', 'project'],
   data () {
     return {
@@ -334,10 +366,71 @@ export default {
       fileList: [],
       documentPapers: [],
       arrayAddresses: [],
-      uploadUrl: upload(JSON.parse(window.sessionStorage.token))
+      uploadUrl: upload(JSON.parse(window.sessionStorage.token)),
+      organizationtype: '', // 机构类型
+      organizationDisable: false,
+      organize: [],
+      organizeText: '',
+      organizeboolean: false,
+      checkedCities: [],
+      organizeProps: {
+        children: 'subOrgnizations',
+        label: 'organizationName',
+        value: 'organizationId'
+      }
+    }
+  },
+  watch: {
+    checkedCities (el) {
+      this.organizeText = ''
+      let result = ''
+      let findData = (data, val) => {
+        let flag = true
+        data.forEach((item) => {
+          if (item.organizationId === val) {
+            result += ` ${item.organizationName} `
+            flag = false
+          } else if (flag && item.subOrgnizations) {
+            findData(item.subOrgnizations, val)
+          }
+        })
+      }
+      el.forEach((data) => {
+        findData(this.organize, data)
+      })
+      this.organizeText = result
     }
   },
   methods: {
+    proprietornameChange (data) {
+      this.axios.post(getOrganizationTreeTion(data)).then((response) => {
+        if (response.data.code === 0) {
+          if (!data.data.data) {
+            this.organize = []
+          } else {
+            this.checkedCities = ''
+            this.organize = []
+            this.organize.push(data.data.data)
+          }
+        }
+      })
+    },
+    checkboxClick (data) {
+      data.expanded = !data.expanded
+    },
+    organizeCheck (checkedNodes, checkedKeys) {
+      let data = ''
+      this.firecontrolDate = checkedKeys.checkedNodes
+      for (let i = 0; i < checkedKeys.checkedNodes.length; i++) {
+        if (checkedKeys.checkedNodes[i].parentFlag !== true) {
+          data += checkedKeys.checkedNodes[i].name + ' '
+        }
+      }
+      this.organizeText = data
+    },
+    organizeChange () {
+      this.organizeboolean = !this.organizeboolean
+    },
     handlesuccess (response, file, fileList) {
       this.documentPapers.push({
         'name': `${file.name}`,
@@ -356,7 +449,6 @@ export default {
     beforeRemove (file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
     },
-
     firecontrolClick () {
       this.buildscopeBoolean = !this.buildscopeBoolean
     },
@@ -386,6 +478,7 @@ export default {
       this.firecontrolBoolean = false
       this.buildscopeBoolean = false
       this.regionUl = false
+      this.organizeboolean = false
     },
     fireconboolean () {
       this.firecontrolBoolean = !this.firecontrolBoolean
@@ -440,6 +533,7 @@ export default {
           'areas': areas,
           'baseDevices': baseDevices,
           'files': this.documentPapers,
+          'organizations': this.checkedCities,
           'project': {
             'enddate': `${this.endDate}`,
             'projectid': `${this.project.projectid}`,
@@ -561,8 +655,44 @@ export default {
     //  获取项目设备
     this.buildscopeDate = this.edit.areaids
     this.projectDate = this.edit.workTypeids
+    //  组织机构
+    if (!this.edit.organization) {
+      this.checkedCities = []
+    } else {
+      this.edit.organization.forEach((data) => {
+        this.checkedCities.push(data.organizationid)
+      })
+    }
     //  服务机构
     this.proprietornameDate = this.edit.projectsinfosviewdetail.vindicatorid
+    //  组织机构
+    this.axios.post(getOrganizationTreeTion(this.proprietornameDate)).then((data) => {
+      if (data.data.code === 0) {
+        if (!data.data.data) {
+          this.organize = []
+          return false
+        } else {
+          this.organize = []
+          this.organize.push(data.data.data)
+          let result = ''
+          let findData = (data, val) => {
+            let flag = true
+            data.forEach((item) => {
+              if (item.organizationId === val) {
+                result += ` ${item.organizationName} `
+                flag = false
+              } else if (flag && item.subOrgnizations) {
+                findData(item.subOrgnizations, val)
+              }
+            })
+          }
+          this.checkedCities.forEach((data) => {
+            findData(this.organize, data)
+          })
+          this.organizeText = result
+        }
+      }
+    })
     //  建筑范围
     this.buildscope = this.edit.projectsinfosviewdetail.areas
     //  设备
@@ -614,15 +744,6 @@ export default {
 
     this.axios.post(increasefindAllDevType()).then((response) => {
       this.firecontrol = response.data
-      // response.data.forEach((val) => {
-      //   val.children.forEach((data) => {
-      //     for (let i = 0; i < this.firecontrolDate.length; i++) {
-      //       if (data.id === this.firecontrolDate[i]) {
-      //         this.firecontrolda += ` ${data.name} `
-      //       }
-      //     }
-      //   })
-      // })
     })
     this.axios.post(increasegetWorkTypes()).then((response) => {
       if (response.data.code === 0) {
@@ -641,11 +762,8 @@ export default {
         this.proprieTorDate = response.data.data
       }
     })
-    this.axios.post(managementCreatedProvince()).then((response) => {
-      if (response.data.code === 0) {
-        this.province = response.data.data
-      }
-    })
+    // 定义空值
+    this.checkboxDefaultVal = ''
   }
 }
 </script>
@@ -924,4 +1042,60 @@ export default {
               text-indent 5em
   .el-date-editor.el-input
     width 100%
+  .information_Maintain:before
+    content: ''
+    width: 0
+    height: 0
+    border-top: 20px solid transparent
+    border-right: 20px solid transparent
+    border-bottom: 20px solid lightblue
+    border-left: 20px solid transparent
+    position: absolute
+    left: 53%
+    margin-top: -40px
+  .information_Maintain-change:before
+    content: ''
+    width: 0
+    height: 0
+    border-top: 20px solid transparent
+    border-right: 20px solid transparent
+    border-bottom: 20px solid lightblue
+    border-left: 20px solid transparent
+    position: absolute
+    left: 20%
+    // top: 50%
+    margin-top: -40px
+  .information_Maintain:after
+    content: ''
+    width: 0
+    height: 0
+    border-top: 18px solid transparent
+    border-top: 20px solid transparent
+    border-right: 20px solid transparent
+    border-bottom: 20px solid #111a28
+    border-left: 20px solid transparent
+    position: absolute
+    left: 53%
+    margin-top: -38px
+  .information_Maintain-change:after
+    content: ''
+    width: 0
+    height: 0
+    border-top: 18px solid transparent
+    border-top: 20px solid transparent
+    border-right: 20px solid transparent
+    border-bottom: 20px solid #111a28
+    border-left: 20px solid transparent
+    position: absolute
+    left: 20%
+    margin-top: -38px
+  .firecontrolDiv_div
+    position relative
+    line-height 24px
+    margin 20px 10px
+    overflow hidden
+    .custom-tree-node
+      display flex
+      .custom-tree-node-expand
+        font-size 14px
 </style>

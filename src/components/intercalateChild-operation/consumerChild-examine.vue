@@ -119,6 +119,22 @@
       </div>
       <div class="purview">
         <header class="contentHeader">
+          <p class="headerP">组织机构</p>
+          <p class="headerLine"></p>
+        </header>
+        <div class="purviewDiv">
+          <div class="substance">
+            <div class="substanceDiv">
+              <el-input size="mini" v-model="organizeText" :disabled="true" placeholder=""></el-input>
+            </div>
+            <p class="substanceP">
+              组织机构：
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="purview">
+        <header class="contentHeader">
           <p class="headerP">维保内容</p>
           <p class="headerLine"></p>
         </header>
@@ -192,8 +208,11 @@
 </template>
 
 <script>
+import { getAllOrgTreeeByProjectId } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'consumerChild-examine',
+  mixins: [projectMixin],
   props: ['examine', 'exaDate'],
   data () {
     return {
@@ -208,7 +227,9 @@ export default {
       devtypes: '',
       content: '',
       requirement: '',
-      comment: ''
+      comment: '',
+      organizeText: '',
+      organize: []
     }
   },
   methods: {
@@ -230,12 +251,39 @@ export default {
   },
   created () {
     this.projectsinfosviewdetail = this.exaDate.projectsinfosviewdetail
-
     this.devtypes = this.exaDate.devtypes
     this.content = this.exaDate.projectsinfosviewdetail.content
     this.requirement = this.exaDate.projectsinfosviewdetail.requirement
     this.comment = this.exaDate.projectsinfosviewdetail.comment
     this.areas = this.exaDate.projectsinfosviewdetail.areas
+    let arr = []
+    if (this.exaDate.organization.length) {
+      this.exaDate.organization.forEach((val) => {
+        arr.push(val.organizationid)
+      })
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject, token)).then((response) => {
+        if (response.data.code === 0) {
+          this.organize = response.data.data
+          let result = ''
+          let findData = (data, val) => {
+            let flag = true
+            data.forEach((item) => {
+              if (item.orgid === val) {
+                result += ` ${item.orgname} `
+                flag = false
+              } else if (flag && item.orgs) {
+                findData(item.orgs, val)
+              }
+            })
+          }
+          arr.forEach((val) => {
+            findData(this.organize, val)
+          })
+          this.organizeText = result
+        }
+      })
+    }
   }
 }
 </script>
@@ -249,7 +297,7 @@ export default {
     .section
       width 1245px
       margin 0 auto
-      overflow-y scroll
+      overflow-y auto
       height 800px
       position relative
     .subjectH
@@ -395,4 +443,10 @@ export default {
       color #fff
       cursor pointer
       margin-left 20px
+  .substanceP
+    float left
+    color #999
+    margin-right 25px
+    line-height 30px
+    font-size 16px
 </style>

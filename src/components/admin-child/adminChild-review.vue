@@ -2,7 +2,7 @@
   <div class="newlyadded" @click="shutdown">
     <section class="increase">
       <h4 class="increase_h4">
-        新增设备
+        设施信息 新增
       </h4>
       <div class="increase_top">
         <div class="top_header">
@@ -93,6 +93,18 @@
             </li>
             <li class="modify_li">
               <div class="modify_liDiv">
+                <p class="modify_li_p">
+                  业主单位：
+                </p>
+                <div class="modify_li_divtwo">
+                  <el-input
+                    size="mini"
+                    v-model="proprietorUnit"
+                    :disabled="true">
+                  </el-input>
+                </div>
+              </div>
+              <div class="modify_liDiv">
                 <p class="modify_li_p">生产日期：</p>
                 <div class="modify_li_divtwo">
                   <el-date-picker
@@ -120,18 +132,6 @@
               </div>
               <div class="modify_liDiv">
                 <p class="modify_li_p">
-                  业主单位：
-                </p>
-                <div class="modify_li_divtwo">
-                  <el-input
-                    size="mini"
-                    v-model="proprietorUnit"
-                    :disabled="true">
-                  </el-input>
-                </div>
-              </div>
-              <div class="modify_liDiv">
-                <p class="modify_li_p">
                   备注说明：
                 </p>
                 <div class="modify_li_divthree">
@@ -150,7 +150,7 @@
           </ul>
           <div class="UploadPicture">
             <p class="UploadPictureP">
-              上传图片:
+              现场照片:
             </p>
             <div class="modify_li_divfour">
               <el-upload
@@ -1309,5 +1309,9 @@ export default {
     width: 80px;
     height: 80px;
     line-height: 80px;
+  }
+  .title_liliTwoDiv .el-input__inner {
+    height: 30px;
+    line-height: 30px;
   }
 </style>

@@ -70,7 +70,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-select size="mini" v-model="proprietornameDate" placeholder="请选择" :disabled="organizationDisable" >
+                <el-select size="mini" v-model="proprietornameDate" placeholder="请选择" :disabled="organizationDisable" @change="proprietornameChange">
                   <el-option
                     v-for="item in proprietorName"
                     :key="item.organizationid"
@@ -258,8 +258,8 @@
                   <el-checkbox-group v-model="checkedCities">
                     <el-tree :data="organize" :props="organizeProps" node-key="id" :expand-on-click-node="false">
                       <div class="custom-tree-node" slot-scope="{ node, data }">
-                        <el-checkbox :label="data.orgid">{{checkboxDefaultVal}}</el-checkbox>
-                        <div class="custom-tree-node-expand" @click="checkboxClick(node)">{{data.orgname}}</div>
+                        <el-checkbox :label="data.organizationId">{{checkboxDefaultVal}}</el-checkbox>
+                        <div class="custom-tree-node-expand" @click="checkboxClick(node)">{{data.organizationName}}</div>
                       </div>
                     </el-tree>
                   </el-checkbox-group>
@@ -343,7 +343,7 @@
 
 <script>
 import $ from 'jquery'
-import { managementCreate, managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload } from '../../api/user'
+import { managementCreate, managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload, getOrganizationTreeTion } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'consumerChild-increase',
@@ -418,9 +418,9 @@ export default {
         value: 'areaid'
       },
       organizeProps: {
-        children: 'orgs',
-        label: 'orgname',
-        value: 'orgid'
+        children: 'subOrgnizations',
+        label: 'organizationName',
+        value: 'organizationId'
       },
       firecontrolProps: {
         children: 'children',
@@ -446,17 +446,43 @@ export default {
   },
   watch: {
     checkedCities (el) {
-      console.log(el)
+      this.organizeText = ''
+      let result = ''
+      let findData = (data, val) => {
+        let flag = true
+        data.forEach((item) => {
+          if (item.organizationId === val) {
+            result += ` ${item.organizationName} `
+            flag = false
+          } else if (flag && item.subOrgnizations) {
+            findData(item.subOrgnizations, val)
+          }
+        })
+      }
+      el.forEach((data) => {
+        findData(this.organize, data)
+      })
+      this.organizeText = result
     }
   },
   methods: {
+    proprietornameChange (data) {
+      this.axios.post(getOrganizationTreeTion(data)).then((response) => {
+        if (response.data.code === 0) {
+          if (!data.data.data) {
+            this.organize = []
+          } else {
+            this.checkedCities = ''
+            this.organize = []
+            this.organize.push(data.data.data)
+          }
+        }
+      })
+    },
     organizeChange () {
       this.organizeboolean = !this.organizeboolean
     },
     organizeCheck (checkedNodes, checkedKeys) {
-      console.log(this.$refs.three.getCheckedNodes())
-      console.log(checkedNodes)
-      console.log(checkedKeys)
       let data = ''
       this.firecontrolDate = checkedKeys.checkedNodes
       for (let i = 0; i < checkedKeys.checkedNodes.length; i++) {
@@ -516,6 +542,13 @@ export default {
       this.firecontrolBoolean = !this.firecontrolBoolean
     },
     conserve () {
+      if (!this.checkedCities.length) {
+        this.$message({
+          message: '请选择组织机构',
+          type: 'warning'
+        })
+        return false
+      }
       if (this.proprietornameDate === -1 || this.proprieTor === -1) {
         // 添加单位信息
         if (this.organizationcode === '' || this.organizationname === '' || this.admin === '' || this.pwd === '') {
@@ -610,6 +643,7 @@ export default {
         'areas': areas,
         'baseDevices': baseDevices,
         'files': this.documentPapers,
+        'organizations': this.checkedCities,
         'project': {
           'enddate': `${this.endDate}`,
           'proprietor': `${this.proprieTor}`,
@@ -762,7 +796,6 @@ export default {
         }
       })
     })
-    //  这个接口有问题  没有这个接口
     this.axios.post(findAllRootAreasTree()).then((response) => {
       if (response.data.code === 0) {
         this.purview = response.data.data
@@ -791,15 +824,6 @@ export default {
           this.proprietornameDate = data.organizationid
           this.organizationDisable = true
         }
-      }
-    })
-    this.axios.post(`http://172.16.6.81:8920/organization/getAllOrgTreeeByProjectId?projectid=${this.maintainProject}&token=${token}`).then((response) => {
-      console.log(response)
-      if (response.data.code === 0) {
-        response.data.data.forEach((val) => {
-
-        })
-        this.organize = response.data.data
       }
     })
     // 定义空值

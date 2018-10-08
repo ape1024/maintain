@@ -2,7 +2,7 @@
   <div class="newlyadded">
     <section class="increase">
       <h4 class="increase_h4">
-        查看设备信息
+        设施信息 查看
       </h4>
       <div class="lookover">
         <ul class="lookover_ul">
@@ -22,49 +22,55 @@
         <ul class="information">
           <li class="lookover_litwo">
             <p class="lookover_p">生产厂家：</p>
-            <div>{{information.name}}</div>
-          </li>
-          <li class="lookover_li">
-            <p class="lookover_p">生产日期：</p>
-            <div>{{tiemerIf(this.information.madedate)}}</div>
-          </li>
-          <li class="lookover_li">
-            <p class="lookover_p">技术参数：</p>
-            <div>{{information.parameters}}</div>
-          </li>
-
-          <li class="lookover_litwo">
-            <p class="lookover_p">规格型号：</p>
-            <div>{{information.devicemodelname}}</div>
-          </li>
-          <li class="lookover_li">
-            <p class="lookover_p">有效日期：</p>
-            <div>{{tiemerIf(this.information.effectivedate)}}</div>
+            <div :title="information.name">{{information.name}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">创建人员：</p>
             <div>{{information.creatername}}</div>
           </li>
-
+          <li class="lookover_li">
+            <p class="lookover_p">创建日期：</p>
+            <div>{{tiemerIf(this.information.createtime)}}</div>
+          </li>
+          <li class="lookover_litwo">
+            <p class="lookover_p">规格型号：</p>
+            <div>{{information.devicemodelname}}</div>
+          </li>
+          <li class="lookover_li">
+            <p class="lookover_p">审核人员：</p>
+            <div>{{information.approvername}}</div>
+          </li>
+          <li class="lookover_li">
+            <p class="lookover_p">审核日期：</p>
+            <div>{{tiemerIf(this.information.approvaltime)}}</div>
+          </li>
           <li class="lookover_litwo">
             <p class="lookover_p">设备位置：</p>
-            <div>{{information.position}}</div>
+            <div :title="information.position">{{information.position}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">设备数量：</p>
             <div>{{information.devicecount}}{{information.unit}}</div>
           </li>
           <li class="lookover_li">
-            <p class="lookover_p">编辑人员：</p>
-            <div>{{information.creatername}}</div>
+            <p class="lookover_p">有效日期：</p>
+            <div>{{tiemerIf(this.information.effectivedate)}}</div>
+          </li>
+          <li class="lookover_litwo">
+            <p class="lookover_p">MAC编码：</p>
+            <div>{{information.mac}}</div>
+          </li>
+          <li class="lookover_li">
+            <p class="lookover_p">技术参数：</p>
+            <div :title="information.parameters">{{information.parameters}}</div>
+          </li>
+          <li class="lookover_li">
+            <p class="lookover_p">生产日期：</p>
+            <div>{{tiemerIf(this.information.madedate)}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">备注说明：</p>
-            <div>{{information.memo}}</div>
-          </li>
-          <li class="lookover_li">
-            <p class="lookover_p">审核人员：</p>
-            <div>{{information.approvername}}</div>
+            <div :title="information.memo">{{information.memo}}</div>
           </li>
           <li class="lookover_lithree">
             <p class="lithree_p">现场照片：</p>
@@ -128,7 +134,6 @@
 </template>
 
 <script>
-import { fmtDate } from '../../common/js/utils'
 import DialogImg from 'base/dialog-img/dialog-img'
 import { getProprietorOrganization } from '../../api/user'
 export default {
@@ -164,11 +169,27 @@ export default {
       this.$emit('look', this.lookoverBoolean)
     },
     tiemerIf (timer) {
-      if (timer !== undefined && timer !== null) {
-        return fmtDate(timer)
+      if (!timer) {
+        return ''
       } else {
-        return ' '
+        return this.dateTransfer(timer)
       }
+    },
+    dateTransfer (timer) {
+      let date = new Date()
+      date.setTime(timer)
+      let y = date.getFullYear()
+      let m = date.getMonth() + 1
+      m = m < 10 ? ('0' + m) : m
+      let d = date.getDate()
+      d = d < 10 ? ('0' + d) : d
+      let h = date.getHours()
+      h = h < 10 ? ('0' + h) : h
+      let minute = date.getMinutes()
+      let second = date.getSeconds()
+      minute = minute < 10 ? ('0' + minute) : minute
+      second = second < 10 ? ('0' + second) : second
+      return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second
     }
   },
   created () {
@@ -240,11 +261,15 @@ export default {
         width 33%
         margin-left 1%
         padding 12px 0
+        text-overflow ellipsis
+        white-space nowrap
       .lookover_li
         float left
         overflow hidden
         width 33%
         padding 12px 0
+        text-overflow ellipsis
+        white-space nowrap
       .lookover_lithree
         width 99%
         margin-left 1%

@@ -2,7 +2,7 @@
   <div class="newlyadded" @click="shutdown">
     <section class="increase">
       <h4 class="increase_h4">
-        修改设备信息
+        设施信息 修改
       </h4>
       <div class="top_header">
         <p class="header_p">新录入信息将替换原对应的内容</p>
@@ -93,8 +93,6 @@
                 <el-input size="mini" v-model="Specificposition" placeholder=""></el-input>
               </div>
             </div>
-          </li>
-          <li class="modify_li">
             <div class="modify_liDiv">
               <p class="modify_li_p">生产日期：</p>
               <div class="modify_li_divtwo">
@@ -120,6 +118,38 @@
                   type="date"
                   placeholder="选择日期">
                 </el-date-picker>
+              </div>
+            </div>
+          </li>
+          <li class="modify_li">
+            <div class="modify_liDiv">
+              <p class="modify_li_p">控制器编码：</p>
+              <div class="modify_li_div">
+                <el-input size="mini" v-model="controllerCoding" placeholder="控制器编码"></el-input>
+              </div>
+            </div>
+            <div class="modify_liDiv">
+              <p class="modify_li_p">回路号：</p>
+              <div class="modify_li_divtwo">
+                <div class="modify_li_div">
+                  <el-input size="mini" v-model="loopNumber" placeholder="回路号"></el-input>
+                </div>
+              </div>
+            </div>
+            <div class="modify_liDiv">
+              <p class="modify_li_p">一次码：</p>
+              <div class="modify_li_divtwo">
+                <div class="modify_li_div">
+                  <el-input size="mini" v-model="oneTimeCode" placeholder="一次码"></el-input>
+                </div>
+              </div>
+            </div>
+            <div class="modify_liDiv">
+              <p class="modify_li_p">地址编码：</p>
+              <div class="modify_li_divtwo">
+                <div class="modify_li_div">
+                  <el-input size="mini" v-model="addressCode" placeholder="地址编码"></el-input>
+                </div>
               </div>
             </div>
             <div class="modify_liDiv">
@@ -189,7 +219,6 @@
 
 <script>
 import $ from 'jquery'
-import { fmtDate } from '../../common/js/utils'
 import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType, upload, GetDevUnit } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
@@ -270,7 +299,11 @@ export default {
       dialogVisible: false,
       uploadData: [],
       uploadFun: upload(JSON.parse(window.sessionStorage.token)),
-      CompanyShow: false
+      CompanyShow: false,
+      controllerCoding: '',
+      loopNumber: '',
+      oneTimeCode: '',
+      addressCode: ''
     }
   },
   watch: {
@@ -279,6 +312,13 @@ export default {
     }
   },
   methods: {
+    fmtDate (obj) {
+      let date = new Date(obj)
+      let y = 1900 + date.getYear()
+      let m = `0` + (date.getMonth() + 1)
+      let d = `0` + date.getDate()
+      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    },
     ompanyfocus () {
       if (!this.categoryDate.length) {
         this.$message({
@@ -391,30 +431,9 @@ export default {
       let effectivedate = this.validity
       //  单位
       let devunitid = ''
+      //  mac地址
+      let mac = `${this.controllerCoding},${this.loopNumber},${this.oneTimeCode},${this.addressCode}`
       let basedeviceid = this.categoryDate[this.categoryDate.length - 1]
-      // if (!this.Company) {
-      //   this.$message({
-      //     message: '请选择设施单位',
-      //     type: 'warning'
-      //   })
-      //   return false
-      // }
-      // if (this.Company === -999) {
-      //   if (!this.CompanyInput) {
-      //     this.$message({
-      //       message: '请填写设施单位',
-      //       type: 'warning'
-      //     })
-      //     return false
-      //   } else {
-      //     const data = await this.axios.post(AddDevUnit(token, devicetypeid, this.CompanyInput)).then((Data) => Data)
-      //     if (data.data.code === 0) {
-      //       devunitid = data.data.data.devunitId
-      //     }
-      //   }
-      // } else {
-      //   devunitid = this.Company
-      // }
       if (this.customManufacturer === true) {
         this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, basedeviceid)).then((response) => {
           if (response.data.code === 0) {
@@ -423,12 +442,12 @@ export default {
               this.axios.post(AddDivecemodels(manufacturerid, basedeviceid, this.versionCustom, this.technicalParameter)).then((data) => {
                 if (data.data.code === 0) {
                   devicemodel = data.data.data.divecemodelid
-                  this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitid, files)
+                  this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
                 }
               })
             } else {
               devicemodel = this.versionValue
-              this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitid, files)
+              this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
             }
           }
         })
@@ -436,17 +455,17 @@ export default {
         this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((Item) => {
           if (Item.data.code === 0) {
             devicemodel = Item.data.data.divecemodelid
-            this.requestModification(token, Deviceid, this.maintainProject, areaid, this.manufactorModel, devicetypeid, devicemodel, position, parameters, memo, devunitid, files)
+            this.requestModification(token, Deviceid, this.maintainProject, areaid, this.manufactorModel, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
           }
         })
       } else {
         devicemodel = this.versionValue
         manufacturerid = this.manufactorModel
-        this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicetypeid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitid, files)
+        this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
       }
     },
-    requestModification (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitId, files) {
-      this.axios.post(updateDevice(token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitId, files)).then((response) => {
+    requestModification (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitId, files) {
+      this.axios.post(updateDevice(token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitId, files)).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '修改成功',
@@ -547,6 +566,14 @@ export default {
     }
   },
   created () {
+    //  控制器编码
+    this.controllerCoding = this.modify.mac_a
+    //  回路号
+    this.loopNumber = this.modify.mac_b
+    //  一次码
+    this.oneTimeCode = this.modify.mac_c
+    //  地址编码
+    this.addressCode = this.modify.mac_d
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
@@ -576,8 +603,8 @@ export default {
 
         this.versionValue = this.modify.devicemodel ? parseInt(this.modify.devicemodel) : ''
         this.Specificposition = (this.modify).position
-        this.productionValue1 = fmtDate((this.modify).madedate)
-        this.validity = fmtDate((this.modify).effectivedate)
+        this.productionValue1 = this.fmtDate((this.modify).madedate)
+        this.validity = this.fmtDate((this.modify).effectivedate)
         this.textarea = (this.modify).memo
         this.technicalParameter = (this.modify).parameters
         this.Company = (this.modify).devunitid
@@ -627,7 +654,7 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .newlyadded
-    margin 180px 0 0
+    margin 120px 0 0
     width 100%
     background #111a28
   .increase
@@ -677,6 +704,8 @@ export default {
         width 100%
         margin-bottom 17px
       .modify_li_p
+        width 100px
+        text-align right
         float left
         margin-right 6px
         line-height 30px

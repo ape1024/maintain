@@ -447,7 +447,7 @@ export default {
       }
     },
     approvalstateS () {
-      this.$confirm('是否进行批量审批?', '提示', {
+      this.$confirm('是否将所选择的内容全部审核为归档', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

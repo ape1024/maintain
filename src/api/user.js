@@ -201,8 +201,8 @@ export const AddDivecemodels = (manufactureId, Deviceid, versionCustom, technica
   return url
 }
 //  updateDevice
-export const updateDevice = (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, madedate, effectivedate, devunitId, files) => {
-  const url = `${Test}/dev/updateDevice?token=${token}&deviceid=${deviceid}&projectid=${projectid}&areaid=${areaid}&manufacturerid=${manufacturerid}&basedeviceid=${basedeviceid}&devicemodelID=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&madedate=${madedate}&effectivedate=${effectivedate}&devunitId=${devunitId}&files=${files}`
+export const updateDevice = (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitId, files) => {
+  const url = `${Test}/dev/updateDevice?token=${token}&deviceid=${deviceid}&projectid=${projectid}&areaid=${areaid}&manufacturerid=${manufacturerid}&basedeviceid=${basedeviceid}&devicemodelID=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&mac=${mac}&madedate=${madedate}&effectivedate=${effectivedate}&devunitId=${devunitId}&files=${files}`
   return url
 }
 //  daily
@@ -682,6 +682,9 @@ export const getOrganizationTrees = (token) => {
   const url = `${Test}/organization/getOrganizationTreeByUser2?token=${token}`
   return url
 }
+export const getOrganizationTreeTion = (type) => {
+  return `${Test}/organization/getOrganizationTree?organizationid=${type}`
+}
 // 获取单位类型（如果是子单位会返回跟单位类型）
 export const getOrgType = (orgid) => {
   const url = `${Test}/organization/getOrgType?orgid=${orgid}`
@@ -712,6 +715,9 @@ export const FindDevAllstate = () => {
 export const createOrUpdateProject = (token) => {
   const url = `${Test}/projects/createOrUpdateProject?token=${token}`
   return url
+}
+export const getAllOrgTreeeByProjectId = (projectid, token) => {
+  return `${Test}/organization/getAllOrgTreeeByProjectId?projectid=${projectid}&token=${token}`
 }
 //  获取设施列表
 export const increasefindAllDevType = () => {
