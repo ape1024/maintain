@@ -432,7 +432,7 @@ export default {
       //  单位
       let devunitid = ''
       //  mac地址
-      let mac = `${this.controllerCoding},${this.loopNumber},${this.oneTimeCode},${this.addressCode}`
+      let mac = `${this.controllerCoding}.${this.loopNumber}.${this.oneTimeCode}.${this.addressCode}`
       let basedeviceid = this.categoryDate[this.categoryDate.length - 1]
       if (this.customManufacturer === true) {
         this.axios.post(maintainReportAddManufacture(this.customManufacturerDate, basedeviceid)).then((response) => {

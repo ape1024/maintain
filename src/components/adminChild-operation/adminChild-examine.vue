@@ -2,7 +2,7 @@
   <div class="newlyadded">
     <section class="increase">
       <h4 class="increase_h4">
-        审核设施信息
+        设施信息 审查
       </h4>
       <div class="lookover">
         <ul class="lookover_ul">
@@ -58,12 +58,20 @@
             <div class="lookover_div">{{question.creatername}}</div>
           </li>
           <li class="lookover_litwo">
-            <p class="lookover_p">备注说明：</p>
-            <div class="lookover_div">{{question.memo}}</div>
+            <p class="lookover_p">MAC地址：</p>
+            <div class="lookover_div">{{question.mac}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">审核人员：</p>
             <div class="lookover_div">{{question.approvername}}</div>
+          </li>
+          <li class="lookover_li">
+            <p class="lookover_p">设施单位：</p>
+            <div class="lookover_div">{{question.unit}}</div>
+          </li>
+          <li class="lookover_litwo">
+            <p class="lookover_p">备注说明：</p>
+            <div class="lookover_div">{{question.memo}}</div>
           </li>
           <li class="lookover_lithree">
             <p class="lithree_p">现场照片：</p>
