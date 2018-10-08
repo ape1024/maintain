@@ -716,9 +716,6 @@ export const createOrUpdateProject = (token) => {
   const url = `${Test}/projects/createOrUpdateProject?token=${token}`
   return url
 }
-export const getAllOrgTreeeByProjectId = (projectid, token) => {
-  return `${Test}/organization/getAllOrgTreeeByProjectId?projectid=${projectid}&token=${token}`
-}
 //  获取设施列表
 export const increasefindAllDevType = () => {
   const url = `${Test}/projects/findAllDevType`
