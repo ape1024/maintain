@@ -752,6 +752,11 @@ export const getRepairOrgTreeByProjectId = (projectid) => {
   const url = `${Test}/organization/getRepairOrgTreeByProjectId?projectId=${projectid}`
   return url
 }
+// getAllOrgTreeeByProjectId
+export const getAllOrgTreeeByProjectId = (projectid, token) => {
+  const url = `${Test}/organization/getAllOrgTreeeByProjectId?projectid=${projectid}&token=${token}`
+  return url
+}
 //  getFirebrigades  消防监管机构
 export const getFirebrigades = () => {
   const url = `${Test}/organization/getFirebrigades`

@@ -990,7 +990,7 @@ export default {
       float left
       width 368px
       position relative
-      margin-right 30px
+      margin-right 20px
       /*margin-right 56px*/
       .leftHeader
         width 100%

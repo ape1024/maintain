@@ -9,7 +9,7 @@
         <router-link v-show="this.userSelect" to="/home/intercalate/consumer"><li class="headerLi">用户设置</li></router-link>
         <router-link v-show="this.projectSelect" to="/home/intercalate/project"><li class="headerLi">项目设置</li></router-link>
         <router-link v-show="this.standardSelect" to="/home/intercalate/taskrules"><li v-if="true" class="headerLi">维管标准</li></router-link>
-        <router-link to="/home/intercalate/info"><li class="headerLi">消息管理</li></router-link>
+        <router-link v-show="this.infoSelect" to="/home/intercalate/info"><li class="headerLi">消息管理</li></router-link>
       </ul>
     </header>
     <div class="intercalateRouter">
@@ -40,6 +40,9 @@ export default {
         }
         if (val.functioncode === 'standard') {
           this.standardSelect = val.select
+        }
+        if (val.functioncode === 'info') {
+          this.infoSelect = val.insert
         }
       })
     }

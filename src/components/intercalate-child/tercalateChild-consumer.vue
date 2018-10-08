@@ -480,7 +480,7 @@ export default {
       float left
       width 368px
       position relative
-      margin-right 56px
+      margin-right 20px
       .leftHeader
         width 100%
         overflow hidden

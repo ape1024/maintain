@@ -82,7 +82,6 @@ export default {
       this.axios.post(managementCreatedtree(token)).then((response) => {
         if (response.data.code === 0) {
           this.data = response.data.data
-          console.log(this.data[0].organizationId)
           this.getType(this.data[0].organizationId)
           this.subjectpCreate()
         }
@@ -117,7 +116,6 @@ export default {
     this.axios.post(getOrganizationTrees(token)).then((response) => {
       if (response.data.code === 0) {
         this.data = response.data.data
-        console.log(this.data[0].organizationId)
         this.getType(this.data[0].organizationId)
       }
     })
@@ -132,7 +130,7 @@ export default {
       float left
       width 368px
       position relative
-      margin-right 30px
+      margin-right 20px
       /*margin-right 56px*/
       .leftHeader
         width 100%

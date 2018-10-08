@@ -1,6 +1,6 @@
 <template>
-  <div class="subject">
-    <div class="information">
+  <div class="subject" @click.stop="accessarea(false)">
+    <div class="information" >
       <ul class="informationUl">
         <!--上级主管单位-->
         <li class="informationLi" v-show="dataRoot">
@@ -81,7 +81,7 @@
              所在区域：
             </p>
             <div class="content">
-              <div @click.stop="accessarea" class="region">
+              <div @click.stop="accessarea(true)" class="region">
                 {{regionDate}}
               </div>
               <ul v-show="regionUl" class="region_ul">
@@ -143,7 +143,7 @@
         <li class="informationLitwo" v-show=" regimentaValue !== 4 &&  regimentaValue !== 5">
           <div class="informationDiv">
             <p class="informationP">
-              业务类别：
+              行业类别：
             </p>
             <div class="content">
               <el-select size="mini" v-model="businessCategoryData" placeholder="请选择">
@@ -436,8 +436,12 @@ export default {
         }
       })
     },
-    accessarea () {
-      this.regionUl = !this.regionUl
+    accessarea (flag) {
+      if (flag) {
+        this.regionUl = !this.regionUl
+      } else {
+        this.regionUl = false
+      }
     },
     // 省份点击事件
     deploy (event, provinceid) {
