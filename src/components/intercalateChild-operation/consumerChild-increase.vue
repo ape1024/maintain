@@ -250,25 +250,24 @@
         <div class="purviewDiv">
           <div class="substance">
             <div class="substanceDiv">
-              <div class="firecontrol">
-
+              <div @click.stop="organizeChange" class="firecontrol">
+                {{organizeText}}
               </div>
-              <div class="firecontrolDiv">
+              <div @click.stop v-show="organizeboolean" class="firecontrolDiv">
                 <div class="firecontrolDiv_div">
-                  <el-tree
-                    :data="firecontrol"
-                    :props="firecontrolProps"
-                    node-key="id"
-                    ref="tree"
-                    show-checkbox
-                    default-expand-all
-                    @check="firecontrolCheck">
-                  </el-tree>
+                  <el-checkbox-group v-model="checkedCities">
+                    <el-tree :data="organize" :props="organizeProps" node-key="id" :expand-on-click-node="false">
+                      <div class="custom-tree-node" slot-scope="{ node, data }">
+                        <el-checkbox :label="data.orgid">{{checkboxDefaultVal}}</el-checkbox>
+                        <div class="custom-tree-node-expand" @click="checkboxClick(node)">{{data.orgname}}</div>
+                      </div>
+                    </el-tree>
+                  </el-checkbox-group>
                 </div>
               </div>
             </div>
             <p class="substanceP">
-              建筑范围：
+              组织机构：
             </p>
           </div>
         </div>
@@ -345,8 +344,10 @@
 <script>
 import $ from 'jquery'
 import { managementCreate, managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'consumerChild-increase',
+  mixins: [projectMixin],
   props: ['edit', 'project'],
   data () {
     return {
@@ -406,6 +407,7 @@ export default {
       exaMineDate: '',
       firecontrol: [],
       firecontrolBoolean: false,
+      organizeboolean: false,
       myfileImg: [],
       picName: [],
       purview: [],
@@ -414,6 +416,11 @@ export default {
         children: 'areas',
         label: 'areaname',
         value: 'areaid'
+      },
+      organizeProps: {
+        children: 'orgs',
+        label: 'orgname',
+        value: 'orgid'
       },
       firecontrolProps: {
         children: 'children',
@@ -431,10 +438,34 @@ export default {
       pwd: '', // 用户密码
       tel: '', // 电话
       organizationtype: '', // 机构类型
-      organizationDisable: false
+      organizationDisable: false,
+      organize: [],
+      organizeText: '',
+      checkedCities: []
+    }
+  },
+  watch: {
+    checkedCities (el) {
+      console.log(el)
     }
   },
   methods: {
+    organizeChange () {
+      this.organizeboolean = !this.organizeboolean
+    },
+    organizeCheck (checkedNodes, checkedKeys) {
+      console.log(this.$refs.three.getCheckedNodes())
+      console.log(checkedNodes)
+      console.log(checkedKeys)
+      let data = ''
+      this.firecontrolDate = checkedKeys.checkedNodes
+      for (let i = 0; i < checkedKeys.checkedNodes.length; i++) {
+        if (checkedKeys.checkedNodes[i].parentFlag !== true) {
+          data += checkedKeys.checkedNodes[i].name + ' '
+        }
+      }
+      this.organizeText = data
+    },
     handlesuccess (response, file, fileList) {
       this.documentPapers.push({
         'name': `${file.name}`,
@@ -479,6 +510,7 @@ export default {
       this.firecontrolBoolean = false
       this.buildscopeBoolean = false
       this.regionUl = false
+      this.organizeboolean = false
     },
     fireconboolean () {
       this.firecontrolBoolean = !this.firecontrolBoolean
@@ -660,6 +692,9 @@ export default {
         })
       }
     },
+    checkboxClick (data) {
+      data.expanded = !data.expanded
+    },
     //  点击最父级，关闭地址框
     provinceSpan (event, provincename) {
       //  直接选择省份
@@ -758,6 +793,17 @@ export default {
         }
       }
     })
+    this.axios.post(`http://172.16.6.81:8920/organization/getAllOrgTreeeByProjectId?projectid=${this.maintainProject}&token=${token}`).then((response) => {
+      console.log(response)
+      if (response.data.code === 0) {
+        response.data.data.forEach((val) => {
+
+        })
+        this.organize = response.data.data
+      }
+    })
+    // 定义空值
+    this.checkboxDefaultVal = ''
   }
 }
 </script>
@@ -923,7 +969,6 @@ export default {
     background #fff
     text-indent 1em
     white-space nowrap
-    white-space nowrap
     text-overflow ellipsis
     line-height 30px
     color $color-border-b-fault
@@ -945,6 +990,10 @@ export default {
       line-height 24px
       margin 20px 10px
       overflow hidden
+      .custom-tree-node
+        display flex
+        .custom-tree-node-expand
+          font-size 14px
   .firecontrolBooleanLi
     padding 4px 0 4px 20px
   .firecontrolLi
@@ -1075,14 +1124,6 @@ export default {
               text-indent 5em
   .el-date-editor.el-input
     width 100%
-  /* DIV 指向符号 */
-  /*.angle-wrapper*/
-    /*height 120px*/
-    /*position: relative*/
-    /*margin: 20px auto*/
-    /*border: 1px solid lightblue*/
-    /*border-radius 10px*/
-    /*margin-left 55px*/
   .information_Maintain:before
     content: ''
     width: 0
@@ -1093,7 +1134,6 @@ export default {
     border-left: 20px solid transparent
     position: absolute
     left: 53%
-    // top: 50%
     margin-top: -40px
   .information_Maintain-change:before
     content: ''
