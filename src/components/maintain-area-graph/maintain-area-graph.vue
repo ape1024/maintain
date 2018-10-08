@@ -8,8 +8,12 @@
       </div>
       <div class="each wrap" ref="wrap">
         <div class="graph-wrap" :style="{transform: `translateX(${moveVal}px)`}" ref="graphWrap">
-          <div class="graph-wrap-item" ref="nestedRing"></div>
           <div class="graph-wrap-item">
+            <div class="graph-wrap-item-nested" ref="nestedRing" v-show="!nestedRingLoading"></div>
+            <div class="loading" v-show="nestedRingLoading">{{loadingText}}</div>
+          </div>
+          <div class="graph-wrap-item">
+            <div class="graph-wrap-item-circle-title" v-show="list.length">{{circleTitleText}}</div>
             <div :key="index" class="graph-wrap-item-circle" v-for="(item, index) in list">
               <progress-circle :show-color="item.color" :percent="item.percent" :desc="item.desc"></progress-circle>
             </div>
@@ -42,7 +46,8 @@ export default {
       prevState: false,
       nextState: true,
       list: [],
-      lineGraphLoading: true
+      lineGraphLoading: true,
+      nestedRingLoading: true
     }
   },
   methods: {
@@ -52,6 +57,11 @@ export default {
       this.axios.post(getCircleData(this.maintainProject, this.currentAreaId)).then(res => {
         if (res && res.data.code === 0) {
           const data = res.data.data
+          if (!data.devfaultcount.length && !data.devstatecount.length) {
+            this.nestedRingLoading = true
+          } else {
+            this.nestedRingLoading = false
+          }
           this.drawNestedRing(this.$refs.nestedRing, data.devfaultcount, data.devstatecount)
         }
       })
@@ -110,6 +120,14 @@ export default {
     drawNestedRing (dom, outsideData, innerData) {
       const myChart = this.$echarts.init(dom)
       myChart.setOption({
+        title: {
+          text: '设\n施\n完\n好\n率',
+          textStyle: {
+            color: '#fff'
+          },
+          left: 'left',
+          top: 'middle'
+        },
         tooltip: {
           trigger: 'item',
           formatter: '{b}: {c} ({d}%)'
@@ -128,7 +146,7 @@ export default {
             name: '',
             type: 'pie',
             selectedMode: 'single',
-            radius: [0, '70%'],
+            radius: [0, '60%'],
 
             label: {
               normal: {
@@ -140,7 +158,7 @@ export default {
                 show: false
               }
             },
-            center: ['50%', '50%'],
+            center: ['45%', '50%'],
             data: innerData.map(t => {
               return {value: t.count, name: t.name}
             })
@@ -148,28 +166,29 @@ export default {
           {
             name: '',
             type: 'pie',
-            radius: ['80%', '100%'],
-            // label: {
-            //   normal: {
-            //     formatter: ' {b|{b}：}{c}  {per|{d}%} ',
-            //     backgroundColor: '#eee',
-            //     borderColor: '#aaa',
-            //     borderWidth: 1,
-            //     borderRadius: 4,
-            //     rich: {
-            //       b: {
-            //         fontSize: 12,
-            //         lineHeight: 30
-            //       }
-            //     }
-            //   }
-            // },
+            radius: ['70%', '90%'],
+            label: {
+              normal: {
+                show: false,
+                formatter: ' {b|{b}：}{c}  {per|{d}%} ',
+                backgroundColor: '#eee',
+                borderColor: '#aaa',
+                borderWidth: 1,
+                borderRadius: 4,
+                rich: {
+                  b: {
+                    fontSize: 12,
+                    lineHeight: 30
+                  }
+                }
+              }
+            },
             labelLine: {
               normal: {
                 show: false
               }
             },
-            center: ['50%', '50%'],
+            center: ['45%', '50%'],
             data: outsideData.map(t => {
               return {value: t.devcount, name: t.faulttypename}
             })
@@ -181,7 +200,7 @@ export default {
       const myChart = this.$echarts.init(dom)
       myChart.setOption({
         title: {
-          text: '设备故障趋势统计图',
+          text: '设施运行趋势',
           textStyle: {
             color: '#fff'
           },
@@ -229,6 +248,7 @@ export default {
     this.title = '图表统计'
     this.more = '更多'
     this.loadingText = '暂无数据'
+    this.circleTitleText = '工作执行率'
     this.colorList = ['#53DCAD', '#AD65D6', '#FC9E7D', '#F78540', '#69D4E2']
   }
 }
@@ -301,7 +321,18 @@ export default {
                 margin 0 0 20px
                 width 150px
                 height 100px
-              .graph-wrap-item-line
+              .graph-wrap-item-circle-title
+                position absolute
+                left -30px
+                top 0
+                width 30px
+                height 100%
+                word-break break-all
+                color #fff
+                padding-top 75px
+                font-weight 600
+                font-size 18px
+              .graph-wrap-item-nested, .graph-wrap-item-line
                 width 450px
                 height 245px
 </style>

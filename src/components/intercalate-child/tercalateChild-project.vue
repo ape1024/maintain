@@ -15,7 +15,7 @@
         <li class="headerLitwo">项目开始时间</li>
         <li class="headerLitwo">项目结束时间</li>
         <li class="headerLitwo">创建人</li>
-        <li class="headerLithree">操作</li>
+        <li class="headerLiFore">操作</li>
       </ul>
       <ul class="contentUl">
         <li :key="item.projectid" v-for="(item, $index) in contentliDate" class="contentLi">
@@ -41,7 +41,7 @@
             <li class="headerLitwo">
               {{item.creatername}}
             </li>
-            <li class="headerLithree">
+            <li class="headerLiFore">
               <p v-if="JurisdictionSelect" @click="exaMine(item.projectid, item)" class="contentLi_ulP">查看</p>
               <p v-if="JurisdictionUpdate" @click="modify(item)" class="contentLi_ulPtwo">修改</p>
               <p v-if="JurisdictionDelete" @click="amputate($index, contentliDate, item.projectid)" class="contentLi_ulPthree">删除</p>
@@ -226,7 +226,7 @@ export default {
       -webkit-line-clamp 1
     .headerLitwo
       float left
-      width 9%
+      width 10%
       height 38px
       overflow hidden
       text-align center
@@ -234,8 +234,13 @@ export default {
       display -webkit-box
       -webkit-box-orient vertical
     .headerLithree
-      width  18%
+      width  19%
       text-align center
+      height 38px
+      float left
+    .headerLiFore
+      width  10%
+      text-align left
       height 38px
       float left
     .contentUl

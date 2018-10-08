@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { secede, findUserProjects, consumerFindUser } from '../../api/user'
+import { secede, findUserProjects, consumerFindUser, managementgetUserOrganization } from '../../api/user'
 import { mapActions } from 'vuex'
 import Information from './consumerHeaderRight'
 export default {
@@ -68,7 +68,7 @@ export default {
       value: [],
       modifyBoolean: false,
       logo: JSON.parse(sessionStorage.userInfo).logo,
-      organization: JSON.parse(sessionStorage.userInfo).organization
+      organization: ''
     }
   },
   methods: {
@@ -128,6 +128,12 @@ export default {
             }
           }
         }
+      }
+    })
+    this.axios.post(managementgetUserOrganization(token)).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response.data)
+        this.organization = response.data.data.organizationname
       }
     })
   }

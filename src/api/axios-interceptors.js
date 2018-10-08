@@ -15,6 +15,7 @@ export const interceptors = function () {
         }
       }
     }
+    config.url = encodeURI(config.url)
     return config
   }, function (error) {
     // Do something with request error

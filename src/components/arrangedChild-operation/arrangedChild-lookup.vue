@@ -235,7 +235,7 @@
 </template>
 <script>
 import { projectMixin } from 'common/js/mixin'
-import { maintainArrangupdatePlan, maintainArranggetWorkModesByWorkType, getRepairOrgTreeByProjectId, maintainArranggetCheckPlan, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
+import { maintainArrangupdatePlan, maintainArranggetWorkModesByWorkType, getAllOrgTreeeByProjectId, maintainArranggetCheckPlan, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
 export default {
   mixins: [projectMixin],
   name: 'arrangedChild-lookup',
@@ -610,7 +610,9 @@ export default {
     this.Plandevices.forEach((val) => {
       this.defaultCheckedFacilities.push(`${val.basedeviceid},${this.timeStamp}`)
     })
-    this.axios.post(getRepairOrgTreeByProjectId(this.maintainProject)).then((response) => {
+    //  获取消防设施
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject, token)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }
@@ -621,8 +623,6 @@ export default {
         this.purview = response.data.data
       }
     })
-    //  获取消防设施
-    let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         let recursion = (data) => {
