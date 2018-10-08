@@ -6,7 +6,7 @@
         <div class="header">
           <div class="title time">{{timeText}}</div>
           <div class="title type">{{typeText}}</div>
-          <div class="title control">{{controlText}}</div>
+          <div class="title control">{{countText}}</div>
           <div class="title code">{{codeText}}</div>
           <div class="title pos">{{posText}}</div>
           <div class="title made">{{madeDateText}}</div>
@@ -18,9 +18,9 @@
         <div class="body" v-show="list.length">
           <div :key="index" class="item" v-for="(item, index) in list">
             <div class="group">
-              <div class="title time">{{item.alarmTime}}</div>
+              <div class="title time">{{item.effectiveTime}}</div>
               <div class="title type">{{item.deviceTypeName}}</div>
-              <div class="title control">{{item.controllerName}}</div>
+              <div class="title control">{{item.deviceCount}}</div>
               <div class="title code">{{item.deviceCode}}</div>
               <div class="title pos">{{item.locationDescription}}</div>
               <div class="title made">{{item.madeDate}}</div>
@@ -44,7 +44,7 @@
 <script>
 import { getDeviceData, adminfindDeviceDetail, adminFindInspectionMaintenance } from 'api/user'
 import { projectMixin, currentAreaMixin } from 'common/js/mixin'
-import { resetTime } from 'common/js/utils'
+// import { resetTime } from 'common/js/utils'
 import { stateCode, stateData, layer } from 'common/js/config'
 import LookOver from 'components/adminChild-operation/adminChild-lookover'
 export default {
@@ -68,9 +68,9 @@ export default {
         if (res && res.data.code === 0) {
           this.list = res.data.data.map(t => {
             return {
-              alarmTime: t.alarmtime ? resetTime(t.alarmtime, 'date') : '----',
+              effectiveTime: t.effectivedate,
               deviceTypeName: t.devicetypename,
-              controllerName: t.deviceController,
+              deviceCount: t.devicecount,
               deviceCode: t.devicecode,
               locationDescription: t.position,
               action: this.getDeviceState(t.devicestate),
@@ -128,17 +128,16 @@ export default {
   },
   created () {
     this.title = '设备信息'
-    this.timeText = '报警时间'
-    this.typeText = '设备类型'
-    this.controlText = '控制器'
-    this.codeText = '设备编码'
+    this.timeText = '有效时间'
+    this.typeText = '设施类别'
+    this.countText = '数量'
+    this.codeText = '管理编码'
     this.posText = '位置描述'
     this.madeDateText = '生产日期'
     this.modelText = '规格型号'
-    this.manufactureText = '厂商'
-    this.stateText = '状态'
+    this.manufactureText = '生产厂家'
+    this.stateText = '运行状态'
     this.handleText = '操作'
-    this.reasonText = '报警原因：'
     this.loading = '暂无数据'
     this.init()
   }
@@ -247,7 +246,7 @@ export default {
         .type
           width 12%
         .control
-          width 12%
+          width 5%
         .code
           width 15%
         .pos
@@ -255,11 +254,11 @@ export default {
         .made
           width 8%
         .model
-          width 10%
+          width 15%
         .manufacture
           width 15%
         .state
-          width 5%
+          width 7%
         .handle
           width 5%
           cursor pointer
