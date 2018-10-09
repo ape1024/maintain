@@ -2,7 +2,7 @@
   <div class="newlyadded">
     <section class="increase">
       <h4 class="increase_h4">
-        审核
+        工作记录
       </h4>
       <section class="examine">
         <header class="examine_header">
@@ -431,8 +431,68 @@ export default {
                     message: '审批成功',
                     type: 'success'
                   })
-                  this.$emit('mineupdate')
-                  return false
+                  this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
+                    if (response.data.code === 0) {
+                      let arrData = []
+                      console.log(response.data.data)
+                      response.data.data.details.forEach((val) => {
+                        console.log(response.data.data.details)
+                        console.log('////')
+                        if (val) {
+                          if (val.path) {
+                            let arr = []
+                            if (val.path.indexOf(',') !== -1) {
+                              arr = val.path.split(',')
+                              val.path = arr
+                            } else {
+                              arr = [val.path]
+                              val.path = arr
+                            }
+                          } else {
+                            val.path = []
+                          }
+                          val.fuleco = false
+                          val.pathBoolem = false
+                          if (val.conclusion) {
+                            if (!val.refid) {
+                              val.disabled = false
+                            } else {
+                              val.disabled = true
+                            }
+                          } else {
+                            val.disabled = true
+                          }
+                          if (!val.iswaitapproval) {
+                            if (!val.isapproval) {
+                              val.iswaitapprovalName = ''
+                            } else {
+                              val.iswaitapprovalName = '已审批'
+                            }
+                          } else {
+                            val.iswaitapprovalName = '待审批'
+                          }
+                          if (val.isassigned) {
+                            val.isassignedName = '已安排'
+                          } else {
+                            val.isassignedName = '未安排'
+                          }
+                          arrData.push(val)
+                          if (val.photos) {
+                            val.photosArr = []
+                            if (val.photos.indexOf(',') !== -1) {
+                              let arr = val.photos.split(',')
+                              val.photosArr = arr
+                            } else {
+                              val.photosArr.push(val.photos)
+                            }
+                          }
+                        }
+                      })
+                      this.equipment = arrData
+                      console.log(arrData)
+                      this.equipmentData = response.data.data
+                    }
+                  })
                 }
               })
             })
@@ -446,7 +506,7 @@ export default {
       }
     },
     closeup () {
-      this.$emit('mine', false)
+      this.$emit('mineupdate')
     },
     determine (event, checktaskdetailid) {
       let el = event.currentTarget

@@ -9,9 +9,9 @@
            <p class="headerRight_left__p">
              {{organization}}
            </p>
-           <h4 class="headerRight_left_h4">
-             维护管理系统
-           </h4>
+           <!--<h4 class="headerRight_left_h4">-->
+             <!--维护管理系统-->
+           <!--</h4>-->
          </div>
        </div>
        <div class="headerRight_bottom">
@@ -149,7 +149,7 @@ export default {
        position relative
        overflow hidden
     .headerRight_left__p
-      margin-top 28px
+      margin-top 20px
       font-size 16px
       color $color-text
     .headerRight_left_h4
@@ -173,8 +173,8 @@ export default {
          margin-right 14px
          border 5px solid #202f49
          -moz-box-shadow 0px 3px 2px #000
-         -webkit-box-shadow: 0px 3px 2px #000;
-         box-shadow: 0px 3px 2px #000;
+         -webkit-box-shadow 0px 3px 2px #000
+         box-shadow 0px 3px 2px #000
          .portraitImg
            width 55px
            height 55px

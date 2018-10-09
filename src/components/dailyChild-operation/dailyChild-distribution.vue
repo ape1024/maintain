@@ -2,7 +2,7 @@
   <section class="distriBution">
     <div class="distriBution_div">
       <h4 class="distriButionH">
-        安排任务
+        处理方式
       </h4>
       <div class="distriButionDiv">
         <div class="distriButionDiv_div">
@@ -20,7 +20,7 @@
       <div class="explain">
         <div class="distriButionDiv_div">
           <p class="distriButionDiv_p">
-            任务说明
+            异常情况
           </p>
           <p class="distriButionDiv_line"></p>
         </div>
@@ -70,7 +70,7 @@
               </el-checkbox-group>
             </div>
           </div>
-          <div class="maintenance">
+          <div v-if="organizationtype === 1" class="maintenance">
             <p class="personChargeP">
               业主单位：
             </p>
@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailyassignedTask } from '../../api/user'
+import { maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailyassignedTask, managementgetUserOrganization } from '../../api/user'
 export default {
   name: 'dailyChild-distribution',
   props: ['distriBoolean', 'getrepairDate', 'instruction', 'equipment'],
@@ -133,7 +133,8 @@ export default {
         label: 'organizationName'
       },
       proprietorCheckList: [],
-      maintenanceList: []
+      maintenanceList: [],
+      organizationtype: ''
     }
   },
   methods: {
@@ -191,6 +192,12 @@ export default {
     }
   },
   created () {
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(managementgetUserOrganization(token)).then((response) => {
+      if (response.data.code === 0) {
+        this.organizationtype = response.data.data.organizationtype
+      }
+    })
     this.instruction.forEach((val, index) => {
       let data = `${index + 1},工作事项: ${val.matters},工作记录:${val.workrecord}, 工作结论: ${val.conclusion === null ? ' ' : val.conclusion}\n`
       this.instrucTion += data

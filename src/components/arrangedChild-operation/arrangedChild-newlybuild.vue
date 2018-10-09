@@ -2,7 +2,7 @@
   <div class="subject">
     <div class="section">
       <div class="sectionDiv">
-        <h4 class="sectionH4">新增计划</h4>
+        <h4 class="sectionH4">工作计划 新增</h4>
         <div class="section_div">
           <div class="sectionTop">
             <ul class="sectionTopul">
@@ -115,7 +115,7 @@
             </li>
             <li class="lookupChooseLi">
               <div class="lookupChooseLiTop">
-                <p class="lookupChooseLiTop_p">选择巡检范围</p>
+                <p class="lookupChooseLiTop_p">选择建筑范围</p>
               </div>
               <div class="lookupChooseLiBottom">
                 <div class="personCharge">
@@ -159,7 +159,7 @@
             </li>
             <li class="lookupChooseLi">
               <div class="lookupChooseLiTop">
-                <p class="lookupChooseLiTop_p">选择巡检频次</p>
+                <p class="lookupChooseLiTop_p">选择计划生成时间</p>
               </div>
               <div class="frequency">
                 <el-radio-group v-if="groupBoolean" v-model="frequencyradio">

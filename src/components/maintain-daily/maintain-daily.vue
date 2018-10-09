@@ -3,7 +3,7 @@
     <section class="subject_top">
       <ul class="ul_input">
         <li class="li_input">
-          <p class="div_p">区 域：</p>
+          <p class="div_p">建筑区域：</p>
           <div class="div_input">
               <el-cascader
                 size="mini"
@@ -16,7 +16,7 @@
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">设备类型：</p>
+          <p class="div_p">设施类别：</p>
           <div class="div_input">
             <el-cascader
               size="mini"
@@ -168,7 +168,7 @@ export default {
   },
   methods: {
     pigeonhole (taskID) {
-      this.$confirm('此操作将归档此任务,归档后将不能查看 是否继续?', '提示', {
+      this.$confirm('是否将选中的多项工作记录批量审核为归档?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -295,12 +295,19 @@ export default {
         this.closeLoadingDialog()
       })
     },
-    fmtDate (obj) {
-      let date = new Date(obj)
-      let y = 1900 + date.getYear()
-      let m = `0` + (date.getMonth() + 1)
-      let d = `0` + date.getDate()
-      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+    fmtDate (timer) {
+      let date = new Date()
+      date.setTime(timer)
+      let y = date.getFullYear()
+      let m = date.getMonth() + 1
+      m = m < 10 ? ('0' + m) : m
+      let d = date.getDate()
+      d = d < 10 ? ('0' + d) : d
+      let h = date.getHours()
+      h = h < 10 ? ('0' + h) : h
+      let minute = date.getMinutes()
+      minute = minute < 10 ? ('0' + minute) : minute
+      return y + '/' + m + '/' + d + ' ' + h + ':' + minute
     },
     // 修改逻辑
     amend ($event) {

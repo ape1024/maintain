@@ -791,6 +791,9 @@ export const getStandardparams = (value) => {
   const url = `${Test}/plan/getStandardparams?checkstandardid=${value}`
   return url
 }
+export const getPlanState = () => {
+  return `${Test}/plan/getPlanState`
+}
 export const getTechnicalRequirements = (value) => {
   const url = `${Test}/plan/getTechnicalRequirements?checkstandardid=${value}`
   return url

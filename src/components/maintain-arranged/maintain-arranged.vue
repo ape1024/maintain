@@ -53,7 +53,7 @@
               {{conversionPlanState(item.planstate)}}
             </li>
             <li class="repair_litwo">
-              {{fmtDate(item.createtime)}}
+              {{(item.createTime)}}
             </li>
             <li class="repair_litwo">
               {{item.creatername}}
@@ -78,9 +78,9 @@
                 <!--<p v-if="item.planstate !== 5" class="header_p_twelve" @click.stop="generate(item.checkplanid)">生成计划</p>-->
                 <!--<p v-if="item.planstate === 5" class="header_p_fourteen">生成计划</p>-->
               <!--</div>-->
-              <!--<div v-if="JurisdictionDelete">-->
-                <!--<p class="header_p_eleven" @click.stop="amputate(index, arrangedData,item.checkplanid)">删除</p>-->
-              <!--</div>-->
+              <div v-if="JurisdictionDelete">
+                <p class="header_p_thirteen" @click.stop="amputate(item.checkplanid)">删除</p>
+              </div>
             </li>
           </ul>
         </li>
@@ -108,7 +108,8 @@
 import lookup from '../arrangedChild-operation/arrangedChild-lookup'
 import examination from '../arrangedChild-operation/arrangedChild-examination'
 import newlybuild from '../arrangedChild-operation/arrangedChild-newlybuild'
-import { maintainArrangsetPlan, maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, maintainArranggetAllApprovalItems, maintainArranggetAllPlanTypes, createChecktask, maintainArrangegetAllPlansTwo } from '../../api/user'
+import { dateTransfer } from '../../common/js/utils'
+import { maintainArrangsetPlan, maintainArrangeddeletePlan, maintainArrangegetAllPlans, maintainArranggetCheckPlan, getPlanState, maintainArranggetAllPlanTypes, createChecktask, maintainArrangegetAllPlansTwo } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   name: 'maintain-arranged',
@@ -164,7 +165,7 @@ export default {
       }
       return arr
     },
-    amputate ($index, content, checkplanid) {
+    amputate (checkplanid) {
       // 删除
       this.$confirm('此操作将删除该计划, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -177,13 +178,19 @@ export default {
               type: 'success',
               message: '删除成功!'
             })
-            content.splice([$index], 1)
+            this.initPlan()
+          } else {
+            console.log(response)
+            this.$message({
+              message: `${response.data.message}`,
+              type: 'warning'
+            })
           }
         })
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: '取消删除'
         })
       })
     },
@@ -196,20 +203,10 @@ export default {
       this.examinaBoolean = ev
     },
     Build (ev) {
-      this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.arrangedData = response.data.data
-          this.newlybuildBoolean = false
-        }
-      })
+      this.initPlan()
     },
     Lookup (ev) {
-      this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.arrangedData = response.data.data
-          this.review_boolean = false
-        }
-      })
+      this.initPlan()
     },
     examine (checkplanid) {
       this.CheckPlanid = checkplanid
@@ -240,8 +237,6 @@ export default {
       }
     },
     conversionPlanState (planstate) {
-      console.log(planstate)
-      console.log(this.planStateData)
       for (let i = 0; i < this.planStateData.length; i++) {
         if (this.planStateData[i].value === planstate) {
           return this.planStateData[i].name
@@ -270,17 +265,16 @@ export default {
     initPlan () {
       this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
-          this.arrangedData = response.data.data
+          if (response.data.data.length) {
+            response.data.data.forEach((val) => {
+              val.createTime = dateTransfer(val.createtime)
+            })
+            this.arrangedData = response.data.data
+            this.newlybuildBoolean = false
+            this.review_boolean = false
+          }
         }
       })
-    },
-    //  时间戳
-    fmtDate (obj) {
-      let date = new Date(obj)
-      let y = 1900 + date.getYear()
-      let m = '0' + (date.getMonth() + 1)
-      let d = '0' + date.getDate()
-      return y + '-' + m.substring(m.length - 2, m.length) + '-' + d.substring(d.length - 2, d.length)
     },
     // 查询事件
     maintainArrangegetAll (maintainProject, el) {
@@ -367,7 +361,7 @@ export default {
       }
     })
     // 获取计划状态
-    this.axios.post(maintainArranggetAllApprovalItems(this.maintainProject)).then((response) => {
+    this.axios.post(getPlanState()).then((response) => {
       if (response.data.code === 0) {
         this.planStateData = response.data.data
       }
@@ -594,12 +588,16 @@ export default {
     cursor pointer
     float left
     margin-right 20px
-    color #cc5966
+    color #ffaa00
   .header_p_twelve
     cursor pointer
     float left
     margin-right 20px
     color #3acf76
+  .header_p_thirteen
+    cursor pointer
+    float left
+    color #cc5966
   .subject_bottomDIv
     margin 12px
     background rgba(000,000,000,.35)

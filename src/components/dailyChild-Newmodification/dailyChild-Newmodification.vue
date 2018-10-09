@@ -7,16 +7,16 @@
           <ul class="cephalosomeUl">
             <li class="cephalosomeOne">
               <span><el-checkbox v-model="checked" @change="checkedChang"></el-checkbox></span>
-              设备名称
+              设施类别
             </li>
             <li class="cephalosomeOne">
-              设备编码
+              管理编码
             </li>
             <li class="cephalosomeOne">
               进度
             </li>
             <li class="cephalosomeOne">
-              位置
+              设置位置
             </li>
             <li class="cephalosomeOne">
               设备数量
@@ -237,8 +237,12 @@ export default {
     line-height 40px
     box-sizing border-box
     border-right 1px solid #3f4856
+  .cephalosomeUl .cephalosomeOne:last-child
+     border-right none!important
+  .heavyPlay .cephalosomelv:last-child
+     border-right none!important
   .cephalosomeOne
-    width 8%
+    width 8.333%
     padding-right .5%
     text-indent .4em!important
     overflow hidden
