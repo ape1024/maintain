@@ -251,6 +251,7 @@
 
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
+import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
 import { maintainReportassignedTask, maintainReportgetConfrimStates, maintainReportgetFeedbackstateStates, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'reportChild-examine',
@@ -288,11 +289,7 @@ export default {
   },
   methods: {
     fmtDate (obj) {
-      let date = new Date(obj)
-      let y = 1900 + date.getYear()
-      let m = `0` + (date.getMonth() + 1)
-      let d = `0` + date.getDate()
-      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+      return formatDate(obj, 'yyyy/MM/dd HH:mm:ss')
     },
     conserve () {
       let token = JSON.parse(window.sessionStorage.token)

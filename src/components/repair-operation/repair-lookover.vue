@@ -2,7 +2,7 @@
   <div class="subject">
     <section class="content">
       <h4 class="contentH">
-        故障维修查看
+        {{title}} 查看
       </h4>
       <div class="information">
         <div class="informationTop">
@@ -24,7 +24,7 @@
         <ul class="informationTopUl">
           <li class="informationTopLitwo">
             <span>设施数量：</span>
-            <span class="informationTopSpan">{{examine.devicecount}}</span>
+            <span class="informationTopSpan">{{examine.devicecount}}{{examine.unit}}</span>
           </li>
         </ul>
         <div class="tabulation">
@@ -37,20 +37,20 @@
                 </p>
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">检查人员：</span>
-                  <span>{{inspectUp.checkpersonname}}</span>
+                  <span>{{inspectUp.checkpersonname}}{{inspectUp.others}}</span>
                 </p>
               </div>
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
                   <p class="">
                     <span class="tlefttopHeaderSpan">检查项目：</span>
-                    <span class="tlefttoprightLiSpans">{{inspectUp.conclusion}}</span>
+                    <span class="tlefttoprightLiSpans">{{inspectUp.workitem}}</span>
                   </p>
                 </li>
                 <li class="tlefttopli">
                   <p class="">
                     <span class="tlefttopHeaderSpan">检查记录：</span>
-                    <span class="tlefttoprightLiSpans">{{inspectUp.workitem}}</span>
+                    <span class="tlefttoprightLiSpans">{{inspectUp.workrecord}}</span>
                   </p>
                 </li>
                 <li class="tlefttopli">
@@ -92,7 +92,7 @@
                   </p>
                   <p class="tlefttoprightliP">
                     <span class="tlefttoprightliSpan">审核时间：</span>
-                    <span>{{AuditorsTimer}}</span>
+                    <span>{{fmtDate(AuditorsTimer)}}</span>
                   </p>
                 </li>
                 <li class="tlefttoprightLi">
@@ -281,10 +281,11 @@
 
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
+import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
 import { maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId } from '../../api/user'
 export default {
   name: 'repair-lookover',
-  props: ['examine', 'state', 'repairtasks'],
+  props: ['examine', 'state', 'repairtasks', 'title'],
   data () {
     return {
       options: [],
@@ -301,12 +302,18 @@ export default {
         checktime: '',
         checkpersonname: '',
         conclusion: '',
-        workitem: ''
+        workitem: '',
+        others: '',
+        workrecord: ''
       },
       imgList: []
     }
   },
   methods: {
+    // 格式化时间
+    fmtDate (obj) {
+      return formatDate(obj, 'yyyy/MM/dd HH:mm')
+    },
     approvalClick () {
       this.ficationBoolean = !this.ficationBoolean
     },
@@ -318,14 +325,6 @@ export default {
     },
     closedown () {
       this.$emit('look', this.thisPage)
-    },
-    fmtDate (obj) {
-      if (!obj) return ''
-      let date = new Date(obj)
-      let y = 1900 + date.getYear()
-      let m = `0` + (date.getMonth() + 1)
-      let d = `0` + date.getDate()
-      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     },
     //  现场照片
     fieldphoto (src) {
@@ -364,6 +363,7 @@ export default {
     DialogImg
   },
   created () {
+    console.log(this.examine)
     function fmtDate (obj) {
       let date = new Date(obj)
       let y = 1900 + date.getYear()

@@ -119,23 +119,26 @@
               <p v-if="JurisdictionApproval && item.comfirmstate !== 2"
                  class="header_p_fourteen" >确认
               </p>
-              <p v-if="JurisdictionAssign && item.comfirmstate === 4"
-                 @click.stop="question(item.ID)"
-                 class="header_p_eight threelevel_litwo_p">
-                 安排
+              <p v-if="JurisdictionAssign" @click.stop="question(item.ID)" class="header_p_eight threelevel_litwo_p">
+              安排
               </p>
-              <p v-if="JurisdictionAssign && item.comfirmstate !== 4"
-                 class="header_p_fourteen" >安排
-              </p>
-              <p v-if="JurisdictionDelete && item.comfirmstate === 2"
+              <!--<p v-if="JurisdictionAssign && item.comfirmstate === 4"-->
+                 <!--@click.stop="question(item.ID)"-->
+                 <!--class="header_p_eight threelevel_litwo_p">-->
+                 <!--安排-->
+              <!--</p>-->
+              <!--<p v-if="JurisdictionAssign && item.comfirmstate !== 4"-->
+                 <!--class="header_p_fourteen" >安排-->
+              <!--</p>-->
+              <p v-if="JurisdictionDelete"
                  class="header_p_eleven"
                  @click.stop="amputate(item.ID, index, exhibition)">
                  删除
               </p>
-              <p v-if="JurisdictionDelete && item.comfirmstate !== 2"
-                 class="header_p_fourteen" >
-                 删除
-              </p>
+              <!--<p v-if="JurisdictionDelete && item.comfirmstate !== 2"-->
+                 <!--class="header_p_fourteen" >-->
+                 <!--删除-->
+              <!--</p>-->
             </li>
           </ul>
           <!--<transition enter-active-class="fadeInUp"-->
@@ -169,9 +172,10 @@
 <script>
 import reportchild from '../report-child/report-child'
 import increase from '../admin-child/adminChild-review'
-import childLookover from '../reportChild-operation/reportChild-lookover'
+import childLookover from '../reportChild-operation/reportChild-lookover-'
 import childModify from '../reportChild-operation/reportChild-modify'
 import childExamine from '../reportChild-operation/reportChild-examine'
+import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
 import { findAllDeviceType, maintainReportgetFeedbackstateStates, maintainReportgetConfrimStates, findAreasTreeByProjectid, maintainReportfindFeedback, maintainReportfindFeedbackTwo, maintainReportfindFeedbacksByFeedbackid, maintainReportremoveFeedbacks } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
@@ -186,11 +190,7 @@ export default {
   },
   methods: {
     init () {
-      this.axios.post(maintainReportfindFeedback(this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.exhibition = response.data.data
-        }
-      })
+      this.initReport()
       //  获取区域
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
@@ -247,6 +247,7 @@ export default {
         }
       })
     },
+    // 确认
     modify (Id) {
       // 点击修改
       this.axios.post(maintainReportfindFeedbacksByFeedbackid(Id)).then((response) => {
@@ -256,6 +257,7 @@ export default {
         }
       })
     },
+    // 安排
     question (Id) {
       // 点击安排
       this.axios.post(maintainReportfindFeedbacksByFeedbackid(Id)).then((response) => {
@@ -292,7 +294,25 @@ export default {
       // let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
       this.axios.post(maintainReportfindFeedbackTwo(this.maintainProject, areaid, basedevicecode, this.dispose, this.identification)).then((response) => {
         if (response.data.code === 0) {
-          this.exhibition = response.data.data
+          this.exhibition = response.data.data.map(t => {
+            return {
+              ...t,
+              createtime: formatDate(t.createtime, 'yyyy/MM/dd HH:mm:ss')
+            }
+          })
+        }
+      })
+    },
+    // 初始化数据
+    initReport () {
+      this.axios.post(maintainReportfindFeedback(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.exhibition = response.data.data.map(t => {
+            return {
+              ...t,
+              createtime: formatDate(t.createtime, 'yyyy/MM/dd HH:mm:ss')
+            }
+          })
         }
       })
     }
@@ -348,12 +368,7 @@ export default {
         this.JurisdictionAssign = val.assign
       }
     })
-    this.axios.post(maintainReportfindFeedback(this.maintainProject)).then((response) => {
-      if (response.data.code === 0) {
-        console.log(response.data.data)
-        this.exhibition = response.data.data
-      }
-    })
+    this.initReport()
     //  获取区域
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {

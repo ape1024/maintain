@@ -2,125 +2,100 @@
   <div class="subject">
     <section class="content">
       <h4 class="contentH">
-        现场反馈信息
+        现场反馈信息 查看
       </h4>
       <div class="information">
-        <div class="informationTop">
-          <ul class="informationTopUl">
-            <li class="informationTopLitwo">
-              <span>设施名称：</span>
-              <span class="informationTopSpan">{{examine.devicename}}</span>
-            </li>
-            <li class="informationTopLi">
-              <span>设备编码：</span>
-              <span class="informationTopSpan">{{examine.devicecode}}</span>
-            </li>
-            <li class="informationTopLi">
-              <span>设施位置：</span>
-              <span class="informationTopSpan">{{examine.areaname}}{{examine.position}}</span>
-            </li>
-          </ul>
-        </div>
-        <ul class="informationTopUl">
-          <li class="informationTopLitwo">
-            <span>维保单位：</span>
-            <span class="informationTopSpan">{{examine.vindicatorname}}</span>
-          </li>
-          <li class="informationTopLitwo">
-            <span>项目负责人：</span>
-            <span class="informationTopSpan">{{examine.leader}}</span>
-          </li>
-          <li class="informationTopLitwo">
-            <span>联系电话：</span>
-            <span class="informationTopSpan">{{examine.leadertel}}</span>
-          </li>
-        </ul>
         <div class="tabulation">
           <div class="tabulationLeft">
             <div class="tleftTop">
-              <div class="tlefttopHeader">
-                <p class="tlefttopHeaderP">
-                  <span class="tlefttopHeaderSpan">反馈时间：</span>
-                  <span class="tlefttopli_Span">{{fmtDate(examine.createtime)}}</span>
-                </p>
-                <p class="tlefttopHeaderP">
-                  <span class="tlefttopHeaderSpan">反馈人员：</span>
-                  <span class="tlefttopli_Span">{{examine.creatername}}</span>
-                </p>
-              </div>
               <ul class="tlefttopUl">
+                <!--消防设施 设备编码 设备位置-->
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderText">
+                  <p class="tlefttopHeaderP">
+                    <span class="tlefttopHeaderSpan">消防设施：</span>
+                    <span class="tlefttopli_Span">{{msg.devicename}}}</span>
+                  </p>
+                  <p class="tlefttopHeaderP">
+                    <span class="tlefttopHeaderSpan">设备编码：</span>
+                    <span class="tlefttopli_Span">{{msg.devicecode}}}</span>
+                  </p>
+                  <p class="tlefttopHeaderP">
+                    <span class="tlefttopHeaderSpan">设备位置：</span>
+                    <span class="tlefttopli_Span">{{msg.areaname}}{{msg.position}}</span>
+                  </p>
+                </li>
+                <!--维保单位 项目负责人 联系电话-->
+                <li class="tlefttopli">
+                  <p class="tlefttopHeaderP">
+                    <span class="tlefttopHeaderSpan">维保单位：</span>
+                    <span class="tlefttopli_Span">{{msg.vindicatorname}}</span>
+                  </p>
+                  <p class="tlefttopHeaderP">
+                    <span class="tlefttopHeaderSpan">项目负责人：</span>
+                    <span class="tlefttopli_Span">{{msg.leader}}</span>
+                  </p>
+                  <p class="tlefttopHeaderP">
+                    <span class="tlefttopHeaderSpan">联系电话：</span>
+                    <span class="tlefttopli_Span">{{msg.leadertel}}</span>
+                  </p>
+                </li>
+                <!--反馈情况-->
+                <li class="tlefttopli">
+                  <p class="tlefttopHeaderP100">
                     <span class="tlefttopHeaderSpan">反馈情况：</span>
-                    <span class="tlefttopli_Span">{{examine.feedbackinfo}}</span>
+                    <span class="tlefttopli_Span">{{msg.feedbackinfo}}</span>
                   </p>
                 </li>
+                <!--处理意见-->
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderText">
+                  <p class="tlefttopHeaderP100">
                     <span class="tlefttopHeaderSpan">处理意见：</span>
-                    <span class="tlefttopli_Span">{{examine.disposeopinion}}</span>
+                    <span class="tlefttopli_Span">{{msg.disposeopinion}}</span>
                   </p>
                 </li>
-                <li class="tlefttoplitwo">
-                  <p class="">
-                    <span class="tlefttopHeaderSpantwo">现场照片：</span>
-                    <img class="tlefttopli_img" @click="selectImg(index)" :key="index" v-for="(item, index) in photograph" :src="item" alt="">
-                  </p>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="tabulationRight">
-            <div class="tleftTop">
-              <div class="tlefttopHeader">
-                <p class="tlefttopHeaderP">
-                  <span class="tlefttopHeaderSpan">处理时间：</span>
-                  <span class="tlefttopli_Span">{{examine.repairtime}}</span>
-                </p>
-                <p class="tlefttopHeaderP">
-                  <span class="tlefttopHeaderSpan">处理人员：</span>
-                  <span class="tlefttopli_Span">{{examine.repairpersonname}}</span>
-                </p>
-              </div>
-              <ul class="tlefttopUl">
+                <!--反馈人员 反馈时间 处理人员 处理时间-->
                 <li class="tlefttopli">
-                  <p class="tlefttopHeaderPDivtwo">
+                  <p class="tlefttopHeaderP25">
+                    <span class="tlefttopHeaderSpan">反馈人员：</span>
+                    <span class="tlefttopli_Span">{{msg.creatername}}</span>
+                  </p>
+                  <p class="tlefttopHeaderP25">
+                    <span class="tlefttopHeaderSpan">反馈时间：</span>
+                    <span class="tlefttopli_Span">{{fmtDate(msg.createtime)}}</span>
+                  </p>
+                  <p class="tlefttopHeaderP25">
+                    <span class="tlefttopHeaderSpan">处理人员：</span>
+                    <span class="tlefttopli_Span">{{msg.repairpersonname}}</span>
+                  </p>
+                  <p class="tlefttopHeaderP25">
+                    <span class="tlefttopHeaderSpan">处理时间：</span>
+                    <span class="tlefttopli_Span">{{fmtDate(msg.repairtime)}}</span>
+                  </p>
+                </li>
+                <!--处理状态 确认状态 确认人员 确认时间-->
+                <li class="tlefttopli">
+                  <p class="tlefttopHeaderP25">
                     <span class="tlefttopHeaderSpan">处理状态：</span>
+                    <span class="tlefttopli_Span">{{disposeExhibition}}</span>
                   </p>
-                  <div class="tlefttopHeaderPDiv">
-                    <el-select size="mini" v-model="processingsdisplay" placeholder="请选择">
-                      <el-option
-                        v-for="item in processingstate"
-                        :key="item.value"
-                        :label="item.name"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </div>
-                </li>
-                <li class="tlefttopli">
-                  <p class="tlefttopHeaderPDivtwo">
+                  <p class="tlefttopHeaderP25">
                     <span class="tlefttopHeaderSpan">确认状态：</span>
+                    <span class="tlefttopli_Span">{{confirmExhibition}}</span>
                   </p>
-                  <div class="tlefttopHeaderPDiv">
-                    <el-select size="mini" v-model="Confirmationsdisplay" disabled placeholder="请选择">
-                      <el-option
-                        v-for="item in Confirmationstate"
-                        :key="item.value"
-                        :label="item.name"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </div>
-                </li>
-                <li class="tlefttopli">
-                  <p class="tlefttopHeaderP">
-                    <span class="tlefttopHeaderSpan">确认时间：</span>
-                    <span class="tlefttopli_Span">{{examine.confirmpertime}}</span>
-                  </p>
-                  <p class="tlefttopHeaderP">
+                  <p class="tlefttopHeaderP25">
                     <span class="tlefttopHeaderSpan">确认人员：</span>
-                    <span class="tlefttopli_Span">{{examine.confirmpersonname}}</span>
+                    <span class="tlefttopli_Span">{{msg.confirmpersonname}}</span>
+                  </p>
+                  <p class="tlefttopHeaderP25">
+                    <span class="tlefttopHeaderSpan">确认时间：</span>
+                    <span class="tlefttopli_Span">{{fmtDate(msg.confirmpertime)}}</span>
+                  </p>
+                </li>
+                <!--现场照片-->
+                <li class="tlefttopli">
+                  <p class="tlefttopHeaderP100">
+                    <span class="tlefttopHeaderSpan">现场照片：</span>
+                    <img :key="index" @click="selectImg(index)"  v-for="(item, index) in photograph" class="photograph" :src="item" alt="">
                   </p>
                 </li>
               </ul>
@@ -128,11 +103,10 @@
           </div>
         </div>
       </div>
+      <!--操作-->
       <section class="classification">
         <div class="assortment">
           <div class="fastener">
-            <!--<div class="examine">重新安排</div>-->
-            <div @click="conserve" class="conserve">确认</div>
             <div class="closedown" @click="closedown">关闭</div>
           </div>
         </div>
@@ -144,55 +118,28 @@
 
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
+import { maintainReportgetFeedbackstateStates, maintainReportgetConfrimStates } from '../../api/user'
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
-import { maintainReporconfirmFeedback, maintainReportgetConfrimStates, maintainReportgetFeedbackstateStates, maintainDailygetRepairTypes } from '../../api/user'
 export default {
-  name: 'reportChild-modify',
-  props: ['examine'],
+  name: 'reportChild-lookover-',
+  props: ['msg'],
   data () {
     return {
-      options: [],
-      thisPage: false,
-      examineBoolean: false,
-      value: '',
-      maintenance: [],
-      repairCheckList: [],
-      proprietorCheckList: [],
-      maintenanceList: [],
-      proprietor: [],
-      proprietorProps: {
-        children: 'subOrgnizations',
-        label: 'organizationName',
-        value: 'organizationId'
-      },
-      ownerProps: {
-        children: 'subOrgnizations',
-        label: 'organizationName'
-      },
-      choice: '',
-      choiceData: '',
-      objection: '',
-      circumstances: '',
-      photograph: [],
-      Confirmationstate: '',
-      Confirmationsdisplay: '',
-      processingsdisplay: '',
-      processingstate: ''
+      // 显示/隐藏 查看组件
+      lookoverBoolean: false,
+      textarea: '',
+      checked: false,
+      //  确认状态
+      confirmExhibition: '',
+      //  处理状态
+      disposeExhibition: '',
+      //  照片
+      photograph: []
     }
   },
   methods: {
-    conserve () {
-      let token = JSON.parse(window.sessionStorage.token)
-      let deviceid = this.examine.feedbackid
-      let feedbackstate = this.processingsdisplay
-      this.axios.post(maintainReporconfirmFeedback(token, deviceid, feedbackstate)).then((response) => {
-        if (response.data.code === 0) {
-          this.$emit('say', this.examineBoolean)
-        }
-      })
-    },
     closedown () {
-      this.$emit('say', this.examineBoolean)
+      this.$emit('look', this.lookoverBoolean)
     },
     selectImg (index) {
       this.$refs.dialogImg.switchIndex(index)
@@ -206,22 +153,29 @@ export default {
     DialogImg
   },
   created () {
+    console.log(this.msg)
+    this.photograph = this.msg.photos !== '' ? this.msg.photos.split(',') : ''
+    //  确认状态
+    let confirm = []
+    let confirmName = this.msg.comfirmstate
     this.axios.post(maintainReportgetConfrimStates()).then((response) => {
-      this.Confirmationstate = response.data
-      this.Confirmationsdisplay = this.examine.comfirmstate
+      confirm = response.data
+      confirm.forEach((val) => {
+        if (val.value === confirmName) {
+          this.confirmExhibition = val.name
+        }
+      })
     })
+    //  处理状态
+    let dispose = []
+    let disposeName = this.msg.feedbackstate
     this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
-      this.processingstate = response.data
-      this.processingsdisplay = this.examine.feedbackstate
-    })
-    this.examine.photos.split(',').forEach((val) => {
-      this.photograph.push(val)
-    })
-    this.circumstances = this.examine.feedbackinfo
-    this.axios.post(maintainDailygetRepairTypes()).then((response) => {
-      if (response.data.code === 0) {
-        this.choiceData = response.data.data
-      }
+      dispose = response.data
+      dispose.forEach((val) => {
+        if (val.value === disposeName) {
+          this.disposeExhibition = val.name
+        }
+      })
     })
   }
 }
@@ -239,7 +193,7 @@ export default {
     .content
       overflow hidden
       position relative
-      width 1300px
+      width 1400px
       margin 0 auto
     .contentH
       color $color-text-title
@@ -280,13 +234,13 @@ export default {
           overflow hidden
           float right
         .tleftTop
-          width 600px
+          width 1300px
           background #0b111a
           overflow hidden
           margin-bottom 14px
           border 1px solid #444d5b
         .tleftBottom
-          width 600px
+          width 1300px
           background #0b111a
           overflow hidden
           margin-bottom 14px
@@ -302,7 +256,17 @@ export default {
           color $color-text
           font-size $font-size-medium
         .tlefttopHeaderP
-          width 50%
+          width 33%
+          overflow hidden
+          float left
+          line-height 30px
+        .tlefttopHeaderP25
+          width 25%
+          overflow hidden
+          float left
+          line-height 30px
+        .tlefttopHeaderP100
+          width 100%
           overflow hidden
           float left
           line-height 30px
@@ -468,8 +432,13 @@ export default {
     border-bottom 1px solid #444d5b
     padding 10px 0 26px
   .tlefttopHeaderPDivtwo
-     float left
-     line-height 26px
+    float left
+    line-height 26px
   .tlefttopHeaderPDiv
-     float left
+    float left
+  .photograph
+    display inline-block
+    margin-right 20px
+    width 40px
+    height 40px
 </style>
