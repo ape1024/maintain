@@ -65,13 +65,13 @@
     <section class="subject_bottom">
       <ul class="header_ul">
         <li class="header_lithree">
-          设施名称
+          设施类别
         </li>
         <li class="header_litwo">
-          设施位置
+          设置位置
         </li>
         <li class="header_li">
-          设备数量
+          数量
         </li>
         <li class="header_litwo">
           异常情况
@@ -82,7 +82,7 @@
         <li class="header_li">
           反馈人员
         </li>
-        <li class="header_li">
+        <li class="header_litwo">
           反馈时间
         </li>
         <li class="header_li">
@@ -100,11 +100,11 @@
           <ul class="inline_ul">
             <li class="header_lithree">{{item.devicename}}</li>
             <li class="header_litwo">{{item.areaname}}{{item.position}}</li>
-            <li class="header_li">{{item.devicecount}}</li>
+            <li class="header_li">{{item.devicecount}} {{item.unit}}</li>
             <li class="header_litwo">{{item.feedbackinfo}}</li>
             <li class="header_litwo">{{item.feedbackorgname}}</li>
             <li class="header_li">{{item.creatername}}</li>
-            <li class="header_li">{{item.createtime}}</li>
+            <li class="header_litwo">{{item.createtime}}</li>
             <li class="header_li">{{item.feedbackstatename}}</li>
             <li class="header_li">{{item.comfirmstatename}}</li>
             <li class="header_litwo">
@@ -350,6 +350,7 @@ export default {
     })
     this.axios.post(maintainReportfindFeedback(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
+        console.log(response.data.data)
         this.exhibition = response.data.data
       }
     })
@@ -368,7 +369,7 @@ export default {
     })
     //  获取处理状态
     this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
-      this.disposeData = response.data
+      this.disposeData = response.data.slice(1)
     })
     //  获取确认状态
     this.axios.post(maintainReportgetConfrimStates()).then((response) => {
@@ -521,7 +522,7 @@ export default {
     float left
     height 32px
     line-height 32px
-    width 12%
+    width 11%
   .header_p_one
     color $color-text-tile-state
   .header_p_two

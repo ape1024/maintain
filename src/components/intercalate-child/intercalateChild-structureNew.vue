@@ -1,5 +1,5 @@
 <template>
-  <div class="subject">
+  <div class="subject" >
     <section class="subjectLeft">
       <header class="leftHeader">
         <img class="subjectImg" src="../../common/img/department.png" alt="">

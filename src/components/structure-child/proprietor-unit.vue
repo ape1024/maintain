@@ -1,5 +1,5 @@
 <template>
-  <div class="subject" @click.stop="accessarea(false)">
+  <div class="subject">
     <div class="information" >
       <ul class="informationUl">
         <!--上级主管单位-->
@@ -80,8 +80,8 @@
             <p class="informationP">
               所在区域：
             </p>
-            <div class="content">
-              <div @click.stop="accessarea(true)" class="region">
+            <div class="content" tabindex="0" @blur="blur">
+              <div @click.stop="accessarea" class="region">
                 {{regionDate}}
               </div>
               <ul v-show="regionUl" class="region_ul">
@@ -464,12 +464,12 @@ export default {
         }
       })
     },
-    accessarea (flag) {
-      if (flag) {
-        this.regionUl = !this.regionUl
-      } else {
-        this.regionUl = false
-      }
+    // 失去焦点
+    blur () {
+      this.regionUl = false
+    },
+    accessarea () {
+      this.regionUl = !this.regionUl
     },
     // 资质等级改变事件
     levelChange (data) {
