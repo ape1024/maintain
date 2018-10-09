@@ -240,6 +240,8 @@ export default {
       }
     },
     conversionPlanState (planstate) {
+      console.log(planstate)
+      console.log(this.planStateData)
       for (let i = 0; i < this.planStateData.length; i++) {
         if (this.planStateData[i].value === planstate) {
           return this.planStateData[i].name
@@ -592,7 +594,7 @@ export default {
     cursor pointer
     float left
     margin-right 20px
-    color #83292b
+    color #cc5966
   .header_p_twelve
     cursor pointer
     float left

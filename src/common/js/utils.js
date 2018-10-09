@@ -28,6 +28,23 @@ export const fmtDate = (obj) => {
   return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
 }
 
+export const dateTransfer = (timer) => {
+  let date = new Date()
+  date.setTime(timer)
+  let y = date.getFullYear()
+  let m = date.getMonth() + 1
+  m = m < 10 ? ('0' + m) : m
+  let d = date.getDate()
+  d = d < 10 ? ('0' + d) : d
+  let h = date.getHours()
+  h = h < 10 ? ('0' + h) : h
+  let minute = date.getMinutes()
+  let second = date.getSeconds()
+  minute = minute < 10 ? ('0' + minute) : minute
+  second = second < 10 ? ('0' + second) : second
+  return y + '/' + m + '/' + d + ' ' + h + ':' + minute
+}
+
 export function resetTime (time, type) {
   if (time === '946656000000') {
     return '--:--'

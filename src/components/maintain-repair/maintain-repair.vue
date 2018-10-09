@@ -803,7 +803,7 @@ export default {
     cursor pointer
     float left
     margin-right 20px
-    color #83292b
+    color #cc5966
   .subject_bottomDIv
     margin 10px
     position relative

@@ -136,6 +136,7 @@
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
 import { getProprietorOrganization } from '../../api/user'
+import { dateTransfer } from '../../common/js/utils'
 export default {
   name: 'adminChild-lookover',
   props: ['msg', 'inspection', 'information'],
@@ -172,24 +173,8 @@ export default {
       if (!timer) {
         return ''
       } else {
-        return this.dateTransfer(timer)
+        return dateTransfer(timer)
       }
-    },
-    dateTransfer (timer) {
-      let date = new Date()
-      date.setTime(timer)
-      let y = date.getFullYear()
-      let m = date.getMonth() + 1
-      m = m < 10 ? ('0' + m) : m
-      let d = date.getDate()
-      d = d < 10 ? ('0' + d) : d
-      let h = date.getHours()
-      h = h < 10 ? ('0' + h) : h
-      let minute = date.getMinutes()
-      let second = date.getSeconds()
-      minute = minute < 10 ? ('0' + minute) : minute
-      second = second < 10 ? ('0' + second) : second
-      return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second
     }
   },
   created () {
