@@ -39,9 +39,7 @@ export const dateTransfer = (timer) => {
   let h = date.getHours()
   h = h < 10 ? ('0' + h) : h
   let minute = date.getMinutes()
-  let second = date.getSeconds()
   minute = minute < 10 ? ('0' + minute) : minute
-  second = second < 10 ? ('0' + second) : second
   return y + '/' + m + '/' + d + ' ' + h + ':' + minute
 }
 
