@@ -132,7 +132,6 @@ export default {
     })
     this.axios.post(managementgetUserOrganization(token)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data)
         this.organization = response.data.data.organizationname
       }
     })

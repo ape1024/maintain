@@ -16,7 +16,7 @@
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">维修状态：</p>
+          <p class="div_p">处理状态：</p>
           <div class="div_inputTow">
             <el-select clearable size="mini" v-model="maintenanceData" placeholder="请选择">
               <el-option
@@ -29,7 +29,7 @@
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">审批状态：</p>
+          <p class="div_p">审查状态：</p>
           <div class="div_inputTwo">
             <el-select clearable size="small" v-model="Auditstatus" placeholder="" multiple>
               <el-option
@@ -55,10 +55,10 @@
           维修编号
         </li>
         <li class="repair_lifvie">
-          设施名称
+          设施类别
         </li>
         <li class="repair_litwo">
-         设备位置
+          设置位置
         </li>
         <li class="repair_lithree">
           数量
@@ -115,8 +115,8 @@
             <li class="repair_lithree">
               {{item.creatername}}
             </li>
-            <li class="repair_lithree">
-              {{item.createtime}}
+            <li :title="fmtDate(item.createtime)" class="repair_lithree">
+              {{fmtDate(item.createtime)}}
             </li>
             <li class="repair_lithree">
               {{item.repairpersonname}}{{item.others}}
@@ -124,18 +124,18 @@
             <li class="repair_lithree">
               {{item.repairstatename}}
             </li>
-            <li class="repair_lithree">
-              {{item.repairtime}}
+            <li :title="fmtDate(item.repairtime)" class="repair_lithree">
+              {{fmtDate(item.repairtime)}}
             </li>
             <li class="repair_lithree">
               {{approvalStatusfn(item.approvalstatename)}}
             </li>
             <li class="repair_lifive">
               <p v-if="JurisdictionAssign && item.repairBoolean" @click.stop="equipment(item.repairtaskid)" class="header_p_twelve">
-                重新分配
+                重新安排
               </p>
               <p v-if="JurisdictionAssign && !item.repairBoolean" class="header_p_twelve threelevel_litwo_ptwo">
-                重新分配
+                重新安排
               </p>
               <p v-if="JurisdictionSelect" @click.stop="examine(item)" class="header_p_ten">查看</p>
               <p v-if="JurisdictionApproval && item.approvalBoolean" @click.stop="question(item.repairtaskid)" class="header_p_eight threelevel_litwo_p">
@@ -166,7 +166,7 @@
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
-      <childLookover :examine="examineData" :state="taskState" :repairtasks="repairtasksName" @look="Onlook"></childLookover>
+      <childLookover :examine="examineData" :title="examinationTitle" :state="taskState" :repairtasks="repairtasksName" @look="Onlook"></childLookover>
     </section>
     <section v-if="quipmentBoolean" class="review" @click.stop>
       <!--更换设备-->
@@ -186,6 +186,7 @@ import childModify from '../repair-operation/repair-arrange'
 import childExamine from '../repair-operation/repair-examine'
 import childquipment from '../repair-operation/repair-rescheduling'
 import childVerification from '../repair-operation/repair-Verification'
+import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
 import { findAreasTreeByProjectid, maintainRepairgetRepairStates, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindRepairTasks, maintainRepairmaintainRepairfindRepairTasksTwo, maintainRepairfindTaskByTaskid, maintainRepairremoveRepairtasks, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getRepairUsers, maintainRepairgetgetRepariTaskQueryApprovalItem } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
@@ -201,6 +202,10 @@ export default {
     childVerification
   },
   methods: {
+    // 格式化时间
+    fmtDate (obj) {
+      return formatDate(obj, 'yyyy/MM/dd HH:mm')
+    },
     init () {
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
@@ -311,6 +316,7 @@ export default {
     examine (item) {
       // 点击查看
       let id = !item.refid ? item.repairtaskid : item.refid
+      this.examinationTitle = item.repairtypename
       this.axios.post(maintainRepairfindTaskByTaskid(id)).then((response) => {
         if (response.data.code === 0) {
           this.axios.post(getRepairUsers(id)).then((data) => {
@@ -531,10 +537,11 @@ export default {
         this.tabulationData = response.data.data
       }
     })
-    //  获取维修状态
+    //  获取处理状态
     this.axios.post(maintainRepairgetRepairStates()).then((response) => {
       if (response.data.code === 0) {
-        this.maintenance = response.data.data
+        const data = response.data.data
+        this.maintenance = data.length === 0 ? [] : data.slice(0, data.length - 1)
       }
     })
     // 审批状态

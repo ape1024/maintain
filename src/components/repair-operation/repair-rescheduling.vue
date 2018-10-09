@@ -2,7 +2,7 @@
     <div class="subject">
       <section class="content">
         <h4 class="contentH">
-          重新安排
+          任务安排
         </h4>
         <div class="situation">
           <div class="situationTop">
