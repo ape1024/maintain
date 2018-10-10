@@ -217,7 +217,7 @@ export default {
         selectRegion: this.regionModel,
         selectEquipmentData: this.equipmentData,
         selectAuditstatus: this.Auditstatus === -999 ? '' : this.Auditstatus,
-        selectWorkConclusion: this.workconclusionData,
+        selectWorkConclusion: this.workconclusionData === -999 ? '' : this.workconclusionData,
         selectStartDate: this.startTime,
         selectEndDate: this.endTime
       }
@@ -492,6 +492,11 @@ export default {
     // 获得结论
     this.axios.post(getWorkconclusion()).then((response) => {
       if (response.data.code === 0) {
+        let obj = {
+          name: '所有',
+          value: -999
+        }
+        response.data.data.unshift(obj)
         this.workconclusion = response.data.data
       }
     })

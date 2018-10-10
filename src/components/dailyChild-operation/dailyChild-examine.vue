@@ -350,6 +350,7 @@ export default {
     assignment () {
       let arrData = []
       this.equipment.forEach((val) => {
+        console.log(val)
         if (val.fuleco === false || val.disabled === true) {
           return false
         } else {
@@ -359,15 +360,19 @@ export default {
             checktaskdetailid: val.checktaskdetailid,
             isassigned: val.isassigned,
             conclusionCode: val.conclusion,
-            workrecord: val.workrecord
+            workrecord: val.workrecord,
+            isapproval: val.isapproval,
+            iswaitapproval: val.iswaitapproval
           }
           arrData.push(data)
         }
       })
       let flga = true
       arrData.forEach((val) => {
+        console.log(val)
         if (val.isassigned || val.conclusionCode > 0) {
-          if (!val.isapproval && !val.iswaitapproval) {
+          flga = false
+          if (!val.isapproval || !val.iswaitapproval) {
             flga = false
           }
         }
@@ -547,10 +552,7 @@ export default {
     this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
       if (response.data.code === 0) {
         let arrData = []
-        console.log(response.data.data)
         response.data.data.details.forEach((val) => {
-          console.log(response.data.data.details)
-          console.log('////')
           if (val) {
             if (val.path) {
               let arr = []
