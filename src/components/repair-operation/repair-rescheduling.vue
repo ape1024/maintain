@@ -84,10 +84,8 @@
               </div>
             </div>
             <div class="maintenance">
-              <p class="personChargeP">
-                业主单位：
-              </p>
-              <div class="tree-wrapper">
+              <p class="personChargeP">业主单位：</p>
+              <div class="personChargeDiv">
                 <el-checkbox-group v-model="repairCheckList">
                   <el-tree
                     class="tree"
@@ -125,6 +123,7 @@
 </template>
 
 <script>
+import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
 import { maintainRepairreAssignedTask, maintainDailygetRepairTypes, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId } from '../../api/user'
 export default {
   name: 'repair-rescheduling',
@@ -157,6 +156,10 @@ export default {
     }
   },
   methods: {
+    // 格式化时间
+    fmtDate (obj) {
+      return formatDate(obj, 'yyyy/MM/dd HH:mm')
+    },
     conserve () {
       let users = []
       let token = JSON.parse(window.sessionStorage.token)
@@ -222,18 +225,16 @@ export default {
     },
     closedown () {
       this.$emit('quipment', this.thispage)
-    },
-    // 时间戳改格式
-    fmtDate (obj) {
-      let date = new Date(obj)
-      let y = 1900 + date.getYear()
-      let m = `0` + (date.getMonth() + 1)
-      let d = `0` + date.getDate()
-      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     }
   },
   created () {
+    console.log(this.msg)
+    // 异常情况
     this.abnormalCondition += `情况说明: ${this.msg.exception === null ? ' ' : this.msg.exception}\n处理情况:${this.msg.treatment === null ? ' ' : this.msg.treatment}`
+    // 任务类型
+    this.getrepairRadio = this.msg.repairtype
+    // 处理意见
+    this.textarea = this.msg.disposeopinion
     this.axios.post(maintainDailygetRepairTypes()).then((response) => {
       if (response.data.code === 0) {
         this.getrepairDate = response.data.data

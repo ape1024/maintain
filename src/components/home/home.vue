@@ -37,7 +37,7 @@
             <router-link to="/home/repair">
               <li>
                 <i class="headerRepair"></i>
-                故障维修
+                故障问题
               </li>
             </router-link>
             <router-link to="/home/archives">
