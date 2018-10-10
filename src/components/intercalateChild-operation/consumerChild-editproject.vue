@@ -492,75 +492,81 @@ export default {
         })
         return false
       } else {
-        // this.fullscreenLoading = true
-        let token = window.JSON.parse(window.sessionStorage.token)
-        let getCheckedNodes = this.$refs.one.getCheckedNodes()
-        let areas = []
-        getCheckedNodes.forEach((val) => {
-          let obj = {
-            areacode: val.areacode,
-            areaid: val.areaid,
-            areaname: val.areaname
-          }
-          areas.push(obj)
-        })
-        let getCheckedNodesData = this.$refs.tree.getCheckedNodes()
-        let baseDevices = []
-        getCheckedNodesData.forEach((val) => {
-          if (!val.children) {
-            let base = {
-              'basedeviceid': val.id,
-              'basedevicecode': val.code
+        this.$confirm('是否修改该项目?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          // this.fullscreenLoading = true
+          let token = window.JSON.parse(window.sessionStorage.token)
+          let getCheckedNodes = this.$refs.one.getCheckedNodes()
+          let areas = []
+          getCheckedNodes.forEach((val) => {
+            let obj = {
+              areacode: val.areacode,
+              areaid: val.areaid,
+              areaname: val.areaname
             }
-            baseDevices.push(base)
+            areas.push(obj)
+          })
+          let getCheckedNodesData = this.$refs.tree.getCheckedNodes()
+          let baseDevices = []
+          getCheckedNodesData.forEach((val) => {
+            if (!val.children) {
+              let base = {
+                'basedeviceid': val.id,
+                'basedevicecode': val.code
+              }
+              baseDevices.push(base)
+            }
+          })
+          let worktypes = []
+          for (let i = 0; i < this.projectDate.length; i++) {
+            let work = {
+              'worktypeid': this.projectDate[i]
+            }
+            worktypes.push(work)
           }
-        })
-        let worktypes = []
-        for (let i = 0; i < this.projectDate.length; i++) {
-          let work = {
-            'worktypeid': this.projectDate[i]
+          this.fileList.forEach((val) => {
+            let obj = {
+              'name': `${val.name}`,
+              'url': `${val.url}`
+            }
+            this.documentPapers.push(obj)
+          })
+          let rp = {
+            'areas': areas,
+            'baseDevices': baseDevices,
+            'files': this.documentPapers,
+            'organizations': this.checkedCities,
+            'project': {
+              'enddate': `${this.endDate}`,
+              'projectid': `${this.project.projectid}`,
+              'proprietor': `${this.proprieTor}`,
+              'startdate': `${this.startdate}`,
+              'vindicator': `${this.proprietornameDate}`,
+              'projectname': `${this.projectName}`,
+              'projectcode': `${this.projectCode}`
+            },
+            'projectInfo': {
+              'address': `${this.regionDate}`,
+              'comment': `${this.comment}`,
+              'content': `${this.conTent}`,
+              'projectrange': `${this.firecontrolda}`,
+              'requirement': `${this.requirement}`
+            },
+            'worktypes': worktypes
           }
-          worktypes.push(work)
-        }
-        this.fileList.forEach((val) => {
-          let obj = {
-            'name': `${val.name}`,
-            'url': `${val.url}`
-          }
-          this.documentPapers.push(obj)
-        })
-        let rp = {
-          'areas': areas,
-          'baseDevices': baseDevices,
-          'files': this.documentPapers,
-          'organizations': this.checkedCities,
-          'project': {
-            'enddate': `${this.endDate}`,
-            'projectid': `${this.project.projectid}`,
-            'proprietor': `${this.proprieTor}`,
-            'startdate': `${this.startdate}`,
-            'vindicator': `${this.proprietornameDate}`,
-            'projectname': `${this.projectName}`,
-            'projectcode': `${this.projectCode}`
-          },
-          'projectInfo': {
-            'address': `${this.regionDate}`,
-            'comment': `${this.comment}`,
-            'content': `${this.conTent}`,
-            'projectrange': `${this.firecontrolda}`,
-            'requirement': `${this.requirement}`
-          },
-          'worktypes': worktypes
-        }
-        this.axios.post(createOrUpdateProject(token), rp).then((response) => {
-          if (response.data.code === 0) {
-            this.fullscreenLoading = false
-            this.$message({
-              message: '修改成功！',
-              type: 'success'
-            })
-            this.$emit('editt', this.Thispage)
-          }
+          this.axios.post(createOrUpdateProject(token), rp).then((response) => {
+            if (response.data.code === 0) {
+              this.fullscreenLoading = false
+              this.$message({
+                message: '修改成功！',
+                type: 'success'
+              })
+              this.$emit('editt', this.Thispage)
+            }
+          })
         })
       }
     },
