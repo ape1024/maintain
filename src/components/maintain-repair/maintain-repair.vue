@@ -31,7 +31,7 @@
         <li class="li_input">
           <p class="div_p">审查状态：</p>
           <div class="div_inputTwo">
-            <el-select clearable size="small" v-model="Auditstatus" placeholder="" multiple>
+            <el-select clearable size="mini" v-model="Auditstatus" placeholder="请选择" multiple>
               <el-option
                 v-for="item in AuditstatusDate"
                 :key="item.value"
