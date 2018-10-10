@@ -96,7 +96,7 @@
                   <img class="photosImg" @click="selectImg(fieldphoto(item.photosArr, item.path), index)" :key="index" v-for="(data, index) in item.photosArr" :src="`${item.path}${data}`" alt="">
                 </li>
                 <li class="matters_lifour">
-                  <i @click.stop="amputatematters(item.checktaskdetailid)" v-if="!item.refid ? false : true" class="el-icon-close"></i>
+                  <i @click.stop="amputatematters(item.checktaskdetailid)" v-if="JurisdictionData.delete && (item.approvalstate !== 20 && item.approvalstate !== 100)" class="el-icon-close"></i>
                 </li>
               </ul>
             </div>
