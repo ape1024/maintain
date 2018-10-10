@@ -62,12 +62,12 @@
             <div class="lookover_div">{{question.mac}}</div>
           </li>
           <li class="lookover_li">
-            <p class="lookover_p">审核人员：</p>
-            <div class="lookover_div">{{question.approvername}}</div>
-          </li>
-          <li class="lookover_li">
             <p class="lookover_p">设施单位：</p>
             <div class="lookover_div">{{question.unit}}</div>
+          </li>
+          <li class="lookover_li">
+            <p class="lookover_p">审核人员：</p>
+            <div class="lookover_div">{{question.approvername}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">备注说明：</p>

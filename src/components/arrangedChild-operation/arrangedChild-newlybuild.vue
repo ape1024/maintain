@@ -194,24 +194,26 @@
                       <el-radio v-model="groupradio" label="3">巡检频次-按月</el-radio>
                      <p class="frequencyLi_P">
                         <span>
-                        每月
+                        固定每月
                         <el-input-number v-model="numbers" controls-position="right"  size="mini" :min="1" :max="28"></el-input-number>
-                          号巡检
+                          号生成计划
                       </span>
                      </p>
                     </li>
                   </ul>
               </div>
-              <div class="lookupChooseLiTop">
-                <p class="lookupChooseLiTop_p">选择工作类型</p>
-              </div>
-              <div class="frequencytwo">
-                <ul class="frequencyUl">
-                  <li :key="index" v-for="(item, index) in Worktype" class="frequencyLi">
-                    <el-checkbox v-model="item.flag">{{item.workmodename}}</el-checkbox>
-                  </li>
-                </ul>
-              </div>
+             <div v-show="scheduleBoolean">
+               <div class="lookupChooseLiTop">
+                 <p class="lookupChooseLiTop_p">选择工作类型</p>
+               </div>
+               <div class="frequencytwo">
+                 <ul class="frequencyUl">
+                   <li :key="index" v-for="(item, index) in Worktype" class="frequencyLi">
+                     <el-checkbox v-model="item.flag">{{item.workmodename}}</el-checkbox>
+                   </li>
+                 </ul>
+               </div>
+             </div>
             </li>
           </ul>
         </div>
@@ -295,7 +297,8 @@ export default {
       // 当前时间
       dateNow: '',
       // 存储计划编号
-      planCodeTemp: ''
+      planCodeTemp: '',
+      scheduleBoolean: false
     }
   },
   methods: {
@@ -596,6 +599,16 @@ export default {
     handleChange (value) {
       let num = 24 / value
       this.classesGrades = num.toFixed(2)
+    }
+  },
+  watch: {
+    scheduleData (el) {
+      console.log(el)
+      if (el === 3) {
+        this.scheduleBoolean = true
+      } else {
+        this.scheduleBoolean = false
+      }
     }
   },
   created () {

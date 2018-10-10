@@ -65,7 +65,7 @@
               </header>
             </div>
             <div class="content">
-              <ul class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)" :class="[!item.refid ? '' : 'content_repeat']">
+              <ul :title="item.titleData" class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)" :class="[!item.refid ? '' : 'content_repeat']">
                 <li class="matters_lithree" :title="item.workitem">
                   <el-checkbox v-bind:disabled="item.disabled" v-model="item.fuleco"></el-checkbox>
                   {{item.workitem}}
@@ -162,7 +162,7 @@
                     type="textarea"
                     :rows="3"
                     resize="none"
-                    placeholder=""
+                    placeholder="请明确审核意见"
                     v-model="textarea">
                   </el-input>
                 </div>
@@ -236,7 +236,7 @@ export default {
   data () {
     return {
       checked: false,
-      radio: 0,
+      radio: 100,
       textarea: '同意归档',
       examine_Boolean: false,
       determinant: '',
@@ -269,63 +269,11 @@ export default {
     amputatematters (checktaskdetailid) {
       this.axios.post(deleteTaskDetail(checktaskdetailid)).then((response) => {
         if (response.data.code === 0) {
-          this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
-            console.log(response)
-            if (response.data.code === 0) {
-              let arrData = []
-              response.data.data.details.forEach((val) => {
-                if (val.path !== '') {
-                  let arr = []
-                  if (val.path.indexOf(',') !== -1) {
-                    arr = val.path.split(',')
-                    val.path = arr
-                  } else {
-                    arr = [val.path]
-                    val.path = arr
-                  }
-                } else {
-                  val.path = []
-                }
-                val.fuleco = false
-                val.pathBoolem = false
-                if (val.conclusion) {
-                  if (!val.refid) {
-                    val.disabled = false
-                  } else {
-                    val.disabled = true
-                  }
-                } else {
-                  val.disabled = true
-                }
-                if (!val.iswaitapproval) {
-                  if (!val.isapproval) {
-                    val.iswaitapprovalName = ''
-                  } else {
-                    val.iswaitapprovalName = '已审批'
-                  }
-                } else {
-                  val.iswaitapprovalName = '待审批'
-                }
-                if (val.isassigned) {
-                  val.isassignedName = '已安排'
-                } else {
-                  val.isassignedName = '未安排'
-                }
-                arrData.push(val)
-                if (val.photos) {
-                  val.photosArr = []
-                  if (val.photos.indexOf(',') !== -1) {
-                    let arr = val.photos.split(',')
-                    val.photosArr = arr
-                  } else {
-                    val.photosArr.push(val.photos)
-                  }
-                }
-              })
-              this.equipment = arrData
-              this.equipmentData = response.data.data
-            }
+          this.$message({
+            message: '删除成功',
+            type: 'success'
           })
+          this.DetailsByDeviceId()
         }
       })
     },
@@ -350,7 +298,6 @@ export default {
     assignment () {
       let arrData = []
       this.equipment.forEach((val) => {
-        console.log(val)
         if (val.fuleco === false || val.disabled === true) {
           return false
         } else {
@@ -369,7 +316,6 @@ export default {
       })
       let flga = true
       arrData.forEach((val) => {
-        console.log(val)
         if (val.isassigned || val.conclusionCode > 0) {
           flga = false
           if (!val.isapproval || !val.iswaitapproval) {
@@ -436,68 +382,7 @@ export default {
                     message: '审批成功',
                     type: 'success'
                   })
-                  this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
-                    if (response.data.code === 0) {
-                      let arrData = []
-                      console.log(response.data.data)
-                      response.data.data.details.forEach((val) => {
-                        console.log(response.data.data.details)
-                        console.log('////')
-                        if (val) {
-                          if (val.path) {
-                            let arr = []
-                            if (val.path.indexOf(',') !== -1) {
-                              arr = val.path.split(',')
-                              val.path = arr
-                            } else {
-                              arr = [val.path]
-                              val.path = arr
-                            }
-                          } else {
-                            val.path = []
-                          }
-                          val.fuleco = false
-                          val.pathBoolem = false
-                          if (val.conclusion) {
-                            if (!val.refid) {
-                              val.disabled = false
-                            } else {
-                              val.disabled = true
-                            }
-                          } else {
-                            val.disabled = true
-                          }
-                          if (!val.iswaitapproval) {
-                            if (!val.isapproval) {
-                              val.iswaitapprovalName = ''
-                            } else {
-                              val.iswaitapprovalName = '已审批'
-                            }
-                          } else {
-                            val.iswaitapprovalName = '待审批'
-                          }
-                          if (val.isassigned) {
-                            val.isassignedName = '已安排'
-                          } else {
-                            val.isassignedName = '未安排'
-                          }
-                          arrData.push(val)
-                          if (val.photos) {
-                            val.photosArr = []
-                            if (val.photos.indexOf(',') !== -1) {
-                              let arr = val.photos.split(',')
-                              val.photosArr = arr
-                            } else {
-                              val.photosArr.push(val.photos)
-                            }
-                          }
-                        }
-                      })
-                      this.equipment = arrData
-                      console.log(arrData)
-                      this.equipmentData = response.data.data
-                    }
-                  })
+                  this.DetailsByDeviceId()
                 }
               })
             })
@@ -542,72 +427,88 @@ export default {
     },
     picturedetails (item) {
       item.pathBoolem = !item.pathBoolem
+    },
+    DetailsByDeviceId () {
+      this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
+        if (response.data.code === 0) {
+          let arrData = []
+          response.data.data.details.forEach((val) => {
+            if (val) {
+              if (val.path) {
+                let arr = []
+                if (val.path.indexOf(',') !== -1) {
+                  arr = val.path.split(',')
+                  val.path = arr
+                } else {
+                  arr = [val.path]
+                  val.path = arr
+                }
+              } else {
+                val.path = []
+              }
+              val.fuleco = false
+              val.pathBoolem = false
+              if (val.conclusion) {
+                if (!val.refid) {
+                  val.disabled = false
+                } else {
+                  val.disabled = true
+                }
+              } else {
+                val.disabled = true
+              }
+              if (!val.iswaitapproval) {
+                if (!val.isapproval) {
+                  val.iswaitapprovalName = ''
+                } else {
+                  val.iswaitapprovalName = '已审批'
+                  val.titleData = `审核结论: ${val.approvalstatename} 审核意见: ${val.approvalopinion} 审核人员: ${val.approvername} 审核时间: ${this.fmtDate(val.checktime)}`
+                }
+              } else {
+                val.iswaitapprovalName = '待审批'
+                val.titleData = ''
+              }
+              if (val.conclusionname) {
+                if (val.isassigned) {
+                  val.isassignedName = '已安排'
+                } else {
+                  val.isassignedName = '未安排'
+                }
+              } else {
+                val.isassignedName = ''
+              }
+              arrData.push(val)
+              if (val.photos) {
+                val.photosArr = []
+                if (val.photos.indexOf(',') !== -1) {
+                  let arr = val.photos.split(',')
+                  val.photosArr = arr
+                } else {
+                  val.photosArr.push(val.photos)
+                }
+              }
+            }
+          })
+          this.equipment = arrData
+          this.equipmentData = response.data.data
+        }
+      })
+    }
+  },
+  watch: {
+    radio (el) {
+      if (el === 100) {
+        this.textarea = `同意归档`
+      } else if (el === 20) {
+        this.textarea = ``
+      }
     }
   },
   components: {
     DialogImg
   },
   created () {
-    console.log(this.JurisdictionData)
-    this.axios.post(maintainDailygetDetailsByDeviceId(this.taskidCode, this.equipmentCode)).then((response) => {
-      if (response.data.code === 0) {
-        let arrData = []
-        response.data.data.details.forEach((val) => {
-          if (val) {
-            if (val.path) {
-              let arr = []
-              if (val.path.indexOf(',') !== -1) {
-                arr = val.path.split(',')
-                val.path = arr
-              } else {
-                arr = [val.path]
-                val.path = arr
-              }
-            } else {
-              val.path = []
-            }
-            val.fuleco = false
-            val.pathBoolem = false
-            if (val.conclusion) {
-              if (!val.refid) {
-                val.disabled = false
-              } else {
-                val.disabled = true
-              }
-            } else {
-              val.disabled = true
-            }
-            if (!val.iswaitapproval) {
-              if (!val.isapproval) {
-                val.iswaitapprovalName = ''
-              } else {
-                val.iswaitapprovalName = '已审批'
-              }
-            } else {
-              val.iswaitapprovalName = '待审批'
-            }
-            if (val.isassigned) {
-              val.isassignedName = '已安排'
-            } else {
-              val.isassignedName = '未安排'
-            }
-            arrData.push(val)
-            if (val.photos) {
-              val.photosArr = []
-              if (val.photos.indexOf(',') !== -1) {
-                let arr = val.photos.split(',')
-                val.photosArr = arr
-              } else {
-                val.photosArr.push(val.photos)
-              }
-            }
-          }
-        })
-        this.equipment = arrData
-        console.log(arrData)
-        this.equipmentData = response.data.data
-      }
-    })
+    this.DetailsByDeviceId()
     //  任务审批选项
     this.axios.post(maintainDailygetTaskApprovalItems()).then((response) => {
       if (response.data.code === 0) {

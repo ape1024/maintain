@@ -587,10 +587,9 @@ export default {
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height 40px
+      line-height 29px
     .div_input
       float left
-      margin-top 5px
       width 167px
   .button
     display flex
@@ -603,16 +602,7 @@ export default {
     font-size $font-size-medium
     color $color-text-title
     .query
-      width 106px
-      height 36px
-      border-radius 5px
-      float left
-      margin-right 30px
-      background $color-background-query
-      cursor pointer
-      transition .2s
-      &:hover
-        background #4b92bf
+      queryDiv()
     .newly
       width 106px
       height 36px
@@ -828,12 +818,11 @@ export default {
     float left
     width 300px
     line-height 26px
-    margin-top 5px
     display flex
   .table_liRepeat
     background #3a271c!important
   .div_inputTow
     float left
-    margin-top 6px
+    margin-top 1px
     width 167px
 </style>

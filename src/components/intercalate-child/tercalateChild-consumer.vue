@@ -593,8 +593,8 @@ export default {
           .headerDiv
            float left
       .search
-        float left
-        conserve()
+        queryDiv()
+        margin-top 6px
     .information
        init()
        padding-bottom 10px

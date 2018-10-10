@@ -353,14 +353,13 @@ export default {
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height 40px
+      line-height 30px
       white-space nowrap
       overflow hidden
       text-overflow ellipsis
     .div_input
       float left
       width 167px
-      margin-top 5px
   .button
     display flex
     overflow hidden
@@ -371,29 +370,9 @@ export default {
     font-size $font-size-medium
     color $color-text-title
     .query
-      width 106px
-      height 36px
-      border-radius 5px
-      text-align center
-      display inline-block
-      margin-right 20px
-      background $color-background-query
-      cursor pointer
-      transition .2s
-      &:hover
-        background #4b92bf
+      queryDiv()
     .newly
-      width 106px
-      height 36px
-      border-radius 5px
-      text-align center
-      display inline-block
-      margin-right 20px
-      background $color-background-newly
-      cursor pointer
-      transition .2s
-      &:hover
-        background #4baabe
+      newlyDiv()
     .introduce
       height 36px
       border-radius 5px

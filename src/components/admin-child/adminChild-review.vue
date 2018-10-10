@@ -43,7 +43,7 @@
                 </div>
               </div>
               <div class="modify_liDivthree">
-                <p class="modify_li_p"><span class="increaseSpan"> </span>规格型号：</p>
+                <p class="modify_li_p"><span class="increaseSpanTwo">*</span>规格型号：</p>
                 <div class="modify_li_div">
                   <el-select size="mini" @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
                     <el-option
@@ -76,13 +76,13 @@
               <!--</div>-->
               <div class="modify_liDivthree">
                 <p class="modify_li_p">
-                  技术参数：
+                  <span class="increaseSpanTwo">*</span>技术参数：
                 </p>
                 <div class="modify_li_divthree">
                   <el-input
                     size="mini"
                     type="textarea"
-                    :rows="2"
+                    :rows="4"
                     resize="none"
                     placeholder=""
                     v-model="technicalParameter">
@@ -1090,7 +1090,7 @@ export default {
         font-size $font-size-medium
       .modify_liDiv
         init()
-        margin-bottom 20px
+        margin-bottom 12px
       .modify_liDivtwo
         position relative
         display inline-block
@@ -1243,7 +1243,7 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin-bottom 20px
+    margin-bottom 12px
   .upload
     display inline-block
     width 100px
@@ -1286,6 +1286,8 @@ export default {
      border-radius 5px
   .increaseSpan
     color #dd514c
+  .increaseSpanTwo
+    opacity 0
   .modify_li_divfour
     overflow-x hidden
     overflow-y auto

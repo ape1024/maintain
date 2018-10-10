@@ -423,13 +423,11 @@ export default {
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height 40px
+      line-height 29px
     .div_input
       float left
-      margin-top 5px
       width 167px
   .button
-    display flex
     float right
     overflow hidden
     position relative
@@ -440,16 +438,7 @@ export default {
     color $color-text-title
     margin-top -6px
     .query
-      width 106px
-      height 36px
-      border-radius 5px
-      float left
-      margin-right 30px
-      background $color-background-query
-      cursor pointer
-      transition .2s
-      &:hover
-        background #4b92bf
+      queryDiv()
     .newly
       width 106px
       height 36px

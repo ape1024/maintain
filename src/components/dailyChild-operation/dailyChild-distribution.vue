@@ -56,6 +56,7 @@
                 <el-tree
                   class="tree"
                   :data="maintenance"
+                  default-expand-all
                   node-key="id"
                   :props="proprietorProps">
                   <div class="custom-tree-node" slot-scope="{ node, data }">
@@ -80,6 +81,7 @@
                   class="tree"
                   :data="proprietor"
                   node-key="id"
+                  default-expand-all
                   :props="ownerProps">
                   <div class="custom-tree-node" slot-scope="{ node, data }">
                     <div>{{ node.label }}</div>
@@ -222,9 +224,9 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .distriBution
-    margin 117px auto 0
-    width 894px
-    height 680px
+    margin 80px auto 0
+    width 950px
+    height 800px
     background #111a28
     border 1px solid #444d5b
     .distriBution_div
@@ -272,9 +274,9 @@ export default {
             margin-right 6px
           .personChargeDiv
             float left
-            width 228px
+            width 300px
             overflow auto
-            height 130px
+            height 260px
         .explainBottom
           init()
           margin-top 50px

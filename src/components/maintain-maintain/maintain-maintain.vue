@@ -137,6 +137,9 @@
               <div v-if="JurisdictionData.approval" @click.stop="batchAudit" class="batchDiv">
                 批量审核
               </div>
+              <div v-if="Jurisdictionplan" class="planView" @click.stop="planView(item.checkplanid)">
+                计划详情
+              </div>
             </li>
           </ul>
           <transition enter-active-class="fadeInUp"
@@ -149,13 +152,17 @@
         </li>
       </ul>
     </section>
+    <section v-if="review_boolean" @click.stop class="review">
+      <lookup v-if="review_boolean" @lookup="Lookup" :showFlag="showFlag" :checkplan="CheckPlan" :Checkplanid="CheckPlanid"></lookup>
+    </section>
   </div>
 </template>
 
 <script>
 import dailytwo from '../dailyChild-two/dailyChild-two'
 import dailytwoNew from '../dailyChild-Newmodification/dailyChild-Newmodification'
-import { getWorkconclusion, findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, SetCheckTaskFiled, getCurrentTaskDeviceStatJson, getCurrentTaskDeviceStatJsonTwo, batchApprovalCheckTaskByDetailIDs } from '../../api/user'
+import lookup from '../arrangedChild-operation/arrangedChild-lookup'
+import { getWorkconclusion, findAreasTreeByProjectid, findAllDeviceType, getTaskQueryApprovalItems, maintainDailyCurrentTaskStat, SetCheckTaskFiled, getCurrentTaskDeviceStatJson, getCurrentTaskDeviceStatJsonTwo, batchApprovalCheckTaskByDetailIDs, maintainArranggetCheckPlan } from '../../api/user'
 // 修改
 // import modify from '../dailyChild-operation/dailyChild-modify'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
@@ -164,7 +171,8 @@ export default {
   name: 'maintain-maintain',
   components: {
     dailytwo,
-    dailytwoNew
+    dailytwoNew,
+    lookup
   },
   methods: {
     pigeonhole (taskID) {
@@ -390,6 +398,19 @@ export default {
           this.tableDatataskStat = response.data.data
         }
       })
+    },
+    planView (checkplanid) {
+      console.log(checkplanid)
+      this.CheckPlanid = checkplanid
+      this.axios.post(maintainArranggetCheckPlan(checkplanid)).then((response) => {
+        if (response.data.code === 0) {
+          this.CheckPlan = response.data.data
+          this.review_boolean = true
+        }
+      })
+    },
+    Lookup () {
+      this.review_boolean = false
     }
   },
   data () {
@@ -423,6 +444,7 @@ export default {
       timestamp: '',
       clicktaskName: '',
       JurisdictionData: {},
+      Jurisdictionplan: '',
       // 工作结论
       workconclusion: [],
       workconclusionData: [],
@@ -442,7 +464,11 @@ export default {
         selectWorkConclusion: [],
         selectStartDate: '',
         selectEndDate: ''
-      }
+      },
+      CheckPlan: '',
+      review_boolean: false,
+      CheckPlanid: '',
+      showFlag: true
     }
   },
   created () {
@@ -459,6 +485,8 @@ export default {
           update: val.update
         }
         this.JurisdictionData = obj
+      } else if (val.functioncode === 'plan') {
+        this.Jurisdictionplan = val.select
       }
     })
     //  归档时间判断  + 86400  延迟一天
@@ -534,13 +562,11 @@ export default {
       font-size $color-text-title
       color $color-text-title
       margin-right 10px
-      line-height 40px
+      line-height 29px
     .div_input
       float left
       width 167px
-      margin-top 5px
       display flex
-
   .button
     display flex
     float right
@@ -552,16 +578,7 @@ export default {
     font-size $font-size-medium
     color $color-text-title
     .query
-      width 106px
-      height 36px
-      border-radius 5px
-      float left
-      margin-right 30px
-      background $color-background-query
-      cursor pointer
-      transition .2s
-    .query:hover
-      background #4b92bf
+      queryDiv()
     .newly
       width 106px
       height 36px
@@ -806,15 +823,6 @@ export default {
     margin-right 35px
     text-decoration underline
     cursor pointer
-  .review
-    position fixed
-    top 0
-    left 0
-    width 100%
-    height 100%
-    background rgba(000,000,000,.4)
-    z-index 11
-    overflow hidden
   .div_inputTwo
     float left
     width 300px
@@ -823,33 +831,46 @@ export default {
     .el-select
       width 100%
   .pigeonhole
-    conserve()
-    width 70px
-    height 30px
+    display inline-block
+    color #3279a6
     line-height 30px
-    -webkit-user-select none
-    -moz-user-select none
-    -ms-user-select none
-    user-select none
+    margin-right 4px
+    cursor pointer
+    &:hover
+      color #4b92bf
   .subject_bottom
     min-height 800px
     background rgba(0,0,0,0.35)
     margin 10px
   .batchDiv
-    display inline-block
-    width 80px
-    height 30px
-    line-height 30px
-    border-radius 5px
-    text-align center
-    background $color-background-newly
-    cursor pointer
-    transition .2s
-    &:hover
-      background #4baabe
+      display inline-block
+      line-height 30px
+      margin-right 4px
+      text-align center
+      color  $color-background-newly
+      cursor pointer
+      transition .2s
+      &:hover
+        color  #4baabe
   .header_lithreeII
     color #4ea4db
     margin-right 10px
+  .planView
+    color #3acf76
+    cursor pointer
+    transition 0.2s
+    display inline-block
+    &:hover
+      color #39ed81
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background $color-barckground-transparent
+    z-index 11
+    overflow hidden
 </style>
 <style>
   .div_inputFFF .el-input__icon{

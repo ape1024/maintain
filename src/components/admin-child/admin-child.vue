@@ -114,6 +114,9 @@
             <p v-if="JurisdictionDelete&&!dataset.disabledBoolean" class="header_p_Eleven" @click.stop="">
              删除
             </p>
+            <p class="superJurisdiction" v-if="JurisdictionSuper && !dataset.disabledBoolean" @click="amputate($index, tabChild, dataset.deviceid)">
+              超级删除
+            </p>
           </li>
         </ul>
       </li>
@@ -172,6 +175,7 @@ export default {
       JurisdictionDelete: '',
       JurisdictionApproval: '',
       JurisdictionUpdate: '',
+      JurisdictionSuper: '',
       equipmentinformation: [],
       equipmentDate: [],
       equipmentProps: {
@@ -526,8 +530,11 @@ export default {
         this.JurisdictionDelete = val.delete
         this.JurisdictionApproval = val.approval
         this.JurisdictionUpdate = val.update
+      } else if (val.functioncode === 'task_admin') {
+        this.JurisdictionSuper = val.delete
       }
     })
+
     //  获取设备类别
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
@@ -603,7 +610,7 @@ export default {
   .header_p_ten
     color $color-background-newly
   .header_p_eleven .el-button--text
-    color #83292b!important
+    color #cc5966!important
     font-size 16px
   .header_p_Eleven
     color #444
@@ -687,7 +694,7 @@ export default {
             white-space nowrap
           .threelevel_litwo p
             float left
-            margin-right 35px
+            margin-right 20px
             cursor pointer
   .threelevel_list_ul:hover
     background #253147
@@ -729,4 +736,6 @@ export default {
     overflow hidden
     padding-left 1%
     position relative
+  .superJurisdiction
+    color #ff0000
 </style>

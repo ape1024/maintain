@@ -199,9 +199,7 @@ export default {
           font-size $font-size-medium
       .conserve
         float right
-        margin-right 20px
-        conserve()
-        margin-top -3px
+        queryDiv()
       .subjectRight
         float left
     .content
