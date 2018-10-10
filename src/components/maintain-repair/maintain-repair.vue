@@ -320,9 +320,9 @@ export default {
       this.axios.post(maintainRepairfindTaskByTaskid(id)).then((response) => {
         if (response.data.code === 0) {
           this.axios.post(getRepairUsers(id)).then((data) => {
-            if (data.data.length !== 0) {
+            if (data.data.data.length !== 0) {
               let arr = []
-              data.data.forEach((val) => {
+              data.data.data.forEach((val) => {
                 arr.push(val.username)
               })
               this.repairtasksName = arr.join(',')
