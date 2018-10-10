@@ -219,7 +219,6 @@ export default {
       this.DailyCurrentTaskStat()
     },
     ExaminationApproval (el) {
-      // let token = JSON.parse(window.sessionStorage.token)
       this.DailyCurrentTaskStat()
     },
     query () {
@@ -253,7 +252,6 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, conclusion, clickId, areaid, basedevicecode, approvalstates)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response.data.data)
           if (response.data.data.length !== 0) {
             response.data.data.forEach((val) => {
               val.choose = false
@@ -408,7 +406,6 @@ export default {
       })
     },
     planView (checkplanid) {
-      console.log(checkplanid)
       this.CheckPlanid = checkplanid
       this.axios.post(maintainArranggetCheckPlan(checkplanid)).then((response) => {
         if (response.data.code === 0) {
