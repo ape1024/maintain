@@ -124,7 +124,7 @@
 
 <script>
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
-import { maintainRepairreAssignedTask, maintainDailygetRepairTypes, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, managementgetUserOrganization } from '../../api/user'
+import { getRepairUsers, maintainRepairreAssignedTask, maintainDailygetRepairTypes, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, managementgetUserOrganization } from '../../api/user'
 export default {
   name: 'repair-rescheduling',
   props: ['msg'],
@@ -241,21 +241,35 @@ export default {
     this.getrepairRadio = this.msg.repairtype
     // 处理意见
     this.textarea = this.msg.disposeopinion
-    this.axios.post(maintainDailygetRepairTypes()).then((response) => {
-      if (response.data.code === 0) {
-        this.getrepairDate = response.data.data
-      }
-    })
     //  业主单位
     this.axios.post(maintainDailygetProprietorOrgTree()).then((response) => {
       if (response.data.code === 0) {
         this.proprietor = response.data.data
+        console.log(response.data.data)
       }
     })
     //  维保单位 this.equipment
     this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.msg.deviceid)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
+      }
+    })
+    // 绑定人员
+    this.axios.post(getRepairUsers(this.msg.repairtaskid)).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response.data.data)
+        const data = response.data.data
+        data.forEach((val) => {
+          this.maintenanceList.push(val.userid)
+          if (this.organizationtype === 1) {
+            this.repairCheckList.push(val.userid)
+          }
+        })
+      }
+    })
+    this.axios.post(maintainDailygetRepairTypes()).then((response) => {
+      if (response.data.code === 0) {
+        this.getrepairDate = response.data.data
       }
     })
   }

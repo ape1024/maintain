@@ -235,7 +235,7 @@
 </template>
 <script>
 import { projectMixin } from 'common/js/mixin'
-import { maintainArrangupdatePlan, maintainArranggetWorkModesByWorkType, getAllOrgTreeeByProjectId, maintainArranggetCheckPlan, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
+import { createChecktask, maintainArrangupdatePlan, maintainArranggetWorkModesByWorkType, getAllOrgTreeeByProjectId, maintainArranggetCheckPlan, findAreasTreeByProjectid, findAllDeviceType, maintainArranggetAllPlanTypes, maintainArranggetAllCheckFrequency } from '../../api/user'
 export default {
   mixins: [projectMixin],
   name: 'arrangedChild-lookup',
@@ -295,7 +295,7 @@ export default {
       lookupchooseData: [],
       numbers: '1',
       monthsNumber: true,
-      //  获取数据
+      // 获取数据
       Planusers: [],
       Planworkmodes: [],
       PlanData: [],
@@ -304,7 +304,7 @@ export default {
       defaultCheckedPeople: [],
       defaultCheckedRange: [],
       defaultCheckedFacilities: [],
-      //  时间戳
+      // 时间戳
       timeStamp: '',
       facilitiesData: '',
       judgementValue: false,
@@ -313,7 +313,23 @@ export default {
     }
   },
   methods: {
+    getDate () {
+      let date = new Date()
+      let seperator1 = '-'
+      let year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let strDate = date.getDate()
+      if (month >= 1 && month <= 9) {
+        month = '0' + month
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = '0' + strDate
+      }
+      let currentdate = year + seperator1 + month + seperator1 + strDate
+      this.dateNow = currentdate
+    },
     conserve () {
+      this.getDate()
       // return
       let worktypeid = this.scheduleData
       let planName = this.planName
@@ -352,6 +368,20 @@ export default {
       if (endDate === '') {
         this.$message({
           message: '请填写结束时间!',
+          type: 'warning'
+        })
+        return false
+      }
+      if (startDate > endDate) {
+        this.$message({
+          message: '开始时间大于结束时间!',
+          type: 'warning'
+        })
+        return false
+      }
+      if (this.dateNow > endDate) {
+        this.$message({
+          message: '结束时间不能小于当前时间!',
           type: 'warning'
         })
         return false
@@ -465,9 +495,8 @@ export default {
           scopeInspection.push(data)
         })
       }
-
       //  频次
-      //   let checkFrequency = this.frequencyradio
+      //  let checkFrequency = this.frequencyradio
       //  间隔时间
       //  制定创建时间  createTaskTime
       let interval = ''
@@ -495,18 +524,17 @@ export default {
         createTaskTime = `d${this.numbers}`
         this.frequencyData = 3
       }
-
-      //  巡检范围  scopeInspection
-      //  消防设施  checkplandetails
-      //  执行人   users
-      //  工作模式  workmodes
+      // 巡检范围  scopeInspection
+      // 消防设施  checkplandetails
+      // 执行人   users
+      // 工作模式  workmodes
       let param = {
         areas: scopeInspection,
         checkplandetails: newArr,
         users: users,
         workmodes: worktypeData
       }
-      //  频次
+      // 频次
       let checkFrequency = this.frequencyData
       this.axios.post(maintainArrangupdatePlan(this.Checkplanid, planName, planCode, worktypeid, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime), param).then((response) => {
         if (response.data.code === 0) {
@@ -514,6 +542,24 @@ export default {
             message: '修改成功',
             type: 'success'
           })
+          if (this.dateNow >= startDate && this.dateNow <= endDate) {
+            this.$confirm('计划已创建成功, 是否立即生成任务?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.axios.post(createChecktask(this.Checkplanid)).then((response) => {
+                if (response.data.code === 0) {
+                  this.$message({
+                    type: 'success',
+                    message: '生成成功!'
+                  })
+                } else {
+                  this.$message.error(`${response.data.message}`)
+                }
+              })
+            })
+          }
           this.$emit('lookup', false)
           return false
         } else {
@@ -567,7 +613,7 @@ export default {
     }
   },
   created () {
-    //  时间戳
+    // 时间戳
     this.timeStamp = Date.parse(new Date())
     let PlanworkmodesData = []
     this.axios.post(maintainArranggetCheckPlan(this.Checkplanid)).then((response) => {
@@ -596,7 +642,7 @@ export default {
     this.endTime = fmtDate(this.PlanData.enddate)
     this.planDescription = this.PlanData.plandesc
     this.scheduleData = this.PlanData.worktypeid
-    //   执行人
+    // 执行人
     // this.defaultCheckedPeople
     this.Planusers.forEach((val) => {
       this.maintenanceList.push(`${val.userid},${val.organizationid}`)
