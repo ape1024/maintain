@@ -138,7 +138,7 @@
                 重新安排
               </p>
               <p v-if="JurisdictionSelect" @click.stop="examine(item)" class="header_p_ten">查看</p>
-              <p v-if="JurisdictionApproval && item.approvalBoolean" @click.stop="question(item.repairtaskid)" class="header_p_eight threelevel_litwo_p">
+              <p v-if="JurisdictionApproval && item.approvalBoolean" @click.stop="question(item.repairtaskid, item)" class="header_p_eight threelevel_litwo_p">
                 审核
               </p>
               <p v-if="JurisdictionApproval && !item.approvalBoolean" class="header_p_eight threelevel_litwo_p threelevel_litwo_ptwo">
@@ -162,14 +162,14 @@
     </section>
     <section v-if="examineBoolean" @click.stop class="review">
       <!--审核-->
-      <childExamine v-if="examineBoolean" :examine="examineData" :rework="reworkData" :examina="examination"  :approval="approvalStatus" :state="taskState" @mine="Mine" @newly="Newly"></childExamine>
+      <childExamine v-if="examineBoolean" :examine="examineData" :title="examinationTitle" :rework="reworkData" :examina="examination"  :approval="approvalStatus" :state="taskState" @mine="Mine" @newly="Newly"></childExamine>
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
       <childLookover :examine="examineData" :title="examinationTitle" :state="taskState" :repairtasks="repairtasksName" @look="Onlook"></childLookover>
     </section>
     <section v-if="quipmentBoolean" class="review" @click.stop>
-      <!--更换设备-->
+      <!--重新安排-->
       <childquipment v-if="quipmentBoolean" :msg="quipmentData" @quipment="Quipment"></childquipment>
     </section>
     <section v-if="verificationBoolean" class="review" @click.stop>
@@ -346,8 +346,10 @@ export default {
         }
       })
     },
-    question (ID) {
+    // 审核
+    question (ID, item) {
       // 点击审核
+      this.examinationTitle = item.repairtypename
       this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
         if (response.data.code === 0) {
           this.examineData = response.data.data
@@ -355,6 +357,7 @@ export default {
             if (response.data.code === 0) {
               this.reworkData = response.data.data
               this.axios.post(maintainRepairgetApprovalInfos(ID)).then((response) => {
+                console.log(response.data)
                 if (response.data.code === 0) {
                   // 审批记录  目前 只要第一条,待定
                   this.examination = response.data.data[0]
@@ -410,6 +413,7 @@ export default {
     Modify (ev) {
       this.modifyBoolean = ev
     },
+    // 重新安排
     equipment (ID) {
       this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
         if (response.data.code === 0) {

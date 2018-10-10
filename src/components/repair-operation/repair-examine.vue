@@ -2,13 +2,13 @@
     <div class="subject">
       <section class="content">
         <h4 class="contentH">
-          故障维修审核
+          {{title}} 审核
         </h4>
         <div class="information">
           <div class="informationTop">
             <ul class="informationTopUl">
               <li class="informationTopLitwo">
-                <span>设施名称：</span>
+                <span>设施类别：</span>
                 <span class="informationTopSpan">{{examine.devicename}}</span>
               </li>
               <li class="informationTopLi">
@@ -18,14 +18,14 @@
               <li class="informationTopLi">
                 <span>设施数量：</span>
                 <span class="informationTopSpan">
-                  {{examine.devicecount}}
+                  {{examine.devicecount}}{{examine.unit}}
                 </span>
               </li>
             </ul>
           </div>
           <ul class="informationTopUl">
             <li class="informationTopLitwo">
-              <span>设施位置：</span>
+              <span>设置位置：</span>
               <span class="informationTopSpan">
                   {{examine.areaname}}
                   {{examine.position}}
@@ -59,7 +59,7 @@
                   <li class="tlefttopli">
                     <div class="tlefttopli__Div">
                       <span class="tlefttopli_Span">处理意见：</span>
-                      <span class="tlefttopli_Spantwo">{{examine.creater}}</span>
+                      <span class="tlefttopli_Spantwo">{{examine.disposeopinion}}</span>
                     </div>
                     <div class="tlefttopli__Div">
                       <span class="tlefttopli_Span">审核结论：</span>
@@ -379,10 +379,11 @@
 
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
+import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
 import { maintainRepairapprovalTask, maintainRepairgetFaultSelectItems, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindReworksByTaskid } from '../../api/user'
 export default {
   name: 'repair-examine',
-  props: ['examine', 'rework', 'examina', 'state', 'approval'],
+  props: ['examine', 'rework', 'examina', 'state', 'approval', 'title'],
   data () {
     return {
       options: [],
@@ -425,6 +426,10 @@ export default {
     }
   },
   methods: {
+    // 格式化时间
+    fmtDate (obj) {
+      return formatDate(obj, 'yyyy/MM/dd HH:mm')
+    },
     approvalradioChange (data) {
       if (data === 30) {
         this.waatitimeBoolean = false
@@ -543,7 +548,7 @@ export default {
     approvalClick () {
       this.ficationBoolean = !this.ficationBoolean
     },
-    //  现场照片
+    // 现场照片
     fieldphoto (src) {
       let arr = []
       if (src === '' || src === null) {
@@ -558,7 +563,7 @@ export default {
     ficationClick (item, data) {
       item.flag = !item.flag
     },
-    //  获取审批状态
+    // 获取审批状态
     approvalStatus (status) {
       let arr = ''
       this.approval.forEach((val) => {
@@ -571,14 +576,6 @@ export default {
       }
       return arr
     },
-    // 时间戳改格式
-    fmtDate (obj) {
-      let date = new Date(obj)
-      let y = 1900 + date.getYear()
-      let m = `0` + (date.getMonth() + 1)
-      let d = `0` + date.getDate()
-      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
-    },
     selectImg (list, index) {
       this.imgList = list
       setTimeout(() => {
@@ -586,7 +583,7 @@ export default {
         this.$refs.dialogImg.open()
       }, 200)
     },
-    //  获取任务状态
+    // 获取任务状态
     obtainState (number) {
       let arr = ''
       this.state.forEach((val) => {
@@ -604,7 +601,6 @@ export default {
     DialogImg
   },
   created () {
-    console.log(this.examine)
     if (this.examina) {
       this.AuditorsPersonnel = this.examina.approvername
       this.AuditorsTimer = fmtDate(this.examina.approvaltime)

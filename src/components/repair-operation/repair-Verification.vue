@@ -8,7 +8,7 @@
         <div class="informationTop">
           <ul class="informationTopUl">
             <li class="informationTopLitwo">
-              <span>设施名称：</span>
+              <span>设施类别：</span>
               <span class="informationTopSpan">{{examine.devicename}}</span>
             </li>
             <li class="informationTopLi">
@@ -25,7 +25,7 @@
         </div>
         <ul class="informationTopUl">
           <li class="informationTopLitwo">
-            <span>设施位置：</span>
+            <span>设置位置：</span>
             <span class="informationTopSpan">
                   {{examine.areaname}}
                   {{examine.position}}

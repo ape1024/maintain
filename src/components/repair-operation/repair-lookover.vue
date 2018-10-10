@@ -8,7 +8,7 @@
         <div class="informationTop">
           <ul class="informationTopUl">
             <li class="informationTopLitwo">
-              <span>设施名称：</span>
+              <span>设施类别：</span>
               <span class="informationTopSpan">{{examine.devicename}}</span>
             </li>
             <li class="informationTopLi">
@@ -16,7 +16,7 @@
               <span class="informationTopSpan">{{examine.devicecode}}</span>
             </li>
             <li class="informationTopLi">
-              <span>设施位置：</span>
+              <span>设置位置：</span>
               <span class="informationTopSpan">{{examine.areaname}}{{examine.position}}</span>
             </li>
           </ul>
@@ -363,7 +363,6 @@ export default {
     DialogImg
   },
   created () {
-    console.log(this.examine)
     function fmtDate (obj) {
       let date = new Date(obj)
       let y = 1900 + date.getYear()
