@@ -83,7 +83,7 @@
                 </el-checkbox-group>
               </div>
             </div>
-            <div class="maintenance">
+            <div v-if="organizationtype === 1" class="maintenance">
               <p class="personChargeP">业主单位：</p>
               <div class="personChargeDiv">
                 <el-checkbox-group v-model="repairCheckList">
@@ -124,7 +124,7 @@
 
 <script>
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
-import { maintainRepairreAssignedTask, maintainDailygetRepairTypes, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId } from '../../api/user'
+import { maintainRepairreAssignedTask, maintainDailygetRepairTypes, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, managementgetUserOrganization } from '../../api/user'
 export default {
   name: 'repair-rescheduling',
   props: ['msg'],
@@ -152,7 +152,8 @@ export default {
         label: 'organizationName'
       },
       proprietorCheckList: [],
-      maintenanceList: []
+      maintenanceList: [],
+      organizationtype: ''
     }
   },
   methods: {
@@ -228,7 +229,12 @@ export default {
     }
   },
   created () {
-    console.log(this.msg)
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(managementgetUserOrganization(token)).then((response) => {
+      if (response.data.code === 0) {
+        this.organizationtype = response.data.data.organizationtype
+      }
+    })
     // 异常情况
     this.abnormalCondition += `情况说明: ${this.msg.exception === null ? ' ' : this.msg.exception}\n处理情况:${this.msg.treatment === null ? ' ' : this.msg.treatment}`
     // 任务类型
