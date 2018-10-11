@@ -176,7 +176,7 @@ export default {
   },
   methods: {
     pigeonhole (taskID) {
-      this.$confirm('是否将选中的多项工作记录批量审核为归档?', '提示', {
+      this.$confirm('是否归档?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
