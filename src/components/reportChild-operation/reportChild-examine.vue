@@ -207,7 +207,7 @@
                 </el-checkbox-group>
               </div>
             </div>
-            <div class="assortmentLi_div">
+            <div class="assortmentLi_div" v-if="organizationtype === 1">
               <div class="assortmentLiTop">
                 <p class="assortmentliP">业主执行人员</p>
               </div>
@@ -252,7 +252,7 @@
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
-import { maintainReportassignedTask, maintainReportgetConfrimStates, maintainReportgetFeedbackstateStates, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailygetRepairTypes } from '../../api/user'
+import { managementgetUserOrganization, maintainReportassignedTask, maintainReportgetConfrimStates, maintainReportgetFeedbackstateStates, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailygetRepairTypes } from '../../api/user'
 export default {
   name: 'reportChild-examine',
   props: ['examine'],
@@ -284,7 +284,8 @@ export default {
       Confirmationstate: '',
       Confirmationsdisplay: '',
       processingsdisplay: '',
-      processingstate: ''
+      processingstate: '',
+      organizationtype: ''
     }
   },
   methods: {
@@ -355,6 +356,12 @@ export default {
     DialogImg
   },
   created () {
+    let token = JSON.parse(window.sessionStorage.token)
+    this.axios.post(managementgetUserOrganization(token)).then((response) => {
+      if (response.data.code === 0) {
+        this.organizationtype = response.data.data.organizationtype
+      }
+    })
     this.axios.post(maintainReportgetConfrimStates()).then((response) => {
       this.Confirmationstate = response.data
       this.Confirmationsdisplay = this.examine.comfirmstate
