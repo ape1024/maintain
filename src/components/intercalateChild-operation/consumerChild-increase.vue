@@ -824,6 +824,33 @@ export default {
           this.proprietornameDate = data.organizationid
           this.organizationDisable = true
         }
+        this.axios.post(getOrganizationTreeTion(this.proprietornameDate)).then((data) => {
+          if (data.data.code === 0) {
+            if (!data.data.data) {
+              this.organize = []
+              return false
+            } else {
+              this.organize = []
+              this.organize.push(data.data.data)
+              let result = ''
+              let findData = (data, val) => {
+                let flag = true
+                data.forEach((item) => {
+                  if (item.organizationId === val) {
+                    result += ` ${item.organizationName} `
+                    flag = false
+                  } else if (flag && item.subOrgnizations) {
+                    findData(item.subOrgnizations, val)
+                  }
+                })
+              }
+              this.checkedCities.forEach((data) => {
+                findData(this.organize, data)
+              })
+              this.organizeText = result
+            }
+          }
+        })
       }
     })
     // 定义空值
