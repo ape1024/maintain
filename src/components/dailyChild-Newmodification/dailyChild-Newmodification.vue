@@ -56,7 +56,7 @@
                 <div class="heavyPlayLiDiv">
                   <ul :key="$index" v-for="(data, $index) in item.details" class="heavyPlayLiUl">
                     <li :title="data.workitem" class="heavyPlayLi cephalosomeTwo" >
-                      <el-checkbox v-model="data.flag" :disabled="data.disabled"></el-checkbox>
+                      <el-checkbox v-if="!data.disabled" v-model="data.flag" :disabled="data.disabled"></el-checkbox>
                       {{data.workitem}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
