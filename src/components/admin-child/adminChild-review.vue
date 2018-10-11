@@ -422,7 +422,6 @@ export default {
         let devicetypeid = this.categoryDate[0]
         this.axios.post(GetDevUnit(token, devicetypeid)).then((response) => {
           if (response.data.code === 0) {
-
             this.CompanyData = response.data.data
           }
         })
