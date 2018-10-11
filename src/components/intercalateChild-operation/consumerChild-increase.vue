@@ -105,7 +105,7 @@
                 <div @click.stop="accessarea" class="region">
                   {{regionDate}}
                 </div>
-                <ul v-show="regionUl" class="region_ul">
+                <ul v-if="regionUl" class="region_ul">
                   <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
                     <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
                     <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">

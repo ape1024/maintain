@@ -1,5 +1,5 @@
 <template>
-  <div class="subject">
+  <div class="subject" @click="subjectClick">
     <div class="information" >
       <ul class="informationUl">
         <!--上级主管单位-->
@@ -81,10 +81,10 @@
               所在区域：
             </p>
             <div class="content" tabindex="0" @blur="blur">
-              <div @click.stop="accessarea" class="region">
+              <div @click.stop="accessarea" class="region" >
                 {{regionDate}}
               </div>
-              <ul v-show="regionUl" class="region_ul">
+              <ul v-if="regionUl" class="region_ul">
                 <li :id="item.provinceid" :key="item.provinceid" v-for="item in province" class="region_li">
                   <i @click.stop="deploy($event, item.provinceid)" class="el-icon-circle-plus-outline region_i"></i><span @click="provinceSpan($event, item)" class="provinceSpan">{{item.provincename}}</span><ul class="regionliUl">
                   <li :id="data.cityid" :key="data.cityid" v-for="data in conurbation" class="regionliul_li">
@@ -132,8 +132,11 @@
             </p>
             <div class="content">
               <div class="content">
+                <el-input size="mini" :disabled="true" v-model="businessCategoryDataString" placeholder="" :title="businessCategoryDataString" ></el-input>
                 <el-cascader
+                  v-show="false"
                   size="mini"
+                  placeholder=""
                   :disabled="true"
                   :options="category"
                   :props="rangeProps"
@@ -385,6 +388,7 @@ export default {
       businessOptions: [],
       // 业务范围
       businessCategoryData: [],
+      businessCategoryDataString: '',
       // 资质编号
       identifier: '',
       // 单位联系人
@@ -443,6 +447,11 @@ export default {
     }
   },
   methods: {
+    subjectClick () {
+      this.firecontrolBoolean = false
+      this.buildscopeBoolean = false
+      this.regionUl = false
+    },
     // 上级单位变化事件
     comchange (data) {
       if (!data.length) return
@@ -474,6 +483,7 @@ export default {
     // 资质等级改变事件
     levelChange (data) {
       this.businessCategoryData = data
+      this.businessCategoryDataString = this.category.filter(t => t.value === data[0])[0].stringValue
     },
     // 省份点击事件
     deploy (event, provinceid) {
@@ -562,9 +572,9 @@ export default {
     },
     // 新增的确认
     newConserve () {
-      //  点击保存
+      // 点击保存
       const token = JSON.parse(window.sessionStorage.token)
-      //  组织类型
+      // 组织类型
       let organizationtype = this.regimentaValue
       if (organizationtype === '') {
         this.$message({
@@ -573,13 +583,13 @@ export default {
         })
         return
       }
-      //  区县
+      // 区县
       const countyid = this.countytownId === undefined ? '' : this.countytownId
-      //  城市
+      // 城市
       const city = this.conurbationId === undefined ? '' : this.conurbationId
-      //  省
+      // 省
       const province = !this.provinceId ? '' : this.provinceId
-      //  单位编码
+      // 单位编码
       const organizationcode = this.encrypt
       if (!organizationcode && organizationtype === 3) {
         this.$message({
@@ -590,27 +600,27 @@ export default {
       }
       // 单位名称
       const organizationname = this.organizationname
-      //  组织缩写
+      // 组织缩写
       const organizationshortname = !this.organizationshortname ? this.organizationname : this.organizationshortname
-      //  详细地址
+      // 详细地址
       const address = this.address === undefined ? '' : this.address
-      //  专业类别
+      // 专业类别
       let professionalcategory = !this.businessOptions[0] ? '' : this.businessOptions[0]
       let scope = !this.grading ? '' : this.grading
-      //  组织机构的父节点ID  目前没有
-      //  资质等级  level
+      // 组织机构的父节点ID  目前没有
+      // 资质等级  level
       const level = !this.selectedOptions[0] ? '' : this.selectedOptions[0]
-      //  资质编号
+      // 资质编号
       const qualificationnumber = !this.identifier ? '' : this.identifier
-      //  联系人
+      // 联系人
       const linkman = !this.linkman ? '' : this.linkman
-      //  联系电话
+      // 联系电话
       const tel = !this.CellPhone ? '' : this.CellPhone
-      //  图标
+      // 图标
       let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
-      //  备注
+      // 备注
       const memo = !this.textarea ? '' : this.textarea
-      //  新建组织id 可以为空
+      // 新建组织id 可以为空
       let organization = ''
       let fireBrigadeId = ''
       let fireControlCategoryId = ''
@@ -634,9 +644,9 @@ export default {
     },
     // 修改确认
     conserve () {
-      //  点击保存
+      // 点击保存
       const token = JSON.parse(window.sessionStorage.token)
-      //  组织编号
+      // 组织编号
       const organization = this.organizationId
       if (organization === '') {
         this.$message({
@@ -645,7 +655,7 @@ export default {
         })
         return false
       }
-      //  组织类型
+      // 组织类型
       let organizationType = ''
       if (this.ownerType !== 1 && this.ownerType !== 2) {
         organizationType = this.regimentaValue
@@ -659,13 +669,13 @@ export default {
       } else {
         organizationType = this.ownerType
       }
-      //  区县
+      // 区县
       const countyid = this.countytownId === undefined ? '' : this.countytownId
-      //  城市
+      // 城市
       const city = this.conurbationId === undefined ? '' : this.conurbationId
-      //  省
+      // 省
       const province = !this.provinceId ? '' : this.provinceId
-      //  单位编码
+      // 单位编码
       const organizationcode = this.encrypt
       if (!organizationcode && organizationType === 3) {
         this.$message({
@@ -676,31 +686,31 @@ export default {
       }
       // 单位名称
       const organizationname = this.organizationname
-      //  组织缩写
+      // 组织缩写
       const organizationshortname = !this.organizationshortname ? this.organizationname : this.organizationshortname
-      //  详细地址
+      // 详细地址
       const address = this.address === undefined ? '' : this.address
-      //  专业类别
+      // 专业类别
       let professionalcategory = !this.businessOptions[0] ? '' : this.businessOptions[0]
       let scope = !this.grading ? '' : this.grading
-      //  组织机构的父节点ID  目前没有
-      //  资质等级  level
+      // 组织机构的父节点ID  目前没有
+      // 资质等级  level
       const level = !this.selectedOptions[0] ? '' : this.selectedOptions[0]
-      //  资质编号
+      // 资质编号
       const qualificationnumber = !this.identifier ? '' : this.identifier
-      //  联系人
+      // 联系人
       const linkman = !this.linkman ? '' : this.linkman
-      //  联系电话
+      // 联系电话
       const tel = !this.CellPhone ? '' : this.CellPhone
-      //  图标
+      // 图标
       let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
-      //  备注
+      // 备注
       const memo = !this.textarea ? '' : this.textarea
 
       let fireBrigadeId = ''
       let fireControlCategoryId = ''
       let industryCategoryId = ''
-      //  父级的id
+      // 父级的id
       let parentid = ''
       if (this.companyDate.length === 0) {
         parentid = ''
@@ -831,6 +841,7 @@ export default {
       this.textarea = ''
       this.organization = ''
       this.conserveBoolean = false
+      this.businessCategoryDataString = ''
     },
     getOrganizationTree (token) {
       // 左边的树状结构
