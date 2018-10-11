@@ -5,22 +5,26 @@ export const userLogin = (username, password, clientId) => {
   let url = `${Test}/auth/login?usercode=${username}&password=${password}&deviceKey=${clientId}`
   return url
 }
-//  退出登录
+// 退出登录
 export const secede = (toKen) => {
   const url = `${Test}/auth/logout?token=${toKen}`
   return url
 }
-//  系统设置->用户设置->查看用户信息
+// 系统设置->用户设置->查看用户信息
 export const iConsumerexamine = (userId) => {
   const url = `${Test}/users/findUser?userid=${userId}`
   return url
 }
-//  头部右侧部分
+// 头部右侧部分
 export const findUserProjects = (token) => {
   const url = `${Test}/projects/findUserProjects?token=${token}`
   return url
 }
-
+// 获取用户管理的管辖范围内的项目信息
+export const getPorjectByUserID = (token, userid) => {
+  const url = `${Test}/app/tasks/getPorjectByUserID?token=${token}&userid=${userid}`
+  return url
+}
 //  用户设置  修改用户
 export const modifytheUser = (userid, organizationid, username, email, tel, userstate, job, memo, roleids, file) => {
   //  用户id | 组织id | 登录名 | 用户名 | 邮箱 | 电话 | 用户角色 | 职务 | 备注

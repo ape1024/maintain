@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { secede, findUserProjects, consumerFindUser, managementgetUserOrganization } from '../../api/user'
+import { secede, getPorjectByUserID, consumerFindUser, managementgetUserOrganization } from '../../api/user'
 import { mapActions } from 'vuex'
 import Information from './consumerHeaderRight'
 export default {
@@ -101,7 +101,8 @@ export default {
   },
   created () {
     let token = JSON.parse(window.sessionStorage.token)
-    this.axios.post(findUserProjects(token)).then((response) => {
+    let userid = JSON.parse(window.sessionStorage.userInfo).userid
+    this.axios.post(getPorjectByUserID(token, userid)).then((response) => {
       if (response.data.code === 0) {
         this.options = response.data.data
         let patternBo = false
