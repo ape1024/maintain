@@ -114,7 +114,6 @@ export default {
               this.tableData = data.data.data.datas
               this.numberPagesBoolean = true
               this.numberPages = data.data.data.totalPage
-              console.log(this.numberPages)
             }
           })
         }
@@ -142,7 +141,6 @@ export default {
     init () {
       this.numberPagesBoolean = false
       this.currentPage = 1
-      console.log(this.currentPage)
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.regionDate = response.data.data
@@ -164,7 +162,7 @@ export default {
     },
     query () {
       // 接口 getDevListDetailProjectsTwo
-      //  区域id
+      // 区域id
       if (!this.regionModel.length) {
         this.$message({
           message: '请选择区域',
@@ -174,7 +172,6 @@ export default {
       } else {
         let token = JSON.parse(window.sessionStorage.token)
         let areaid = this.regionModel[this.regionModel.length - 1]
-        console.log(areaid)
         this.axios.post(CalcDevCount(token, this.maintainProject, areaid, 1, 30)).then((response) => {
           if (response.data.code === 0) {
             this.tableData = response.data.data.datas
@@ -238,7 +235,7 @@ export default {
   },
   data () {
     return {
-      //  区域
+      // 区域
       regionProps: {
         children: 'areas',
         label: 'areaname',
@@ -246,7 +243,7 @@ export default {
       },
       regionDate: [],
       regionModel: [],
-      //  设备类别
+      // 设备类别
       equipmentProps: {
         children: 'children',
         label: 'name',
@@ -254,16 +251,16 @@ export default {
       },
       equipment: [],
       equipmentDate: [],
-      //  厂家
+      // 厂家
       manufactorModel: '',
       manufactor: [],
-      //  运行状态
+      // 运行状态
       runningstateDate: [],
       runningState: '',
-      //  审核状态
+      // 审核状态
       AuditstatusDate: [],
       AuditstatusD: '',
-      //  传给子级值
+      // 传给子级值
       tableChild: '',
       options: [],
       value: '',
@@ -280,14 +277,14 @@ export default {
   },
   created () {
     let token = JSON.parse(window.sessionStorage.token)
-    //  权限
+    // 权限
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'device') {
         this.JurisdictionInsert = val.insert
       }
     })
-    //  获取区域
+    // 获取区域
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
@@ -299,24 +296,23 @@ export default {
             this.tableData = data.data.data.datas
             this.numberPagesBoolean = true
             this.numberPages = data.data.data.totalPage
-            console.log(this.numberPages)
           }
         })
       }
     })
-    //  获取设备类别
+    // 获取设备类别
     this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.equipment = response.data.data
       }
     })
-    //  获取运行状态
+    // 获取运行状态
     this.axios.post(FindDevAllstate()).then((response) => {
       if (response.data.code === 0) {
         this.runningstateDate = response.data.data
       }
     })
-    //  审核状态
+    // 审核状态
     this.axios.post(FindDevAllApprovalstate()).then((response) => {
       if (response.data.code === 0) {
         this.AuditstatusDate = response.data.data

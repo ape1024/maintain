@@ -3,7 +3,7 @@
     <section class="subject_top">
       <ul class="ul_input">
         <li class="li_input">
-          <p class="div_p">区 域：</p>
+          <p class="div_p">建筑区域：</p>
           <div class="div_input">
               <el-cascader
                 size="mini"
@@ -29,7 +29,7 @@
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">审核状态：</p>
+          <p class="div_p">审查状态：</p>
           <div class="div_input">
             <el-select size="mini" v-model="Auditstatus" placeholder="请选择" clearable>
               <el-option
@@ -55,7 +55,7 @@
           </div>
         </li>
         <li class="li_input">
-          <p class="div_p">时间：</p>
+          <p class="div_p">查询时间：</p>
           <div class="div_input div_inputFFF">
             <el-date-picker
               size="mini"

@@ -74,7 +74,6 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(getCurrentTaskFileDeviceStatJson(token, 2, this.maintainProject, this.startTime, this.endTime)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response)
           this.dailychildData = response.data.data
         }
       })
@@ -84,7 +83,6 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(getCurrentTaskFileDeviceStatJson(token, 2, this.maintainProject, this.startTime, this.endTime)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response)
           this.dailychildData = response.data.data
         }
       })
@@ -166,7 +164,6 @@ export default {
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(getCurrentTaskFileDeviceStatJson(token, 2, this.maintainProject, this.startTime, this.endTime)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         this.dailychildData = response.data.data
       }
     })

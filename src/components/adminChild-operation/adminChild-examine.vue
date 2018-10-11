@@ -51,7 +51,7 @@
           </li>
           <li class="lookover_li">
             <p class="lookover_p">设备数量：</p>
-            <div class="lookover_div">{{question.devicecount}}</div>
+            <div class="lookover_div">{{question.devicecount}}{{question.unit}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">编辑人员：</p>
@@ -60,10 +60,6 @@
           <li class="lookover_litwo">
             <p class="lookover_p">MAC地址：</p>
             <div class="lookover_div">{{question.mac}}</div>
-          </li>
-          <li class="lookover_li">
-            <p class="lookover_p">设施单位：</p>
-            <div class="lookover_div">{{question.unit}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">审核人员：</p>
@@ -110,7 +106,7 @@
           保存
         </div>
         <div @click.stop="closedown" class="closedown">
-          取消
+          关闭
         </div>
       </div>
       <dialog-img ref="dialogImg" :list="imgList"></dialog-img>

@@ -125,7 +125,7 @@
           <!--保存-->
         <!--</div>-->
         <div @click.stop="closedown" class="closedown">
-          取消
+          关 闭
         </div>
       </div>
       <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
