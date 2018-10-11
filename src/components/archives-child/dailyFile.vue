@@ -33,9 +33,8 @@
         <div @click.stop="query" class="query">
           查 询
         </div>
-        <div @click.stop="query" class="derivation">
+        <div @click.stop="derivation" class="derivation">
           导出Excel
-
         </div>
       </div>
     </section>
@@ -48,7 +47,7 @@
 <script>
 import dailytwoNew from '../archives-Child-operation/archives-Child-operation'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
-import { getCurrentTaskFileDeviceStatJson } from '../../api/user'
+import { getCurrentTaskFileDeviceStatJson, exportMaintenanceReportForMonth } from '../../api/user'
 export default {
   mixins: [projectMixin, loadingMixin],
   name: 'dailyFile',
@@ -56,6 +55,21 @@ export default {
     dailytwoNew
   },
   methods: {
+    derivation () {
+      let token = JSON.parse(window.sessionStorage.token)
+      let myDate = new Date()
+      let month = myDate.getMonth() + 1
+      let day = myDate.getDate()
+      month = (month.toString().length === 1) ? ('0' + month) : month
+      day = (day.toString().length === 1) ? ('0' + day) : day
+      let result = myDate.getFullYear() + '-' + month + '-' + day
+      console.log(result)
+      let beginTime = this.startTime ? this.startTime : result
+      let endTime = this.endTime ? this.endTime : result
+      this.axios.post(exportMaintenanceReportForMonth(token, this.maintainProject, beginTime, endTime, 2)).then((response) => {
+        console.log(response)
+      })
+    },
     init () {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(getCurrentTaskFileDeviceStatJson(token, 2, this.maintainProject, this.startTime, this.endTime)).then((response) => {
@@ -162,16 +176,4 @@ export default {
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/file"
-  .derivation
-    width 106px
-    height 36px
-    border-radius 5px
-    text-align center
-    display inline-block
-    margin-right 20px
-    background $color-background-newly
-    cursor pointer
-    transition .2s
-    &:hover
-      background #4baabe
 </style>

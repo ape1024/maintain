@@ -24,7 +24,7 @@
         <ul class="headerUl">
           <li class="headerLi">
             <p class="headerP">
-              登 录 名
+              登 录 名：
             </p>
             <div class="headerDiv">
               <el-input size="mini"  v-model="Username" placeholder=""  clearable>></el-input>
@@ -32,7 +32,7 @@
           </li>
           <li class="headerLi">
             <p class="headerP">
-              角 色
+              角 色：
             </p>
             <div class="headerDiv">
               <el-cascader
@@ -47,7 +47,7 @@
           </li>
           <li class="headerLi">
             <p class="headerP">
-              手 机
+              手 机：
             </p>
             <div class="headerDiv">
               <el-input size="mini" v-model="Handphone" placeholder="" clearable>></el-input>
@@ -57,16 +57,14 @@
         <div @click="search" class="search">
           搜索
         </div>
+        <div v-if="JurisdictionInsert" @click="induce" class="superinduce">
+          新增
+        </div>
       </header>
       <div class="information">
         <p class="informationP">
           用户列表
         </p>
-        <div class="informationDiv">
-          <div v-if="JurisdictionInsert" @click="induce" class="superinduce">
-            新增
-          </div>
-        </div>
       </div>
       <div class="entry">
         <ul class="entryHeader">
@@ -608,21 +606,7 @@ export default {
          float right
          margin-right 10px
          overflow hidden
-         .superinduce
-           float left
-           width 72px
-           margin-right 18px
-           text-align center
-           background #3292a6
-           font-size $font-size-small
-           color $color-text
-           border-radius 4px
-           line-height 24px
-           height 24px
-           cursor pointer
-           transition .2s
-           &:hover
-             background #48a8bc
+
          .amputate
            float left
            width 72px
@@ -770,4 +754,6 @@ export default {
     margin-right 16px
     color #444
     cursor initial
+  .superinduce
+    newlyDiv()
 </style>

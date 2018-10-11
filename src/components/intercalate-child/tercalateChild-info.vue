@@ -3,7 +3,7 @@
     <div class="info-manage">
       <div class="header">
         <div class="header-info-search">
-          <el-input size="small" v-model="searchVal" placeholder="关键字搜索">
+          <el-input size="mini" v-model="searchVal" placeholder="关键字搜索">
             <i
               class="el-icon-search el-input__icon"
               slot="suffix"
@@ -190,20 +190,9 @@ export default {
         overflow hidden
         padding 20px 0
         .header-info-add
+          color #fff
           float right
-          margin-right 20px
-          display inline-block
-          width 107px
-          border-radius 5px
-          height 32px
-          text-align center
-          line-height 32px
-          background $color-background-query
-          transition .2s
-          color $color-text
-          cursor pointer
-          &:hover
-            background: #4b92bf
+          newlyDiv()
         .header-info-search
           float right
           margin-right 20px
