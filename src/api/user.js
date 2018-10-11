@@ -881,3 +881,6 @@ export const getTreeByProjectId = (projectId) => {
 export const updateUserWithPwd = (token, userid, oldpwd, newpwd, organizationid, username, email, tel, userstate, job, memo, roleids, file) => {
   return `${Test}/users/updateUserWithPwd?token=${token}&userid=${userid}&oldpwd=${oldpwd}&newpwd=${newpwd}&organizationid=${organizationid}&username=${username}&email=${email}&tel=${tel}&userstate=${userstate}&job=${job}&memo=${memo}&roleids=${roleids}&file=${file}`
 }
+export const exportMaintenanceReportForMonth = (token, projectid, beginTime, endTime, worktypid) => {
+  return `${Test}/taskexport/exportMaintenanceReportForMonth?token=${token}&projectid=${projectid}&beginTime=${beginTime}&endTime=${endTime}&worktypid=${worktypid}`
+}

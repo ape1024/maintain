@@ -161,16 +161,4 @@ export default {
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/file"
-  .derivation
-    width 106px
-    height 36px
-    border-radius 5px
-    text-align center
-    display inline-block
-    margin-right 20px
-    background $color-background-newly
-    cursor pointer
-    transition .2s
-    &:hover
-      background #4baabe
 </style>

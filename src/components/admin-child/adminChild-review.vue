@@ -1,9 +1,14 @@
 <template>
   <div class="newlyadded" @click="shutdown">
     <section class="increase">
-      <h4 class="increase_h4">
-        设施信息 新增
-      </h4>
+     <div class="increase">
+       <h4 class="increase_h4">
+         设施信息 新增
+       </h4>
+       <div class="increaseYZDW">
+         <span class="increaseYZDWSpan">业主单位: </span>{{proprietorUnit}}
+       </div>
+     </div>
       <div class="increase_top">
         <div class="top_header">
           <p class="header_p">
@@ -58,22 +63,22 @@
                   <el-input size="mini" v-show="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
                 </div>
               </div>
-              <!--<div class="modify_liDivthree">-->
-                <!--<p class="modify_li_p"><span class="increaseSpan">*</span>设施单位：</p>-->
-                <!--<div class="modify_li_div">-->
-                  <!--<el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">-->
-                    <!--<el-option-->
-                      <!--v-for="item in CompanyData"-->
-                      <!--:key="item.devunitId"-->
-                      <!--:label="item.unitname"-->
-                      <!--:value="item.devunitId">-->
-                    <!--</el-option>-->
-                  <!--</el-select>-->
-                <!--</div>-->
-                <!--<div class="modify_lidivRight">-->
-                  <!--<el-input v-if="CompanyShow" size="mini" v-model="CompanyInput" placeholder="请输入单位"></el-input>-->
-                <!--</div>-->
-              <!--</div>-->
+              <div class="modify_liDivthree">
+                <p class="modify_li_p"><span class="increaseSpan">*</span>设施单位：</p>
+                <div class="modify_li_div">
+                  <el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">
+                    <el-option
+                      v-for="item in CompanyData"
+                      :key="item.devunitId"
+                      :label="item.unitname"
+                      :value="item.devunitId">
+                    </el-option>
+                  </el-select>
+                </div>
+                <div class="modify_lidivRight">
+                  <el-input v-if="CompanyShow" size="mini" v-model="CompanyInput" placeholder="请输入单位"></el-input>
+                </div>
+              </div>
               <div class="modify_liDivthree">
                 <p class="modify_li_p">
                   <span class="increaseSpanTwo">*</span>技术参数：
@@ -246,7 +251,7 @@
                     {{item.positionName}}{{item.position}}
                   </li>
                   <li class="title_lili">
-                    {{item.devcount}}
+                    {{item.devcountD}}
                   </li>
                   <li class="title_liliTwo">
                     <!--控制器编码-->
@@ -417,11 +422,6 @@ export default {
         let devicetypeid = this.categoryDate[0]
         this.axios.post(GetDevUnit(token, devicetypeid)).then((response) => {
           if (response.data.code === 0) {
-            // let obj = {
-            //   devunitId: -999,
-            //   unitname: '自定义'
-            // }
-            // response.data.data.push(obj)
             this.CompanyData = response.data.data
           }
         })
@@ -489,10 +489,10 @@ export default {
         this.axios.post(maintainReportfindManufactures(region)).then((response) => {
           if (response.data.code === 0) {
             this.manufactor = response.data.data
-            this.manufactor.push({
-              name: '自定义',
-              manufacturerid: '-9999'
-            })
+            // this.manufactor.push({
+            //   name: '自定义',
+            //   manufacturerid: '-9999'
+            // })
           }
         })
       }
@@ -516,6 +516,26 @@ export default {
       return result
     },
     addincrease () {
+      if (!this.Company) {
+        this.$message({
+          message: '请选择单位',
+          type: 'warning'
+        })
+        return
+      }
+      if (!this.facilityLocationDate.length) {
+        this.$message({
+          message: '请选择设施位置',
+          type: 'warning'
+        })
+        return
+      }
+      let devcountD = ''
+      this.CompanyData.forEach((val) => {
+        if (val.devunitId === this.Company) {
+          devcountD = val.unitname
+        }
+      })
       let obtainCode = this.specific
       let areaid = this.facilityLocationDate
       let areaidName = this.ergodic(areaid)
@@ -542,7 +562,9 @@ export default {
             //  一次码
             c: '',
             //  地址编码
-            d: ''
+            d: '',
+            //  带单位的数量
+            devcountD: `${quantum}${devcountD}`
           })
         }
       } else {
@@ -563,8 +585,9 @@ export default {
           //  一次码
           c: '',
           //  地址编码
-          d: ''
-
+          d: '',
+          //  带单位的数量
+          devcountD: `${quantum}${devcountD}`
         })
       }
     },
@@ -648,6 +671,15 @@ export default {
       })
       //  单位
       let devunitid = ''
+      if (!this.Company) {
+        this.$message({
+          message: '请填写设施单位',
+          type: 'warning'
+        })
+        return false
+      } else {
+        devunitid = this.Company
+      }
       // if (!this.Company) {
       //   this.$message({
       //     message: '请选择设施单位',
@@ -781,10 +813,10 @@ export default {
         this.axios.post(maintainReportfindDivecemodels(region, this.manufactorModel)).then((response) => {
           if (response.data.code === 0) {
             this.version = response.data.data
-            this.version.push({
-              divecemodelname: '自定义',
-              divecemodelid: '-9999'
-            })
+            // this.version.push({
+            //   divecemodelname: '自定义',
+            //   divecemodelid: '-9999'
+            // })
           }
         })
       }
@@ -841,9 +873,14 @@ export default {
     position relative
     padding-top 45px
     .increase_h4
+      float left
      font-size $font-size-medium-x
      color $color-text-title
      margin-bottom 14px
+    .increaseYZDW
+      color #fff
+      margin-right 20px
+      float right
    .increase_top
      width 100%
      position relative
@@ -1046,13 +1083,14 @@ export default {
        closedown()
   .newlyadded
     margin 30px 0 0
+    padding-bottom 10px
     width 100%
     background #111a28
   .increase
     width 1245px
     margin 0 auto
     position relative
-    padding-top 45px
+    padding-top 20px
     .increase_h4
       font-size $font-size-medium-x
       color $color-text-title
@@ -1090,7 +1128,7 @@ export default {
         font-size $font-size-medium
       .modify_liDiv
         init()
-        margin-bottom 12px
+        margin-bottom 8px
       .modify_liDivtwo
         position relative
         display inline-block
@@ -1243,7 +1281,7 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin-bottom 12px
+    margin-bottom 8px
   .upload
     display inline-block
     width 100px
@@ -1297,10 +1335,13 @@ export default {
   .UploadPicture
     position relative
     overflow height
-    margin 0 0 0 20px
+    margin 0 0 0 10px
   .UploadPictureP
-    margin-bottom 20px
+    margin-bottom 10px
     color #d5d5d5
+  .increaseYZDWSpan
+    margin-right 10px
+    color #999
 </style>
 <style>
   .modify_li_divfour .el-upload-list--picture-card .el-upload-list__item{

@@ -912,8 +912,9 @@ export default {
             background $color-background-newly
             text-align center
             padding 0 20px
-            height 36px
-            line-height 36px
+            height 29px
+            font-size 14px
+            line-height 29px
             color $color-text-title
             border-radius 5px
             cursor pointer
@@ -1023,11 +1024,12 @@ export default {
     display inline-block
     min-width 100px
     border-radius 5px
-    height 36px
+    height 29px
+    line-height 29px
     padding-left 4px
     padding-right 4px
     text-align center
-    line-height 36px
+    font-size 14px
     background $color-text-tile-project
     transition .2s
     color $color-text
@@ -1041,6 +1043,9 @@ export default {
   .amputateDIv
     amputateDIv()
     float right
+    height 29px
+    line-height 29px
+    font-size 14px
     margin-right 20px
   .addRole
     float: right

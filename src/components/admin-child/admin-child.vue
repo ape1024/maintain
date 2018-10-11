@@ -61,7 +61,7 @@
       <li :key="dataset.deviceid" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
           <li class="threelevel_lithree">
-            <el-checkbox v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>
+            <el-checkbox v-if="!dataset.disabled" v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>
             {{dataset.devicecode}}
           </li>
           <li :title="dataset.devicename" class="threelevel_lithree">
@@ -115,7 +115,7 @@
              删除
             </p>
             <p class="superJurisdiction" v-if="JurisdictionSuper && !dataset.disabledBoolean" @click="amputate($index, tabChild, dataset.deviceid)">
-              超级删除
+              删档
             </p>
           </li>
         </ul>
@@ -737,5 +737,5 @@ export default {
     padding-left 1%
     position relative
   .superJurisdiction
-    color #ff0000
+    color #cc5966
 </style>
