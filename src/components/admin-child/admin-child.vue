@@ -6,7 +6,7 @@
         设施编码
       </li>
       <li class="threelevel_lithree">
-        设备名称 <i class="el-icon-caret-bottom"></i>
+        设施名称 <i class="el-icon-caret-bottom"></i>
         <div class="threelevel_ensconce">
           <el-cascader
             size="mini"

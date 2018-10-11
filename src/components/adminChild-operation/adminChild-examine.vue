@@ -203,11 +203,12 @@ export default {
       }
     })
     this.axios.post(getApproveType(token)).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         this.conclusion = response.data.data
       }
     })
+    this.radio = !this.question.approvalstate ? '' : this.question.approvalstate
+    this.view = !this.question.approvalopinion ? '' : this.question.approvalopinion
   }
 }
 </script>

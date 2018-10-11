@@ -489,10 +489,10 @@ export default {
         this.axios.post(maintainReportfindManufactures(region)).then((response) => {
           if (response.data.code === 0) {
             this.manufactor = response.data.data
-            // this.manufactor.push({
-            //   name: '自定义',
-            //   manufacturerid: '-9999'
-            // })
+            this.manufactor.push({
+              name: '自定义',
+              manufacturerid: '-9999'
+            })
           }
         })
       }
@@ -813,10 +813,10 @@ export default {
         this.axios.post(maintainReportfindDivecemodels(region, this.manufactorModel)).then((response) => {
           if (response.data.code === 0) {
             this.version = response.data.data
-            // this.version.push({
-            //   divecemodelname: '自定义',
-            //   divecemodelid: '-9999'
-            // })
+            this.version.push({
+              divecemodelname: '自定义',
+              divecemodelid: '-9999'
+            })
           }
         })
       }
