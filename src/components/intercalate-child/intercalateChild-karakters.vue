@@ -14,8 +14,8 @@
           </li>
           <li v-show="item.visflag"  @click="systemroleClick(iteminfo.roleid, iteminfo, false)" :key="indexinfo" v-for="(iteminfo, indexinfo) in item.roles" v-bind:class="seletedFlag === iteminfo.roleid ? 'leftBottomLlThree' : 'leftBottomLltwo'">
             {{iteminfo.rolename}}
-            <div v-if="JurisdictionInsert && iteminfo.rolestate === 0" v-show="index !== 0 && index !== 1 && iteminfo.rolename" @click="enable(iteminfo)" class="enable" >禁用</div>
-            <div v-if="JurisdictionInsert && iteminfo.rolestate !== 0" v-show="index !== 0 && index !== 1 && iteminfo.rolename"  @click="enable(iteminfo)" class="unenable" >启用</div>
+            <div v-if="JurisdictionInsert && iteminfo.rolestate === 0" v-show="index !== 0 && userCode === 'admin' && index !== 1 && iteminfo.rolename" @click="enable(iteminfo)" class="enable" >禁用</div>
+            <div v-if="JurisdictionInsert && iteminfo.rolestate !== 0" v-show="index !== 0 && userCode === 'admin' && index !== 1 && iteminfo.rolename"  @click="enable(iteminfo)" class="unenable" >启用</div>
          </li>
        </ul>
      </div>
@@ -167,7 +167,8 @@ export default {
       btnDisabled: false,
       organizationid: '', // 创建用户角色的机构ID
       JurisdictionInsert: '',
-      JurisdictionSelect: ''
+      JurisdictionSelect: '',
+      userCode: '' // 是否显示禁用或者启用
     }
   },
   methods: {
@@ -824,6 +825,7 @@ export default {
   },
   created () {
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    this.userCode = JSON.parse(window.sessionStorage.userInfo).usercode
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'role') {
         this.JurisdictionInsert = val.insert
