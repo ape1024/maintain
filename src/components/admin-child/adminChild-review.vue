@@ -63,22 +63,22 @@
                   <el-input size="mini" v-show="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
                 </div>
               </div>
-              <div class="modify_liDivthree">
-                <p class="modify_li_p"><span class="increaseSpan">*</span>设施单位：</p>
-                <div class="modify_li_div">
-                  <el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">
-                    <el-option
-                      v-for="item in CompanyData"
-                      :key="item.devunitId"
-                      :label="item.unitname"
-                      :value="item.devunitId">
-                    </el-option>
-                  </el-select>
-                </div>
-                <div class="modify_lidivRight">
-                  <el-input v-if="CompanyShow" size="mini" v-model="CompanyInput" placeholder="请输入单位"></el-input>
-                </div>
-              </div>
+              <!--<div class="modify_liDivthree">-->
+                <!--<p class="modify_li_p"><span class="increaseSpan">*</span>设施单位：</p>-->
+                <!--<div class="modify_li_div">-->
+                  <!--<el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">-->
+                    <!--<el-option-->
+                      <!--v-for="item in CompanyData"-->
+                      <!--:key="item.devunitId"-->
+                      <!--:label="item.unitname"-->
+                      <!--:value="item.devunitId">-->
+                    <!--</el-option>-->
+                  <!--</el-select>-->
+                <!--</div>-->
+                <!--<div class="modify_lidivRight">-->
+                  <!--<el-input v-if="CompanyShow" size="mini" v-model="CompanyInput" placeholder="请输入单位"></el-input>-->
+                <!--</div>-->
+              <!--</div>-->
               <div class="modify_liDivthree">
                 <p class="modify_li_p">
                   <span class="increaseSpanTwo">*</span>技术参数：
@@ -489,10 +489,12 @@ export default {
         this.axios.post(maintainReportfindManufactures(region)).then((response) => {
           if (response.data.code === 0) {
             this.manufactor = response.data.data
-            this.manufactor.push({
-              name: '自定义',
-              manufacturerid: '-9999'
-            })
+            if (response.data.data.length === 0) {
+              this.manufactor.push({
+                name: '自定义1',
+                manufacturerid: '-9999'
+              })
+            }
           }
         })
       }
@@ -516,13 +518,7 @@ export default {
       return result
     },
     addincrease () {
-      if (!this.Company) {
-        this.$message({
-          message: '请选择单位',
-          type: 'warning'
-        })
-        return
-      }
+      let devcountD = ''
       if (!this.facilityLocationDate.length) {
         this.$message({
           message: '请选择设施位置',
@@ -530,64 +526,81 @@ export default {
         })
         return
       }
-      let devcountD = ''
-      this.CompanyData.forEach((val) => {
-        if (val.devunitId === this.Company) {
-          devcountD = val.unitname
-        }
-      })
-      let obtainCode = this.specific
-      let areaid = this.facilityLocationDate
-      let areaidName = this.ergodic(areaid)
-      // let devicecoding = this.devicecoding
-      let quantum = this.quantum
-      // let encoded = this.encoded
-      if (this.checked) {
-        for (let i = 1; i <= this.num; i++) {
-          this.tabulationtitle.unshift({
-            // // 编码
-            // code: devicecoding,
-            positionName: areaidName,
-            // 位置
-            position: obtainCode,
-            areaid: areaid[areaid.length - 1],
-            // 数量
-            devcount: quantum,
-            //  设备编码
-            dCoding: '',
-            //  控制器编码
-            a: '',
-            //  回路号
-            b: '',
-            //  一次码
-            c: '',
-            //  地址编码
-            d: '',
-            //  带单位的数量
-            devcountD: `${quantum}${devcountD}`
-          })
-        }
+      if (!this.categoryDate.length) {
+        this.$message({
+          message: '请先选择设备类别!',
+          type: 'warning'
+        })
+        return false
       } else {
-        this.tabulationtitle.unshift({
-          // // 编码
-          dCoding: '',
-          // code: devicecoding,
-          positionName: areaidName,
-          // 位置
-          position: obtainCode,
-          areaid: areaid[areaid.length - 1],
-          // 数量
-          devcount: quantum,
-          //  控制器编码
-          a: '',
-          //  回路号
-          b: '',
-          //  一次码
-          c: '',
-          //  地址编码
-          d: '',
-          //  带单位的数量
-          devcountD: `${quantum}${devcountD}`
+        let token = JSON.parse(window.sessionStorage.token)
+        console.log(this.basedevicecode)
+        this.axios.post(`http://172.16.6.16:8920/dev/GetDevUnitByBaseDevCode?token=${token}&basedevcode=${this.basedevicecode}`).then((response) => {
+          if (response.data.code === 0) {
+            console.log(response.data.data)
+            devcountD = response.data.data
+            //  接口去请求来 单位
+            // this.CompanyData.forEach((val) => {
+            //   if (val.devunitId === this.Company) {
+            //     devcountD = val.unitname
+            //   }
+            // })
+            let obtainCode = this.specific
+            let areaid = this.facilityLocationDate
+            let areaidName = this.ergodic(areaid)
+            // let devicecoding = this.devicecoding
+            let quantum = this.quantum
+            // let encoded = this.encoded
+            console.log(`${quantum}${devcountD}`)
+            if (this.checked) {
+              for (let i = 1; i <= this.num; i++) {
+                this.tabulationtitle.unshift({
+                  // // 编码
+                  // code: devicecoding,
+                  positionName: areaidName,
+                  // 位置
+                  position: obtainCode,
+                  areaid: areaid[areaid.length - 1],
+                  // 数量
+                  devcount: quantum,
+                  //  设备编码
+                  dCoding: '',
+                  //  控制器编码
+                  a: '',
+                  //  回路号
+                  b: '',
+                  //  一次码
+                  c: '',
+                  //  地址编码
+                  d: '',
+                  //  带单位的数量
+                  devcountD: `${quantum}${devcountD}`
+                })
+              }
+            } else {
+              this.tabulationtitle.unshift({
+                // // 编码
+                dCoding: '',
+                // code: devicecoding,
+                positionName: areaidName,
+                // 位置
+                position: obtainCode,
+                areaid: areaid[areaid.length - 1],
+                // 数量
+                devcount: quantum,
+                //  控制器编码
+                a: '',
+                //  回路号
+                b: '',
+                //  一次码
+                c: '',
+                //  地址编码
+                d: '',
+                //  带单位的数量
+                devcountD: `${quantum}${devcountD}`
+              })
+            }
+          }
         })
       }
     },
@@ -671,15 +684,15 @@ export default {
       })
       //  单位
       let devunitid = ''
-      if (!this.Company) {
-        this.$message({
-          message: '请填写设施单位',
-          type: 'warning'
-        })
-        return false
-      } else {
-        devunitid = this.Company
-      }
+      // if (!this.Company) {
+      //   this.$message({
+      //     message: '请填写设施单位',
+      //     type: 'warning'
+      //   })
+      //   return false
+      // } else {
+      //   devunitid = this.Company
+      // }
       // if (!this.Company) {
       //   this.$message({
       //     message: '请选择设施单位',
@@ -1082,7 +1095,7 @@ export default {
      .cancel
        closedown()
   .newlyadded
-    margin 30px 0 0
+    margin 50px 0 0
     padding-bottom 10px
     width 100%
     background #111a28
