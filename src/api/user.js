@@ -371,8 +371,8 @@ export const maintainReportgetConfrimStates = () => {
   return url
 }
 //  获取上报问题
-export const maintainReportfindFeedback = (projectid) => {
-  const url = `${Test}/feedback/findFeedback?projectid=${projectid}`
+export const maintainReportfindFeedback = (projectid, pageIndex, pageSize) => {
+  const url = `${Test}/feedback/findFeedback?projectid=${projectid}&pageIndex=${pageIndex}&pageSize=${pageSize}`
   return url
 }
 //  setUserRoles
@@ -382,8 +382,8 @@ export const setUserRoles = (userid) => {
 }
 
 //  查寻上报问题
-export const maintainReportfindFeedbackTwo = (projectid, areaid, basedevicecode, feedbackState, confirmState) => {
-  const url = `${Test}/feedback/findFeedback?projectid=${projectid}&areaid=${areaid}&basedevicecode=${basedevicecode}&feedbackState=${feedbackState}&confirmState=${confirmState}`
+export const maintainReportfindFeedbackTwo = (projectid, areaid, basedevicecode, feedbackState, confirmState, pageIndex, pageSize) => {
+  const url = `${Test}/feedback/findFeedback?projectid=${projectid}&areaid=${areaid}&basedevicecode=${basedevicecode}&feedbackState=${feedbackState}&confirmState=${confirmState}&pageIndex=${pageIndex}&pageSize=${pageSize}`
   return url
 }
 
