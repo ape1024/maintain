@@ -644,7 +644,7 @@ export default {
         }
       }
       if (commitflag) {
-        this.axios.post(managementAuthority(token, organizationtype, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
+        this.axios.post(managementAuthority(token, organizationType, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
           if (response.data.code === 0) {
             this.$message({
               message: '新增成功',
