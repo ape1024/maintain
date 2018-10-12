@@ -51,6 +51,6 @@ export const interceptorsResponse = function (router, msg) {
       msg.alert('发送数据失败', '错误提示', {
         confirmButtonText: '确定'
       })
-      return Promise.reject(error.response.data)
+      return Promise.reject(error)
     })
 }

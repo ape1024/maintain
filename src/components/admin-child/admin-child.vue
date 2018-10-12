@@ -23,7 +23,7 @@
         mac地址
       </li>
       <li class="threelevel_lithree">
-        设备位置
+        设施位置
       </li>
       <li class="threelevel_lithree">
         数量

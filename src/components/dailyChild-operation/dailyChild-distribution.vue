@@ -213,7 +213,7 @@ export default {
       }
     })
     //  维保单位 this.equipment
-    this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject)).then((response) => {
+    this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject, token)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }

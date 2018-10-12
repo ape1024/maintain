@@ -165,7 +165,7 @@
             </li>
             <li class="lookupChooseLi">
               <div class="lookupChooseLiTop">
-                <p class="lookupChooseLiTop_p">选择巡检频次</p>
+                <p class="lookupChooseLiTop_p">{{lookupChooseLiTopText}}</p>
               </div>
               <div class="frequency">
                 <el-radio-group v-if="groupBoolean" v-model="frequencyradio" >
@@ -208,15 +208,17 @@
                   </li>
                 </ul>
               </div>
-              <div class="lookupChooseLiTop">
-                <p class="lookupChooseLiTop_p">选择工作类型</p>
-              </div>
-              <div class="frequencytwo">
-                <ul class="frequencyUl">
-                  <li :key="index" v-for="(item, index) in Worktype" class="frequencyLi">
-                    <el-checkbox v-model="item.flag">{{item.workmodename}}</el-checkbox>
-                  </li>
-                </ul>
+              <div v-show="scheduleBoolean">
+                <div class="lookupChooseLiTop">
+                  <p class="lookupChooseLiTop_p">选择工作类型</p>
+                </div>
+                <div class="frequencytwo">
+                  <ul class="frequencyUl">
+                    <li :key="index" v-for="(item, index) in Worktype" class="frequencyLi">
+                      <el-checkbox v-model="item.flag">{{item.workmodename}}</el-checkbox>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </li>
           </ul>
@@ -309,7 +311,20 @@ export default {
       facilitiesData: '',
       judgementValue: false,
       lookupchooseValue: false,
-      frequencyData: ''
+      frequencyData: '',
+      scheduleBoolean: false,
+      lookupChooseLiTopText: '选择计划生成时间'
+    }
+  },
+  watch: {
+    scheduleData (el) {
+      if (el === 3) {
+        this.scheduleBoolean = true
+        this.lookupChooseLiTopText = `选择巡检频次`
+      } else {
+        this.scheduleBoolean = false
+        this.lookupChooseLiTopText = `选择计划生成时间`
+      }
     }
   },
   methods: {

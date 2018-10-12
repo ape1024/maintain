@@ -119,17 +119,18 @@
               <p v-if="JurisdictionApproval && item.comfirmstate !== 2"
                  class="header_p_fourteen" >确认
               </p>
-              <p v-if="JurisdictionAssign" @click.stop="question(item.ID)" class="header_p_eight threelevel_litwo_p">
-              安排
+              <p v-if="JurisdictionAssign && !item.repairtaskid" @click.stop="question(item.ID)" class="header_p_eight threelevel_litwo_p">
+              安排1
+              </p>
+              <p v-if="JurisdictionAssign && !!item.repairtaskid"
+                 class="header_p_fourteen" >安排
               </p>
               <!--<p v-if="JurisdictionAssign && item.comfirmstate === 4"-->
                  <!--@click.stop="question(item.ID)"-->
                  <!--class="header_p_eight threelevel_litwo_p">-->
                  <!--安排-->
               <!--</p>-->
-              <!--<p v-if="JurisdictionAssign && item.comfirmstate !== 4"-->
-                 <!--class="header_p_fourteen" >安排-->
-              <!--</p>-->
+
               <p v-if="JurisdictionDelete"
                  class="header_p_eleven"
                  @click.stop="amputate(item.ID, index, exhibition)">
@@ -294,6 +295,7 @@ export default {
       // let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
       this.axios.post(maintainReportfindFeedbackTwo(this.maintainProject, areaid, basedevicecode, this.dispose, this.identification)).then((response) => {
         if (response.data.code === 0) {
+          console.log(response)
           this.exhibition = response.data.data.map(t => {
             return {
               ...t,

@@ -491,7 +491,7 @@ export default {
             this.manufactor = response.data.data
             if (response.data.data.length === 0) {
               this.manufactor.push({
-                name: '自定义1',
+                name: '自定义',
                 manufacturerid: '-9999'
               })
             }
