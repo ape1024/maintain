@@ -208,7 +208,6 @@
 </template>
 
 <script>
-import { getAllOrgTreeeByProjectId } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'consumerChild-examine',
@@ -229,7 +228,8 @@ export default {
       requirement: '',
       comment: '',
       organizeText: '',
-      organize: []
+      organize: [],
+      organizeName: ''
     }
   },
   methods: {
@@ -261,27 +261,10 @@ export default {
       this.exaDate.organization.forEach((val) => {
         arr.push(val.organizationid)
       })
-      let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject, token)).then((response) => {
-        if (response.data.code === 0) {
-          this.organize = response.data.data
-          let result = ''
-          let findData = (data, val) => {
-            let flag = true
-            data.forEach((item) => {
-              if (item.orgid === val) {
-                result += ` ${item.orgname} `
-                flag = false
-              } else if (flag && item.orgs) {
-                findData(item.orgs, val)
-              }
-            })
-          }
-          arr.forEach((val) => {
-            findData(this.organize, val)
-          })
-          this.organizeText = result
-        }
+    }
+    if (this.exaDate.organization.length) {
+      this.exaDate.organization.forEach((val) => {
+        this.organizeText += `${val.organizationname} `
       })
     }
   }

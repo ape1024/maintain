@@ -275,6 +275,11 @@ export default {
             this.arrangedData = response.data.data
             this.newlybuildBoolean = false
             this.review_boolean = false
+          } else {
+            this.arrangedData = []
+            this.arrangedData = response.data.data
+            this.newlybuildBoolean = false
+            this.review_boolean = false
           }
         }
       })
