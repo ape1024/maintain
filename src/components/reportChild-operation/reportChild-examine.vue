@@ -584,8 +584,9 @@ export default {
       height auto
       align-items flex-start
   .personChargeDiv
-    overflow hidden
-    max-height 300px
+    overflow auto
+    max-height 285px
+    min-height 285px
   .personnel
     init()
     margin-bottom 20px
