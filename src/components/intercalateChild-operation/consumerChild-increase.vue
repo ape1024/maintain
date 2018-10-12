@@ -344,7 +344,7 @@
 
 <script>
 import $ from 'jquery'
-import { managementCreate, managementgetUserOrganization, createOrUpdateProject, increasefindAllDevType, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload, getOrganizationTreeTion } from '../../api/user'
+import { managementCreate, managementgetUserOrganization, createOrUpdateProject, findAllDeviceTypeTwo, getCitiesByProvinceId, getCountiesByCityId, increasegetWorkTypes, getRootOrganizationsNotProprietor, getProprietorOrganization, managementCreatedProvince, findAllRootAreasTree, upload, getOrganizationTreeTion } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'consumerChild-increase',
@@ -803,8 +803,10 @@ export default {
   created () {
     // 获取当前用户的组织机构信息
     let token = JSON.parse(window.sessionStorage.token)
-    this.axios.post(increasefindAllDevType()).then((response) => {
-      const data = response.data
+    //  increasefindAllDevType
+    this.axios.post(findAllDeviceTypeTwo(token)).then((response) => {
+      const data = response.data.data
+      console.log(data)
       this.firecontrol = data.map(t => {
         return {
           ...t,

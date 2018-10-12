@@ -222,7 +222,6 @@
 </template>
 
 <script>
-import { getAllOrgTreeeByProjectId } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'consumerChild-examine',
@@ -300,33 +299,9 @@ export default {
     this.requirement = this.exaDate.projectsinfosviewdetail.requirement
     this.comment = this.exaDate.projectsinfosviewdetail.comment
     this.areas = this.exaDate.projectsinfosviewdetail.areas
-    let arr = []
     if (this.exaDate.organization.length) {
       this.exaDate.organization.forEach((val) => {
-        arr.push(val.organizationid)
-      })
-      let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject, token)).then((response) => {
-        if (response.data.code === 0) {
-          console.log(response.data)
-          this.organize = response.data.data
-          let result = ''
-          let findData = (data, val) => {
-            let flag = true
-            data.forEach((item) => {
-              if (item.orgid === val) {
-                result += ` ${item.orgname} `
-                flag = false
-              } else if (flag && item.orgs) {
-                findData(item.orgs, val)
-              }
-            })
-          }
-          arr.forEach((val) => {
-            findData(this.organize, val)
-          })
-          this.organizeText = result
-        }
+        this.organizeText += `${val.organizationname}`
       })
     }
   }

@@ -40,7 +40,7 @@
             <li :key="index" v-for="(item, index) in dailychild" class="listLi">
               <ul class="heavyPlay">
                 <li :title="item.devicename" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  <el-checkbox @change="checkboxClick(item.choose, item)" v-model="item.choose"></el-checkbox>
+                  <el-checkbox v-if="item.isSelect === 1" @change="checkboxClick(item.choose, item)" v-model="item.choose"></el-checkbox>
                   {{item.devicename}}
                 </li>
                 <li :title="item.devicecode" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">

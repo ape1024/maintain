@@ -887,3 +887,6 @@ export const updateUserWithPwd = (token, userid, oldpwd, newpwd, organizationid,
 export const exportMaintenanceReportForMonth = (token, projectid, beginTime, endTime, worktypid) => {
   return `${Test}/taskexport/exportMaintenanceReportForMonth?token=${token}&projectid=${projectid}&beginTime=${beginTime}&endTime=${endTime}&worktypid=${worktypid}`
 }
+export const findAllApproval = (token, recordid) => {
+  return `${Test}/task/findAllApproval?token=${token}&recordid=${recordid}`
+}

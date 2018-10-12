@@ -6,7 +6,7 @@
        </div>
        <div class="headerRight_leftImg">
          <div>
-           <p class="headerRight_left__p">
+           <p :title="organization" class="headerRight_left__p">
              {{organization}}
            </p>
            <!--<h4 class="headerRight_left_h4">-->
@@ -149,8 +149,11 @@ export default {
        position relative
        overflow hidden
     .headerRight_left__p
-      margin-top 20px
-      font-size 16px
+      margin-top 30px
+      margin-bottom 6px
+      white-space nowrap
+      text-overflow ellipsis
+      overflow hidden
       color $color-text
     .headerRight_left_h4
       font-size 12px
@@ -199,13 +202,13 @@ export default {
                margin-top -2px
                vertical-align middle
   .headerRight_left__img
-    width 45px
-    height 45px
+    width 50px
+    height 50px
     display inline-block
     vertical-align middle
   .headerRight_leftImgLeft
     float left
-    margin 11px 8px 0 0
+    margin 25px 8px 0 0
     overflow hidden
     position relative
   .modifyInformation

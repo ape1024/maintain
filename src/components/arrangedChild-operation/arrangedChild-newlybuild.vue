@@ -159,7 +159,7 @@
             </li>
             <li class="lookupChooseLi">
               <div class="lookupChooseLiTop">
-                <p class="lookupChooseLiTop_p">选择计划生成时间</p>
+                <p class="lookupChooseLiTop_p">{{lookupChooseLiTopText}}</p>
               </div>
               <div class="frequency">
                 <el-radio-group v-if="groupBoolean" v-model="frequencyradio">
@@ -298,7 +298,8 @@ export default {
       dateNow: '',
       // 存储计划编号
       planCodeTemp: '',
-      scheduleBoolean: false
+      scheduleBoolean: false,
+      lookupChooseLiTopText: '选择计划生成时间'
     }
   },
   methods: {
@@ -605,8 +606,10 @@ export default {
     scheduleData (el) {
       if (el === 3) {
         this.scheduleBoolean = true
+        this.lookupChooseLiTopText = `选择巡检频次`
       } else {
         this.scheduleBoolean = false
+        this.lookupChooseLiTopText = `选择计划生成时间`
       }
     }
   },

@@ -110,8 +110,10 @@
 </template>
 
 <script>
-import { maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailyassignedTask, managementgetUserOrganization } from '../../api/user'
+import { maintainDailygetProprietorOrgTree, getAllOrgTreeeByProjectId, maintainDailyassignedTask, managementgetUserOrganization } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [ projectMixin ],
   name: 'dailyChild-distribution',
   props: ['distriBoolean', 'getrepairDate', 'instruction', 'equipment'],
   data () {
@@ -210,9 +212,8 @@ export default {
         this.proprietor = response.data.data
       }
     })
-
     //  维保单位 this.equipment
-    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.equipment)).then((response) => {
+    this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }

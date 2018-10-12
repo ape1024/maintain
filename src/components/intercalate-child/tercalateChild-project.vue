@@ -26,10 +26,10 @@
             <li class="headerLitwo">
               {{item.projectcode}}
             </li>
-            <li class="headerLithree">
+            <li :title="item.proprietorname" class="headerLithree">
               {{item.proprietorname}}
             </li>
-            <li class="headerLitwo">
+            <li :title="item.vindicatorname" class="headerLitwo">
               {{item.vindicatorname}}
             </li>
             <li class="headerLitwo">
@@ -238,18 +238,24 @@ export default {
       -webkit-line-clamp 1
     .headerLitwo
       float left
-      width 10%
+      width 9%
+      padding 0 .5%
       height 38px
-      overflow hidden
       text-align center
+      white-space nowrap
+      overflow hidden
       text-overflow ellipsis
-      display -webkit-box
       -webkit-box-orient vertical
     .headerLithree
-      width  19%
+      width  18%
+      padding 0 .5%
       text-align center
       height 38px
       float left
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis
+      -webkit-box-orient vertical
     .headerLiFore
       width  10%
       text-align left

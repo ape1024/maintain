@@ -140,32 +140,38 @@
             </div>
             <div class="opinion_right">
               <div class="left_header">
-                <p class="left_hederP">记录审查情况</p>
+                <p class="left_hederP">历史审批记录</p>
                 <p class="left_hederPtwo"></p>
               </div>
-              <div class="choices">
-                <p class="choicesP">
-                  审核结论：
-                </p>
-                <div class="choicesDiv">
-                  <el-radio-group v-model="radio">
-                    <el-radio :key="index" v-for="(item, index) in approvaloptions" :label="item.value">{{item.name}}</el-radio>
-                  </el-radio-group>
+              <div class="opinion_title">
+                <div class="opinion_ulDiv">
+                  <ul class="opinion_ul">
+                    <li class="opinion_li_two">
+                      审批次数
+                    </li>
+                    <li class="opinion_li_two">
+                      审批结论
+                    </li>
+                    <li class="opinion_litwo_two">
+                      审批意见
+                    </li>
+                  </ul>
                 </div>
-              </div>
-              <div class="differing">
-                <p class="choicesP">
-                  审核意见：
-                </p>
-                <div class="differingDiv">
-                  <el-input
-                    type="textarea"
-                    :rows="3"
-                    resize="none"
-                    placeholder="请明确审核意见"
-                    v-model="textarea">
-                  </el-input>
-                </div>
+                <ul class="title_ul">
+                  <li class="title_li" v-for="(item ,index) in historicalExamination" :key="item.approvalid">
+                    <ul class="title_li_ul">
+                      <li class="opinion_li_two">
+                        {{index + 1}}
+                      </li>
+                      <li class="opinion_li_two">
+                        {{approvalFuntion(item.approvalstate)}}
+                      </li>
+                      <li :title="item.approvalopinion" class="opinion_litwo_two">
+                        {{item.approvalopinion}}
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -207,6 +213,36 @@
                 </ul>
               </div>
             </div>
+            <div class="opinion_right">
+              <div class="left_header">
+                <p class="left_hederP">记录审查情况</p>
+                <p class="left_hederPtwo"></p>
+              </div>
+              <div class="choices">
+                <p class="choicesP">
+                  审核结论：
+                </p>
+                <div class="choicesDiv">
+                  <el-radio-group v-model="radio">
+                    <el-radio :key="index" v-for="(item, index) in approvaloptions" :label="item.value">{{item.name}}</el-radio>
+                  </el-radio-group>
+                </div>
+              </div>
+              <div class="differing">
+                <p class="choicesP">
+                  审核意见：
+                </p>
+                <div class="differingDiv">
+                  <el-input
+                    type="textarea"
+                    :rows="3"
+                    resize="none"
+                    placeholder="请明确审核意见"
+                    v-model="textarea">
+                  </el-input>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="arrange">
@@ -227,7 +263,7 @@
 </template>
 
 <script>
-import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments2, maintainDailygetTaskApprovalItems, deleteTaskDetail, getTaskParams } from '../../api/user'
+import { maintainDailyapprovalTaskDetail, maintainDailygetDetailsByDeviceId, maintainDailygetEquirementjudgments2, maintainDailygetTaskApprovalItems, deleteTaskDetail, getTaskParams, findAllApproval } from '../../api/user'
 import DialogImg from 'base/dialog-img/dialog-img'
 import $ from 'jquery'
 export default {
@@ -244,10 +280,20 @@ export default {
       equipment: '',
       equipmentData: '',
       Testing: '',
-      imgList: []
+      imgList: [],
+      historicalExamination: ''
     }
   },
   methods: {
+    approvalFuntion (value) {
+      let name = ''
+      this.approvaloptions.forEach((val) => {
+        if (val.value === value) {
+          name = val.name
+        }
+      })
+      return name
+    },
     fieldphoto (src, path) {
       let arr = []
       if (!src) {
@@ -400,6 +446,12 @@ export default {
     },
     determine (event, checktaskdetailid) {
       let el = event.currentTarget
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(findAllApproval(token, checktaskdetailid)).then((data) => {
+        if (data.data.code === 0) {
+          this.historicalExamination = data.data.data
+        }
+      })
       $('.content_ul').each(function (index, item) {
         $(item).removeClass('content_ulBack')
       })
@@ -594,7 +646,7 @@ export default {
     .matters
       width 100%
       position relative
-      margin-bottom 20px
+      margin-bottom 10px
       .mattersHeaderdiv
         width 100%
         background #202f49
@@ -678,7 +730,7 @@ export default {
       .left_header
         overflow hidden
         width 100%
-        margin-bottom 12px
+        margin 12px 0
       .left_hederPtwo
         float right
         width 400px
@@ -812,4 +864,20 @@ export default {
     color #3acf76
   .content_repeat
     background #3a271c!important
+  .opinion_li_two
+    float left
+    height 14px
+    padding-left 2%
+    width 16%
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+  .opinion_litwo_two
+    float left
+    height 14px
+    padding 0 2%
+    width 60%
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
 </style>
