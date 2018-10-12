@@ -33,7 +33,7 @@
         <div @click.stop="query" class="query">
           查 询
         </div>
-        <div @click.stop="query" class="derivation">
+        <div @click.stop="derivation" class="derivation">
           导出Excel
         </div>
       </div>
@@ -47,7 +47,7 @@
 <script>
 import dailytwoNew from '../archives-Child-operation/archives-Child-operation'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
-import { getCurrentTaskFileDeviceStatJson } from '../../api/user'
+import { getCurrentTaskFileDeviceStatJson, exportMaintenanceReportForMonth } from '../../api/user'
 export default {
   mixins: [projectMixin, loadingMixin],
   name: 'maintainFile',
@@ -55,6 +55,21 @@ export default {
     dailytwoNew
   },
   methods: {
+    derivation () {
+      let token = JSON.parse(window.sessionStorage.token)
+      let myDate = new Date()
+      let month = myDate.getMonth() + 1
+      let day = myDate.getDate()
+      month = (month.toString().length === 1) ? ('0' + month) : month
+      day = (day.toString().length === 1) ? ('0' + day) : day
+      let result = myDate.getFullYear() + '-' + month + '-' + day
+      console.log(result)
+      let beginTime = this.startTime ? this.startTime : result
+      let endTime = this.endTime ? this.endTime : result
+      this.axios.post(exportMaintenanceReportForMonth(token, this.maintainProject, beginTime, endTime, 2)).then((response) => {
+        console.log(response)
+      })
+    },
     init () {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(getCurrentTaskFileDeviceStatJson(token, 1, this.maintainProject, this.startTime, this.endTime)).then((response) => {

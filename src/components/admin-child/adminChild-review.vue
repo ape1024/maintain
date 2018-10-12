@@ -297,7 +297,7 @@
 <script>
 import $ from 'jquery'
 import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, findAllDeviceType,
-  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload, GetDevUnit} from '../../api/user'
+  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload, GetDevUnit, GetDevUnitByBaseDevCode } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
@@ -534,8 +534,7 @@ export default {
         return false
       } else {
         let token = JSON.parse(window.sessionStorage.token)
-        console.log(this.basedevicecode)
-        this.axios.post(`http://172.16.6.16:8920/dev/GetDevUnitByBaseDevCode?token=${token}&basedevcode=${this.basedevicecode}`).then((response) => {
+        this.axios.post(GetDevUnitByBaseDevCode(token, this.basedevicecode)).then((response) => {
           if (response.data.code === 0) {
             console.log(response.data.data)
             devcountD = response.data.data
