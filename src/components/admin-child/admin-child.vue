@@ -238,7 +238,8 @@ export default {
             if (val.approvalstate === 100) {
               val.disabledBoolean = false
               val.disabled = true
-            } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+            } else if (val.approvalstate === 5) {
+              console.log(val)
               val.disabledBoolean = true
               val.disabled = false
             } else {
@@ -355,7 +356,7 @@ export default {
             if (val.approvalstate === 100) {
               val.disabledBoolean = false
               val.disabled = true
-            } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+            } else if (val.approvalstate === 5) {
               val.disabledBoolean = true
               val.disabled = false
             } else {
@@ -387,7 +388,7 @@ export default {
             if (val.approvalstate === 100) {
               val.disabledBoolean = false
               val.disabled = true
-            } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+            } else if (val.approvalstate === 5) {
               val.disabledBoolean = true
               val.disabled = false
             } else {
@@ -510,7 +511,7 @@ export default {
           if (val.approvalstate === 100) {
             val.disabledBoolean = false
             val.disabled = true
-          } else if (val.approvalstate === 5 || val.approvalstate === 20) {
+          } else if (val.approvalstate === 5) {
             val.disabledBoolean = true
             val.disabled = false
           } else {
