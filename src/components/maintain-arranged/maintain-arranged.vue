@@ -1,5 +1,10 @@
 <template>
   <div class="subject">
+    <div class="subjectDiv">
+      <div v-if="JurisdictionInsert" @click="superinduce" class="conserve">
+        新 增
+      </div>
+    </div>
     <section class="subject_bottomDIv">
       <ul class="header_ul">
         <li class="repair_li">
@@ -98,9 +103,7 @@
     <section v-if="newlybuildBoolean" class="review">
       <newlybuild v-if="newlybuildBoolean" @build="Build"></newlybuild>
     </section>
-    <div v-if="JurisdictionInsert" @click="superinduce" class="superinduce">
-      新 增
-    </div>
+
   </div>
 </template>
 
@@ -373,6 +376,28 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
+    .subjectDiv
+      overflow hidden
+      padding 20px 0
+      background #111a28
+      position relative
+      .subjectLeft
+        float left
+        margin-left 20px
+        margin-right 50px
+        overflow hidden
+        .subjectP
+          color $color-text-title
+          line-height 30px
+          float left
+          font-size $font-size-medium
+      .conserve
+        float right
+        color $color-text-title
+        font-size $font-size-medium
+        newlyDiv()
+      .subjectRight
+        float left
     min-height 900px
     position relative
     background rgba(000, 000, 000, .45)
