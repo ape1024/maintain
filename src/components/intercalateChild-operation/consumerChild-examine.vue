@@ -125,7 +125,21 @@
         <div class="purviewDiv">
           <div class="substance">
             <div class="substanceDiv">
-              <el-input size="mini" v-model="organizeText" :disabled="true" placeholder=""></el-input>
+              <div class="firecontrol">
+                {{organizeText}}
+              </div>
+              <div @click.stop v-show="organizeboolean" class="firecontrolDiv">
+                <div class="firecontrolDiv_div">
+                  <el-checkbox-group v-model="checkedCities">
+                    <el-tree :data="organize" :props="organizeProps" node-key="id" :expand-on-click-node="false">
+                      <div class="custom-tree-node" slot-scope="{ node, data }">
+                        <el-checkbox :label="data.organizationId">{{checkboxDefaultVal}}</el-checkbox>
+                        <div class="custom-tree-node-expand" @click="checkboxClick(node)">               {{data.organizationName}}</div>
+                      </div>
+                    </el-tree>
+                  </el-checkbox-group>
+                </div>
+              </div>
             </div>
             <p class="substanceP">
               组织机构：
@@ -229,7 +243,35 @@ export default {
       requirement: '',
       comment: '',
       organizeText: '',
+      organizeboolean: false,
+      checkedCities: [],
+      organizeProps: {
+        children: 'subOrgnizations',
+        label: 'organizationName',
+        value: 'organizationId'
+      },
       organize: []
+    }
+  },
+  watch: {
+    checkedCities (el) {
+      this.organizeText = ''
+      let result = ''
+      let findData = (data, val) => {
+        let flag = true
+        data.forEach((item) => {
+          if (item.organizationId === val) {
+            result += ` ${item.organizationName} `
+            flag = false
+          } else if (flag && item.subOrgnizations) {
+            findData(item.subOrgnizations, val)
+          }
+        })
+      }
+      el.forEach((data) => {
+        findData(this.organize, data)
+      })
+      this.organizeText = result
     }
   },
   methods: {
@@ -250,6 +292,8 @@ export default {
     }
   },
   created () {
+    // 定义空值
+    this.checkboxDefaultVal = ''
     this.projectsinfosviewdetail = this.exaDate.projectsinfosviewdetail
     this.devtypes = this.exaDate.devtypes
     this.content = this.exaDate.projectsinfosviewdetail.content
@@ -264,6 +308,7 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject, token)).then((response) => {
         if (response.data.code === 0) {
+          console.log(response.data)
           this.organize = response.data.data
           let result = ''
           let findData = (data, val) => {
@@ -449,4 +494,35 @@ export default {
     margin-right 25px
     line-height 30px
     font-size 16px
+  .firecontrol
+    position relative
+    float left
+    cursor pointer
+    width 1066px
+    height 30px
+    background #fff
+    text-indent 1em
+    white-space nowrap
+    white-space nowrap
+    text-overflow ellipsis
+    line-height 30px
+    color $color-border-b-fault
+    border-radius 5px
+  .firecontrolDiv
+    position absolute
+    top 40px
+    right  0
+    color #999
+    background #fff
+    border-radius 5px
+    overflow-y scroll
+    width 1066px
+    min-height 250px
+    max-height 250px
+    z-index 11
+    .firecontrolDiv_div
+      position relative
+      line-height 24px
+      margin 20px 10px
+      overflow hidden
 </style>
