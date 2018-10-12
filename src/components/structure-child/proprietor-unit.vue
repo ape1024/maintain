@@ -575,8 +575,8 @@ export default {
       // 点击保存
       const token = JSON.parse(window.sessionStorage.token)
       // 组织类型
-      let organizationtype = this.regimentaValue
-      if (organizationtype === '') {
+      let organizationType = this.regimentaValue
+      if (organizationType === '') {
         this.$message({
           message: '组织机构类型不能为空',
           type: 'warning'
@@ -591,7 +591,7 @@ export default {
       const province = !this.provinceId ? '' : this.provinceId
       // 单位编码
       const organizationcode = this.encrypt
-      if (!organizationcode && organizationtype === 3) {
+      if (!organizationcode && organizationType === 3) {
         this.$message({
           message: '请填写单位编码',
           type: 'warning'
@@ -632,15 +632,33 @@ export default {
       } else {
         parentid = this.companyDate[this.companyDate.length - 1]
       }
-      this.axios.post(managementAuthority(token, organizationtype, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
-        if (response.data.code === 0) {
-          this.$message({
-            message: '新增成功',
-            type: 'success'
-          })
-          this.$emit('refresh')
+      // 必要字段验证
+      let commitflag = false
+      if (organizationType === 4 || organizationType === 5) {
+        if (organizationname !== '' && linkman !== '' && tel !== '') {
+          commitflag = true
         }
-      })
+      } else {
+        if (organizationcode !== '' && organizationname !== '' && linkman !== '' && tel !== '') {
+          commitflag = true
+        }
+      }
+      if (commitflag) {
+        this.axios.post(managementAuthority(token, organizationType, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              message: '新增成功',
+              type: 'success'
+            })
+            this.$emit('refresh')
+          }
+        })
+      } else {
+        this.$message({
+          message: '红色星号标记不能为空！',
+          type: 'warning'
+        })
+      }
     },
     // 修改确认
     conserve () {
@@ -717,15 +735,33 @@ export default {
       } else {
         parentid = this.companyDate[this.companyDate.length - 1]
       }
-      this.axios.post(managementAuthority(token, organizationType, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
-        if (response.data.code === 0) {
-          this.$message({
-            message: '修改成功',
-            type: 'success'
-          })
-          this.$emit('refresh')
+      // 必要字段验证
+      let commitflag = false
+      if (organizationType === 4 || organizationType === 5) {
+        if (organizationname !== '' && linkman !== '' && tel !== '') {
+          commitflag = true
         }
-      })
+      } else {
+        if (organizationcode !== '' && organizationname !== '' && linkman !== '' && tel !== '') {
+          commitflag = true
+        }
+      }
+      if (commitflag) {
+        this.axios.post(managementAuthority(token, organizationType, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            this.$emit('refresh')
+          }
+        })
+      } else {
+        this.$message({
+          message: '红色星号标记不能为空！',
+          type: 'warning'
+        })
+      }
     },
     // 删除
     amputate () {

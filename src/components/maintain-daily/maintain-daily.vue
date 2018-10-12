@@ -519,11 +519,6 @@ export default {
         }
         response.data.data.unshift(obj)
         this.AuditstatusDate = response.data.data
-        response.data.data.forEach((val) => {
-          if (val.isdefault === 1) {
-            this.Auditstatus = val.value
-          }
-        })
       }
     })
     //  展示任务
