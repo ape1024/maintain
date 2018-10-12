@@ -150,6 +150,15 @@
           <!--</transition>-->
         </li>
       </ul>
+      <div class="numberPages" v-if="numberPagesBoolean">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          @current-change="numberPagesChange"
+          :current-page="currentPage"
+          :page-count="numberPages">
+        </el-pagination>
+      </div>
     </section>
     <!--新增-->
     <!--<section v-if="review_boolean" @click.stop class="review">-->
@@ -293,9 +302,16 @@ export default {
       }
       let areaid = this.regionModel.length !== 0 ? this.regionModel[this.regionModel.length - 1] : ''
       // let basedevicecode = this.equipmentDate.length !== 0 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
-      this.axios.post(maintainReportfindFeedbackTwo(this.maintainProject, areaid, basedevicecode, this.dispose, this.identification)).then((response) => {
+      this.axios.post(maintainReportfindFeedbackTwo(this.maintainProject, areaid, basedevicecode, this.dispose, this.identification, this.currentPage, this.pageSize)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response)
+          const data = response.data.data
+          if (data.length > 0) {
+            this.numberPages = data[0].pagecount
+            this.numberPagesBoolean = true
+          } else {
+            this.numberPages = 0
+            this.numberPagesBoolean = false
+          }
           this.exhibition = response.data.data.map(t => {
             return {
               ...t,
@@ -307,9 +323,17 @@ export default {
     },
     // 初始化数据
     initReport () {
-      this.axios.post(maintainReportfindFeedback(this.maintainProject)).then((response) => {
+      this.axios.post(maintainReportfindFeedback(this.maintainProject, this.currentPage, this.pageSize)).then((response) => {
         if (response.data.code === 0) {
-          this.exhibition = response.data.data.map(t => {
+          const data = response.data.data
+          if (data.length > 0) {
+            this.numberPages = data[0].pagecount
+            this.numberPagesBoolean = true
+          } else {
+            this.numberPages = 0
+            this.numberPagesBoolean = false
+          }
+          this.exhibition = data.map(t => {
             return {
               ...t,
               createtime: formatDate(t.createtime, 'yyyy/MM/dd HH:mm:ss')
@@ -317,6 +341,11 @@ export default {
           })
         }
       })
+    },
+    // 分页事件
+    numberPagesChange (el) {
+      this.currentPage = el
+      this.query()
     }
   },
   data () {
@@ -356,7 +385,12 @@ export default {
       JurisdictionInsert: '',
       JurisdictionDelete: '',
       JurisdictionAssign: '',
-      JurisdictionApproval: ''
+      JurisdictionApproval: '',
+      // 分页
+      currentPage: 1,
+      numberPages: 1,
+      pageSize: 20,
+      numberPagesBoolean: false
     }
   },
   created () {
@@ -631,4 +665,8 @@ export default {
     min-height 800px
     background rgba(0,0,0,0.35)
     overflow hidden
+  .numberPages
+    overflow hidden
+    margin 20px 0
+    text-align center
 </style>
