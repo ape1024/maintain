@@ -120,7 +120,7 @@
                  class="header_p_fourteen" >确认
               </p>
               <p v-if="JurisdictionAssign && !item.repairtaskid" @click.stop="question(item.ID)" class="header_p_eight threelevel_litwo_p">
-              安排1
+              安排
               </p>
               <p v-if="JurisdictionAssign && !!item.repairtaskid"
                  class="header_p_fourteen" >安排

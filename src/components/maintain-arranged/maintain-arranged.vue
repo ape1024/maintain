@@ -397,11 +397,10 @@ export default {
           float left
           font-size $font-size-medium
       .conserve
-        float left
+        float right
         color $color-text-title
         font-size $font-size-medium
         newlyDiv()
-        margin-left 30px!important
       .subjectRight
         float left
     min-height 900px

@@ -252,8 +252,10 @@
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
-import { managementgetUserOrganization, maintainReportassignedTask, maintainReportgetConfrimStates, maintainReportgetFeedbackstateStates, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, maintainDailygetRepairTypes } from '../../api/user'
+import { managementgetUserOrganization, maintainReportassignedTask, maintainReportgetConfrimStates, maintainReportgetFeedbackstateStates, maintainDailygetProprietorOrgTree, getAllOrgTreeeByProjectId, maintainDailygetRepairTypes } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [projectMixin],
   name: 'reportChild-examine',
   props: ['examine'],
   data () {
@@ -381,8 +383,7 @@ export default {
       }
     })
     //  维保单位 this.equipment
-    let deviceid = this.examine.deviceid
-    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(deviceid)).then((response) => {
+    this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject, token)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }

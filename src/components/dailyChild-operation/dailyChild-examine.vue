@@ -347,6 +347,7 @@ export default {
         if (val.fuleco === false || val.disabled === true) {
           return false
         } else {
+          console.log(val.approvalstate)
           let data = {
             matters: val.workitem,
             conclusion: val.conclusionname,
@@ -355,7 +356,8 @@ export default {
             conclusionCode: val.conclusion,
             workrecord: val.workrecord,
             isapproval: val.isapproval,
-            iswaitapproval: val.iswaitapproval
+            iswaitapproval: val.iswaitapproval,
+            approvalstate: val.approvalstate
           }
           arrData.push(data)
         }
@@ -368,6 +370,9 @@ export default {
             flga = false
           }
         }
+        if (val.approvalstate === 20) {
+          flga = false
+        }
       })
       if (arrData.length === 0) {
         this.$message({
@@ -379,7 +384,7 @@ export default {
         this.$emit('examineMine', arrData)
       } else {
         this.$message({
-          message: '已安排工作项与正常工作项,不能安排!',
+          message: '已安排工作项,正常工作项与修改工作项,不能安排!',
           type: 'warning'
         })
       }
@@ -394,6 +399,7 @@ export default {
         if (val.fuleco === false) {
           return false
         } else if (!val.isapproval && val.iswaitapproval) {
+          console.log(val)
           taskDetailArr.push(val.checktaskdetailid)
         } else {
           flag = false

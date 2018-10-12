@@ -72,6 +72,10 @@
             <p class="lookover_p">备注说明：</p>
             <div :title="information.memo">{{information.memo}}</div>
           </li>
+          <li class="lookover_li">
+            <p class="lookover_p">审批意见：</p>
+            <div :title="information.approvalopinion">{{information.approvalopinion}}</div>
+          </li>
           <li class="lookover_lithree">
             <p class="lithree_p">现场照片：</p>
             <div class="lookover_lithree_div">

@@ -606,10 +606,13 @@ export default {
     scheduleData (el) {
       if (el === 3) {
         this.scheduleBoolean = true
-        this.lookupChooseLiTopText = `选择巡检频次`
       } else {
         this.scheduleBoolean = false
+      }
+      if (el === 1 || el === 3) {
         this.lookupChooseLiTopText = `选择计划生成时间`
+      } else {
+        this.lookupChooseLiTopText = `选择巡检频次`
       }
     }
   },

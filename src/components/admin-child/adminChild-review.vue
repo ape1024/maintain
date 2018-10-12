@@ -771,7 +771,7 @@ export default {
           })
           this.$emit('transmission', false)
         } else {
-          this.$message.error('添加失败')
+          this.$message.error(`${data.data.message}`)
         }
       })
     },
