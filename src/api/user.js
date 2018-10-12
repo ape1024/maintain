@@ -610,6 +610,9 @@ export const increasedCreaterole = (roleName, organizationinfoid, token) => {
   const url = `${Test}/users/createrole?roleName=${roleName}&organizationid=${organizationinfoid}&token=${token}`
   return url
 }
+export const GetDevUnitByBaseDevCode = (token, basedevcode) => {
+  return `${Test}/dev/GetDevUnitByBaseDevCode?token=${token}&basedevcode=${basedevcode}`
+}
 //  创建用户角色
 export const increasedcreateAdminRole = (roleName, organizationid, token) => {
   const url = `${Test}/users/createAdminRole?roleName=${roleName}&organizationid=${organizationid}&token=${token}`
