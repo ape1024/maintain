@@ -55,10 +55,10 @@
           </li>
         </ul>
         <div @click="search" class="search">
-          搜索
+          搜 索
         </div>
         <div v-if="JurisdictionInsert" @click="induce" class="superinduce">
-          新增
+          新 增
         </div>
       </header>
       <div class="information">

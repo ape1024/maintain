@@ -188,6 +188,7 @@
           </li>
         </ul>
       </div>
+      <!--合同范围-->
       <div class="purview">
         <header class="contentHeader">
           <p class="headerP">合同范围</p>
@@ -479,9 +480,6 @@ export default {
         }
       })
     },
-    organizeChange () {
-      this.organizeboolean = !this.organizeboolean
-    },
     organizeCheck (checkedNodes, checkedKeys) {
       let data = ''
       this.firecontrolDate = checkedKeys.checkedNodes
@@ -510,10 +508,6 @@ export default {
     beforeRemove (file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
     },
-
-    firecontrolClick () {
-      this.buildscopeBoolean = !this.buildscopeBoolean
-    },
     purviewCheck (checkedNodes, checkedKeys) {
       let data = ''
       this.buildscopeDate = checkedKeys.checkedKeys
@@ -538,8 +532,33 @@ export default {
       this.regionUl = false
       this.organizeboolean = false
     },
+    // 项目地址
+    accessarea () {
+      this.regionUl = !this.regionUl
+      this.firecontrolBoolean = false
+      this.buildscopeBoolean = false
+      this.organizeboolean = false
+    },
+    // 建筑范围
     fireconboolean () {
       this.firecontrolBoolean = !this.firecontrolBoolean
+      this.buildscopeBoolean = false
+      this.regionUl = false
+      this.organizeboolean = false
+    },
+    // 合同范围
+    firecontrolClick () {
+      this.buildscopeBoolean = !this.buildscopeBoolean
+      this.firecontrolBoolean = false
+      this.regionUl = false
+      this.organizeboolean = false
+    },
+    // 组织机构
+    organizeChange () {
+      this.organizeboolean = !this.organizeboolean
+      this.firecontrolBoolean = false
+      this.buildscopeBoolean = false
+      this.regionUl = false
     },
     conserve () {
       if (!this.checkedCities.length) {
@@ -674,9 +693,6 @@ export default {
     },
     closedown () {
       this.$emit('incr', this.Thispage)
-    },
-    accessarea () {
-      this.regionUl = !this.regionUl
     },
     deploy (event, provinceid) {
       if ($(event.currentTarget).siblings('.regionliUl').css('display') === 'block') {

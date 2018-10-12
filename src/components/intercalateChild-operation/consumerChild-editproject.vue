@@ -428,9 +428,6 @@ export default {
       }
       this.organizeText = data
     },
-    organizeChange () {
-      this.organizeboolean = !this.organizeboolean
-    },
     handlesuccess (response, file, fileList) {
       this.documentPapers.push({
         'name': `${file.name}`,
@@ -448,9 +445,6 @@ export default {
     },
     beforeRemove (file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
-    },
-    firecontrolClick () {
-      this.buildscopeBoolean = !this.buildscopeBoolean
     },
     purviewCheckbox (item) {
       if (item.areas.length !== 0) {
@@ -480,8 +474,33 @@ export default {
       this.regionUl = false
       this.organizeboolean = false
     },
+    // 项目地址
+    accessarea () {
+      this.regionUl = !this.regionUl
+      this.firecontrolBoolean = false
+      this.buildscopeBoolean = false
+      this.organizeboolean = false
+    },
+    // 合同范围
+    firecontrolClick () {
+      this.buildscopeBoolean = !this.buildscopeBoolean
+      this.firecontrolBoolean = false
+      this.regionUl = false
+      this.organizeboolean = false
+    },
+    // 建筑范围
     fireconboolean () {
       this.firecontrolBoolean = !this.firecontrolBoolean
+      this.buildscopeBoolean = false
+      this.regionUl = false
+      this.organizeboolean = false
+    },
+    // 组织机构
+    organizeChange () {
+      this.organizeboolean = !this.organizeboolean
+      this.firecontrolBoolean = false
+      this.buildscopeBoolean = false
+      this.regionUl = false
     },
     conserve () {
       //  项目名称 项目开始 业主单位 项目编号 项目结束 服务机构 项目类别  建筑范围  消防设备
@@ -572,9 +591,6 @@ export default {
     },
     closedown () {
       this.$emit('editt', this.Thispage)
-    },
-    accessarea () {
-      this.regionUl = !this.regionUl
     },
     deploy (event, provinceid) {
       if ($(event.currentTarget).siblings('.regionliUl').css('display') === 'block') {

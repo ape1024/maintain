@@ -730,7 +730,7 @@ export default {
     // 删除
     amputate () {
       // 点击删除
-      this.$confirm('是否删除此组织?', '提示', {
+      this.$confirm('是否删除该组织机构?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

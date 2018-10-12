@@ -4,7 +4,7 @@
         <div class="subject_top__div">
           <ul class="ul_input">
             <li class="li_input">
-              <p class="div_p">区 域：</p>
+              <p class="div_p">建筑区域：</p>
               <div class="div_input">
                 <el-cascader
                   size="mini"

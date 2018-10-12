@@ -145,12 +145,24 @@ export default {
         }
       })
     },
+    // 删除
     amputate (index, content, projectId) {
-      this.axios.post(removeProjectById(projectId)).then((response) => {
-        if (response.data.code === 0) {
-          content.splice([index], 1)
-          this.$message('删除成功!')
-        }
+      this.$confirm('是否删除该项目?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.post(removeProjectById(projectId)).then((response) => {
+          if (response.data.code === 0) {
+            content.splice([index], 1)
+            this.$message('删除成功!')
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消删除'
+        })
       })
     }
   },
@@ -199,7 +211,9 @@ export default {
           font-size $font-size-medium
       .conserve
         float right
-        queryDiv()
+        font-size $font-size-medium
+        color $color-text-title
+        newlyDiv()
       .subjectRight
         float left
     .content
