@@ -61,7 +61,7 @@
       <li :key="dataset.deviceid" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
           <li :title="dataset.devicecode" class="threelevel_lithree">
-            <el-checkbox v-if="!dataset.disabled" v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>
+            <el-checkbox v-if="dataset.selectbox" v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>
             {{dataset.devicecode}}
           </li>
           <li :title="dataset.devicename" class="threelevel_lithree">
@@ -197,6 +197,39 @@ export default {
     }
   },
   methods: {
+    DetailProjects () {
+      this.axios.post(admingetDevListDetailProjects(this.adminid, this.maintainProject)).then((response) => {
+        if (!response) {
+          // 请求失败关闭加载
+          this.closeLoadingDialog()
+          return
+        }
+        if (response.data.code === 0) {
+          response.data.data.forEach((val) => {
+            val.checked = false
+            if (val.approvalstate === 100) {
+              val.disabledBoolean = false
+              val.disabled = true
+            } else if (val.approvalstate === 5) {
+              val.disabledBoolean = true
+              val.disabled = false
+              val.selectbox = true
+            } else if (val.approvalstate === 20) {
+              val.disabledBoolean = true
+              val.disabled = false
+              val.selectbox = false
+            } else {
+              val.disabledBoolean = false
+              val.disabled = true
+              val.selectbox = false
+            }
+          })
+          this.tabChild = response.data.data
+        }
+        // 请求成功关闭数据加载
+        this.closeLoadingDialog()
+      })
+    },
     modiFysay (ev) {
       this.modifyBoolean = ev
       this.examineBoolean = ev
@@ -239,12 +272,17 @@ export default {
               val.disabledBoolean = false
               val.disabled = true
             } else if (val.approvalstate === 5) {
-              console.log(val)
               val.disabledBoolean = true
               val.disabled = false
+              val.selectbox = true
+            } else if (val.approvalstate === 20) {
+              val.disabledBoolean = true
+              val.disabled = false
+              val.selectbox = false
             } else {
               val.disabledBoolean = false
               val.disabled = true
+              val.selectbox = false
             }
           })
           this.tabChild = response.data.data
@@ -344,31 +382,7 @@ export default {
     },
     Mine (ev) {
       // 审核 传递的参数
-      this.axios.post(admingetDevListDetailProjects(this.adminid, this.maintainProject)).then((response) => {
-        if (!response) {
-          // 请求失败关闭加载
-          this.closeLoadingDialog()
-          return
-        }
-        if (response.data.code === 0) {
-          response.data.data.forEach((val) => {
-            val.checked = false
-            if (val.approvalstate === 100) {
-              val.disabledBoolean = false
-              val.disabled = true
-            } else if (val.approvalstate === 5) {
-              val.disabledBoolean = true
-              val.disabled = false
-            } else {
-              val.disabledBoolean = false
-              val.disabled = true
-            }
-          })
-          this.tabChild = response.data.data
-        }
-        // 请求成功关闭数据加载
-        this.closeLoadingDialog()
-      })
+      this.DetailProjects()
       this.examineBoolean = ev
     },
     Onlook (ev) {
@@ -376,31 +390,7 @@ export default {
     },
     Modify (ev) {
       this.modifyBoolean = ev
-      this.axios.post(admingetDevListDetailProjects(this.datasetAreaid, this.maintainProject)).then((response) => {
-        if (!response) {
-          // 请求失败关闭加载
-          this.closeLoadingDialog()
-          return
-        }
-        if (response.data.code === 0) {
-          response.data.data.forEach((val) => {
-            val.checked = false
-            if (val.approvalstate === 100) {
-              val.disabledBoolean = false
-              val.disabled = true
-            } else if (val.approvalstate === 5) {
-              val.disabledBoolean = true
-              val.disabled = false
-            } else {
-              val.disabledBoolean = false
-              val.disabled = true
-            }
-          })
-          this.tabChild = response.data.data
-        }
-        // 请求成功关闭数据加载
-        this.closeLoadingDialog()
-      })
+      this.DetailProjects()
     },
     equipment () {
       this.quipmentBoolean = true
@@ -499,31 +489,7 @@ export default {
   },
   created () {
     this.openLoadingDialog()
-    this.axios.post(admingetDevListDetailProjects(this.adminid, this.maintainProject)).then((response) => {
-      if (!response) {
-        // 请求失败关闭加载
-        this.closeLoadingDialog()
-        return
-      }
-      if (response.data.code === 0) {
-        response.data.data.forEach((val) => {
-          val.checked = false
-          if (val.approvalstate === 100) {
-            val.disabledBoolean = false
-            val.disabled = true
-          } else if (val.approvalstate === 5) {
-            val.disabledBoolean = true
-            val.disabled = false
-          } else {
-            val.disabledBoolean = false
-            val.disabled = true
-          }
-        })
-        this.tabChild = response.data.data
-      }
-      // 请求成功关闭数据加载
-      this.closeLoadingDialog()
-    })
+    this.DetailProjects()
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'device') {

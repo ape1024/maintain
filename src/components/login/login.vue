@@ -31,7 +31,7 @@
 import $ from 'jquery'
 import { mapActions, mapGetters } from 'vuex'
 import { TOKEN_STATE_TRUE } from 'api/config'
-import { userLogin, getUserFuncions } from '../../api/user'
+import { userLogin, getUserFuncions, getPorjectByUserID } from '../../api/user'
 export default {
   name: 'login',
   components: {},
@@ -175,7 +175,37 @@ export default {
                     let authority = JSON.stringify(this.authority)
                     window.sessionStorage.setItem('Jurisdiction', authority)
                   })
-                  this.$router.push('/loginBlank')
+                  // let dom = e.target
+                  let Token = JSON.parse(window.sessionStorage.token)
+                  let userid = JSON.parse(window.sessionStorage.userInfo).userid
+                  this.axios.post(getPorjectByUserID(Token, userid)).then((data) => {
+                    if (data.data.code === 0) {
+                      if (!window.localStorage.pattern) {
+                        let projects = ''
+                        if (!data.data.data.length) {
+                          this.updateProjectAndUpdateLocal(projects)
+                        } else {
+                          projects = data.data.data[0].projectid
+                          this.updateProjectAndUpdateLocal(projects)
+                        }
+                      } else {
+                        let pattern = parseInt(window.localStorage.pattern)
+                        let patternBoolean = false
+                        if (data.data.data.length) {
+                          data.data.data.forEach((val) => {
+                            if (val.projectid === pattern) {
+                              patternBoolean = true
+                              this.updateProjectAndUpdateLocal(pattern)
+                            }
+                          })
+                          if (!patternBoolean) {
+                            this.updateProjectAndUpdateLocal(data.data.data[0].projectid)
+                          }
+                        }
+                      }
+                      this.$router.push('/loginBlank')
+                    }
+                  })
                 } else {
                   this.$message.error('登录失败')
                 }

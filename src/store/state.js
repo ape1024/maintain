@@ -22,7 +22,7 @@ const state = {
   usericon: '',
   userToken: '',
   loading: false,
-  maintainProject: window.localStorage.pattern ? window.localStorage.pattern : '',
+  maintainProject: parseInt(window.localStorage.pattern) ? parseInt(window.localStorage.pattern) : '',
   clientId,
   userList: [],
   treeStructure: [],

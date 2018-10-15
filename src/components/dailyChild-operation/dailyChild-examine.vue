@@ -67,7 +67,7 @@
             <div class="content">
               <ul :title="item.titleData" class="content_ul" v-for="(item, index) in equipment" :key="index" @click.stop="determine($event, item.checktaskdetailid)" :class="[!item.refid ? '' : 'content_repeat']">
                 <li class="matters_lithree" :title="item.workitem">
-                  <el-checkbox v-bind:disabled="item.disabled" v-model="item.fuleco"></el-checkbox>
+                  <span @click.stop><el-checkbox v-bind:disabled="item.disabled" v-model="item.fuleco"></el-checkbox></span>
                   {{item.workitem}}
                 </li>
                 <li class="matters_li">

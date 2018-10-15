@@ -54,7 +54,9 @@
 import { secede, getPorjectByUserID, consumerFindUser, managementgetUserOrganization } from '../../api/user'
 import { mapActions } from 'vuex'
 import Information from './consumerHeaderRight'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [ projectMixin ],
   name: 'maintain-headerRight',
   components: {
     Information
@@ -65,13 +67,16 @@ export default {
       portrait: !sessionStorage.userInfo ? '' : JSON.parse(sessionStorage.userInfo).icon,
       username: !sessionStorage.userInfo ? '' : JSON.parse(sessionStorage.userInfo).username,
       options: [],
-      value: [],
+      value: this.$store.state.maintainProject,
       modifyBoolean: false,
       logo: JSON.parse(sessionStorage.userInfo).logo,
       organization: ''
     }
   },
   methods: {
+    init () {
+
+    },
     inFourma (ev) {
       this.modifyBoolean = ev
     },
@@ -105,31 +110,8 @@ export default {
     this.axios.post(getPorjectByUserID(token, userid)).then((response) => {
       if (response.data.code === 0) {
         this.options = response.data.data
-        let patternBo = false
-        if (!window.localStorage.pattern) {
-          this.value = response.data.data[0].projectid
-          this.updateProjectAndUpdateLocal(this.value)
-        } else {
-          let pattern = JSON.parse(window.localStorage.pattern)
-          if (response.data.data) {
-            response.data.data.forEach((val) => {
-              if (val.projectid === pattern) {
-                patternBo = true
-              }
-            })
-          } else {
-            return false
-          }
-          if (patternBo) {
-            this.value = pattern
-            this.updateProjectAndUpdateLocal(this.value)
-          } else {
-            if (response.data.data.length) {
-              this.value = response.data.data[0].projectid
-              this.updateProjectAndUpdateLocal(this.value)
-            }
-          }
-        }
+        console.log(this.options)
+        console.log(typeof this.$store.state.maintainProject)
       }
     })
     this.axios.post(managementgetUserOrganization(token)).then((response) => {

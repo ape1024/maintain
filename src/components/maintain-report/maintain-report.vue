@@ -605,6 +605,8 @@ export default {
     color #333333
   .table_ul
     width 100%
+    min-height 800px
+    max-height 800px
     overflow hidden
     position relative
     color $color-text
@@ -671,7 +673,7 @@ export default {
     color $color-background-newly
   .header_p_eleven
     float left
-    color #83292b
+    color #cc5966
     cursor pointer
   .header_p_twelve
     float left
