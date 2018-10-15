@@ -6,7 +6,7 @@
         设施编码
       </li>
       <li class="threelevel_lithree">
-        设施名称 <i class="el-icon-caret-bottom"></i>
+        设施类别 <i class="el-icon-caret-bottom"></i>
         <div class="threelevel_ensconce">
           <el-cascader
             size="mini"
@@ -60,7 +60,7 @@
     <ul class="threelevel_list">
       <li :key="dataset.deviceid" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
-          <li class="threelevel_lithree">
+          <li :title="dataset.devicecode" class="threelevel_lithree">
             <el-checkbox v-if="!dataset.disabled" v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>
             {{dataset.devicecode}}
           </li>
@@ -76,7 +76,7 @@
           <li class="threelevel_lithree">
             {{dataset.devcount2}}
           </li>
-          <li class="threelevel_lithree">
+          <li :title="dataset.manufacturename" class="threelevel_lithree">
             {{dataset.manufacturename}}
           </li>
           <li class="threelevel_lithree">
