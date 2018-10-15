@@ -145,6 +145,7 @@ export default {
     }
   },
   created () {
+    console.log(this.maintainProject)
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'task_xj') {

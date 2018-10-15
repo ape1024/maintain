@@ -98,11 +98,11 @@
       <ul class="table_ul">
         <li v-for="(item,index) in exhibition" class="table_li" :key="index">
           <ul class="inline_ul">
-            <li class="header_lithree">{{item.devicename}}</li>
-            <li class="header_litwo">{{item.areaname}}{{item.position}}</li>
+            <li :title="item.devicename" class="header_lithree">{{item.devicename}}</li>
+            <li :title="item.areaname + item.position" class="header_litwo">{{item.areaname}}{{item.position}}</li>
             <li class="header_li">{{item.devicecount}} {{item.unit}}</li>
-            <li class="header_litwo">{{item.feedbackinfo}}</li>
-            <li class="header_litwo">{{item.feedbackorgname}}</li>
+            <li :title="item.feedbackinfo" class="header_litwo">{{item.feedbackinfo}}</li>
+            <li :title="item.feedbackorgname" class="header_litwo">{{item.feedbackorgname}}</li>
             <li class="header_li">{{item.creatername}}</li>
             <li class="header_litwo">{{item.createtime}}</li>
             <li class="header_li">{{item.feedbackstatename}}</li>
@@ -200,6 +200,7 @@ export default {
   },
   methods: {
     init () {
+      console.log(this.maintainProject)
       this.initReport()
       //  获取区域
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
@@ -404,7 +405,24 @@ export default {
         this.JurisdictionAssign = val.assign
       }
     })
-    this.initReport()
+    this.axios.post(maintainReportfindFeedback(this.maintainProject, this.currentPage, this.pageSize)).then((response) => {
+      if (response.data.code === 0) {
+        const data = response.data.data
+        if (data.length > 0) {
+          this.numberPages = data[0].pagecount
+          this.numberPagesBoolean = true
+        } else {
+          this.numberPages = 0
+          this.numberPagesBoolean = false
+        }
+        this.exhibition = data.map(t => {
+          return {
+            ...t,
+            createtime: formatDate(t.createtime, 'yyyy/MM/dd HH:mm:ss')
+          }
+        })
+      }
+    })
     //  获取区域
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
@@ -558,11 +576,17 @@ export default {
     height 32px
     line-height 32px
     padding-left 1%
+    white-space nowrap
+    overflow hidden
+    text-overflow ellipsis
   .header_litwo
     float left
     height 32px
     line-height 32px
     width 11%
+    white-space nowrap
+    overflow hidden
+    text-overflow ellipsis
   .header_p_one
     color $color-text-tile-state
   .header_p_two

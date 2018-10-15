@@ -97,6 +97,6 @@ export const userLogin = function ({commit, state}, data) {
 }
 
 export const updateProjectAndUpdateLocal = function ({commit}, projectId) {
-  localStorage.pattern = projectId
+  window.localStorage.pattern = projectId
   commit(types.UPDATE_MAINTAIN_PROJECT, projectId)
 }

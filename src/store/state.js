@@ -8,6 +8,8 @@ if (clientIdJson) {
   window.sessionStorage.setItem('clientId', JSON.stringify(clientId))
 }
 
+console.log(window.localStorage.pattern)
+
 const state = {
   userData: {
     areaId: '1'

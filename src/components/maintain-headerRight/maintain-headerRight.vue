@@ -62,8 +62,8 @@ export default {
   props: ['name'],
   data () {
     return {
-      portrait: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).icon : '',
-      username: sessionStorage.userInfo !== undefined ? JSON.parse(sessionStorage.userInfo).username : '',
+      portrait: !sessionStorage.userInfo ? '' : JSON.parse(sessionStorage.userInfo).icon,
+      username: !sessionStorage.userInfo ? '' : JSON.parse(sessionStorage.userInfo).username,
       options: [],
       value: [],
       modifyBoolean: false,
@@ -108,7 +108,7 @@ export default {
         let patternBo = false
         if (!window.localStorage.pattern) {
           this.value = response.data.data[0].projectid
-          window.localStorage.pattern = response.data.data[0].projectid
+          this.updateProjectAndUpdateLocal(this.value)
         } else {
           let pattern = JSON.parse(window.localStorage.pattern)
           if (response.data.data) {
@@ -122,10 +122,11 @@ export default {
           }
           if (patternBo) {
             this.value = pattern
+            this.updateProjectAndUpdateLocal(this.value)
           } else {
             if (response.data.data.length) {
               this.value = response.data.data[0].projectid
-              window.localStorage.pattern = this.value
+              this.updateProjectAndUpdateLocal(this.value)
             }
           }
         }

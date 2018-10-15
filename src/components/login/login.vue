@@ -31,7 +31,7 @@
 import $ from 'jquery'
 import { mapActions, mapGetters } from 'vuex'
 import { TOKEN_STATE_TRUE } from 'api/config'
-import { userLogin, getUserFuncions, findUserProjects } from '../../api/user'
+import { userLogin, getUserFuncions } from '../../api/user'
 export default {
   name: 'login',
   components: {},
@@ -175,36 +175,7 @@ export default {
                     let authority = JSON.stringify(this.authority)
                     window.sessionStorage.setItem('Jurisdiction', authority)
                   })
-                  // let dom = e.target
-                  this.axios.post(findUserProjects(JSON.parse(token))).then((data) => {
-                    if (data.data.code === 0) {
-                      if (!window.localStorage.pattern) {
-                        let projects = ''
-                        if (data.data.data.length) {
-                          projects = data.data.data[0].projectid
-                          this.updateProjectAndUpdateLocal(projects)
-                        } else {
-                          this.updateProjectAndUpdateLocal(projects)
-                        }
-                      } else {
-                        let pattern = window.localStorage.pattern
-                        let patternBoolean = false
-                        if (data.data.data.length) {
-                          data.data.data.forEach((val) => {
-                            if (val.projectid === pattern) {
-                              patternBoolean = true
-                            }
-                          })
-                          if (patternBoolean) {
-                            this.updateProjectAndUpdateLocal(pattern)
-                          } else {
-                            this.updateProjectAndUpdateLocal(data.data.data[0].projectid)
-                          }
-                        }
-                      }
-                    }
-                    this.$router.push('/loginBlank')
-                  })
+                  this.$router.push('/loginBlank')
                 } else {
                   this.$message.error('登录失败')
                 }
