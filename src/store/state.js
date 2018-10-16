@@ -8,6 +8,8 @@ if (clientIdJson) {
   window.sessionStorage.setItem('clientId', JSON.stringify(clientId))
 }
 
+console.log(window.localStorage.pattern)
+
 const state = {
   userData: {
     areaId: '1'
@@ -20,7 +22,7 @@ const state = {
   usericon: '',
   userToken: '',
   loading: false,
-  maintainProject: window.localStorage.pattern ? window.localStorage.pattern : '',
+  maintainProject: parseInt(window.localStorage.pattern) ? parseInt(window.localStorage.pattern) : '',
   clientId,
   userList: [],
   treeStructure: [],

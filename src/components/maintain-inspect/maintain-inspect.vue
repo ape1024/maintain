@@ -131,7 +131,7 @@
             <li class="header_li_six">{{item.error + item.problem}}</li>
             <li class="header_litwo">{{item.assign}}</li>
             <li class="header_litwo">
-              <div v-if="(timestamp - (item.endTime + 86400000)) > 86400000  && JurisdictionData.check" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
+              <div v-if="!(((item.endTime + 86400000)) > timestamp)  && JurisdictionData.check" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
                 归 档
               </div>
               <div v-if="JurisdictionData.approval" @click.stop="batchAudit" class="batchDiv">
@@ -841,21 +841,17 @@ export default {
     line-height 30px
     text-align center
     margin-right 4px
-    color  $color-background-newly
+    color #3279a6
     cursor pointer
     transition .2s
-    &:hover
-      color  #4baabe
   .header_lithreeII
     color #4ea4db
     margin-right 10px
   .planView
-    color #3acf76
+    color #3292a6
     cursor pointer
     transition 0.2s
     display inline-block
-    &:hover
-      color #39ed81
   .review
     position fixed
     top 0
