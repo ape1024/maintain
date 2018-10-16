@@ -975,7 +975,8 @@ export default {
     //  获取所有的工作方式
     this.axios.post(getWorkModes()).then((response) => {
       if (response.data.code === 0) {
-        this.pattern = response.data.data
+        const data = response.data.data
+        this.pattern = data.slice(0, data.length - 2)
       }
     })
   }
