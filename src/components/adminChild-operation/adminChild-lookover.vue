@@ -92,7 +92,7 @@
           <ul class="situation_ul">
             <li class="situation_li">
               <p class="situation_p">最近巡检时间：</p>
-              <div class="situation_div">{{tiemerIf(this.inspection.inspectionTime)}}</div>
+              <div class="situation_div">{{(this.inspection.inspectionTime)}}</div>
             </li>
             <li class="situation_li">
               <p class="situation_p">巡 检 人 员：</p>
