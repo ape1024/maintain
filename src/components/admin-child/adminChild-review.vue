@@ -207,7 +207,7 @@
             <div class="left_list">
               <p class="left_list_p">设施数量:</p>
               <div class="left_list_div">
-                <el-input size="mini" v-model="quantum" placeholder=""></el-input>
+                <el-input type="number" size="mini" v-model="quantum" placeholder=""></el-input>
               </div>
             </div>
           </li>
@@ -320,7 +320,7 @@ export default {
       // 具体地址
       specific: '',
       // 实施数量
-      quantum: '',
+      quantum: 1,
       // 地址编码
       encoded: '',
       // 报警回路
