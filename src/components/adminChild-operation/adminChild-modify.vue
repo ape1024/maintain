@@ -809,6 +809,8 @@ export default {
     color #dd514c
   .modifySpantwo
     opacity 0
+  .v-modal
+    display none!important
 </style>
 <style>
   .modify_rightDiv .el-upload-list--picture-card .el-upload-list__item{

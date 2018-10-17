@@ -632,10 +632,10 @@ export default {
         })
         return false
       }
-      let MinData = ''
-      let MaxData = ''
+      let MinData = 0
+      let MaxData = 0
       if (reg.test(this.MinMeasuring) && parseFloat(this.MinMeasuring)) {
-        MinData = this.MinMeasuring
+        MinData = parseFloat(this.MinMeasuring)
       } else {
         this.$message({
           message: '最小值请输入有效数字',
@@ -644,7 +644,7 @@ export default {
         return false
       }
       if (reg.test(this.MaxMeasuring) && parseFloat(this.MaxMeasuring)) {
-        MaxData = this.MaxMeasuring
+        MaxData = parseFloat(this.MaxMeasuring)
       } else {
         this.$message({
           message: '最大值请输入有效数字',
@@ -652,9 +652,11 @@ export default {
         })
         return false
       }
-      MinData = !MinData ? '' : MinData
-      MaxData = !MaxData ? '' : MaxData
-      if (MinData > MaxData) {
+      console.log(typeof MinData)
+      console.log(MaxData)
+      console.log(MinData < MaxData)
+      let flag = (MinData < MaxData)
+      if (!flag) {
         this.$message({
           message: '最小值不能大于最大值',
           type: 'warning'
