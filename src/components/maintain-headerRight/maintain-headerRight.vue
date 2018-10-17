@@ -110,8 +110,6 @@ export default {
     this.axios.post(getPorjectByUserID(token, userid)).then((response) => {
       if (response.data.code === 0) {
         this.options = response.data.data
-        console.log(this.options)
-        console.log(typeof this.$store.state.maintainProject)
       }
     })
     this.axios.post(managementgetUserOrganization(token)).then((response) => {

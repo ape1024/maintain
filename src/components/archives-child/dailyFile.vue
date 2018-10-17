@@ -63,11 +63,9 @@ export default {
       month = (month.toString().length === 1) ? ('0' + month) : month
       day = (day.toString().length === 1) ? ('0' + day) : day
       let result = myDate.getFullYear() + '-' + month + '-' + day
-      console.log(result)
       let beginTime = this.startTime ? this.startTime : result
       let endTime = this.endTime ? this.endTime : result
       this.axios.post(exportMaintenanceReportForMonth(token, this.maintainProject, beginTime, endTime, 2)).then((response) => {
-        console.log(response)
         if (response.data.code === 0) {
           window.location = `${response.data.data}`
         }

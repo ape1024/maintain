@@ -536,7 +536,6 @@ export default {
         let token = JSON.parse(window.sessionStorage.token)
         this.axios.post(GetDevUnitByBaseDevCode(token, this.basedevicecode)).then((response) => {
           if (response.data.code === 0) {
-            console.log(response.data.data)
             devcountD = response.data.data
             //  接口去请求来 单位
             // this.CompanyData.forEach((val) => {
@@ -550,7 +549,6 @@ export default {
             // let devicecoding = this.devicecoding
             let quantum = this.quantum
             // let encoded = this.encoded
-            console.log(`${quantum}${devcountD}`)
             if (this.checked) {
               for (let i = 1; i <= this.num; i++) {
                 this.tabulationtitle.unshift({

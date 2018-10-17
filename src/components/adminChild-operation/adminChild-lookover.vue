@@ -189,9 +189,6 @@ export default {
         return false
       }
     })
-    console.log(this.inspection)
-    console.log(this.information)
-    console.log(this.msg)
   }
 }
 </script>

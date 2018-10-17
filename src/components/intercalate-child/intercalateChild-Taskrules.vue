@@ -408,7 +408,6 @@ export default {
   },
   watch: {
     tabulation (ev) {
-      console.log(ev)
       if (!ev.length) {
         this.technicalStandard = false
       } else {
@@ -427,7 +426,6 @@ export default {
           this.formatting()
           break
         case 2:
-          console.log(node)
           this.maks = false
           this.maksConserve = false
           this.checkStandardsNode = node

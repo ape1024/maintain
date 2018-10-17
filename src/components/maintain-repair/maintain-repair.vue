@@ -357,7 +357,6 @@ export default {
             if (response.data.code === 0) {
               this.reworkData = response.data.data
               this.axios.post(maintainRepairgetApprovalInfos(ID)).then((response) => {
-                console.log(response.data)
                 if (response.data.code === 0) {
                   // 审批记录  目前 只要第一条,待定
                   this.examination = response.data.data[0]

@@ -153,7 +153,6 @@ export default {
     DialogImg
   },
   created () {
-    console.log(this.msg)
     this.photograph = this.msg.photos !== '' ? this.msg.photos.split(',') : ''
     //  确认状态
     let confirm = []
