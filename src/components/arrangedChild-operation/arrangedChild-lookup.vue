@@ -404,7 +404,7 @@ export default {
         })
         return false
       }
-      //   workmodes  工作类型
+      // workmodes  工作类型
       let worktypeData = []
       if (this.Worktype.length !== 0) {
         this.Worktype.forEach((val) => {
@@ -425,14 +425,14 @@ export default {
           return false
         }
       } else {
-        //   没有工作类型 ,意味着没有选择任务类型
+        // 没有工作类型 ,意味着没有选择任务类型
         this.$message({
           message: '没有选择任务类型!',
           type: 'warning'
         })
         return false
       }
-      //  选择消防设施
+      // 选择消防设施
       let newArr = []
       if (this.judgementValue) {
         if (!this.handleCheckData.length) {
@@ -457,14 +457,14 @@ export default {
       } else {
         this.Plandevices.forEach((val) => {
           let obj = {
-            basedevicecode: val.code,
+            basedevicecode: val.basedevicecode,
             basedeviceid: val.basedeviceid,
-            basedevicename: val.name
+            basedevicename: val.basedevicename
           }
           newArr.push(obj)
         })
       }
-      //  执行人
+      // 执行人
       let users = []
       if (this.maintenanceList.length !== 0) {
         this.maintenanceList.forEach((val) => {
@@ -476,14 +476,14 @@ export default {
           users.push(data)
         })
       } else {
-        //  没有选择执行人
+        // 没有选择执行人
         this.$message({
           message: '没有选择执行人!',
           type: 'warning'
         })
         return false
       }
-      //   巡检范围
+      // 巡检范围
       let scopeInspection = []
       if (this.lookupchooseValue === true) {
         if (this.lookupchooseData.length !== 0) {
@@ -513,10 +513,10 @@ export default {
           scopeInspection.push(data)
         })
       }
-      //  频次
-      //  let checkFrequency = this.frequencyradio
-      //  间隔时间
-      //  制定创建时间  createTaskTime
+      // 频次
+      // let checkFrequency = this.frequencyradio
+      // 间隔时间
+      // 制定创建时间  createTaskTime
       let interval = ''
       let createTaskTime = ''
       if (this.scheduleData !== 1 && this.scheduleData !== 3) {
@@ -666,22 +666,22 @@ export default {
       this.maintenanceList.push(`${val.userid},${val.organizationid}`)
     })
 
-    //  选择巡检范围  this.defaultCheckedRange
+    // 选择巡检范围  this.defaultCheckedRange
     this.Planareas.forEach((val) => {
       this.defaultCheckedRange.push(val.areaid)
     })
-    //  消防设施
+    // 消防设施
     this.Plandevices.forEach((val) => {
       this.defaultCheckedFacilities.push(`${val.basedeviceid},${this.timeStamp}`)
     })
-    //  获取消防设施
+    // 获取消防设施
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject, token)).then((response) => {
       if (response.data.code === 0) {
         this.maintenance = response.data.data
       }
     })
-    //  获取巡检范围
+    // 获取巡检范围
     this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.purview = response.data.data
@@ -710,7 +710,6 @@ export default {
           'children': response.data.data
         }]
         this.facilities = arr
-        console.log(this.facilities)
       }
     })
     //  获取计划类型
