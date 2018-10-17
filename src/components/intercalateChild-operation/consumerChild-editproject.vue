@@ -171,6 +171,7 @@
                     default-expand-all
                     node-key="id"
                     ref="tree"
+                    @check="firecontrolDateClick"
                     :props="firecontrolProps">
                   </el-tree>
                 </div>
@@ -427,6 +428,16 @@ export default {
         }
       }
       this.organizeText = data
+    },
+    firecontrolDateClick (checkedNodes, checkedKeys) {
+      let data = ''
+      this.firecontrolDate = checkedKeys.checkedNodes
+      for (let i = 0; i < checkedKeys.checkedNodes.length; i++) {
+        if (checkedKeys.checkedNodes[i].parentFlag !== true) {
+          data += checkedKeys.checkedNodes[i].name + ' '
+        }
+      }
+      this.firecontrolda = data
     },
     handlesuccess (response, file, fileList) {
       this.documentPapers.push({
