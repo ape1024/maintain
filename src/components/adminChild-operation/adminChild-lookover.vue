@@ -92,7 +92,7 @@
           <ul class="situation_ul">
             <li class="situation_li">
               <p class="situation_p">最近巡检时间：</p>
-              <div class="situation_div">{{(this.inspection.inspectionTime)}}</div>
+              <div class="situation_div">{{fmtDate(this.inspection.inspectionTime)}}</div>
             </li>
             <li class="situation_li">
               <p class="situation_p">巡 检 人 员：</p>
@@ -141,6 +141,7 @@
 import DialogImg from 'base/dialog-img/dialog-img'
 import { getProprietorOrganization } from '../../api/user'
 import { dateTransfer } from '../../common/js/utils'
+import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
 export default {
   name: 'adminChild-lookover',
   props: ['msg', 'inspection', 'information'],
@@ -160,6 +161,10 @@ export default {
     DialogImg
   },
   methods: {
+    // 格式化时间
+    fmtDate (obj) {
+      return formatDate(obj, 'yyyy/MM/dd HH:mm')
+    },
     selectImg (list, index) {
       this.imgList = list
       setTimeout(() => {
