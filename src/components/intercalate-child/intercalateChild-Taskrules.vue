@@ -408,7 +408,6 @@ export default {
   },
   watch: {
     tabulation (ev) {
-      console.log(ev)
       if (!ev.length) {
         this.technicalStandard = false
       } else {
@@ -427,7 +426,6 @@ export default {
           this.formatting()
           break
         case 2:
-          console.log(node)
           this.maks = false
           this.maksConserve = false
           this.checkStandardsNode = node
@@ -645,7 +643,7 @@ export default {
         })
         return false
       }
-      if (reg.test(this.MaxMeasuring)) {
+      if (reg.test(this.MaxMeasuring) && parseFloat(this.MaxMeasuring)) {
         MaxData = this.MaxMeasuring
       } else {
         this.$message({
@@ -654,11 +652,9 @@ export default {
         })
         return false
       }
-      if (!MinData) {
-        MinData = ''
-      } else if (!MaxData) {
-        MaxData = ''
-      } else if (MinData >= MaxData) {
+      MinData = !MinData ? '' : MinData
+      MaxData = !MaxData ? '' : MaxData
+      if (MinData > MaxData) {
         this.$message({
           message: '最小值不能大于最大值',
           type: 'warning'

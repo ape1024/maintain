@@ -137,10 +137,6 @@ export default {
       const deviceid = this.question.deviceid
       const approvalopinion = this.view
       const approvalstate = this.radio
-      console.log(deviceid)
-      console.log(approvalopinion)
-      console.log(approvalstate)
-      console.log(PojectdeviceApproval(deviceid, approvalopinion, approvalstate))
       if (!approvalstate) {
         this.$message({
           message: '请选择审核结论',

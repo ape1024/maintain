@@ -394,7 +394,6 @@ export default {
       })
     },
     planView (checkplanid) {
-      console.log(checkplanid)
       this.CheckPlanid = checkplanid
       this.axios.post(maintainArranggetCheckPlan(checkplanid)).then((response) => {
         if (response.data.code === 0) {

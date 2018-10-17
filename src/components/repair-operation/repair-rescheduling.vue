@@ -245,7 +245,6 @@ export default {
     this.axios.post(maintainDailygetProprietorOrgTree()).then((response) => {
       if (response.data.code === 0) {
         this.proprietor = response.data.data
-        console.log(response.data.data)
       }
     })
     //  维保单位 this.equipment
@@ -257,7 +256,6 @@ export default {
     // 绑定人员
     this.axios.post(getRepairUsers(this.msg.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
-        console.log(response.data.data)
         const data = response.data.data
         data.forEach((val) => {
           this.maintenanceList.push(val.userid)

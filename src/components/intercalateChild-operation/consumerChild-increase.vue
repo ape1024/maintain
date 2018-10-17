@@ -806,7 +806,6 @@ export default {
     //  increasefindAllDevType
     this.axios.post(findAllDeviceTypeTwo(token)).then((response) => {
       const data = response.data.data
-      console.log(data)
       this.firecontrol = data.map(t => {
         return {
           ...t,

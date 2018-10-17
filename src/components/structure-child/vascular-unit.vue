@@ -257,7 +257,6 @@ export default {
         // 初始化
         this.ormatting()
       } else {
-        console.log(data)
         this.ownerType = data.organization.organizationType
         this.conserveBoolean = true
         const organizationId = data.organizationId

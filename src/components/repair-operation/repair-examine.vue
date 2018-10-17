@@ -638,7 +638,6 @@ export default {
         } else {
           this.ficationBoolean = true
         }
-        console.log(response)
       }
     })
   }

@@ -330,7 +330,6 @@ export default {
         let token = JSON.parse(window.sessionStorage.token)
         let devicetypeid = this.categoryDate[0]
         this.axios.post(GetDevUnit(token, devicetypeid)).then((response) => {
-          console.log(response)
           if (response.data.code === 0) {
             // let obj = {
             //   devunitId: -999,
@@ -608,7 +607,6 @@ export default {
         this.textarea = (this.modify).memo
         this.technicalParameter = (this.modify).parameters
         this.Company = (this.modify).devunitid
-        console.log(this.modify)
         if (!this.modify.photoArray.length) {
           this.fileList = []
         } else {

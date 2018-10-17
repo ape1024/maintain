@@ -122,7 +122,6 @@ export default {
   },
   methods: {
     conserve () {
-      console.log()
       let token = JSON.parse(window.sessionStorage.token)
       let organizationinfoid = this.organizationid
       let roleName = this.designation

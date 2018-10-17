@@ -347,7 +347,6 @@ export default {
         if (val.fuleco === false || val.disabled === true) {
           return false
         } else {
-          console.log(val.approvalstate)
           let data = {
             matters: val.workitem,
             conclusion: val.conclusionname,
@@ -399,7 +398,6 @@ export default {
         if (val.fuleco === false) {
           return false
         } else if (!val.isapproval && val.iswaitapproval) {
-          console.log(val)
           taskDetailArr.push(val.checktaskdetailid)
         } else {
           flag = false

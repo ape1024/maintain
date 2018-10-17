@@ -183,7 +183,6 @@ export default {
             })
             this.initPlan()
           } else {
-            console.log(response)
             this.$message({
               message: `${response.data.message}`,
               type: 'warning'
