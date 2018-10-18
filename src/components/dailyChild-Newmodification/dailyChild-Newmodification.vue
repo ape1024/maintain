@@ -259,7 +259,7 @@ export default {
     text-overflow ellipsis
     white-space nowrap
   .cephalosomeThree
-    width 12%
+    width 12.8%
     text-align center
     overflow hidden
     text-overflow ellipsis
