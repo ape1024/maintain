@@ -17,7 +17,7 @@
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">设备编码：</span>
-                    <span class="tlefttopli_Span">{{msg.devicecode}}}</span>
+                    <span class="tlefttopli_Span">{{msg.devicecode}}</span>
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">设备位置：</span>
