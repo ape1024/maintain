@@ -34,7 +34,7 @@
               <div class="modify_liDivthree">
                 <p class="modify_li_p"><span class="increaseSpan">*</span>生产厂家：</p>
                 <div class="modify_li_div">
-                  <el-select size="mini" @focus="focus" @change="manufacturerChange" v-model="manufactorModel" placeholder="">
+                  <el-select size="mini" @focus="focus" @change="manufacturerChange" v-model="manufactorModel" placeholder="生产厂家">
                     <el-option
                       v-for="item in manufactor"
                       :key="item.manufacturerid"
@@ -50,7 +50,7 @@
               <div class="modify_liDivthree">
                 <p class="modify_li_p"><span class="increaseSpanTwo">*</span>规格型号：</p>
                 <div class="modify_li_div">
-                  <el-select size="mini" @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
+                  <el-select size="mini" @change="versionChang(versionValue)" v-model="versionValue" placeholder="规格型号">
                     <el-option
                       v-for="item in version"
                       :key="item.divecemodelid"
@@ -63,22 +63,6 @@
                   <el-input size="mini" v-show="versionManufacturer" v-model="versionCustom" placeholder="请输入规格型号"></el-input>
                 </div>
               </div>
-              <!--<div class="modify_liDivthree">-->
-                <!--<p class="modify_li_p"><span class="increaseSpan">*</span>设施单位：</p>-->
-                <!--<div class="modify_li_div">-->
-                  <!--<el-select @change="CompanyChange" @focus="ompanyfocus" size="mini" v-model="Company" placeholder="请选择">-->
-                    <!--<el-option-->
-                      <!--v-for="item in CompanyData"-->
-                      <!--:key="item.devunitId"-->
-                      <!--:label="item.unitname"-->
-                      <!--:value="item.devunitId">-->
-                    <!--</el-option>-->
-                  <!--</el-select>-->
-                <!--</div>-->
-                <!--<div class="modify_lidivRight">-->
-                  <!--<el-input v-if="CompanyShow" size="mini" v-model="CompanyInput" placeholder="请输入单位"></el-input>-->
-                <!--</div>-->
-              <!--</div>-->
               <div class="modify_liDivthree">
                 <p class="modify_li_p">
                   <span class="increaseSpanTwo">*</span>技术参数：
@@ -89,7 +73,7 @@
                     type="textarea"
                     :rows="4"
                     resize="none"
-                    placeholder=""
+                    placeholder="技术参数"
                     v-model="technicalParameter">
                   </el-input>
                 </div>
@@ -145,7 +129,7 @@
                     type="textarea"
                     :rows="2"
                     resize="none"
-                    placeholder=""
+                    placeholder="备注说明"
                     v-model="textarea">
                   </el-input>
                 </div>

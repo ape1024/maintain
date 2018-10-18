@@ -717,7 +717,7 @@ export default {
         margin-top -6px
       .modify_li_divthree
         float left
-        width 280px
+        width 218px
         position relative
       .modify_right
         width 100%
