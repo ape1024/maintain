@@ -134,7 +134,6 @@
                   </el-input>
                 </div>
               </div>
-
             </li>
           </ul>
           <div class="UploadPicture">
