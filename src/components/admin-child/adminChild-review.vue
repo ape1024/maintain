@@ -1009,16 +1009,7 @@ export default {
         overflow hidden
         position relative
         .addcontent
-          width 106px
-          height 36px
-          text-align center
-          line-height 36px
-          background $color-background-newly
-          font-size $font-size-medium
-          color $color-text-title
-          border-radius 5px
-          cursor pointer
-          transition .2s
+          newlyDiv()
           &:hover
             background: #4baabe;
     .tabulation
@@ -1160,7 +1151,7 @@ export default {
         margin-top -6px
       .modify_li_divthree
         float left
-        width 280px
+        width 218px
         position relative
       .modify_right
         width 100%
@@ -1341,11 +1332,12 @@ export default {
     overflow-y auto
     position relative
     width 100%
-    height 90px
+    height 110px
   .UploadPicture
     position relative
     overflow height
-    margin 0 0 0 10px
+    margin-left 50px
+    margin-bottom 10px
   .UploadPictureP
     margin-bottom 10px
     color #d5d5d5
