@@ -61,7 +61,9 @@
       <li :key="dataset.deviceid" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
           <li :title="dataset.devicecode" class="threelevel_lithree">
-            <el-checkbox v-if="dataset.selectbox" v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>
+            <span class="threelevel_lithreeSSpan">
+              <el-checkbox v-if="dataset.selectbox" v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>
+            </span>
             {{dataset.devicecode}}
           </li>
           <li :title="dataset.devicename" class="threelevel_lithree">
@@ -705,4 +707,7 @@ export default {
     position relative
   .superJurisdiction
     color #cc5966
+  .threelevel_lithreeSSpan
+     display inline-block
+     width 14px
 </style>

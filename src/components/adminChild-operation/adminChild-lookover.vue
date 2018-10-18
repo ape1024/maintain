@@ -111,7 +111,7 @@
           <ul class="situation_ul">
             <li class="situation_li">
               <p class="situation_p">最近维保时间：</p>
-              <div class="situation_div">{{tiemerIf(this.inspection.maintenanceTime)}}</div>
+              <div class="situation_div">{{fmtDate(this.inspection.maintenanceTime)}}</div>
             </li>
             <li class="situation_li">
               <p class="situation_p">维 保 人 员：</p>

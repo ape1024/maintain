@@ -40,7 +40,9 @@
             <li :key="index" v-for="(item, index) in dailychild" class="listLi">
               <ul class="heavyPlay">
                 <li :title="item.devicename" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
-                  <el-checkbox v-if="item.isSelect === 1" @change="checkboxClick(item.choose, item)" v-model="item.choose"></el-checkbox>
+                  <span class="threelevel_lithreeSSpan">
+                     <el-checkbox v-if="item.isSelect === 1" @change="checkboxClick(item.choose, item)" v-model="item.choose"></el-checkbox>
+                  </span>
                   {{item.devicename}}
                 </li>
                 <li :title="item.devicecode" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
@@ -56,7 +58,9 @@
                 <div class="heavyPlayLiDiv">
                   <ul :key="$index" v-for="(data, $index) in item.details" class="heavyPlayLiUl">
                     <li :title="data.workitem" class="heavyPlayLi cephalosomeTwo" >
-                      <el-checkbox v-if="!data.disabled" v-model="data.flag" :disabled="data.disabled"></el-checkbox>
+                      <span class="threelevel_lithreeSSpan">
+                        <el-checkbox v-if="!data.disabled" v-model="data.flag" :disabled="data.disabled"></el-checkbox>
+                      </span>
                       {{data.workitem}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree">
@@ -242,15 +246,15 @@ export default {
   .heavyPlay .cephalosomelv:last-child
      border-right none!important
   .cephalosomeOne
-    width 8.333%
+    width 8%
     padding-right .5%
-    text-indent .4em!important
+    padding-left .5%
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
   .cephalosomeTwo
-    width 40%
-    text-indent .4em
+    width 36%
+    padding 0 2%
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
@@ -361,4 +365,7 @@ export default {
   .cephalosomelv
     text-indent 0!important
     text-align center
+  .threelevel_lithreeSSpan
+    display inline-block
+    width 14px
 </style>

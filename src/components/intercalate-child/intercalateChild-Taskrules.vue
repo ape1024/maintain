@@ -120,8 +120,8 @@
                   <span class="informationLiDivSpan">
                 <el-input
                   size="mini"
-                  type="number"
                   placeholder="最小值"
+                  @blur="Minblur"
                   v-model="MinMeasuring">
               </el-input>
               </span>
@@ -129,7 +129,7 @@
                   <span class="informationLiDivSpan">
                 <el-input
                   size="mini"
-                  type="number"
+                  @blur="Maxblur"
                   placeholder="最大值"
                   v-model="MaxMeasuring">
               </el-input>
@@ -400,6 +400,8 @@ export default {
       basedeviceCode: '',
       checkStandardsNode: [],
       technicalStandard: false,
+      blurMinmeasuring: true,
+      blurMaxmeasuring: true,
       JurisdictionSelect: '',
       JurisdictionDelete: '',
       JurisdictionInsert: '',
@@ -416,6 +418,31 @@ export default {
     }
   },
   methods: {
+    Minblur (el) {
+      let reg = /^[+-]?\d*\.?\d*$/
+      if (!reg.test(this.MinMeasuring)) {
+        this.$message({
+          message: '包含非法字符,请重新输入',
+          type: 'warning'
+        })
+        this.blurMinmeasuring = false
+      } else {
+        this.blurMinmeasuring = true
+      }
+    },
+    Maxblur () {
+      console.log(this.MaxMeasuring)
+      let reg = /^[+-]?\d*\.?\d*$/
+      if (!reg.test(this.MaxMeasuring)) {
+        this.$message({
+          message: '包含非法字符,请重新输入',
+          type: 'warning'
+        })
+        this.blurMaxmeasuring = false
+      } else {
+        this.blurMaxmeasuring = true
+      }
+    },
     handleNodeClick (node) {
       switch (node.Identification) {
         case 1:
@@ -623,7 +650,6 @@ export default {
       })
     },
     conserve () {
-      let reg = /^[+-]?\d*\.?\d*$/
       let drawCutsData = this.drawCuts ? parseInt(this.drawCuts) : ''
       if (drawCutsData > 100) {
         this.$message({
@@ -632,36 +658,31 @@ export default {
         })
         return false
       }
+      if (!this.blurMinmeasuring || !this.blurMaxmeasuring) {
+        this.$message({
+          message: '测量范围输入有非法字符,请查看',
+          type: 'warning'
+        })
+        return false
+      }
       let MinData = 0
       let MaxData = 0
-      if (reg.test(this.MinMeasuring) && parseFloat(this.MinMeasuring)) {
+      let MinDataString = `${this.MinMeasuring}`
+      let MaxDataString = `${this.MaxMeasuring}`
+      if (MinDataString.length && MaxDataString.length) {
         MinData = parseFloat(this.MinMeasuring)
-      } else {
-        this.$message({
-          message: '最小值请输入有效数字',
-          type: 'warning'
-        })
-        return false
-      }
-      if (reg.test(this.MaxMeasuring) && parseFloat(this.MaxMeasuring)) {
         MaxData = parseFloat(this.MaxMeasuring)
+        let flag = (MinData < MaxData)
+        if (!flag) {
+          this.$message({
+            message: '最小值不能大于或等于最大值',
+            type: 'warning'
+          })
+          return false
+        }
       } else {
-        this.$message({
-          message: '最大值请输入有效数字',
-          type: 'warning'
-        })
-        return false
-      }
-      console.log(typeof MinData)
-      console.log(MaxData)
-      console.log(MinData < MaxData)
-      let flag = (MinData < MaxData)
-      if (!flag) {
-        this.$message({
-          message: '最小值不能大于最大值',
-          type: 'warning'
-        })
-        return false
+        MinData = MinDataString.length ? parseFloat(this.MinMeasuring) : ''
+        MaxData = MaxDataString.length ? parseFloat(this.MaxMeasuring) : ''
       }
       if (!this.matter) {
         this.$message({
@@ -769,7 +790,6 @@ export default {
       }
     },
     newlyAdded () {
-      let reg = /^[+-]?\d*\.?\d*$/
       let drawCutsData = this.drawCuts ? parseInt(this.drawCuts) : ''
       if (drawCutsData > 100) {
         this.$message({
@@ -778,36 +798,31 @@ export default {
         })
         return false
       }
-      let MinData = ''
-      let MaxData = ''
-      if (reg.test(this.MinMeasuring)) {
-        MinData = this.MinMeasuring
-      } else {
+      if (!this.blurMinmeasuring || !this.blurMaxmeasuring) {
         this.$message({
-          message: '最小值请输入有效数字',
+          message: '测量范围输入有非法字符,请查看',
           type: 'warning'
         })
         return false
       }
-      if (reg.test(this.MaxMeasuring)) {
-        MaxData = this.MaxMeasuring
+      let MinData = 0
+      let MaxData = 0
+      let MinDataString = `${this.MinMeasuring}`
+      let MaxDataString = `${this.MaxMeasuring}`
+      if (MinDataString.length && MaxDataString.length) {
+        MinData = parseFloat(this.MinMeasuring)
+        MaxData = parseFloat(this.MaxMeasuring)
+        let flag = (MinData < MaxData)
+        if (!flag) {
+          this.$message({
+            message: '最小值不能大于或等于最大值',
+            type: 'warning'
+          })
+          return false
+        }
       } else {
-        this.$message({
-          message: '最大值请输入有效数字',
-          type: 'warning'
-        })
-        return false
-      }
-      if (!MinData) {
-        MinData = ''
-      } else if (!MaxData) {
-        MaxData = ''
-      } else if (MinData >= MaxData) {
-        this.$message({
-          message: '最小值不能大于最大值',
-          type: 'warning'
-        })
-        return false
+        MinData = MinDataString.length ? parseFloat(this.MinMeasuring) : ''
+        MaxData = MaxDataString.length ? parseFloat(this.MaxMeasuring) : ''
       }
       if (!this.matter) {
         this.$message({
@@ -871,7 +886,7 @@ export default {
         let param = {
           checkstandards: {
             basedevicecode: this.basedeviceCode,
-            checkstandardid: -1,
+            checkstandardid: this.tabulationID,
             memo: this.comments,
             qualityrequirement: this.requirement,
             revisionlevel: this.reformulateData,
