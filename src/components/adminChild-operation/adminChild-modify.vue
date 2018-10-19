@@ -123,6 +123,12 @@
           </li>
           <li class="modify_li">
             <div class="modify_liDiv">
+              <p class="modify_li_p">设施编码：</p>
+              <div class="modify_li_div">
+                <el-input size="mini" v-model="facilityCode" placeholder="控制器编码"></el-input>
+              </div>
+            </div>
+            <div class="modify_liDiv">
               <p class="modify_li_p">控制器编码：</p>
               <div class="modify_li_div">
                 <el-input size="mini" v-model="controllerCoding" placeholder="控制器编码"></el-input>
@@ -303,7 +309,8 @@ export default {
       controllerCoding: '',
       loopNumber: '',
       oneTimeCode: '',
-      addressCode: ''
+      addressCode: '',
+      facilityCode: ''
     }
   },
   watch: {
@@ -378,6 +385,8 @@ export default {
     },
     categoryChange (data) {
       this.watchequipment = data[0]
+      this.manufactorModel = ''
+      this.versionValue = ''
     },
     myFileLidelete (index) {
       this.photoArray.splice(index, 1)
@@ -430,6 +439,9 @@ export default {
       let effectivedate = this.validity
       //  单位
       let devunitid = ''
+      // 设施编码
+      let devicecode = this.facilityCode
+      console.log(devicecode)
       //  mac地址
       let mac = `${this.controllerCoding}.${this.loopNumber}.${this.oneTimeCode}.${this.addressCode}`
       let basedeviceid = this.categoryDate[this.categoryDate.length - 1]
@@ -441,12 +453,12 @@ export default {
               this.axios.post(AddDivecemodels(manufacturerid, basedeviceid, this.versionCustom, this.technicalParameter)).then((data) => {
                 if (data.data.code === 0) {
                   devicemodel = data.data.data.divecemodelid
-                  this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
+                  this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicecode, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
                 }
               })
             } else {
               devicemodel = this.versionValue
-              this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
+              this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicecode, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
             }
           }
         })
@@ -454,17 +466,17 @@ export default {
         this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((Item) => {
           if (Item.data.code === 0) {
             devicemodel = Item.data.data.divecemodelid
-            this.requestModification(token, Deviceid, this.maintainProject, areaid, this.manufactorModel, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
+            this.requestModification(token, Deviceid, this.maintainProject, areaid, this.manufactorModel, devicecode, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
           }
         })
       } else {
         devicemodel = this.versionValue
         manufacturerid = this.manufactorModel
-        this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
+        this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicecode, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)
       }
     },
-    requestModification (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitId, files) {
-      this.axios.post(updateDevice(token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitId, files)).then((response) => {
+    requestModification (token, deviceid, projectid, areaid, manufacturerid, devicecode, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitId, files) {
+      this.axios.post(updateDevice(token, deviceid, projectid, areaid, manufacturerid, devicecode, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitId, files)).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '修改成功',
@@ -500,10 +512,12 @@ export default {
         this.axios.post(maintainReportfindManufactures(region)).then((response) => {
           if (response.data.code === 0) {
             this.manufactor = response.data.data
-            this.manufactor.push({
-              name: '自定义',
-              manufacturerid: '-9999'
-            })
+            if (!response.data.data.length) {
+              this.manufactor.push({
+                name: '自定义',
+                manufacturerid: '-9999'
+              })
+            }
           }
         })
       }
@@ -599,7 +613,6 @@ export default {
             })
           }
         })
-
         this.versionValue = this.modify.devicemodel ? parseInt(this.modify.devicemodel) : ''
         this.Specificposition = (this.modify).position
         this.productionValue1 = this.fmtDate((this.modify).madedate)
@@ -607,6 +620,7 @@ export default {
         this.textarea = (this.modify).memo
         this.technicalParameter = (this.modify).parameters
         this.Company = (this.modify).devunitid
+        this.facilityCode = this.modify.devicecode
         if (!this.modify.photoArray.length) {
           this.fileList = []
         } else {

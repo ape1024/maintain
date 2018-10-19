@@ -199,6 +199,8 @@ export default {
                           if (!patternBoolean) {
                             this.updateProjectAndUpdateLocal(data.data.data[0].projectid)
                           }
+                        } else {
+
                         }
                       }
                       this.$router.push('/loginBlank')

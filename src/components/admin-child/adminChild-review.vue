@@ -450,6 +450,9 @@ export default {
       }
     },
     focus (event) {
+      this.versionValue = ''
+      this.versionCustom = ''
+      this.versionManufacturer = false
       let region = this.categoryDate
       if (region.length === 0) {
         this.$message({
@@ -592,6 +595,12 @@ export default {
       this.$emit('say', false)
     },
     categoryChange () {
+      this.manufactorModel = ''
+      this.versionValue = ''
+      this.customManufacturer = false
+      this.versionManufacturer = false
+      this.customManufacturerDate = ''
+      this.versionCustom = ''
       let organizationId = this.categoryDate[this.categoryDate.length - 1]
       let result = null
       let findData = (data) => {

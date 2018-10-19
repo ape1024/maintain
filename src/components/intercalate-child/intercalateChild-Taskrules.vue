@@ -886,7 +886,7 @@ export default {
         let param = {
           checkstandards: {
             basedevicecode: this.basedeviceCode,
-            checkstandardid: this.tabulationID,
+            checkstandardid: -1,
             memo: this.comments,
             qualityrequirement: this.requirement,
             revisionlevel: this.reformulateData,

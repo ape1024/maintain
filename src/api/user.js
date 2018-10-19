@@ -205,8 +205,8 @@ export const AddDivecemodels = (manufactureId, Deviceid, versionCustom, technica
   return url
 }
 //  updateDevice
-export const updateDevice = (token, deviceid, projectid, areaid, manufacturerid, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitId, files) => {
-  const url = `${Test}/dev/updateDevice?token=${token}&deviceid=${deviceid}&projectid=${projectid}&areaid=${areaid}&manufacturerid=${manufacturerid}&basedeviceid=${basedeviceid}&devicemodelID=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&mac2=${mac}&madedate=${madedate}&effectivedate=${effectivedate}&devunitId=${devunitId}&files=${files}`
+export const updateDevice = (token, deviceid, projectid, areaid, manufacturerid, devicecode, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitId, files) => {
+  const url = `${Test}/dev/updateDevice?token=${token}&deviceid=${deviceid}&projectid=${projectid}&areaid=${areaid}&manufacturerid=${manufacturerid}&devicecode=${devicecode}&basedeviceid=${basedeviceid}&devicemodelID=${devicemodel}&position=${position}&parameters=${parameters}&memo=${memo}&mac2=${mac}&madedate=${madedate}&effectivedate=${effectivedate}&devunitId=${devunitId}&files=${files}`
   return url
 }
 //  daily

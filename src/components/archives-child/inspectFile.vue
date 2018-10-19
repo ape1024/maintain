@@ -66,6 +66,9 @@ export default {
       let beginTime = this.startTime ? this.startTime : result
       let endTime = this.endTime ? this.endTime : result
       this.axios.post(exportMaintenanceReportForMonth(token, this.maintainProject, beginTime, endTime, 3)).then((response) => {
+        if (response.data.code === 0) {
+          window.open(response.data.data, '_blank')
+        }
       })
     },
     init () {

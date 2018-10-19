@@ -110,6 +110,10 @@ export default {
     this.axios.post(getPorjectByUserID(token, userid)).then((response) => {
       if (response.data.code === 0) {
         this.options = response.data.data
+        if (!response.data.data.length) {
+          this.value = ''
+          this.updateProjectAndUpdateLocal('')
+        }
       }
     })
     this.axios.post(managementgetUserOrganization(token)).then((response) => {
