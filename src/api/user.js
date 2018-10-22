@@ -284,8 +284,8 @@ export const maintainDailygetDetailsByDeviceId = (taskid, deviceID) => {
 }
 
 //  审核  分配任务
-export const maintainDailyassignedTask = (token, string, desc, disposeopinion, faultTypeId) => {
-  const url = `${Test}/task/assignedTask?token=${token}&detailIDs=${string}&desc=${desc}&disposeopinion=${disposeopinion}&faultTypeId=${faultTypeId}`
+export const maintainDailyassignedTask = (projectid, token, string, desc, disposeopinion, faultTypeId) => {
+  const url = `${Test}/task/assignedTask?projectid=${projectid}&token=${token}&detailIDs=${string}&desc=${desc}&disposeopinion=${disposeopinion}&faultTypeId=${faultTypeId}`
   return url
 }
 //  maintain-repair  故障维修

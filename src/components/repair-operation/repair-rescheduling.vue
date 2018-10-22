@@ -125,7 +125,9 @@
 <script>
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
 import { getRepairUsers, maintainRepairreAssignedTask, maintainDailygetRepairTypes, maintainDailygetProprietorOrgTree, maintainDailygetRepairOrgTreeByDeviceId, managementgetUserOrganization } from '../../api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [projectMixin],
   name: 'repair-rescheduling',
   props: ['msg'],
   data () {
@@ -250,7 +252,15 @@ export default {
     //  维保单位 this.equipment
     this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.msg.deviceid)).then((response) => {
       if (response.data.code === 0) {
-        this.maintenance = response.data.data
+        if (response.data.data.length) {
+          response.data.data.forEach((val) => {
+            if (val.projectId === this.maintainProject) {
+              this.maintenance = val.subOrgnizations
+            }
+          })
+        } else {
+          this.maintenance = []
+        }
       }
     })
     // 绑定人员

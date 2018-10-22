@@ -230,7 +230,7 @@
                       <el-input size="mini" v-model="item.dCoding" placeholder="设备编码"></el-input>
                     </div>
                   </li>
-                  <li class="title_lili">
+                  <li :title="item.positionName + item.position" class="title_lili">
                     {{item.positionName}}{{item.position}}
                   </li>
                   <li class="title_lili">

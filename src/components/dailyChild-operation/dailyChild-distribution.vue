@@ -48,6 +48,19 @@
             v-model="objection">
           </el-input>
         </div>
+        <div class="personnelTwo">
+          <p class="personChargePThree">项目选择：</p>
+          <p class="personChargePTwo">
+            <el-select size="mini" v-model="projectSelectionData" placeholder="请选择">
+            <el-option
+              v-for="item in projectSelection"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          </p>
+        </div>
         <div class="personnel">
           <div class="personCharge">
             <p class="personChargeP">维保单位：</p>
@@ -110,7 +123,7 @@
 </template>
 
 <script>
-import { maintainDailygetProprietorOrgTree, getAllOrgTreeeByProjectId, maintainDailyassignedTask, managementgetUserOrganization } from '../../api/user'
+import { maintainDailygetProprietorOrgTree, maintainDailyassignedTask, managementgetUserOrganization, maintainDailygetRepairOrgTreeByDeviceId } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   mixins: [ projectMixin ],
@@ -138,7 +151,20 @@ export default {
       },
       proprietorCheckList: [],
       maintenanceList: [],
-      organizationtype: ''
+      organizationtype: '',
+      projectSelection: [],
+      projectSelectionData: '',
+      maintenanceData: []
+    }
+  },
+  watch: {
+    projectSelectionData (el) {
+      console.log(el)
+      this.maintenanceData.forEach((val) => {
+        if (val.projectId === el) {
+          this.maintenance = val.subOrgnizations
+        }
+      })
     }
   },
   methods: {
@@ -154,6 +180,7 @@ export default {
         let desc = this.instrucTion
         let disposeopinion = this.objection
         let faultTypeId = this.radio2
+        let projectid = this.projectSelectionData
         let usersNumber = this.maintenanceList.concat(this.repairCheckList)
         let users = []
         this.instruction.forEach((val) => {
@@ -175,7 +202,7 @@ export default {
           return false
         }
         let token = JSON.parse(window.sessionStorage.token)
-        this.axios.post(maintainDailyassignedTask(token, string, desc, disposeopinion, faultTypeId), users).then((response) => {
+        this.axios.post(maintainDailyassignedTask(projectid, token, string, desc, disposeopinion, faultTypeId), users).then((response) => {
           if (response.data.code === 0) {
             this.$message({
               message: '分配成功',
@@ -196,6 +223,9 @@ export default {
     }
   },
   created () {
+    console.log(this.getrepairDate)
+    console.log(this.instruction)
+    console.log(this.equipment)
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(managementgetUserOrganization(token)).then((response) => {
       if (response.data.code === 0) {
@@ -213,9 +243,20 @@ export default {
       }
     })
     //  维保单位 this.equipment
-    this.axios.post(getAllOrgTreeeByProjectId(this.maintainProject, token)).then((response) => {
+    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.equipment, token)).then((response) => {
       if (response.data.code === 0) {
-        this.maintenance = response.data.data
+        if (response.data.data.length) {
+          this.maintenanceData = response.data.data
+          response.data.data.forEach((val) => {
+            // this.projectSelection
+            let obj = {
+              label: val.organizationName,
+              value: val.projectId
+            }
+            this.projectSelection.push(obj)
+          })
+          this.projectSelectionData = response.data.data[0].projectId
+        }
       }
     })
   }
@@ -373,4 +414,17 @@ export default {
       color $color-border-b-fault
       line-height 20px
       margin-right 6px
+  .personnelTwo
+    overflow hidden
+    margin-bottom 10px
+    width 100%
+  .personChargePTwo
+    margin-left 10px
+    float left
+  .personChargePThree
+    line-height 28px
+    float left
+    font-size 14px
+    color #999
+    margin-right 6px
 </style>
