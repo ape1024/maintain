@@ -222,7 +222,7 @@
           <el-input
             size="mini"
             type="textarea"
-            :rows="3"
+            :rows="1"
             resize="none"
             placeholder="请输入内容"
             v-model="conTent">
@@ -238,7 +238,7 @@
           <el-input
             size="mini"
             type="textarea"
-            :rows="3"
+            :rows="1"
             resize="none"
             placeholder="请输入内容"
             v-model="requirement">
@@ -254,7 +254,7 @@
           <el-input
             size="mini"
             type="textarea"
-            :rows="3"
+            :rows="1"
             resize="none"
             placeholder="请输入内容"
             v-model="comment">
@@ -805,7 +805,7 @@ export default {
   .subject
     init()
     padding 20px 0 20px
-    margin-top 20px
+    margin-top 50px
     background #111a28
     .section
       width 1245px
