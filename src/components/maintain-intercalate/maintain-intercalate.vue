@@ -21,6 +21,16 @@
 <script>
 export default {
   name: 'maintain-intercalate',
+  data () {
+    return {
+      organizationSelect: false,
+      roleSelect: false,
+      userSelect: false,
+      projectSelect: false,
+      standardSelect: false,
+      infoSelect: false
+    }
+  },
   methods: {
     // 权限判断
     authority () {

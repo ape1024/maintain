@@ -192,6 +192,9 @@
               <div class="left_list_div">
                 <el-input type="number" size="mini" v-model="quantum" placeholder=""></el-input>
               </div>
+              <div class="left_list_divTwo">
+                <el-input :disabled="true" size="mini" v-model="devcountD" placeholder=""></el-input>
+              </div>
             </div>
           </li>
           <li class="bottom_left">
@@ -389,7 +392,8 @@ export default {
       proprietorUnit: '',
       proprietorUnitData: '',
       uploadFun: upload(JSON.parse(window.sessionStorage.token)),
-      uploadData: []
+      uploadData: [],
+      devcountD: ''
     }
   },
   methods: {
@@ -504,7 +508,6 @@ export default {
       return result
     },
     addincrease () {
-      let devcountD = ''
       if (!this.facilityLocationDate.length) {
         this.$message({
           message: '请选择设施位置',
@@ -519,72 +522,66 @@ export default {
         })
         return false
       } else {
-        let token = JSON.parse(window.sessionStorage.token)
-        this.axios.post(GetDevUnitByBaseDevCode(token, this.basedevicecode)).then((response) => {
-          if (response.data.code === 0) {
-            devcountD = response.data.data
-            //  接口去请求来 单位
-            // this.CompanyData.forEach((val) => {
-            //   if (val.devunitId === this.Company) {
-            //     devcountD = val.unitname
-            //   }
-            // })
-            let obtainCode = this.specific
-            let areaid = this.facilityLocationDate
-            let areaidName = this.ergodic(areaid)
-            // let devicecoding = this.devicecoding
-            let quantum = this.quantum
-            // let encoded = this.encoded
-            if (this.checked) {
-              for (let i = 1; i <= this.num; i++) {
-                this.tabulationtitle.unshift({
-                  // // 编码
-                  // code: devicecoding,
-                  positionName: areaidName,
-                  // 位置
-                  position: obtainCode,
-                  areaid: areaid[areaid.length - 1],
-                  // 数量
-                  devcount: quantum,
-                  //  设备编码
-                  dCoding: '',
-                  //  控制器编码
-                  a: '',
-                  //  回路号
-                  b: '',
-                  //  一次码
-                  c: '',
-                  //  地址编码
-                  d: '',
-                  //  带单位的数量
-                  devcountD: `${quantum}${devcountD}`
-                })
-              }
-            } else {
-              this.tabulationtitle.unshift({
-                // // 编码
-                dCoding: '',
-                // code: devicecoding,
-                positionName: areaidName,
-                // 位置
-                position: obtainCode,
-                areaid: areaid[areaid.length - 1],
-                // 数量
-                devcount: quantum,
-                //  控制器编码
-                a: '',
-                //  回路号
-                b: '',
-                //  一次码
-                c: '',
-                //  地址编码
-                d: '',
-                //  带单位的数量
-                devcountD: `${quantum}${devcountD}`
-              })
-            }
+        //  接口去请求来 单位
+        // this.CompanyData.forEach((val) => {
+        //   if (val.devunitId === this.Company) {
+        //     devcountD = val.unitname
+        //   }
+        // })
+        let obtainCode = this.specific
+        let areaid = this.facilityLocationDate
+        let areaidName = this.ergodic(areaid)
+        // let devicecoding = this.devicecoding
+        let quantum = this.quantum
+        // let encoded = this.encoded
+        if (this.checked) {
+          for (let i = 1; i <= this.num; i++) {
+            this.tabulationtitle.unshift({
+              // // 编码
+              // code: devicecoding,
+              positionName: areaidName,
+              // 位置
+              position: obtainCode,
+              areaid: areaid[areaid.length - 1],
+              // 数量
+              devcount: quantum,
+              //  设备编码
+              dCoding: '',
+              //  控制器编码
+              a: '',
+              //  回路号
+              b: '',
+              //  一次码
+              c: '',
+              //  地址编码
+              d: '',
+              //  带单位的数量
+              devcountD: `${quantum}${this.devcountD}`
+            })
           }
-        })
+        } else {
+          this.tabulationtitle.unshift({
+            // // 编码
+            dCoding: '',
+            // code: devicecoding,
+            positionName: areaidName,
+            // 位置
+            position: obtainCode,
+            areaid: areaid[areaid.length - 1],
+            // 数量
+            devcount: quantum,
+            //  控制器编码
+            a: '',
+            //  回路号
+            b: '',
+            //  一次码
+            c: '',
+            //  地址编码
+            d: '',
+            //  带单位的数量
+            devcountD: `${quantum}${this.devcountD}`
+          })
+        }
       }
     },
     amputate (index) {
@@ -595,6 +592,7 @@ export default {
       this.$emit('say', false)
     },
     categoryChange () {
+      console.log('////')
       this.manufactorModel = ''
       this.versionValue = ''
       this.customManufacturer = false
@@ -616,6 +614,12 @@ export default {
       }
       findData(this.category)
       this.basedevicecode = result
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(GetDevUnitByBaseDevCode(token, this.basedevicecode)).then((response) => {
+        if (response.data.code === 0) {
+          this.devcountD = response.data.data
+        }
+      })
     },
     preser: async function () {
       // 保存
@@ -958,12 +962,12 @@ export default {
     .bottom_ul
       display inline-block
       position relative
-      margin-left 50px
+      margin-left 20px
       font-size 16px
       color #d5d5d5
       margin-top 28px
       .bottom_left
-        margin-right: 30px;
+        margin-right 20px
         float left
         .left_list
           overflow hidden
@@ -978,7 +982,7 @@ export default {
               overflow hidden
               position relative
               float left
-              margin-right: 13px;
+              margin-right 13px
           .left_list_p
             width 100px
             text-align right
@@ -1336,6 +1340,11 @@ export default {
   .increaseYZDWSpan
     margin-right 10px
     color #999
+  .left_list_divTwo
+    overflow hidden
+    float left
+    margin-right 12px
+    width 60px
 </style>
 <style>
   .modify_li_divfour .el-upload-list--picture-card .el-upload-list__item{

@@ -394,13 +394,14 @@ export default {
   .maintenance
     width 50%
     float right
-    overflow-y scroll
+    overflow-y auto
     overflow-x hidden
-    max-height 150px
+    min-height 260px
+    max-height 260px
   .tree-wrapper
     float left
     box-sizing border-box
-    height 130px
+    height 260px
     overflow auto
     &::-webkit-scrollbar
       display none
