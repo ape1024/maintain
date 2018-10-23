@@ -273,6 +273,7 @@
           </div>
         </div>
       </div>
+      <!--维保内容-->
       <div class="purview">
         <header class="contentHeader">
           <p class="headerP">维保内容</p>
@@ -281,13 +282,14 @@
         <div class="purviewDivtwo">
           <el-input
             type="textarea"
-            :rows="2"
+            :rows="1"
             resize="none"
             placeholder="请输入内容"
             v-model="conTent">
           </el-input>
         </div>
       </div>
+      <!--维保要求-->
       <div class="purview">
         <header class="contentHeader">
           <p class="headerP">维保要求</p>
@@ -296,13 +298,14 @@
         <div class="purviewDivtwo">
           <el-input
             type="textarea"
-            :rows="2"
+            :rows="1"
             resize="none"
             placeholder="请输入内容"
             v-model="requirement">
           </el-input>
         </div>
       </div>
+      <!--备注信息-->
       <div class="purview">
         <header class="contentHeader">
           <p class="headerP">备注信息</p>
@@ -311,7 +314,7 @@
         <div class="purviewDivtwo">
           <el-input
             type="textarea"
-            :rows="2"
+            :rows="1"
             resize="none"
             placeholder="请输入内容"
             v-model="comment">
@@ -470,12 +473,14 @@ export default {
     proprietornameChange (data) {
       this.axios.post(getOrganizationTreeTion(data)).then((response) => {
         if (response.data.code === 0) {
-          if (!data.data.data) {
+          const data = response.data.data
+          console.log(data)
+          if (!data) {
             this.organize = []
           } else {
             this.checkedCities = ''
             this.organize = []
-            this.organize.push(data.data.data)
+            this.organize.push(data)
           }
         }
       })
@@ -555,13 +560,14 @@ export default {
     },
     // 组织机构
     organizeChange () {
+      if (this.proprietornameDate === -1) return
       this.organizeboolean = !this.organizeboolean
       this.firecontrolBoolean = false
       this.buildscopeBoolean = false
       this.regionUl = false
     },
     conserve () {
-      if (!this.checkedCities.length) {
+      if (!this.checkedCities.length && this.proprietornameDate !== -1) {
         this.$message({
           message: '请选择组织机构',
           type: 'warning'
@@ -607,6 +613,9 @@ export default {
               // 服务机构
               // this.getRootOrganizationsNotProprietor()
               this.proprietornameDate = response.data.data
+              // 添加新增服务机构
+              this.checkedCities = [this.proprietornameDate]
+              console.log(this.checkedCities)
               this.submitCurrentData()
             } else {
               this.$message({
@@ -841,33 +850,35 @@ export default {
           this.proprietornameDate = data.organizationid
           this.organizationDisable = true
         }
-        this.axios.post(getOrganizationTreeTion(this.proprietornameDate)).then((data) => {
-          if (data.data.code === 0) {
-            if (!data.data.data) {
-              this.organize = []
-              return false
-            } else {
-              this.organize = []
-              this.organize.push(data.data.data)
-              let result = ''
-              let findData = (data, val) => {
-                let flag = true
-                data.forEach((item) => {
-                  if (item.organizationId === val) {
-                    result += ` ${item.organizationName} `
-                    flag = false
-                  } else if (flag && item.subOrgnizations) {
-                    findData(item.subOrgnizations, val)
-                  }
+        if (this.proprietornameDate) {
+          this.axios.post(getOrganizationTreeTion(this.proprietornameDate)).then((data) => {
+            if (data.data.code === 0) {
+              if (!data.data.data) {
+                this.organize = []
+                return false
+              } else {
+                this.organize = []
+                this.organize.push(data.data.data)
+                let result = ''
+                let findData = (data, val) => {
+                  let flag = true
+                  data.forEach((item) => {
+                    if (item.organizationId === val) {
+                      result += ` ${item.organizationName} `
+                      flag = false
+                    } else if (flag && item.subOrgnizations) {
+                      findData(item.subOrgnizations, val)
+                    }
+                  })
+                }
+                this.checkedCities.forEach((data) => {
+                  findData(this.organize, data)
                 })
+                this.organizeText = result
               }
-              this.checkedCities.forEach((data) => {
-                findData(this.organize, data)
-              })
-              this.organizeText = result
             }
-          }
-        })
+          })
+        }
       }
     })
     // 定义空值

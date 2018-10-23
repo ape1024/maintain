@@ -855,6 +855,9 @@ export default {
     },
     // 初始化
     ormatting () {
+      let token = JSON.parse(window.sessionStorage.token)
+      //  左边的树状结构
+      this.getOrganizationTree(token)
       this.organizationshortname = ''
       this.organizationname = ''
       this.imageUrl = ''
