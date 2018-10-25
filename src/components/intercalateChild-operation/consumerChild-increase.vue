@@ -125,6 +125,13 @@
                 项目地址：
               </p>
             </div>
+            <div v-if="!organizationDisable" class="informationDiv">
+              <div class="content">
+              </div>
+              <p class="informationP">
+                <el-checkbox v-model="checked">本单位具备运维资格条件</el-checkbox>
+              </p>
+            </div>
           </li>
         </ul>
       </div>

@@ -226,11 +226,11 @@
           </div>
           <div class="tabulation_title">
             <ul class="title_ul">
-              <li v-for="(item,$index) in tabulationtitle" :key="item.id" :id="item.id" class="title_li">
+              <li v-for="(item,$index) in tabulationtitle" :key="$index" :id="$index" class="title_li">
                 <ul class="title_li_ul">
                   <li class="title_lili">
                     <div class="title_liliTwoDiv">
-                      <el-input size="mini" v-model="item.dCoding" placeholder="设备编码"></el-input>
+                      <el-input @blur="dcodingBlur(item, $index)" size="mini" v-model="item.dCoding" placeholder="设备编码"></el-input>
                     </div>
                   </li>
                   <li :title="item.positionName + item.position" class="title_lili">
@@ -397,6 +397,30 @@ export default {
     }
   },
   methods: {
+    //  获取一个随机数
+    createRandomId () {
+      return (Math.random() * 10000000).toString(16).substr(0, 4) + '-' + (new Date()).getTime() + '-' + Math.random().toString().substr(2, 5)
+    },
+    dcodingBlur (item, $index) {
+      if (!item.dCoding) {
+        item.flag = true
+        return false
+      } else {
+        this.tabulationtitle.forEach((val) => {
+          if (item.id !== val.id) {
+            if (val.dCoding === item.dCoding) {
+              this.$message({
+                message: '设施编码不可以重复',
+                type: 'warning'
+              })
+              item.flag = false
+            } else {
+              item.flag = true
+            }
+          }
+        })
+      }
+    },
     ompanyfocus () {
       if (!this.categoryDate.length) {
         this.$message({
@@ -556,7 +580,9 @@ export default {
               //  地址编码
               d: '',
               //  带单位的数量
-              devcountD: `${quantum}${this.devcountD}`
+              devcountD: `${quantum}${this.devcountD}`,
+              id: `${this.createRandomId()}`,
+              flag: true
             })
           }
         } else {
@@ -579,7 +605,9 @@ export default {
             //  地址编码
             d: '',
             //  带单位的数量
-            devcountD: `${quantum}${this.devcountD}`
+            devcountD: `${quantum}${this.devcountD}`,
+            id: `${this.createRandomId()}`,
+            flag: true
           })
         }
       }
@@ -623,9 +651,25 @@ export default {
     },
     preser: async function () {
       // 保存
+      console.log(this.tabulationtitle)
       if (!this.categoryDate.length) {
         this.$message({
           message: '请选择设施类别',
+          type: 'warning'
+        })
+        return false
+      }
+      let tabulationtitleFlag = ''
+      this.tabulationtitle.forEach((val) => {
+        if (!val.flag) {
+          tabulationtitleFlag = false
+        } else {
+          tabulationtitleFlag = true
+        }
+      })
+      if (!tabulationtitleFlag) {
+        this.$message({
+          message: '设施编码不可以重复,请重新填写',
           type: 'warning'
         })
         return false
