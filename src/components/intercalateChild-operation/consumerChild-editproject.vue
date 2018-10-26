@@ -896,7 +896,7 @@ export default {
       .uploadDiv
         max-height 140px
         min-height 140px
-        overflow-y scroll
+        overflow-y auto
     .personnel
       init()
       margin-top 10px
