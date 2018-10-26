@@ -70,7 +70,7 @@
             </div>
             <div class="informationDiv">
               <div class="content">
-                <el-select size="mini" v-model="proprietornameDate" placeholder="请选择" :disabled="organizationDisable" @change="proprietornameChange">
+                <el-select size="mini" v-model="proprietornameDate" placeholder="请选择" :disabled="organizationDisableTwo" @change="proprietornameChange">
                   <el-option
                     v-for="item in proprietorName"
                     :key="item.organizationid"
@@ -125,11 +125,11 @@
                 项目地址：
               </p>
             </div>
-            <div v-if="!organizationDisable" class="informationDiv">
+            <div v-if="!organizationDisableThree" class="informationDiv">
               <div class="content">
               </div>
               <p class="informationP">
-                <el-checkbox v-model="checked">本单位具备运维资格条件</el-checkbox>
+                <el-checkbox @change="Servicechange" v-model="proprietorService">本单位具备运维资格条件</el-checkbox>
               </p>
             </div>
           </li>
@@ -267,7 +267,7 @@
                     <el-tree :data="organize" :props="organizeProps" node-key="id" :expand-on-click-node="false">
                       <div class="custom-tree-node" slot-scope="{ node, data }">
                         <el-checkbox :label="data.organizationId">{{checkboxDefaultVal}}</el-checkbox>
-                        <div class="custom-tree-node-expand" @click="checkboxClick(node)">{{data.organizationName}}</div>
+                        <div class="custom-tree-node-expand" @click="checkboxClick(node)">               {{data.organizationName}}</div>
                       </div>
                     </el-tree>
                   </el-checkbox-group>
@@ -450,9 +450,13 @@ export default {
       tel: '', // 电话
       organizationtype: '', // 机构类型
       organizationDisable: false,
+      organizationDisableTwo: false,
       organize: [],
       organizeText: '',
-      checkedCities: []
+      checkedCities: [],
+      proprietorService: '',
+      proprietorNameTwo: '',
+      organizationDisableThree: ''
     }
   },
   watch: {
@@ -474,23 +478,45 @@ export default {
         findData(this.organize, data)
       })
       this.organizeText = result
+    },
+    proprietornameDate (el) {
+      if (!el) {
+        this.checkedCities = []
+        this.organize = []
+        this.organizeText = ''
+        return false
+      } else {
+        this.axios.post(getOrganizationTreeTion(el)).then((response) => {
+          if (response.data.code === 0) {
+            const data = response.data.data
+            if (!data) {
+              this.organize = []
+            } else {
+              this.checkedCities = []
+              this.organize = []
+              this.organizeText = ''
+              this.organize.push(data)
+            }
+          }
+        })
+      }
     }
   },
   methods: {
+    Servicechange (el) {
+      if (el) {
+        this.proprietorName = this.proprieTorDate
+        this.proprietornameDate = this.proprieTor
+        this.organizationDisableTwo = true
+        this.proprietornameChange()
+      } else {
+        this.proprietorName = this.proprietorNameTwo
+        this.proprietornameDate = ''
+        this.organizationDisableTwo = false
+      }
+    },
     proprietornameChange (data) {
-      this.axios.post(getOrganizationTreeTion(data)).then((response) => {
-        if (response.data.code === 0) {
-          const data = response.data.data
-          console.log(data)
-          if (!data) {
-            this.organize = []
-          } else {
-            this.checkedCities = ''
-            this.organize = []
-            this.organize.push(data)
-          }
-        }
-      })
+
     },
     organizeCheck (checkedNodes, checkedKeys) {
       let data = ''
@@ -622,7 +648,6 @@ export default {
               this.proprietornameDate = response.data.data
               // 添加新增服务机构
               this.checkedCities = [this.proprietornameDate]
-              console.log(this.checkedCities)
               this.submitCurrentData()
             } else {
               this.$message({
@@ -798,6 +823,7 @@ export default {
       this.axios.post(getRootOrganizationsNotProprietor()).then((response) => {
         if (response.data.code === 0) {
           this.proprietorName = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])
+          this.proprietorNameTwo = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])
         }
       })
     },
@@ -853,9 +879,13 @@ export default {
         if (type === 1) {
           this.proprieTor = data.organizationid
           this.organizationDisable = false
+          this.organizationDisableTwo = false
+          this.organizationDisableThree = false
         } else {
           this.proprietornameDate = data.organizationid
           this.organizationDisable = true
+          this.organizationDisableTwo = true
+          this.organizationDisableThree = false
         }
         if (this.proprietornameDate) {
           this.axios.post(getOrganizationTreeTion(this.proprietornameDate)).then((data) => {
