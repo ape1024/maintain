@@ -27,7 +27,17 @@
           计划编号
         </li>
         <li class="repair_litwo">
-          计划状态
+          计划状态<i class="el-icon-caret-bottom"></i>
+          <div class="headerDiv">
+            <el-select size="mini" @change="initPlan" v-model="stateData" placeholder="请选择" >
+              <el-option
+                v-for="item in stateOptions"
+                :key="item.stateId"
+                :label="item.stateName"
+                :value="item.stateId">
+              </el-option>
+            </el-select>
+          </div>
         </li>
         <li class="repair_litwo">
           定制时间
@@ -264,6 +274,7 @@ export default {
         })
       })
     },
+    // 初始化
     initPlan () {
       this.axios.post(maintainArrangegetAllPlans(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
@@ -271,7 +282,12 @@ export default {
             response.data.data.forEach((val) => {
               val.createTime = dateTransfer(val.createtime)
             })
-            this.arrangedData = response.data.data
+            this.arrangedData = response.data.data.filter(t => {
+              if (this.stateData === 999) {
+                return t
+              }
+              return t.planstate === this.stateData
+            })
             this.newlybuildBoolean = false
             this.review_boolean = false
           } else {
@@ -342,7 +358,19 @@ export default {
       JurisdictionDelete: '',
       JurisdictionApproval: '',
       scheduleData: '',
-      showFlag: false // true查看计划信息 false 修改计划信息
+      showFlag: false, // true查看计划信息 false 修改计划信息
+      // 计划状态
+      stateOptions: [{
+        stateId: 999,
+        stateName: '全部'
+      }, {
+        stateId: 100,
+        stateName: '启用'
+      }, {
+        stateId: 5,
+        stateName: '禁用'
+      }],
+      stateData: 999
     }
   },
   created () {

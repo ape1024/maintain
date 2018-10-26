@@ -191,7 +191,7 @@
                 </el-radio-group>
                 <ul v-if="!groupBoolean"  class="frequencyUl">
                     <li class="frequencyLi">
-                      <el-radio v-model="groupradio" label="3">巡检频次-按月</el-radio>
+                      <el-radio v-model="groupradio" v-show="!scheduleBoolean" label="3">巡检频次-按月</el-radio>
                      <p class="frequencyLi_P">
                         <span>
                         固定每月
