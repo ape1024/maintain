@@ -451,7 +451,6 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .subject
-    margin 12px
     overflow hidden
     position relative
     background rgba(0,0,0,0.45)
