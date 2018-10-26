@@ -658,7 +658,7 @@ export default {
         })
         return false
       }
-      let tabulationtitleFlag = ''
+      let tabulationtitleFlag = true
       this.tabulationtitle.forEach((val) => {
         console.log(val.flag)
         if (!val.flag) {
