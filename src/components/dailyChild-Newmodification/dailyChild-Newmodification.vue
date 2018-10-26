@@ -6,7 +6,6 @@
         <div class="cephalosome">
           <ul class="cephalosomeUl">
             <li class="cephalosomeOne">
-              <span><el-checkbox v-model="checked" @change="checkedChang"></el-checkbox></span>
               设施类别
             </li>
             <li class="cephalosomeOne">
@@ -23,7 +22,10 @@
             </li>
             <div class="heavyPlayLiDiv">
               <ul class="heavyPlayLiUl">
-                <li class="cephalosomeTwo">工作事项</li>
+                <li class="cephalosomeTwo">
+                  <span><el-checkbox v-model="checked" @change="checkedChang"></el-checkbox></span>
+                  工作事项
+                </li>
                 <li class="cephalosomeThree">工作人员</li>
                 <li class="cephalosomeThree">工作时间</li>
                 <li class="cephalosomeThree">工作结论</li>

@@ -268,8 +268,8 @@ export const getCurrentTaskDeviceStatJsonTwo = (token, conclusion, taskid, areai
   return `${Test}/task/getCurrentTaskDeviceStatJson?token=${token}&conclusion=${conclusion}&taskid=${taskid}&areaid=${areaid}&basedevicecode=${basedevicecode}&approvalstates=${approvalstates}&pageindex=&pagesize=`
 }
 //  安排任务 -> 维保单位
-export const maintainDailygetRepairOrgTreeByDeviceId = (deviceid) => {
-  const url = `${Test}/organization/getRepairOrgTreeByDeviceId?deviceid=${deviceid}`
+export const maintainDailygetRepairOrgTreeByDeviceId = (deviceid, projectid) => {
+  const url = `${Test}/organization/getRepairOrgTreeByDeviceId?deviceid=${deviceid}&projectid=${projectid}`
   return url
 }
 //  审核 获取处理异常情况的方式

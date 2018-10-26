@@ -94,6 +94,7 @@
                       <el-tree
                         class="tree"
                         :expand-on-click-node="false"
+                        default-expand-all
                         :data="maintenance"
                         node-key="value"
                         :props="proprietorProps">

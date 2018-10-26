@@ -243,7 +243,7 @@ export default {
       }
     })
     //  维保单位 this.equipment
-    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.equipment, token)).then((response) => {
+    this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.equipment, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         if (response.data.data.length) {
           this.maintenanceData = response.data.data
