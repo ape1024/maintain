@@ -885,7 +885,7 @@ export default {
         } else {
           this.proprietornameDate = data.organizationid
           this.organizationDisable = true
-          this.organizationDisableTwo = true
+          this.organizationDisableTwo = false
           this.organizationDisableThree = false
         }
         if (this.proprietornameDate) {
