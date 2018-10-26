@@ -651,7 +651,6 @@ export default {
     },
     preser: async function () {
       // 保存
-      console.log(this.tabulationtitle)
       if (!this.categoryDate.length) {
         this.$message({
           message: '请选择设施类别',
@@ -661,12 +660,13 @@ export default {
       }
       let tabulationtitleFlag = ''
       this.tabulationtitle.forEach((val) => {
+        console.log(val.flag)
         if (!val.flag) {
           tabulationtitleFlag = false
-        } else {
-          tabulationtitleFlag = true
         }
       })
+      console.log(this.tabulationtitle)
+      console.log(tabulationtitleFlag)
       if (!tabulationtitleFlag) {
         this.$message({
           message: '设施编码不可以重复,请重新填写',

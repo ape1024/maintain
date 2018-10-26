@@ -125,7 +125,7 @@
                 项目地址：
               </p>
             </div>
-            <div v-if="!organizationDisableThree" class="informationDiv">
+            <div v-if="organizationDisableThree" class="informationDiv">
               <div class="content">
               </div>
               <p class="informationP">
@@ -873,6 +873,7 @@ export default {
     this.getRootOrganizationsNotProprietor()
     this.getProprietorOrganization()
     this.axios.post(managementgetUserOrganization(token)).then((response) => {
+      console.log(response)
       if (response.data.code === 0) {
         const data = response.data.data
         let type = data.organizationtype
@@ -880,7 +881,7 @@ export default {
           this.proprieTor = data.organizationid
           this.organizationDisable = false
           this.organizationDisableTwo = false
-          this.organizationDisableThree = false
+          this.organizationDisableThree = true
         } else {
           this.proprietornameDate = data.organizationid
           this.organizationDisable = true
