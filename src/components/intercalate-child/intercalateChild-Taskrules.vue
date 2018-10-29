@@ -1297,7 +1297,7 @@ export default {
     top 0
     left 0
     position absolute
-    z-index 111
+    z-index 11
     width 100%
     height 100%
     background rgba(000,000,000,.6)

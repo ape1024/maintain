@@ -231,7 +231,7 @@ export default {
       padding-left 1%
       width 18%
       overflow hidden
-      text-align center
+      text-align left
       text-overflow ellipsis
       display -webkit-box
       -webkit-box-orient vertical
