@@ -98,6 +98,7 @@
                 <li class="tlefttoprightLi">
                   <span class="tlefttoprightliSpan">审核结论：</span>
                   <span class="tlefttoprightLiSPan">{{Auditorsstate}}</span>
+                  <p v-show="AuditorsPersonnel && JurisdictionApproval" class="header_p_twelve threelevel_litwo_ptwo" @click.stop="updateAuditors(Auditorsstate)">修改</p>
                 </li>
               </ul>
             </div>
@@ -275,6 +276,31 @@
         </div>
       </section>
     </section>
+    <!--修改审核内容 开始-->
+    <div class="classificationDDiv" v-if="classificationBoolean" >
+      <h4 class="classificationDDivH4">审核结论 修改</h4>
+      <div class="classificationDDivUl">
+        <span class="sectionTopliSpanfour">审核结论:</span>
+        <span class="sectionTopliSpanfive">
+                   <el-input
+                     type="textarea"
+                     :rows="2"
+                     resize="none"
+                     placeholder="请输入内容"
+                     v-model="auditConclusion">
+                   </el-input>
+                </span>
+      </div>
+      <div class="classificationDDivUlLiexamine"
+           @click="confirmAuditors">
+        确定
+      </div>
+      <div @click="closeDialog"
+           class="closeDialog">
+        关闭
+      </div>
+    </div>
+    <!--修改审核内容 结束-->
     <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
   </div>
 </template>
@@ -282,7 +308,7 @@
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
-import { maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId } from '../../api/user'
+import { maintainRepairModifyApprovalOptionByTaskid, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId } from '../../api/user'
 export default {
   name: 'repair-lookover',
   props: ['examine', 'state', 'repairtasks', 'title'],
@@ -306,7 +332,13 @@ export default {
         others: '',
         workrecord: ''
       },
-      imgList: []
+      imgList: [],
+      // 弹出框
+      classificationBoolean: false,
+      // 审核结论
+      auditConclusion: '',
+      // 审核权限
+      JurisdictionApproval: ''
     }
   },
   methods: {
@@ -326,7 +358,7 @@ export default {
     closedown () {
       this.$emit('look', this.thisPage)
     },
-    //  现场照片
+    // 现场照片
     fieldphoto (src) {
       let arr = []
       if (src === '' || src === null) {
@@ -345,7 +377,7 @@ export default {
         this.$refs.dialogImg.open()
       }, 200)
     },
-    //  获取任务状态
+    // 获取任务状态
     obtainState (number) {
       let arr = ''
       this.state.forEach((val) => {
@@ -357,12 +389,36 @@ export default {
         return number
       }
       return arr
+    },
+    // 关闭对话窗口
+    closeDialog () {
+      this.classificationBoolean = false
+    },
+    updateAuditors (Auditorsstate) {
+      this.auditConclusion = Auditorsstate
+      this.classificationBoolean = true
+    },
+    confirmAuditors () {
+      this.axios.post(maintainRepairModifyApprovalOptionByTaskid(this.auditConclusion, this.examine.repairtaskid)).then((response) => {
+        console.log(response.data)
+        if (response.data.code === 0) {
+          this.classificationBoolean = false
+          this.Auditorsstate = this.auditConclusion
+        }
+      })
     }
   },
   components: {
     DialogImg
   },
   created () {
+    // 权限
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'task_gzwx') {
+        this.JurisdictionApproval = val.approval
+      }
+    })
     function fmtDate (obj) {
       let date = new Date(obj)
       let y = 1900 + date.getYear()
@@ -793,4 +849,35 @@ export default {
     margin 12px 0
   .tlefttoprightLiSPan
     color #fff
+  .header_p_twelve
+    cursor pointer
+    float right
+    margin-right 20px
+    color #3279a6
+  .threelevel_litwo_ptwo
+    color #3acf76
+    cursor pointer
+  // 弹出框样式
+  .classificationDDiv
+    position fixed
+    top 200px
+    left 50%
+    margin-left -450px
+    background #111a28
+    text-align center
+    padding 20px 40px 40px
+    border 1px solid #444d5b
+    width 820px
+  .closeDialog
+    color #fff
+    closedown()
+  .sectionTopliSpanfour
+    float left
+    color #d5d5d5
+    font-size 16px
+    margin-top 20px
+    margin-right 16px
+  .sectionTopliSpanfive
+    width 650px
+    float left
 </style>

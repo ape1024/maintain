@@ -329,6 +329,11 @@ export const maintainRepairfindReworksByTaskid = (ID) => {
   const url = `${Test}/reworks/findReworksByTaskid?repairtaskid=${ID}`
   return url
 }
+// 修改审批意见
+export const maintainRepairModifyApprovalOptionByTaskid = (approvalOption, taskid) => {
+  const url = `${Test}/repairtasks/modifyApprovalOption?taskid=${taskid}&approvalOption=${approvalOption}`
+  return url
+}
 //  获取任务审批记录
 export const maintainRepairgetApprovalInfos = (ID) => {
   const url = `${Test}/repairtasks/getApprovalInfos?repairtaskid=${ID}`
