@@ -29,35 +29,38 @@
         </ul>
         <div class="tabulation">
           <div class="tabulationLeft">
+            <div>
+              <!--<span :class="{flagSpan:item.flag}" @click="switchingData(index)" :id="index" style="margin-right: 20px" v-for="(item, index) in inspectUp">{{index + 1}}</span>-->
+            </div>
             <div class="tleftTop">
               <div class="tlefttopHeader">
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">检查时间：</span>
-                  <span>{{fmtDate(inspectUp.checktime)}}</span>
+                  <span>{{fmtDate(inspectUpData.checktime)}}</span>
                 </p>
                 <p class="tlefttopHeaderP">
                   <span class="tlefttopHeaderSpan">检查人员：</span>
-                  <span>{{inspectUp.checkpersonname}}{{inspectUp.others}}</span>
+                  <span>{{inspectUpData.checkpersonname}}{{inspectUp.others}}</span>
                 </p>
               </div>
               <ul class="tlefttopUl">
                 <li class="tlefttopli">
                   <p class="">
                     <span class="tlefttopHeaderSpan">检查项目：</span>
-                    <span class="tlefttoprightLiSpans">{{inspectUp.workitem}}</span>
+                    <span class="tlefttoprightLiSpans">{{inspectUpData.workitem}}</span>
                   </p>
                 </li>
                 <li class="tlefttopli">
                   <p class="">
                     <span class="tlefttopHeaderSpan">检查记录：</span>
-                    <span class="tlefttoprightLiSpans">{{inspectUp.workrecord}}</span>
+                    <span class="tlefttoprightLiSpans">{{inspectUpData.workrecord}}</span>
                   </p>
                 </li>
                 <li class="tlefttopli">
                   <p class="tlefttopHeaderImg">
                     <span class="tlefttopHeaderSpan">现场照片：</span>
                     <span>
-                      <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(examine.beforephotos), index)" :key="index" v-for="(data, index) in fieldphoto(examine.beforephotos)" :src="data" alt="">
+                      <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphotoTwo(inspectUpData.photos), index)" :key="index" v-for="(data, index) in fieldphotoTwo(inspectUpData.photos)" :src="data" alt="">
                     </span>
                   </p>
                 </li>
@@ -324,24 +327,29 @@ export default {
       AuditorsTimer: '',
       Auditorsstate: '',
       Auditorsopinion: '',
-      inspectUp: {
-        checktime: '',
-        checkpersonname: '',
-        conclusion: '',
-        workitem: '',
-        others: '',
-        workrecord: ''
-      },
+      inspectUp: [],
+      inspectUpData: {},
       imgList: [],
       // 弹出框
       classificationBoolean: false,
       // 审核结论
       auditConclusion: '',
       // 审核权限
-      JurisdictionApproval: ''
+      JurisdictionApproval: '',
+      imgUrl: ''
     }
   },
   methods: {
+    switchingData (index) {
+      this.inspectUp.forEach((val, idx) => {
+        if (idx === index) {
+          val.flag = true
+        } else {
+          val.flag = false
+        }
+      })
+      this.inspectUpData = this.inspectUp[index]
+    },
     // 格式化时间
     fmtDate (obj) {
       return formatDate(obj, 'yyyy/MM/dd HH:mm')
@@ -366,6 +374,17 @@ export default {
       } else {
         src.split(',').forEach((val) => {
           arr.push(val)
+        })
+        return arr
+      }
+    },
+    fieldphotoTwo (src) {
+      let arr = []
+      if (src === '' || src === null) {
+        return arr
+      } else {
+        src.split(',').forEach((val) => {
+          arr.push(`${this.imgUrl}${val}`)
         })
         return arr
       }
@@ -450,7 +469,16 @@ export default {
     })
     this.axios.post(getCheckTaskByRepairTaskId(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
-        if (!response.data.data) return
+        if (!response.data.data.length) return
+        response.data.data.forEach((val, index) => {
+          if (index === 0) {
+            val.flag = true
+          } else {
+            val.flag = false
+          }
+        })
+        this.imgUrl = response.data.data[0].path
+        this.inspectUpData = response.data.data[0]
         this.inspectUp = response.data.data
       }
     })
@@ -524,8 +552,9 @@ export default {
         .tabulationRight
           overflow hidden
           float right
+          margin-top 16px
         .tleftTop
-          width 543px
+          width 100%
           background #0b111a
           overflow hidden
           margin-bottom 14px
@@ -544,6 +573,8 @@ export default {
           border-bottom 1px solid $color-border-list
           color $color-text
           font-size $font-size-medium
+          width 98%
+          padding-left 2%
         .tlefttopHeaderP
           float left
           width 50%
@@ -551,7 +582,6 @@ export default {
           text-overflow ellipsis
           white-space nowrap
         .tlefttopHeaderSpan
-          margin 0 12px
           color $color-border-b-fault
         .tlefttopUl
           init()
@@ -560,6 +590,8 @@ export default {
           position relative
           border-bottom 1px solid $color-border-list
           padding 28px 0
+          width 98%
+          padding-left 2%
         .tlefttopUl .tlefttopli:last-child
           border none
         .tlefttopLeft
@@ -574,14 +606,15 @@ export default {
           border none
         .tlefttoprightLi
           init()
+          width 98%
           border-bottom 1px solid $color-border-list
           padding 10px 0
+          padding-left 2%
         .tlefttoprightliP
           float left
           width 50%
           color $color-text
         .tlefttoprightliSpan
-          margin 0 10px
           color $color-border-b-fault
     .classification
       overflow hidden
@@ -651,8 +684,8 @@ export default {
   .ficationUl
     overflow hidden
     position relative
-    height: 250px
-    overflow-y: scroll
+    height 250px
+    overflow-y auto
     margin-left 40px
   .ficationLi
     width 100%
@@ -880,4 +913,6 @@ export default {
   .sectionTopliSpanfive
     width 650px
     float left
+  .flagSpan
+    color red
 </style>

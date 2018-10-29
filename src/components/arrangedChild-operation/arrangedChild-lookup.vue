@@ -906,6 +906,7 @@ export default {
     width 100%
     background #0b111a
     height 240px
+    overflow hidden
     margin-bottom 5px
   .frequencytwo
     width 100%
