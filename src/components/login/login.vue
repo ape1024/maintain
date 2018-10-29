@@ -1,6 +1,6 @@
 <template>
   <div v-if="true" :style="{ background: 'url(static/img/weblogin.png) no-repeat top' }" class="subject">
-    <p class="subject__PPP">维 护 管 理 系 统 <span class="subject__PPPSpan">v2.4</span></p>
+    <p class="subject__PPP">维 护 管 理 系 统 <span class="subject__PPPSpan">v2.5</span></p>
     <div class="subjectDiv">
       <div class="content">
         <el-input size="mini" v-model="account" placeholder="请输入账号"></el-input>
