@@ -430,13 +430,20 @@ export default {
       this.classificationBoolean = true
     },
     confirmAuditors () {
-      this.axios.post(maintainRepairModifyApprovalOptionByTaskid(this.auditConclusion, this.examine.repairtaskid)).then((response) => {
-        console.log(response.data)
-        if (response.data.code === 0) {
-          this.classificationBoolean = false
-          this.Auditorsstate = this.auditConclusion
-        }
-      })
+      if (this.auditConclusion) {
+        this.axios.post(maintainRepairModifyApprovalOptionByTaskid(this.auditConclusion, this.examine.repairtaskid)).then((response) => {
+          console.log(response.data)
+          if (response.data.code === 0) {
+            this.classificationBoolean = false
+            this.Auditorsstate = this.auditConclusion
+          }
+        })
+      } else {
+        this.$message({
+          message: '请填写审批内容!',
+          type: 'warning'
+        })
+      }
     }
   },
   components: {
