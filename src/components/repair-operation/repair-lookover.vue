@@ -29,8 +29,8 @@
         </ul>
         <div class="tabulation">
           <div class="tabulationLeft">
-            <div>
-              <!--<span :class="{flagSpan:item.flag}" @click="switchingData(index)" :id="index" style="margin-right: 20px" v-for="(item, index) in inspectUp">{{index + 1}}</span>-->
+            <div class="flagSpanDiv">
+              <span :key="index" class="flagSpanTwo" :class="{ flagSpan:item.flag }" @click="switchingData(index)" v-for="(item, index) in inspectUp">{{index + 1}}</span>
             </div>
             <div class="tleftTop">
               <div class="tlefttopHeader">
@@ -110,6 +110,10 @@
                 <li class="tlefttoprightLi">
                   <span class="tlefttoprightliSpan">维修人员：</span>
                   <span class="tlefttoprightLiSPan">{{repairtasks}}</span>
+                </li>
+                <li class="tlefttoprightLi">
+                  <span class="tlefttoprightliSpan">异常情况：</span>
+                  <span class="tlefttoprightLiSPan">{{examine.exception}}</span>
                 </li>
               </ul>
             </div>
@@ -369,23 +373,31 @@ export default {
     // 现场照片
     fieldphoto (src) {
       let arr = []
-      if (src === '' || src === null) {
+      if (!src) {
         return arr
       } else {
-        src.split(',').forEach((val) => {
-          arr.push(val)
-        })
+        if (src.indexOf(',') !== -1) {
+          src.split(',').forEach((val) => {
+            arr.push(val)
+          })
+        } else {
+          arr.push(src)
+        }
         return arr
       }
     },
     fieldphotoTwo (src) {
       let arr = []
-      if (src === '' || src === null) {
+      if (!src) {
         return arr
       } else {
-        src.split(',').forEach((val) => {
-          arr.push(`${this.imgUrl}${val}`)
-        })
+        if (src.indexOf(',') !== -1) {
+          src.split(',').forEach((val) => {
+            arr.push(`${this.imgUrl}${val}`)
+          })
+        } else {
+          arr.push(src)
+        }
         return arr
       }
     },
@@ -545,16 +557,15 @@ export default {
           margin-left 10px
       .tabulation
         init()
-        margin-top 20px
         .tabulationLeft
           overflow hidden
           float left
         .tabulationRight
           overflow hidden
           float right
-          margin-top 16px
+          margin-top 35px
         .tleftTop
-          width 100%
+          width 536px
           background #0b111a
           overflow hidden
           margin-bottom 14px
@@ -589,7 +600,7 @@ export default {
           overflow hidden
           position relative
           border-bottom 1px solid $color-border-list
-          padding 28px 0
+          padding 22px 0
           width 98%
           padding-left 2%
         .tlefttopUl .tlefttopli:last-child
@@ -684,7 +695,7 @@ export default {
   .ficationUl
     overflow hidden
     position relative
-    height 250px
+    height 260px
     overflow-y auto
     margin-left 40px
   .ficationLi
@@ -882,6 +893,7 @@ export default {
     margin 12px 0
   .tlefttoprightLiSPan
     color #fff
+    line-height 22px
   .header_p_twelve
     cursor pointer
     float right
@@ -914,5 +926,20 @@ export default {
     width 650px
     float left
   .flagSpan
-    color red
+    background #354d76!important
+  .flagSpanTwo
+    width 25px
+    height 25px
+    cursor pointer
+    text-align center
+    line-height 25px
+    margin-left 10px
+    border-radius 2px
+    background #202f49
+    color #eee
+    display inline-block
+  .flagSpanDiv
+    margin-bottom 10px
+    text-align right
+    overflow hidden
 </style>
