@@ -687,7 +687,7 @@ export default {
     opacity 0
   .threelevel_lifive
     float left
-    width 5.5%
+    width 6%
     background #3279a6
     text-align center
     overflow hidden

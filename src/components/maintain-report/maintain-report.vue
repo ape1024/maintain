@@ -454,6 +454,7 @@ export default {
     overflow hidden
     position relative
     background rgba(0,0,0,0.45)
+    margin 12px
   .subject_top
     margin 10px
     overflow hidden

@@ -457,13 +457,6 @@ export default {
         this.JurisdictionApproval = val.approval
       }
     })
-    function fmtDate (obj) {
-      let date = new Date(obj)
-      let y = 1900 + date.getYear()
-      let m = `0` + (date.getMonth() + 1)
-      let d = `0` + date.getDate()
-      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
-    }
     this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
         if (response.data.data.length !== 0) {
@@ -481,7 +474,7 @@ export default {
         this.getApprovalInfos = response.data.data
         if (this.getApprovalInfos.length !== 0) {
           this.AuditorsPersonnel = this.getApprovalInfos[0].approvername
-          this.AuditorsTimer = this.getApprovalInfos[0].approvaltime === undefined ? '' : fmtDate(this.getApprovalInfos[0].approvaltime)
+          this.AuditorsTimer = !this.getApprovalInfos[0].approvaltime ? '' : this.fmtDate(this.getApprovalInfos[0].approvaltime)
           this.Auditorsstate = this.getApprovalInfos[0].approvalopinion
         }
       }
