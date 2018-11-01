@@ -550,13 +550,18 @@ export default {
     },
     // 现场照片
     fieldphoto (src) {
+      console.log(src)
       let arr = []
       if (src === '' || src === null) {
         return arr
       } else {
-        src.split(',').forEach((val) => {
-          arr.push(val)
-        })
+        if (src.indexOf(',') !== -1) {
+          src.split(',').forEach((val) => {
+            arr.push(val)
+          })
+        } else {
+          arr.push(src)
+        }
         return arr
       }
     },
@@ -618,7 +623,7 @@ export default {
     if (this.examine.beforephotos === null) {
       this.srcData = []
     } else {
-      let src = this.examine.beforephotos.split(',')
+      let src = this.examine.afterphotos.split(',')
       this.srcData = src
     }
     //  任务审批选项
