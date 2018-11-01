@@ -550,7 +550,6 @@ export default {
     },
     // 现场照片
     fieldphoto (src) {
-      console.log(src)
       let arr = []
       if (src === '' || src === null) {
         return arr

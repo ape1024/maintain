@@ -441,7 +441,6 @@ export default {
       let devunitid = ''
       // 设施编码
       let devicecode = this.facilityCode
-      console.log(devicecode)
       //  mac地址
       let mac = `${this.controllerCoding}.${this.loopNumber}.${this.oneTimeCode}.${this.addressCode}`
       let basedeviceid = this.categoryDate[this.categoryDate.length - 1]

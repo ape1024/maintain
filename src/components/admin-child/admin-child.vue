@@ -148,7 +148,7 @@ import childModify from '../adminChild-operation/adminChild-modify'
 import childExamine from '../adminChild-operation/adminChild-examine'
 import childquipment from '../adminChild-operation/adminChild-quipment'
 import {stateData, examineDate} from '../../common/js/utils'
-import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, getDevListDetailProjectsThree, PojectdeviceApprovals2, getApproveType } from '../../api/user'
+import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, admingetDevListDetailProjects, findAllDeviceType, maintainReportfindManufactures, FindDevAllstate, getDevListDetailProjectsThree, PojectdeviceApprovals2, getApproveType, adminfindDeviceDetailTwo } from '../../api/user'
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin, loadingMixin],
@@ -365,7 +365,7 @@ export default {
     },
     modify (dataset, deviceId) {
       // 点击修改
-      this.axios.post(adminfindDeviceDetail(deviceId)).then((response) => {
+      this.axios.post(adminfindDeviceDetailTwo(deviceId)).then((response) => {
         if (response.data.code === 0) {
           this.modifyDate = response.data.data
           this.datasetAreaid = dataset.areaid

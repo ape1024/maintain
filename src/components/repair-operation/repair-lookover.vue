@@ -432,7 +432,6 @@ export default {
     confirmAuditors () {
       if (this.auditConclusion) {
         this.axios.post(maintainRepairModifyApprovalOptionByTaskid(this.auditConclusion, this.examine.repairtaskid)).then((response) => {
-          console.log(response.data)
           if (response.data.code === 0) {
             this.classificationBoolean = false
             this.Auditorsstate = this.auditConclusion

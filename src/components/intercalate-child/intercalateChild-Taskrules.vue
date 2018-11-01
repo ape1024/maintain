@@ -431,7 +431,6 @@ export default {
       }
     },
     Maxblur () {
-      console.log(this.MaxMeasuring)
       let reg = /^[+-]?\d*\.?\d*$/
       if (!reg.test(this.MaxMeasuring)) {
         this.$message({

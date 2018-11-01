@@ -200,7 +200,6 @@ export default {
   },
   methods: {
     init () {
-      console.log(this.maintainProject)
       this.initReport()
       //  获取区域
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {

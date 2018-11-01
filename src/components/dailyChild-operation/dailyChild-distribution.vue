@@ -159,7 +159,6 @@ export default {
   },
   watch: {
     projectSelectionData (el) {
-      console.log(el)
       this.maintenanceData.forEach((val) => {
         if (val.projectId === el) {
           this.maintenance = val.subOrgnizations
@@ -223,9 +222,6 @@ export default {
     }
   },
   created () {
-    console.log(this.getrepairDate)
-    console.log(this.instruction)
-    console.log(this.equipment)
     let token = JSON.parse(window.sessionStorage.token)
     this.axios.post(managementgetUserOrganization(token)).then((response) => {
       if (response.data.code === 0) {

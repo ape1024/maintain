@@ -230,7 +230,7 @@
                 <ul class="title_li_ul">
                   <li class="title_lili">
                     <div class="title_liliTwoDiv">
-                      <el-input @blur="dcodingBlur(item, $index)" size="mini" v-model="item.dCoding" placeholder="设备编码"></el-input>
+                      <el-input size="mini" v-model="item.dCoding" placeholder="设备编码"></el-input>
                     </div>
                   </li>
                   <li :title="item.positionName + item.position" class="title_lili">
@@ -283,7 +283,7 @@
 <script>
 import $ from 'jquery'
 import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, findAllDeviceType,
-  maintainReportfindDivecemodels, findAreasTreeByProjectid, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload, GetDevUnit, GetDevUnitByBaseDevCode } from '../../api/user'
+  maintainReportfindDivecemodels, findAllRootAreasTree, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload, GetDevUnit, GetDevUnitByBaseDevCode } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
@@ -401,26 +401,27 @@ export default {
     createRandomId () {
       return (Math.random() * 10000000).toString(16).substr(0, 4) + '-' + (new Date()).getTime() + '-' + Math.random().toString().substr(2, 5)
     },
-    dcodingBlur (item, $index) {
-      if (!item.dCoding) {
-        item.flag = true
-        return false
-      } else {
-        this.tabulationtitle.forEach((val) => {
-          if (item.id !== val.id) {
-            if (val.dCoding === item.dCoding) {
-              this.$message({
-                message: '设施编码不可以重复',
-                type: 'warning'
-              })
-              item.flag = false
-            } else {
-              item.flag = true
-            }
-          }
-        })
-      }
-    },
+    //  编码重复,现在说不要了, 不知道以后要不要, 先留着
+    // dcodingBlur (item, $index) {
+    //   if (!item.dCoding) {
+    //     item.flag = true
+    //     return false
+    //   } else {
+    //     this.tabulationtitle.forEach((val) => {
+    //       if (item.id !== val.id) {
+    //         if (val.dCoding === item.dCoding) {
+    //           this.$message({
+    //             message: '设施编码不可以重复',
+    //             type: 'warning'
+    //           })
+    //           item.flag = false
+    //         } else {
+    //           item.flag = true
+    //         }
+    //       }
+    //     })
+    //   }
+    // },
     ompanyfocus () {
       if (!this.categoryDate.length) {
         this.$message({
@@ -620,7 +621,6 @@ export default {
       this.$emit('say', false)
     },
     categoryChange () {
-      console.log('////')
       this.manufactorModel = ''
       this.versionValue = ''
       this.customManufacturer = false
@@ -658,22 +658,20 @@ export default {
         })
         return false
       }
-      let tabulationtitleFlag = true
-      this.tabulationtitle.forEach((val) => {
-        console.log(val.flag)
-        if (!val.flag) {
-          tabulationtitleFlag = false
-        }
-      })
-      console.log(this.tabulationtitle)
-      console.log(tabulationtitleFlag)
-      if (!tabulationtitleFlag) {
-        this.$message({
-          message: '设施编码不可以重复,请重新填写',
-          type: 'warning'
-        })
-        return false
-      }
+      //  编码重复问题 点击保存,进行验证, 目前不需要,日后待定,先注释
+      // let tabulationtitleFlag = true
+      // this.tabulationtitle.forEach((val) => {
+      //   if (!val.flag) {
+      //     tabulationtitleFlag = false
+      //   }
+      // })
+      // if (!tabulationtitleFlag) {
+      //   this.$message({
+      //     message: '设施编码不可以重复,请重新填写',
+      //     type: 'warning'
+      //   })
+      //   return false
+      // }
       let basedeviceid = this.categoryDate[this.categoryDate.length - 1]
       let devicetypeid = this.categoryDate[0]
       //  批量编码 个数
@@ -682,6 +680,7 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       //  厂家id
       let manufacturerid = ''
+
       //  型号
       let devicemodel = ''
       if (this.versionManufacturer) {
@@ -781,6 +780,7 @@ export default {
           })
         } else if (this.versionManufacturer === true) {
           //  厂家 id
+          manufacturerid = this.manufactorModel
           this.axios.post(AddDivecemodels(manufacturerid, basedeviceid, this.versionCustom, this.technicalParameter)).then((Item) => {
             if (Item.data.code === 0) {
               devicemodel = Item.data.data.divecemodelid
@@ -888,8 +888,7 @@ export default {
         this.category = response.data.data
       }
     })
-
-    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
+    this.axios.post(findAllRootAreasTree()).then((response) => {
       if (response.data.code === 0) {
         this.facilityLocation = response.data.data
       }

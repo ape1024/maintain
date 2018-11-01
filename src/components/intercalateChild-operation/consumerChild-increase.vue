@@ -873,7 +873,6 @@ export default {
     this.getRootOrganizationsNotProprietor()
     this.getProprietorOrganization()
     this.axios.post(managementgetUserOrganization(token)).then((response) => {
-      console.log(response)
       if (response.data.code === 0) {
         const data = response.data.data
         let type = data.organizationtype

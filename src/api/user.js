@@ -546,6 +546,10 @@ export const adminfindDeviceDetail = (deviceid) => {
   const url = `${Test}/dev/findDeviceDetail?devid=${deviceid}`
   return url
 }
+export const adminfindDeviceDetailTwo = (deviceid) => {
+  const url = `${Test}/dev/findDeviceDetail2?devid=${deviceid}`
+  return url
+}
 // adminFindInspectionMaintenance
 export const adminFindInspectionMaintenance = (deviceid) => {
   const url = `${Test}/dev/FindInspectionMaintenance?devid=${deviceid}`
