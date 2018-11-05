@@ -154,7 +154,8 @@ export default {
       organizationtype: '',
       projectSelection: [],
       projectSelectionData: '',
-      maintenanceData: []
+      maintenanceData: [],
+      conserveStore: false
     }
   },
   watch: {
@@ -196,6 +197,13 @@ export default {
         } else {
           this.$message({
             message: '请选择维保单位或业主单位!',
+            type: 'warning'
+          })
+          return false
+        }
+        if (this.conserveStore) {
+          this.$message({
+            message: '请勿重复提交,耐心等待!',
             type: 'warning'
           })
           return false

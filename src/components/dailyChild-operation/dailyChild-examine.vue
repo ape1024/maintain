@@ -281,7 +281,8 @@ export default {
       equipmentData: '',
       Testing: '',
       imgList: [],
-      historicalExamination: ''
+      historicalExamination: '',
+      examineStore: false
     }
   },
   methods: {
@@ -425,6 +426,14 @@ export default {
             })
             return false
           } else {
+            if (this.examineStore) {
+              this.$message({
+                message: '耐心等待,请勿重复提交!',
+                type: 'warning'
+              })
+              return
+            }
+            this.examineStore = true
             taskDetailArr.forEach((val) => {
               this.axios.post(maintainDailyapprovalTaskDetail(token, val, textarea, radio)).then((response) => {
                 if (response.data.code === 0) {
@@ -432,6 +441,7 @@ export default {
                     message: '审批成功',
                     type: 'success'
                   })
+                  this.examineStore = false
                   this.DetailsByDeviceId()
                 }
               })

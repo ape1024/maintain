@@ -200,7 +200,7 @@ export default {
   },
   methods: {
     DetailProjects () {
-      this.axios.post(admingetDevListDetailProjects(this.adminid, this.maintainProject)).then((response) => {
+      this.axios.post(admingetDevListDetailProjects(this.adminid, '')).then((response) => {
         if (!response) {
           // 请求失败关闭加载
           this.closeLoadingDialog()
@@ -266,7 +266,7 @@ export default {
       runningState = typeof runningState === 'number' ? runningState : ''
       AuditstatusD = AuditstatusD && AuditstatusD !== -1 ? AuditstatusD : ''
 
-      this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, this.maintainProject)).then((response) => {
+      this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, '')).then((response) => {
         if (response.data.code === 0) {
           response.data.data.forEach((val) => {
             val.checked = false

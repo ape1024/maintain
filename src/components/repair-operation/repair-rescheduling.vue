@@ -155,7 +155,8 @@ export default {
       },
       proprietorCheckList: [],
       maintenanceList: [],
-      organizationtype: ''
+      organizationtype: '',
+      conserveStore: false
     }
   },
   methods: {
@@ -215,6 +216,15 @@ export default {
         })
         return false
       }
+      if (this.conserveStore) {
+        this.$message({
+          showClose: true,
+          message: '请勿重复提交,耐心等待!',
+          type: 'warning'
+        })
+        return false
+      }
+      this.conserveStore = true
       this.axios.post(maintainRepairreAssignedTask(token, repairid, desc, disposeopinion, faultTypeId), users).then((response) => {
         if (response.data.code === 0) {
           this.$message({

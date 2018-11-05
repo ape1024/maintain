@@ -282,8 +282,8 @@
 
 <script>
 import $ from 'jquery'
-import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice, findAllDeviceType,
-  maintainReportfindDivecemodels, findAllRootAreasTree, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload, GetDevUnit, GetDevUnitByBaseDevCode } from '../../api/user'
+import { maintainReportfindManufactures, maintainReportAddManufacture, maintainReportAddDevice,
+  maintainReportfindDivecemodels, findAllRootAreasTree, AddDivecemodels, findAllDeviceUnit, getProprietorOrganization, upload, GetDevUnit, GetDevUnitByBaseDevCode, findAllDeviceTypeTwo } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 export default {
   name: 'adminChild-review',
@@ -393,7 +393,8 @@ export default {
       proprietorUnitData: '',
       uploadFun: upload(JSON.parse(window.sessionStorage.token)),
       uploadData: [],
-      devcountD: ''
+      devcountD: '',
+      preserStore: true
     }
   },
   methods: {
@@ -485,7 +486,7 @@ export default {
       let region = this.categoryDate
       if (region.length === 0) {
         this.$message({
-          message: '设备类型！',
+          message: '请选择设备类型！',
           type: 'warning'
         })
         return false
@@ -883,7 +884,7 @@ export default {
     //  设备类型
     // let token = JSON.parse(sessionStorage.token)
     let token = JSON.parse(window.sessionStorage.token)
-    this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
+    this.axios.post(findAllDeviceTypeTwo(token, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.category = response.data.data
       }

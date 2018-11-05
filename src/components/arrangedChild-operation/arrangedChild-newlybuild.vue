@@ -299,7 +299,8 @@ export default {
       // 存储计划编号
       planCodeTemp: '',
       scheduleBoolean: false,
-      lookupChooseLiTopText: '选择计划生成时间'
+      lookupChooseLiTopText: '选择计划生成时间',
+      conserveStore: false
     }
   },
   methods: {
@@ -512,6 +513,14 @@ export default {
         workmodes: worktypeData
       }
       // 频次
+      if (this.conserveStore) {
+        this.$message({
+          message: '请勿重复提交,耐心等待!',
+          type: 'warning'
+        })
+        return false
+      }
+      this.conserveStore = false
       let checkFrequency = this.frequencyData
       this.axios.post(createPlan(token, worktypeid, projectid, planName, planCode, planDesc, startDate, endDate, checkFrequency, interval, createTaskTime), param).then((response) => {
         if (response.data.code === 0) {
