@@ -90,7 +90,7 @@
 <script>
 import adminchild from '../admin-child/admin-child'
 import increase from '../admin-child/adminChild-review'
-import { maintainReportfindManufactures, findAreasTreeByProjectid, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate, findAllRootAreasTree } from '../../api/user'
+import { maintainReportfindManufactures, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate, findAllRootAreasTree } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 
 export default {
@@ -119,22 +119,18 @@ export default {
         }
       })
     },
-    Transmission () {
+    Transmission (el) {
+      this.regionModel = el
       this.numberPagesBoolean = false
       this.review_boolean = false
       let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.regionDate = response.data.data
-          this.regionModel.push((this.regionDate)[0].areaid)
-          //  获取 列表数据 默认第一页 20个
-          let regionId = (this.regionModel).shift()
-          this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
-            if (data.data.code === 0) {
-              this.tableData = data.data.data.datas
-              this.numberPagesBoolean = true
-            }
-          })
+      //  获取 列表数据 默认第一页 20个
+      let regionId = el[el.length - 1]
+      this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
+        if (data.data.code === 0) {
+          this.tableData = data.data.data.datas
+          this.numberPages = data.data.data.totalPage
+          this.numberPagesBoolean = true
         }
       })
     },
@@ -174,7 +170,9 @@ export default {
         let areaid = this.regionModel[this.regionModel.length - 1]
         this.axios.post(CalcDevCount(token, this.maintainProject, areaid, 1, 30)).then((response) => {
           if (response.data.code === 0) {
+            console.log(response)
             this.tableData = response.data.data.datas
+            this.numberPages = response.data.data.totalPage
           }
         })
       }
@@ -290,7 +288,7 @@ export default {
         this.regionDate = response.data.data
         this.regionModel.push((this.regionDate)[0].areaid)
         //  获取 列表数据 默认第一页 20个
-        let regionId = (this.regionModel).shift()
+        let regionId = (this.regionModel)[0]
         this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
           if (data.data.code === 0) {
             this.tableData = data.data.data.datas

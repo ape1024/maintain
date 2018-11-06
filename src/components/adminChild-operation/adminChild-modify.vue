@@ -120,6 +120,18 @@
                 </el-date-picker>
               </div>
             </div>
+            <div class="modify_liDiv">
+              <p class="modify_li_p">审批时间：</p>
+              <div class="modify_li_div">
+                <el-input :disabled="true" size="mini" v-model="conclusionExamination" placeholder=""></el-input>
+              </div>
+            </div>
+            <div class="modify_liDiv">
+              <p class="modify_li_p">审批意见：</p>
+              <div class="modify_li_div">
+                <el-input :disabled="true" size="mini" v-model="approvalOpinion" placeholder=""></el-input>
+              </div>
+            </div>
           </li>
           <li class="modify_li">
             <div class="modify_liDiv">
@@ -225,7 +237,8 @@
 
 <script>
 import $ from 'jquery'
-import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAreasTreeByProjectid, findAllDeviceType, upload, GetDevUnit } from '../../api/user'
+import { maintainReportAddManufacture, AddDivecemodels, updateDevice, maintainReportfindManufactures, maintainReportfindDivecemodels, findAllRootAreasTree, findAllDeviceType, upload, GetDevUnit } from '../../api/user'
+import { dateTransfer } from '../../common/js/utils'
 import { projectMixin } from 'common/js/mixin'
 export default {
   mixins: [ projectMixin ],
@@ -310,7 +323,9 @@ export default {
       loopNumber: '',
       oneTimeCode: '',
       addressCode: '',
-      facilityCode: ''
+      facilityCode: '',
+      conclusionExamination: '',
+      approvalOpinion: ''
     }
   },
   watch: {
@@ -564,6 +579,13 @@ export default {
     accessarea () {
       this.regionUl = !this.regionUl
     },
+    tiemerIf (timer) {
+      if (!timer) {
+        return ''
+      } else {
+        return dateTransfer(timer)
+      }
+    },
     countytownSpan (coundata) {
       let cout = $(event.currentTarget).parents('.region_li').children('.provinceSpan').text()
       let city = $(event.currentTarget).parents('.regionliul_li').children('.countSpen').text()
@@ -578,6 +600,13 @@ export default {
     }
   },
   created () {
+    //  审核日期
+    this.conclusionExamination = this.tiemerIf(this.modify.approvaltime)
+    console.log(this.modify.approvaltime)
+    console.log(this.tiemerIf(this.modify.approvaltime))
+    //  审核意见
+    this.approvalOpinion = this.modify.approvalopinion
+    //  findAllRootAreasTree  下午写
     //  控制器编码
     this.controllerCoding = this.modify.mac_a
     //  回路号
@@ -587,7 +616,7 @@ export default {
     //  地址编码
     this.addressCode = this.modify.mac_d
     let token = JSON.parse(window.sessionStorage.token)
-    this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
+    this.axios.post(findAllRootAreasTree(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.facilityLocation = response.data.data
       }
@@ -603,15 +632,17 @@ export default {
             this.manufactor = data.data.data
           }
         })
-        this.axios.post(maintainReportfindDivecemodels(region, (this.modify).manufacturerid)).then((response) => {
-          if (response.data.code === 0) {
-            this.version = response.data.data
-            this.version.push({
-              divecemodelname: '自定义',
-              divecemodelid: '-9999'
-            })
-          }
-        })
+        if (this.modify.manufacturerid) {
+          this.axios.post(maintainReportfindDivecemodels(region, (this.modify).manufacturerid)).then((response) => {
+            if (response.data.code === 0) {
+              this.version = response.data.data
+              this.version.push({
+                divecemodelname: '自定义',
+                divecemodelid: '-9999'
+              })
+            }
+          })
+        }
         this.versionValue = this.modify.devicemodel ? parseInt(this.modify.devicemodel) : ''
         this.Specificposition = (this.modify).position
         this.productionValue1 = this.fmtDate((this.modify).madedate)
@@ -665,7 +696,7 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
   .newlyadded
-    margin 120px 0 0
+    margin 80px 0 0
     width 100%
     background #111a28
   .increase

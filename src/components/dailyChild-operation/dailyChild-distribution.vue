@@ -259,7 +259,17 @@ export default {
             }
             this.projectSelection.push(obj)
           })
-          this.projectSelectionData = response.data.data[0].projectId
+          let projectBoolean = false
+          this.projectSelection.forEach((val) => {
+            if (val.value === this.maintainProject) {
+              projectBoolean = true
+            }
+          })
+          if (projectBoolean) {
+            this.projectSelectionData = this.maintainProject
+          } else {
+            this.projectSelectionData = response.data.data[0].projectId
+          }
         }
       }
     })

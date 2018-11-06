@@ -58,7 +58,7 @@
       </li>
     </ul>
     <ul class="threelevel_list">
-      <li :key="dataset.deviceid" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
+      <li :key="$index" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
           <li :title="dataset.devicecode" class="threelevel_lithree">
             <span class="threelevel_lithreeSSpan">
@@ -97,12 +97,19 @@
             <!--{{dataset.approvalstatecode}}-->
           </li>
           <li class="threelevel_litwo">
+            <div v-if="!JurisdictionSuper">
             <p v-if="JurisdictionApproval && dataset.disabledBoolean" @click.stop="question(dataset.deviceid)" class="header_p_eight threelevel_litwo_p">
               审核
             </p>
             <p v-if="JurisdictionApproval && !dataset.disabledBoolean" class="header_p_Eleven threelevel_litwo_p">
               审核
             </p>
+            </div>
+            <div v-if="JurisdictionSuper">
+              <p  @click.stop="question(dataset.deviceid)" class="header_p_eight threelevel_litwo_p">
+                审核
+              </p>
+            </div>
             <p v-if="JurisdictionSelect" @click.stop="examine(dataset.deviceid)" class="header_p_ten">查看</p>
             <p v-if="JurisdictionUpdate && dataset.disabledBoolean" @click.stop="modify(dataset, dataset.deviceid)" class="header_p_twelve">
               修改
@@ -235,7 +242,7 @@ export default {
     modiFysay (ev) {
       this.modifyBoolean = ev
       this.examineBoolean = ev
-      this.$emit('transmission')
+      // this.$emit('transmission')
     },
     AuditstatusChang () {
       this.jueryCurrent(this.equipmentDate, this.manufactorModel, this.runningState, this.AuditstatusD)
@@ -364,7 +371,7 @@ export default {
       })
     },
     modify (dataset, deviceId) {
-      // 点击修改
+      // 点击修改 adminfindDeviceDetail
       this.axios.post(adminfindDeviceDetailTwo(deviceId)).then((response) => {
         if (response.data.code === 0) {
           this.modifyDate = response.data.data
@@ -472,7 +479,7 @@ export default {
                 message: '审批成功',
                 type: 'success'
               })
-              this.$emit('transmission')
+              // this.$emit('transmission')
             } else {
               this.$message({
                 message: '审批失败',

@@ -73,7 +73,7 @@
             <div :title="information.memo">{{information.memo}}</div>
           </li>
           <li class="lookover_li">
-            <p class="lookover_p">审批意见：</p>
+            <p class="lookover_p">审核意见：</p>
             <div :title="information.approvalopinion">{{information.approvalopinion}}</div>
           </li>
           <li class="lookover_lithree">

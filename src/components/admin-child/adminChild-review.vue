@@ -81,18 +81,18 @@
 
             </li>
             <li class="modify_li">
-              <div class="modify_liDiv">
-                <p class="modify_li_p">
-                  业主单位：
-                </p>
-                <div class="modify_li_divtwo">
-                  <el-input
-                    size="mini"
-                    v-model="proprietorUnit"
-                    :disabled="true">
-                  </el-input>
-                </div>
-              </div>
+              <!--<div class="modify_liDiv">-->
+                <!--<p class="modify_li_p">-->
+                  <!--业主单位：-->
+                <!--</p>-->
+                <!--<div class="modify_li_divtwo">-->
+                  <!--<el-input-->
+                    <!--size="mini"-->
+                    <!--v-model="proprietorUnit"-->
+                    <!--:disabled="true">-->
+                  <!--</el-input>-->
+                <!--</div>-->
+              <!--</div>-->
               <div class="modify_liDiv">
                 <p class="modify_li_p">生产日期：</p>
                 <div class="modify_li_divtwo">
@@ -127,7 +127,7 @@
                   <el-input
                     size="mini"
                     type="textarea"
-                    :rows="2"
+                    :rows="3"
                     resize="none"
                     placeholder="备注说明"
                     v-model="textarea">
@@ -808,7 +808,7 @@ export default {
             message: '创建成功',
             type: 'success'
           })
-          this.$emit('transmission', false)
+          this.$emit('transmission', this.facilityLocationDate)
         } else {
           this.$message.error(`${data.data.message}`)
         }
