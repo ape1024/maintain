@@ -43,7 +43,7 @@
                   <li class="matters_li">
                     巡检人员
                   </li>
-                  <li class="matters_li">
+                  <li class="matters_liThree">
                     巡检时间
                   </li>
                   <li class="matters_litwo">
@@ -74,7 +74,7 @@
                   {{item.checkperson}}
                   {{item.others}}
                 </li>
-                <li class="matters_li">
+                <li class="matters_liThree">
                   {{!item.checktime ? '' : fmtDate(item.checktime)}}
                 </li>
                 <li class="matters_litwo" :title="item.workrecord">
@@ -337,10 +337,13 @@ export default {
     },
     fmtDate (obj) {
       let date = new Date(obj)
-      let y = 1900 + date.getYear()
-      let m = `0` + (date.getMonth() + 1)
-      let d = `0` + date.getDate()
-      return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
+      let Y = date.getFullYear() + '/'
+      let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '/'
+      let D = date.getDate() + ' '
+      let h = date.getHours() + ':'
+      let m = date.getMinutes() + ':'
+      let s = date.getSeconds()
+      return Y + M + D + h + m + s
     },
     assignment () {
       let arrData = []
@@ -685,7 +688,7 @@ export default {
         padding 13px 0
         .matters_li
           float left
-          width 10%
+          width 8%
         .matters_litwo
           float left
           width 16%
@@ -702,7 +705,7 @@ export default {
         transition .2s
         .matters_li
           float left
-          width 10%
+          width 8%
           height 30px
           text-overflow ellipsis
           overflow hidden
@@ -815,11 +818,11 @@ export default {
         display inline-block
         cursor pointer
         width 107px
-        height 36px
+        height 29px
         background #32a692
         border-radius 5px
         text-align center
-        line-height 36px
+        line-height 29px
         transition .2s
         margin-right 30px
         &:hover
@@ -828,11 +831,11 @@ export default {
         display inline-block
         cursor pointer
         width 107px
-        height 36px
+        height 29px
         background $color-background-query
         border-radius 5px
         text-align center
-        line-height 36px
+        line-height 29px
         transition .2s
         margin-right 30px
         prohibit()
@@ -894,4 +897,7 @@ export default {
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
+  .matters_liThree
+    float left
+    width 12%
 </style>

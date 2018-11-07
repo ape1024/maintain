@@ -94,7 +94,7 @@
         <div class="purviewDiv">
           <div class="substance">
             <div class="substanceDiv">
-              <el-input size="mini" v-model="areas" :disabled="true" placeholder=""></el-input>
+              {{areas}}
             </div>
             <p class="substanceP">
               建筑范围：
@@ -396,6 +396,7 @@ export default {
           width 1065px
           margin-right 1px
           float right
+          color #999
     .upload
       init()
       margin-top 10px

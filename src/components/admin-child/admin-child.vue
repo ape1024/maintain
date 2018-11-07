@@ -242,7 +242,7 @@ export default {
     modiFysay (ev) {
       this.modifyBoolean = ev
       this.examineBoolean = ev
-      // this.$emit('transmission')
+      this.DetailProjects()
     },
     AuditstatusChang () {
       this.jueryCurrent(this.equipmentDate, this.manufactorModel, this.runningState, this.AuditstatusD)

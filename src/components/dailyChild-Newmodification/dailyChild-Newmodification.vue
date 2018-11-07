@@ -6,6 +6,7 @@
         <div class="cephalosome">
           <ul class="cephalosomeUl">
             <li class="cephalosomeOne">
+              <span class="threelevel_lithreeSSpan"></span>
               设施类别
             </li>
             <li class="cephalosomeOne">
@@ -17,7 +18,7 @@
             <li class="cephalosomeOne">
               设置位置
             </li>
-            <li class="cephalosomeOne">
+            <li class="cephalosomeSix">
               设备数量
             </li>
             <div class="heavyPlayLiDiv">
@@ -55,7 +56,7 @@
                 <li :title="item.position" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   {{item.position}}
                 </li>
-                <li :title="item.devicecount" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :title="item.devicecount" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeSix">
                   {{item.devicecount}}                </li>
                 <div class="heavyPlayLiDiv">
                   <ul :key="$index" v-for="(data, $index) in item.details" class="heavyPlayLiUl">
@@ -248,9 +249,16 @@ export default {
   .heavyPlay .cephalosomelv:last-child
      border-right none!important
   .cephalosomeOne
-    width 8%
+    width 10%
     padding-right .5%
     padding-left .5%
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+  .cephalosomeSix
+    width 4.6%
+    padding-right .2%
+    padding-left .2%
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
@@ -326,7 +334,7 @@ export default {
   .heavyPlayLiSpanThree
      color #c7a038
   .heavyPlayLiDiv
-    width 50%
+    width 45%
     overflow hidden
     position relative
     float left

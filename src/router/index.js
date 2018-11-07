@@ -165,9 +165,6 @@ const routes = [
         }, {
           path: 'structureNew',
           component: structureNew
-        }, {
-          path: '/',
-          redirect: 'structureNew'
         }
         ]
       },

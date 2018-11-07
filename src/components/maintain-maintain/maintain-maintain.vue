@@ -288,6 +288,8 @@ export default {
                   }
                   if (data.conclusion !== 1) {
                     data.disabled = true
+                  } else {
+                    data.isassignedName = '/'
                   }
                 })
               }
