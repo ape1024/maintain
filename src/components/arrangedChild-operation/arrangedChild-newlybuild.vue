@@ -613,7 +613,7 @@ export default {
   },
   watch: {
     scheduleData (el) {
-      if (el === 3) {
+      if (el === 1 || el === 3) {
         this.scheduleBoolean = true
       } else {
         this.scheduleBoolean = false
