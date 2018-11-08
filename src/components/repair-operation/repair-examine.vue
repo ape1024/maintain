@@ -23,7 +23,7 @@
               </li>
             </ul>
           </div>
-          <ul class="informationTopUl">
+          <ul class="informationTopUl informationTopUlBorder">
             <li class="informationTopLitwo">
               <span>设置位置：</span>
               <span class="informationTopSpan">
@@ -106,20 +106,6 @@
                   <div class="verificationLithreeDivtwo">
                     <span>审核意见：</span>
                     <span class="differingOpinion"><el-input size="mini" v-model="approvalOpinionInput" placeholder="请输入内容"></el-input></span>
-                  </div>
-                  <div class="verificationLithreeDiv">
-                    <span class="verificationLithreeDiv_Spantwo">返工时间:</span>
-                    <span class="verificationLithreeDiv_Span">
-                      <el-date-picker
-                        size="mini"
-                        :disabled="waatitimeBoolean"
-                        v-model="waatitime"
-                        value-format="yyyy-MM-dd"
-                        type="date"
-                        placeholder="选择日期">
-                    </el-date-picker>
-                    </span>
-                    <span class="waatitimeSpan" v-if="waatitimeBoolean">*审核结论为返工,才可以设置返工时间</span>
                   </div>
                 </li>
               </ul>
@@ -299,7 +285,7 @@
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障现象：</span>
               <div class="ficationClass">
-                <el-select size="mini" v-model="faultphenomenonData" placeholder="请选择">
+                <el-select size="mini" v-model="faultphenomenonData" multiple collapse-tags placeholder="请选择">
                   <el-option
                     v-for="item in faultphenomenon"
                     :key="item.faultphenomenonid"
@@ -312,7 +298,7 @@
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障范围：</span>
               <div class="ficationClass">
-              <el-select size="mini" v-model="faultrangeData" placeholder="请选择">
+              <el-select size="mini" multiple collapse-tags v-model="faultrangeData" placeholder="请选择">
                 <el-option
                   v-for="item in faultrange"
                   :key="item.faultrangeid"
@@ -325,7 +311,7 @@
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障类型：</span>
               <div class="ficationClass">
-              <el-select size="mini" v-model="faulttypeData" placeholder="请选择">
+              <el-select size="mini" multiple collapse-tags  v-model="faulttypeData" placeholder="请选择">
                 <el-option
                   v-for="item in faulttype"
                   :key="item.faulttypeid"
@@ -338,7 +324,7 @@
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">故障原因：</span>
               <div class="ficationClass">
-              <el-select size="mini"  v-model="faultreasonData" placeholder="请选择">
+              <el-select size="mini" multiple collapse-tags v-model="faultreasonData" placeholder="请选择">
                 <el-option
                   v-for="item in faultreason"
                   :key="item.faultreasonid"
@@ -351,7 +337,7 @@
             <li class="classificationDDivUlLi">
               <span class="classificationDDivUlLiSpan">处理办法：</span>
               <div class="ficationClass">
-              <el-select size="mini" v-model="faulttreatmentData" placeholder="请选择">
+              <el-select size="mini" multiple collapse-tags v-model="faulttreatmentData" placeholder="请选择">
                 <el-option
                   v-for="item in faulttreatment"
                   :key="item.faulttreatmentid"
@@ -403,19 +389,19 @@ export default {
       classificationBoolean: false,
       //  处理办法
       faulttreatment: '',
-      faulttreatmentData: '',
+      faulttreatmentData: [],
       //  故障原因
       faultreason: '',
-      faultreasonData: '',
+      faultreasonData: [],
       //  故障范围
       faultrange: '',
-      faultrangeData: '',
+      faultrangeData: [],
       //  故障类型
       faulttype: '',
-      faulttypeData: '',
+      faulttypeData: [],
       // 故障现象
       faultphenomenon: '',
-      faultphenomenonData: '',
+      faultphenomenonData: [],
       AuditorsPersonnel: '',
       AuditorsTimer: '',
       Auditorsstate: '',
@@ -442,8 +428,14 @@ export default {
       let repairtaskid = this.examine.repairtaskid
       let approvalOpinion = this.approvalOpinionInput
       let approvalState = this.approvalradio
-      let assignmenttime = this.waatitime
-      this.axios.post(maintainRepairapprovalTask(token, repairtaskid, approvalOpinion, approvalState, assignmenttime, this.faulttypeData, this.faultreasonData, this.faultrangeData, this.faultphenomenonData, this.faulttreatmentData)).then((response) => {
+      let myDate = new Date()
+      let assignmenttime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`
+      let faulttypeData = this.faulttypeData.join()
+      let faultreasonData = this.faultreasonData.join()
+      let faultrangeData = this.faultrangeData.join()
+      let faultphenomenonData = this.faultphenomenonData.join()
+      let faulttreatmentData = this.faulttreatmentData.join()
+      this.axios.post(maintainRepairapprovalTask(token, repairtaskid, approvalOpinion, approvalState, assignmenttime, faulttypeData, faultreasonData, faultrangeData, faultphenomenonData, faulttreatmentData)).then((response) => {
         if (response.data.code === 0) {
           this.$message({
             message: '审批成功',
@@ -488,12 +480,9 @@ export default {
       // let repairtaskid = this.examine.repairtaskid
       let approvalOpinion = this.approvalOpinionInput
       let approvalState = this.approvalradio
-      let assignmenttime = this.waatitime
-      let myDate = new Date()
       if (approvalOpinion) {
         if (approvalState) {
           if (approvalState !== 30) {
-            this.waatitime = `${myDate.getFullYear()}-${myDate.getMonth() + 1}-${myDate.getDate()}`
             this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
               if (response.data.code === 0) {
                 this.faulttreatment = response.data.data.faulttreatment
@@ -505,23 +494,16 @@ export default {
               }
             })
           } else {
-            if (assignmenttime) {
-              this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
-                if (response.data.code === 0) {
-                  this.classificationBoolean = true
-                  this.faulttreatment = response.data.data.faulttreatment
-                  this.faultreason = response.data.data.faultreason
-                  this.faultrange = response.data.data.faultrange
-                  this.faulttype = response.data.data.faulttype
-                  this.faultphenomenon = response.data.data.faultphenomenon
-                }
-              })
-            } else {
-              this.$message({
-                message: '返工时间不能为空!',
-                type: 'warning'
-              })
-            }
+            this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
+              if (response.data.code === 0) {
+                this.classificationBoolean = true
+                this.faulttreatment = response.data.data.faulttreatment
+                this.faultreason = response.data.data.faultreason
+                this.faultrange = response.data.data.faultrange
+                this.faulttype = response.data.data.faulttype
+                this.faultphenomenon = response.data.data.faultphenomenon
+              }
+            })
           }
         } else {
           this.$message({
@@ -653,9 +635,9 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin-top 10px
+    margin-top 30px
     background #111a28
-    padding 10px 0
+    padding 20px 0
     .content
       overflow hidden
       position relative
@@ -673,8 +655,6 @@ export default {
           overflow hidden
           position relative
           padding-bottom 14px
-          margin-bottom 14px
-          border-bottom 1px solid $color-border-list
          .informationTopUl
            init()
            .informationTopLitwo
@@ -891,8 +871,8 @@ export default {
   .ficationUl
     overflow hidden
     position relative
-    height: 250px
-    overflow-y: scroll
+    height 250px
+    overflow-y auto
     margin-left 40px
   .ficationLi
     width 100%
@@ -1090,4 +1070,7 @@ export default {
   .waatitimeSpan
     margin-left 20px
     color #83292b
+  .informationTopUlBorder
+    padding-bottom 10px
+    border-bottom 1px solid $color-border-list
 </style>

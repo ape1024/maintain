@@ -96,7 +96,7 @@
                   <img class="photosImg" @click="selectImg(fieldphoto(item.photosArr, item.path), index)" :key="index" v-for="(data, index) in item.photosArr" :src="`${item.path}${data}`" alt="">
                 </li>
                 <li class="matters_lifour">
-                  <i @click.stop="amputatematters(item.checktaskdetailid)" v-if="JurisdictionData.delete && (item.approvalstate !== 20 && item.approvalstate !== 100)" class="el-icon-close"></i>
+                  <span @click.stop="amputatematters(item.checktaskdetailid)" v-if="JurisdictionData.delete && (item.approvalstate !== 20 && item.approvalstate !== 100)" class="">删除</span>
                 </li>
               </ul>
             </div>
@@ -150,6 +150,12 @@
                       审批次数
                     </li>
                     <li class="opinion_li_two">
+                      审批人员
+                    </li>
+                    <li class="opinion_li_two">
+                      审批时间
+                    </li>
+                    <li class="opinion_li_two">
                       审批结论
                     </li>
                     <li class="opinion_litwo_two">
@@ -162,6 +168,12 @@
                     <ul class="title_li_ul">
                       <li class="opinion_li_two">
                         {{index + 1}}
+                      </li>
+                      <li class="opinion_li_two">
+                        {{item.approvername}}
+                      </li>
+                      <li :title="fmtDate(item.approvaltime)" class="opinion_li_two">
+                        {{fmtDate(item.approvaltime)}}
                       </li>
                       <li class="opinion_li_two">
                         {{approvalFuntion(item.approvalstate)}}
@@ -314,14 +326,25 @@ export default {
       }, 200)
     },
     amputatematters (checktaskdetailid) {
-      this.axios.post(deleteTaskDetail(checktaskdetailid)).then((response) => {
-        if (response.data.code === 0) {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-          this.DetailsByDeviceId()
-        }
+      this.$confirm('是否删除此设备?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.post(deleteTaskDetail(checktaskdetailid)).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.DetailsByDeviceId()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
     checkedChang () {
@@ -861,9 +884,11 @@ export default {
     z-index 1
     padding 20px 10px 20px 20px
   .matters_lifour
-    float left
+    float right
     overflow hidden
-    width 2%
+    color #cc5966 !important
+    margin-right 2%
+    width 3%
   .opinion__li
     float left
     padding-left 5%
@@ -885,7 +910,7 @@ export default {
     float left
     height 14px
     padding-left 2%
-    width 16%
+    width 12%
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
@@ -893,7 +918,7 @@ export default {
     float left
     height 14px
     padding 0 2%
-    width 60%
+    width 40%
     overflow hidden
     text-overflow ellipsis
     white-space nowrap

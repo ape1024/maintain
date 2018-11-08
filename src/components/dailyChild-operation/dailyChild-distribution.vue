@@ -2,12 +2,12 @@
   <section class="distriBution">
     <div class="distriBution_div">
       <h4 class="distriButionH">
-        处理方式
+        任务安排
       </h4>
       <div class="distriButionDiv">
         <div class="distriButionDiv_div">
           <p class="distriButionDiv_p">
-            检查项目
+            处理方式
           </p>
           <p class="distriButionDiv_line"></p>
         </div>
@@ -47,19 +47,6 @@
             placeholder="请输入内容"
             v-model="objection">
           </el-input>
-        </div>
-        <div class="personnelTwo">
-          <p class="personChargePThree">项目选择：</p>
-          <p class="personChargePTwo">
-            <el-select size="mini" v-model="projectSelectionData" placeholder="请选择">
-            <el-option
-              v-for="item in projectSelection"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-          </p>
         </div>
         <div class="personnel">
           <div class="personCharge">
@@ -158,15 +145,6 @@ export default {
       conserveStore: false
     }
   },
-  watch: {
-    projectSelectionData (el) {
-      this.maintenanceData.forEach((val) => {
-        if (val.projectId === el) {
-          this.maintenance = val.subOrgnizations
-        }
-      })
-    }
-  },
   methods: {
     conserve () {
       if (this.radio2 === '') {
@@ -180,7 +158,7 @@ export default {
         let desc = this.instrucTion
         let disposeopinion = this.objection
         let faultTypeId = this.radio2
-        let projectid = this.projectSelectionData
+        // let projectid = this.projectSelectionData
         let usersNumber = this.maintenanceList.concat(this.repairCheckList)
         let users = []
         this.instruction.forEach((val) => {
@@ -209,7 +187,7 @@ export default {
           return false
         }
         let token = JSON.parse(window.sessionStorage.token)
-        this.axios.post(maintainDailyassignedTask(projectid, token, string, desc, disposeopinion, faultTypeId), users).then((response) => {
+        this.axios.post(maintainDailyassignedTask(this.maintainProject, token, string, desc, disposeopinion, faultTypeId), users).then((response) => {
           if (response.data.code === 0) {
             this.$message({
               message: '分配成功',
@@ -249,28 +227,7 @@ export default {
     //  维保单位 this.equipment
     this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.equipment, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
-        if (response.data.data.length) {
-          this.maintenanceData = response.data.data
-          response.data.data.forEach((val) => {
-            // this.projectSelection
-            let obj = {
-              label: val.organizationName,
-              value: val.projectId
-            }
-            this.projectSelection.push(obj)
-          })
-          let projectBoolean = false
-          this.projectSelection.forEach((val) => {
-            if (val.value === this.maintainProject) {
-              projectBoolean = true
-            }
-          })
-          if (projectBoolean) {
-            this.projectSelectionData = this.maintainProject
-          } else {
-            this.projectSelectionData = response.data.data[0].projectId
-          }
-        }
+        this.maintenance = response.data.data
       }
     })
   }
