@@ -234,6 +234,8 @@ export default {
     },
     // 选中事件
     selectStyle (item, index) {
+      console.log('/////')
+      console.log(item)
       if (item.flag) {
         item.flag = false
         return
@@ -243,6 +245,7 @@ export default {
       })
       let clickId = item.taskID
       this.click_id = item.taskID
+      this.clicktaskName = item.taskName
       let areaid = this.selectProps.selectRegion.length !== 0 ? this.selectProps.selectRegion[this.selectProps.selectRegion.length - 1] : ''
       let basedevicecode = this.selectProps.selectEquipmentData.length !== 0 ? this.selectProps.selectEquipmentData[this.selectProps.selectEquipmentData.length - 1] : ''
       basedevicecode = !basedevicecode ? '' : basedevicecode

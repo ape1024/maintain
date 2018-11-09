@@ -15,17 +15,17 @@
           <ul class="examine_div_ul">
             <li class="examine_div_li">
               <p>设施名称：</p>
-              <div>{{equipmentData.devicename}}</div>
+              <div :title="equipmentData.devicename">{{equipmentData.devicename}}</div>
             </li>
             <li class="examine_div_li">
               <p>设备编码：</p>
-              <div>{{equipmentData.devicecode}}</div>
+              <div :title="equipmentData.devicecode">{{equipmentData.devicecode}}</div>
             </li>
             <li class="examine_div_li">
               <p>设备位置：</p>
-              <div>{{equipmentData.position}}</div>
+              <div :title="equipmentData.position">{{equipmentData.position}}</div>
             </li>
-            <li class="examine_div_li">
+            <li class="examine_div_li examine_div_liTwo">
               <p>设施数量：</p>
               <div>{{equipmentData.devicecount}}{{equipmentData.unit}}</div>
             </li>
@@ -105,7 +105,6 @@
             <div class="opinion_left">
               <div class="left_header">
                 <p class="left_hederP">技术要求判定</p>
-                <p class="left_hederPtwo"></p>
               </div>
               <div class="opinion_title">
                 <div class="opinion_ulDiv">
@@ -136,138 +135,104 @@
                     </ul>
                   </li>
                 </ul>
+                <div class="">
+                  <div class="left_header">
+                    <p class="left_hederP">检测项</p>
+                  </div>
+                  <div class="opinion_title">
+                    <div class="opinion_ulDiv">
+                      <ul class="opinion__ul">
+                        <li class="opinion_li">
+                          检测名称
+                        </li>
+                        <li class="opinion_litwo">
+                          检测范围
+                        </li>
+                        <li class="opinion_litwo">
+                          检测值
+                        </li>
+                      </ul>
+                    </div>
+                    <ul class="title_ul">
+                      <li class="title_li" v-for="(item ,index) in Testing" :key="index">
+                        <ul class="title_li_ul">
+                          <li class="opinion_li">
+                            {{item.paramname}}
+                          </li>
+                          <li class="opinion_litwo">
+                            {{item.minvalue ? item.minvalue : ''}} -
+                            {{item.maxvalue ? item.maxvalue : ''}}
+                          </li>
+                          <li class="opinion_litwo">
+                            {{item.checkvalue}}
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="opinion_right">
               <div class="left_header">
-                <p class="left_hederP">历史审批记录</p>
-                <p class="left_hederPtwo"></p>
+                <p class="left_hederP">工作记录审查</p>
               </div>
               <div class="opinion_title">
                 <div class="opinion_ulDiv">
                   <ul class="opinion_ul">
-                    <li class="opinion_li_two">
-                      审批次数
+                    <li class="opinion_li_two"  :title="historicalExamination.approvaltime ? fmtDate(historicalExamination.approvaltime) : ''">
+                      审批时间: <span class="opinion_li_twoSpan">{{historicalExamination.approvaltime ? fmtDate(historicalExamination.approvaltime) : ''}}</span>
                     </li>
-                    <li class="opinion_li_two">
-                      审批人员
-                    </li>
-                    <li class="opinion_li_two">
-                      审批时间
-                    </li>
-                    <li class="opinion_li_two">
-                      审批结论
-                    </li>
-                    <li class="opinion_litwo_two">
-                      审批意见
+                    <li :title="historicalExamination.approvername" class="opinion_li_two">
+                      审批人员: <span class="opinion_li_twoSpan">{{historicalExamination.approvername}}</span>
                     </li>
                   </ul>
                 </div>
-                <ul class="title_ul">
-                  <li class="title_li" v-for="(item ,index) in historicalExamination" :key="item.approvalid">
-                    <ul class="title_li_ul">
-                      <li class="opinion_li_two">
-                        {{index + 1}}
-                      </li>
-                      <li class="opinion_li_two">
-                        {{item.approvername}}
-                      </li>
-                      <li :title="fmtDate(item.approvaltime)" class="opinion_li_two">
-                        {{fmtDate(item.approvaltime)}}
-                      </li>
-                      <li class="opinion_li_two">
-                        {{approvalFuntion(item.approvalstate)}}
-                      </li>
-                      <li :title="item.approvalopinion" class="opinion_litwo_two">
-                        {{item.approvalopinion}}
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
+              </div>
+              <div>
+                <div class="choices">
+                  <p class="choicesP">
+                    审核结论：
+                  </p>
+                  <div class="choicesDiv">
+                    <el-radio-group v-model="radio">
+                      <el-radio :key="index" v-for="(item, index) in approvaloptions" :label="item.value">{{item.name}}</el-radio>
+                    </el-radio-group>
+                  </div>
+                </div>
+                <div class="differing">
+                  <p class="choicesP">
+                    审核意见：
+                  </p>
+                  <div class="differingDiv">
+                    <el-input
+                      type="textarea"
+                      :rows="3"
+                      resize="none"
+                      placeholder="请明确审核意见"
+                      v-model="textarea">
+                    </el-input>
+                  </div>
+                </div>
+                <div class="arrange">
+                  <div v-if="JurisdictionData.assign" @click="assignment" class="assignment">
+                    安排任务
+                  </div>
+                  <div v-if="JurisdictionData.approval" @click="preservation" class="preservation">
+                    审 核
+                  </div>
+                  <div @click="closeup" class="closeup">
+                    关 闭
+                  </div>
+                </div>
               </div>
             </div>
           </div>
           <div class="opinion">
-            <div class="opinion_left">
-              <div class="left_header">
-                <p class="left_hederP">检测项</p>
-                <p class="left_hederPtwo"></p>
-              </div>
-              <div class="opinion_title">
-                <div class="opinion_ulDiv">
-                  <ul class="opinion__ul">
-                    <li class="opinion_li">
-                      检测名称
-                    </li>
-                    <li class="opinion_litwo">
-                      检测范围
-                    </li>
-                    <li class="opinion_litwo">
-                      检测值
-                    </li>
-                  </ul>
-                </div>
-                <ul class="title_ul">
-                  <li class="title_li" v-for="(item ,index) in Testing" :key="index">
-                    <ul class="title_li_ul">
-                      <li class="opinion_li">
-                        {{item.paramname}}
-                      </li>
-                      <li class="opinion_litwo">
-                        {{item.minvalue ? item.minvalue : ''}} -
-                        {{item.maxvalue ? item.maxvalue : ''}}
-                      </li>
-                      <li class="opinion_litwo">
-                        {{item.checkvalue}}
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="opinion_right">
-              <div class="left_header">
-                <p class="left_hederP">记录审查情况</p>
-                <p class="left_hederPtwo"></p>
-              </div>
-              <div class="choices">
-                <p class="choicesP">
-                  审核结论：
-                </p>
-                <div class="choicesDiv">
-                  <el-radio-group v-model="radio">
-                    <el-radio :key="index" v-for="(item, index) in approvaloptions" :label="item.value">{{item.name}}</el-radio>
-                  </el-radio-group>
-                </div>
-              </div>
-              <div class="differing">
-                <p class="choicesP">
-                  审核意见：
-                </p>
-                <div class="differingDiv">
-                  <el-input
-                    type="textarea"
-                    :rows="3"
-                    resize="none"
-                    placeholder="请明确审核意见"
-                    v-model="textarea">
-                  </el-input>
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
-        <div class="arrange">
-          <div v-if="JurisdictionData.assign" @click="assignment" class="assignment">
-            安排任务
-          </div>
-          <div v-if="JurisdictionData.approval" @click="preservation" class="preservation">
-            审 核
-          </div>
-          <div @click="closeup" class="closeup">
-            关 闭
-          </div>
-        </div>
+
       </section>
       <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </section>
@@ -285,7 +250,7 @@ export default {
     return {
       checked: false,
       radio: 100,
-      textarea: '同意归档',
+      textarea: '',
       examine_Boolean: false,
       determinant: '',
       approvaloptions: '',
@@ -489,7 +454,21 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(findAllApproval(token, checktaskdetailid)).then((data) => {
         if (data.data.code === 0) {
-          this.historicalExamination = data.data.data
+          //  data.data.data 之前是一个数组, 多个对象, 先取第一条,修改时间11月9日
+          console.log('/1')
+          if (data.data.data.length) {
+            console.log('/2')
+            this.historicalExamination = data.data.data[0]
+            this.radio = this.historicalExamination.approvalstate ? this.historicalExamination.approvalstate : ''
+            this.textarea = this.historicalExamination.approvalopinion ? this.historicalExamination.approvalopinion : ''
+          } else {
+            let obj = {
+              approvaltime: '',
+              approvername: ''
+            }
+            this.historicalExamination = obj
+            console.log('////////')
+          }
         }
       })
       $('.content_ul').each(function (index, item) {
@@ -588,18 +567,20 @@ export default {
     }
   },
   watch: {
-    radio (el) {
-      if (el === 100) {
-        this.textarea = `同意归档`
-      } else if (el === 20) {
-        this.textarea = ``
-      }
-    }
+    // radio (el) {
+    //   if (el === 100) {
+    //     this.textarea = ``
+    //   } else if (el === 20) {
+    //     this.textarea = ``
+    //   }
+    // }
   },
   components: {
     DialogImg
   },
   created () {
+    console.log('///......')
+    console.log(this.examineName)
     this.DetailsByDeviceId()
     //  任务审批选项
     this.axios.post(maintainDailygetTaskApprovalItems()).then((response) => {
@@ -623,7 +604,7 @@ export default {
     margin 0 auto
     overflow hidden
     position relative
-    padding-top 45px
+    padding 45px 0
     .increase_h4
       font-size $font-size-medium-x
       color $color-text-title
@@ -668,18 +649,17 @@ export default {
         overflow hidden
         font-size $font-size-medium
         color $color-text-title
-        padding-top 30px
+        padding-top 10px
         .examine_div_li
+          width 30%
           float left
           overflow hidden
-          margin-right 40px
           margin-bottom 30px
           p
             float left
             margin-right 6px
             color $color-border-b-fault
           div
-            width 276px
             float left
       .examine_div_ul li:nth-child(3)
         margin-right 0
@@ -708,7 +688,7 @@ export default {
         font-size $font-size-small
       .matters_ul
         overflow hidden
-        padding 13px 0
+        padding 14px 0
         .matters_li
           float left
           width 8%
@@ -725,6 +705,7 @@ export default {
         cursor pointer
         height 30px
         line-height 30px
+        padding 6px 0
         transition .2s
         .matters_li
           float left
@@ -779,9 +760,10 @@ export default {
         margin-top 6px
       .left_hederP
         float left
+        font-size 16px
+        color #7fdbf9
       .opinion_title
         width 100%
-        background #0e1520
         overflow hidden
         .opinion_ulDiv
           width 100%
@@ -791,7 +773,7 @@ export default {
           width calc(100% - 20px)
           background #202f49
           overflow hidden
-          padding 5px 0
+          padding 14px 0
         .opinion_li
           float left
           padding-left 5%
@@ -806,6 +788,7 @@ export default {
           width 100%
           max-height 120px
           min-height 120px
+          background #0e1520
           overflow auto
           color $color-header-b-normal
       .title_li
@@ -899,7 +882,7 @@ export default {
   .opinion__ul
     background #202f49
     overflow hidden
-    padding 5px 0
+    padding 14px 0
   .matters_problem
     color #cfb53a
   .martters_normal
@@ -909,8 +892,9 @@ export default {
   .opinion_li_two
     float left
     height 14px
+    color #999
     padding-left 2%
-    width 12%
+    width 48%
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
@@ -925,4 +909,9 @@ export default {
   .matters_liThree
     float left
     width 12%
+  .examine_div_liTwo
+    width 10%!important
+  .opinion_li_twoSpan
+    color #fff
+    margin-left 10px
 </style>
