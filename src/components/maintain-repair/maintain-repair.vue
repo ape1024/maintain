@@ -162,7 +162,8 @@
     </section>
     <section v-if="examineBoolean" @click.stop class="review">
       <!--审核-->
-      <childExamine v-if="examineBoolean" :examine="examineData" :title="examinationTitle" :rework="reworkData" :examina="examination"  :approval="approvalStatus" :state="taskState" @mine="Mine" @newly="Newly"></childExamine>
+      <!--<childExamine v-if="examineBoolean" :examine="examineData" :title="examinationTitle" :rework="reworkData" :examina="examination"  :approval="approvalStatus" :state="taskState" @mine="Mine" @newly="Newly"></childExamine>-->
+      <examineTwo v-if="examineBoolean" :examine="examineData" :title="examinationTitle" :state="taskState" :repairtasks="repairtasksName" @mine="Mine" @newly="Newly"></examineTwo>
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
@@ -186,6 +187,7 @@ import childModify from '../repair-operation/repair-arrange'
 import childExamine from '../repair-operation/repair-examine'
 import childquipment from '../repair-operation/repair-rescheduling'
 import childVerification from '../repair-operation/repair-Verification'
+import examineTwo from '../repair-operation/repair-examineTwo'
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
 import { findAreasTreeByProjectid, maintainRepairgetRepairStates, maintainRepairgetRepariTaskApprovalItem, maintainRepairfindRepairTasks, maintainRepairmaintainRepairfindRepairTasksTwo, maintainRepairfindTaskByTaskid, maintainRepairremoveRepairtasks, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getRepairUsers, maintainRepairgetgetRepariTaskQueryApprovalItem } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
@@ -199,6 +201,7 @@ export default {
     childModify,
     childExamine,
     childquipment,
+    examineTwo,
     childVerification
   },
   methods: {
@@ -349,31 +352,51 @@ export default {
     // 审核
     question (ID, item) {
       // 点击审核
+      let id = !item.refid ? item.repairtaskid : item.refid
       this.examinationTitle = item.repairtypename
-      this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
+      this.axios.post(maintainRepairfindTaskByTaskid(id)).then((response) => {
         if (response.data.code === 0) {
-          this.examineData = response.data.data
-          this.axios.post(maintainRepairfindReworksByTaskid(ID)).then((response) => {
-            if (response.data.code === 0) {
-              this.reworkData = response.data.data
-              this.axios.post(maintainRepairgetApprovalInfos(ID)).then((response) => {
-                if (response.data.code === 0) {
-                  // 审批记录  目前 只要第一条,待定
-                  this.examination = response.data.data[0]
-                  this.getTaskState()
-                  this.examineBoolean = true
-                }
+          this.axios.post(getRepairUsers(id)).then((data) => {
+            if (data.data.data.length !== 0) {
+              let arr = []
+              data.data.data.forEach((val) => {
+                arr.push(val.username)
               })
+              this.repairtasksName = arr.join(',')
             }
+            this.examineData = response.data.data
+            this.examineBoolean = true
           })
         }
       })
-      this.axios.post(maintainRepairfindRepairTasks(ID)).then((response) => {
-        if (response.data.code === 0) {
-          this.functionalJudgment(response.data.data)
-          this.tabulationData = response.data.data
-        }
-      })
+      this.getTaskState()
+      //  -----
+      // this.examinationTitle = item.repairtypename
+      // this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {
+      //   if (response.data.code === 0) {
+      //     this.examineData = response.data.data
+      //     this.axios.post(maintainRepairfindReworksByTaskid(ID)).then((response) => {
+      //       if (response.data.code === 0) {
+      //         this.reworkData = response.data.data
+      //         this.axios.post(maintainRepairgetApprovalInfos(ID)).then((response) => {
+      //           if (response.data.code === 0) {
+      //             // 审批记录  目前 只要第一条,待定
+      //             this.examination = response.data.data[0]
+      //             this.getTaskState()
+      //             this.examineBoolean = true
+      //           }
+      //         })
+      //       }
+      //     })
+      //   }
+      // })
+      // this.axios.post(maintainRepairfindRepairTasks(ID)).then((response) => {
+      //   if (response.data.code === 0) {
+      //     this.functionalJudgment(response.data.data)
+      //     this.tabulationData = response.data.data
+      //   }
+      // })
+      //  ----
     },
     verification (ID) {
       this.axios.post(maintainRepairfindTaskByTaskid(ID)).then((response) => {

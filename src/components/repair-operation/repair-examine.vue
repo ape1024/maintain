@@ -482,29 +482,16 @@ export default {
       let approvalState = this.approvalradio
       if (approvalOpinion) {
         if (approvalState) {
-          if (approvalState !== 30) {
-            this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
-              if (response.data.code === 0) {
-                this.faulttreatment = response.data.data.faulttreatment
-                this.faultreason = response.data.data.faultreason
-                this.faultrange = response.data.data.faultrange
-                this.faulttype = response.data.data.faulttype
-                this.faultphenomenon = response.data.data.faultphenomenon
-                this.classificationBoolean = true
-              }
-            })
-          } else {
-            this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
-              if (response.data.code === 0) {
-                this.classificationBoolean = true
-                this.faulttreatment = response.data.data.faulttreatment
-                this.faultreason = response.data.data.faultreason
-                this.faultrange = response.data.data.faultrange
-                this.faulttype = response.data.data.faulttype
-                this.faultphenomenon = response.data.data.faultphenomenon
-              }
-            })
-          }
+          this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
+            if (response.data.code === 0) {
+              this.faulttreatment = response.data.data.faulttreatment
+              this.faultreason = response.data.data.faultreason
+              this.faultrange = response.data.data.faultrange
+              this.faulttype = response.data.data.faulttype
+              this.faultphenomenon = response.data.data.faultphenomenon
+              this.classificationBoolean = true
+            }
+          })
         } else {
           this.$message({
             message: '审核结论不能为空!',

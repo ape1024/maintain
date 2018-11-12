@@ -9,28 +9,30 @@
           <ul class="informationTopUl">
             <li class="informationTopLitwo">
               <span>设施类别：</span>
-              <span class="informationTopSpan">{{examine.devicename}}</span>
+              <span :title="examine.devicename" class="informationTopSpan">{{examine.devicename}}</span>
             </li>
             <li class="informationTopLi">
               <span>设备编码：</span>
-              <span class="informationTopSpan">{{examine.devicecode}}</span>
+              <span :title="examine.devicecode" class="informationTopSpan">{{examine.devicecode}}</span>
             </li>
-            <li class="informationTopLi">
+            <li class="informationTopLiTwo">
               <span>设置位置：</span>
-              <span class="informationTopSpan">{{examine.areaname}}{{examine.position}}</span>
+              <span :title="examine.areaname + examine.position" class="informationTopSpan">{{examine.areaname}}{{examine.position}}</span>
+            </li>
+            <li class="informationTopLiTree">
+              <span>设施数量：</span>
+              <span :title="examine.devicecount + examine.unit" class="informationTopSpan">{{examine.devicecount}}{{examine.unit}}</span>
             </li>
           </ul>
         </div>
         <ul class="informationTopUl">
-          <li class="informationTopLitwo">
-            <span>设施数量：</span>
-            <span class="informationTopSpan">{{examine.devicecount}}{{examine.unit}}</span>
-          </li>
+
         </ul>
         <div class="tabulation">
           <div class="tabulationLeft">
             <div class="flagSpanDiv">
               <span :key="index" class="flagSpanTwo" :class="{ flagSpan:item.flag }" @click="switchingData(index)" v-for="(item, index) in inspectUp">{{index + 1}}</span>
+              <span class="repairSpan">检查情况</span>
             </div>
             <div class="tleftTop">
               <div class="tlefttopHeader">
@@ -68,7 +70,10 @@
             </div>
           </div>
           <div class="tabulationRight">
-            <div class="tleftBottom">
+            <div class="flagSpanDiv">
+              <span class="repairSpan">检查情况</span>
+            </div>
+            <div class="tleftBottom tabulationRightfirst">
               <ul class="tlefttopRight">
                 <li class="tlefttoprightLi">
                   <p class="tlefttoprightliP">
@@ -89,29 +94,10 @@
             <div class="tleftBottom">
               <ul class="tlefttopRight">
                 <li class="tlefttoprightLi">
-                  <p class="tlefttoprightliP">
-                    <span class="tlefttoprightliSpan">审核人员：</span>
-                    <span>{{AuditorsPersonnel}}</span>
-                  </p>
-                  <p class="tlefttoprightliP">
-                    <span class="tlefttoprightliSpan">审核时间：</span>
-                    <span>{{fmtDate(AuditorsTimer)}}</span>
-                  </p>
-                </li>
-                <li class="tlefttoprightLi">
-                  <span class="tlefttoprightliSpan">审核结论：</span>
-                  <span class="tlefttoprightLiSPan">{{Auditorsstate}}</span>
-                  <p v-show="AuditorsPersonnel && JurisdictionApproval" class="header_p_twelve threelevel_litwo_ptwo" @click.stop="updateAuditors(Auditorsstate)">修改</p>
-                </li>
-              </ul>
-            </div>
-            <div class="tleftBottom">
-              <ul class="tlefttopRight">
-                <li class="tlefttoprightLi">
-                  <span class="tlefttoprightliSpan">维修人员：</span>
+                  <span class="tlefttoprightliSpan">执行人员：</span>
                   <span class="tlefttoprightLiSPan">{{repairtasks}}</span>
                 </li>
-                <li class="tlefttoprightLi">
+                <li class="tlefttoprightLi tlefttoprightLiLast">
                   <span class="tlefttoprightliSpan">异常情况：</span>
                   <span class="tlefttoprightLiSPan">{{examine.exception}}</span>
                 </li>
@@ -121,9 +107,10 @@
         </div>
       </div>
       <section class="classification">
-        <header class="ficationHeader">
-          <p class="ficationHeaderP">维修记录</p>
-        </header>
+        <div class="flagSpanDiv">
+          <span class="repairSpanOne">处理情况</span>
+          <span class="repairSpanTwo">审查情况</span>
+        </div>
         <ul class="ficationUl">
           <li :key="index" v-for="(item ,index) in reworkData" class="ficationLi">
             <div @click.stop="ficationClick(item, reworkData)" class="ficationLiDiv">
@@ -140,7 +127,7 @@
                 <i v-show="!item.flag" class="el-icon-arrow-up"></i>
               </p>
               <p class="ficationLiDivPthree">
-                返工
+                {{obtainState(item.approvalstate)}}
               </p>
             </div>
             <div v-show="item.flag" class="ficationEnsconce">
@@ -154,7 +141,7 @@
                         {{fmtDate(item.repairtime)}}
                       </span>
                   </p>
-                  <p class="ficationEnsconceLiPtwo">
+                  <p class="ficationEnsconceLiP">
                       <span class="ficationEnsconceLiSpan">
                         处理人员:
                       </span>
@@ -162,40 +149,66 @@
                         {{item.repairpersonname}}
                       </span>
                   </p>
-                  <p class="ficationEnsconceLiPtwo">
-                      <span class="ficationEnsconceLiSpan">
-                        处理结果:
-                      </span>
-                    <span class="ficationEnsconceLiSpantwo">
-                        {{obtainState(item.approvalstate)}}
-                      </span>
-                  </p>
+                </li>
+                <li class="ficationEnsconceLi">
+                  <span class="ficationEnsconceLitwoSpan">
+                    问题原因:
+                  </span>
+                  <span class="ficationEnsconceLitwoSpantwo">
+                    {{item.reason}}
+                  </span>
+                </li>
+                <li class="ficationEnsconceLi">
+                  <span class="ficationEnsconceLitwoSpan">
+                    处理情况:
+                  </span>
+                  <span class="ficationEnsconceLitwoSpantwo">
+                    {{item.treatment}}
+                  </span>
                 </li>
                 <li class="ficationEnsconceLitwo">
-                  <div class="ficationEnsconceLitwoDiv">
-                      <span class="ficationEnsconceLitwoSpan">
-                        问题原因:
-                      </span>
-                    <span class="ficationEnsconceLitwoSpantwo">
-                        {{item.reason}}
-                      </span>
-                  </div>
-                  <div class="ficationEnsconceLitwoDiv">
-                      <span class="ficationEnsconceLitwoSpan">
-                        处理情况:
-                      </span>
-                    <span class="ficationEnsconceLitwoSpantwo">
-                        {{item.treatment}}
-                      </span>
-                  </div>
-                </li>
-                <li class="ficationEnsconceLitwo">
-                      <span class="ficationEnsconceLitwoSpan">
-                        现场照片:
-                      </span>
+                  <span class="ficationEnsconceLitwoSpan">
+                    现场照片:
+                  </span>
                   <span class="ficationEnsconceLitwoSpanThree">
                       <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(item.afterphotos), imgIndex)" :key="imgIndex" v-for="(data , imgIndex) in fieldphoto(item.afterphotos)" :src="data" alt="">
+                  </span>
+                </li>
+              </ul>
+              <ul class="ficationEnsconceUlRight">
+                <li class="ficationEnsconceLi">
+                  <p class="ficationEnsconceLiP">
+                    <span class="ficationEnsconceLiSpan">
+                      审核时间：
                     </span>
+                    <span class="ficationEnsconceLiSpantwo">
+                      {{fmtDate(item.approvaltime)}}
+                    </span>
+                  </p>
+                  <p class="ficationEnsconceLiP">
+                    <span class="ficationEnsconceLiSpan">
+                      审查人员：
+                    </span>
+                    <span class="ficationEnsconceLiSpantwo">
+                      {{item.approvername}}
+                    </span>
+                  </p>
+                </li>
+                <li class="ficationEnsconceLi">
+                  <span class="ficationEnsconceLitwoSpan">
+                    审查结论:
+                  </span>
+                  <span class="tlefttoprightLiSPan">
+                    {{ergodicStor(item.approvalstate)}}
+                  </span>
+                </li>
+                <li class="ficationEnsconceLi">
+                  <span class="ficationEnsconceLitwoSpan">
+                    审查意见:
+                  </span>
+                  <span class="tlefttoprightLiSPan">
+                    {{item.approvalopinion}}
+                  </span>
                 </li>
               </ul>
             </div>
@@ -234,14 +247,6 @@
                         {{examine.repairpersonname}}
                       </span>
                   </p>
-                  <p class="ficationEnsconceLiPtwo">
-                      <span class="ficationEnsconceLiSpan">
-                        处理结果:
-                      </span>
-                    <span class="ficationEnsconceLiSpantwo">
-                        {{obtainState(examine.repairstate)}}
-                      </span>
-                  </p>
                 </li>
                 <li class="ficationEnsconceLitwo">
                   <div class="ficationEnsconceLitwoDiv">
@@ -252,6 +257,8 @@
                         {{examine.reason}}
                       </span>
                   </div>
+                </li>
+                <li class="ficationEnsconceLitwo">
                   <div class="ficationEnsconceLitwoDiv">
                       <span class="ficationEnsconceLitwoSpan">
                         处理情况:
@@ -268,6 +275,37 @@
                   <span class="ficationEnsconceLitwoSpanThree">
                       <img class="ficationEnsconceLitwoSpanThreeImg" @click="selectImg(fieldphoto(examine.afterphotos), index)" v-for="(data ,index) in fieldphoto(examine.afterphotos)" :key="index" :src="data" alt="">
                       </span>
+                </li>
+              </ul>
+              <ul class="ficationEnsconceUlRight">
+                <li class="ficationEnsconceLi">
+                  <p class="ficationEnsconceLiP">
+                    <span class="ficationEnsconceLiSpan">
+                      审核时间：
+                    </span>
+                    <span class="ficationEnsconceLiSpantwo">
+                      {{fmtDate(AuditorsTimer)}}
+                    </span>
+                  </p>
+                  <p class="ficationEnsconceLiP">
+                    <span class="ficationEnsconceLiSpan">
+                      审核人员：
+                    </span>
+                    <span class="ficationEnsconceLiSpantwo">{{AuditorsPersonnel}}</span>
+                  </p>
+                </li>
+                <li class="ficationEnsconceLi">
+                  <span class="ficationEnsconceLitwoSpan">
+                    审查结论:
+                  </span>
+                  <span class="tlefttoprightLiSPan">
+                    {{tateReview}}
+                  </span>
+                </li>
+                <li class="ficationEnsconceLi">
+                    <span class="ficationEnsconceLitwoSpan">审核意见：</span>
+                    <span class="tlefttoprightLiSPan">{{Auditorsstate}}</span>
+                    <p v-show="AuditorsPersonnel && JurisdictionApproval" class="header_p_twelve threelevel_litwo_ptwo" @click.stop="updateAuditors(Auditorsstate)">修改</p>
                 </li>
               </ul>
             </div>
@@ -315,7 +353,7 @@
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
-import { maintainRepairModifyApprovalOptionByTaskid, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId } from '../../api/user'
+import { maintainRepairModifyApprovalOptionByTaskid, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId, maintainRepairgetgetRepariTaskQueryApprovalItem } from '../../api/user'
 export default {
   name: 'repair-lookover',
   props: ['examine', 'state', 'repairtasks', 'title'],
@@ -340,10 +378,21 @@ export default {
       auditConclusion: '',
       // 审核权限
       JurisdictionApproval: '',
-      imgUrl: ''
+      imgUrl: '',
+      tateReview: '',
+      ApprovalItem: []
     }
   },
   methods: {
+    ergodicStor (nub) {
+      let Name = ''
+      this.ApprovalItem.forEach((val) => {
+        if (val.value === nub) {
+          Name = val.name
+        }
+      })
+      return Name
+    },
     switchingData (index) {
       this.inspectUp.forEach((val, idx) => {
         if (idx === index) {
@@ -468,6 +517,12 @@ export default {
         }
       }
     })
+    this.axios.post(maintainRepairgetgetRepariTaskQueryApprovalItem()).then((response) => {
+      if (response.data.code === 0) {
+        console.log(response)
+        this.ApprovalItem = response.data.data
+      }
+    })
     this.axios.post(maintainRepairgetApprovalInfos(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
         this.getApprovalInfos = response.data.data
@@ -475,6 +530,7 @@ export default {
           this.AuditorsPersonnel = this.getApprovalInfos[0].approvername
           this.AuditorsTimer = !this.getApprovalInfos[0].approvaltime ? '' : this.fmtDate(this.getApprovalInfos[0].approvaltime)
           this.Auditorsstate = this.getApprovalInfos[0].approvalopinion
+          this.tateReview = this.ergodicStor(this.getApprovalInfos[0].approvalstate)
         }
       }
     })
@@ -516,7 +572,7 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin-top 50px
+    margin-top 90px
     background #111a28
     padding 30px 0
     .content
@@ -541,19 +597,40 @@ export default {
       .informationTopUl
         init()
         .informationTopLitwo
-          width 33%
-          margin-left 1%
+          white-space nowrap
+          overflow hidden
+          text-overflow ellipsis
+          width 20%
           font-size $font-size-medium
           color $color-border-b-fault
           float left
         .informationTopLi
-          width 33%
+          width 26%
+          white-space nowrap
+          overflow hidden
+          text-overflow ellipsis
           font-size $font-size-medium
           color $color-border-b-fault
           float left
         .informationTopSpan
           color $color-text
           margin-left 10px
+        .informationTopLiTwo
+          width 42%
+          white-space nowrap
+          overflow hidden
+          text-overflow ellipsis
+          font-size $font-size-medium
+          color $color-border-b-fault
+          float left
+        .informationTopLiTree
+          width 12%
+          white-space nowrap
+          overflow hidden
+          text-overflow ellipsis
+          font-size $font-size-medium
+          color $color-border-b-fault
+          float left
       .tabulation
         init()
         .tabulationLeft
@@ -562,7 +639,7 @@ export default {
         .tabulationRight
           overflow hidden
           float right
-          margin-top 35px
+          margin-top 5px
         .tleftTop
           width 536px
           background #0b111a
@@ -599,7 +676,7 @@ export default {
           overflow hidden
           position relative
           border-bottom 1px solid $color-border-list
-          padding 22px 0
+          padding 16px 0
           width 98%
           padding-left 2%
         .tlefttopUl .tlefttopli:last-child
@@ -714,6 +791,8 @@ export default {
     .ficationLiDivP
       float left
   .ficationLiDivSpan
+      width 150px
+      display inline-block
       color #fff
       margin 0 60px 0 15px
   .ficationLiDivPtwo
@@ -724,11 +803,12 @@ export default {
     margin-right 20px
   .ficationEnsconce
     margin-top 10px
-    border 1px solid $color-border-list
+    //  border 1px solid $color-border-list
     position relative
     overflow hidden
   .ficationEnsconceUl
-    width 100%
+    float left
+    width 536px
     background #0b111a
     position relative
     overflow hidden
@@ -740,8 +820,8 @@ export default {
   .ficationEnsconceLiP
     float left
     overflow hidden
-    width 33%
-    padding-left 1%
+    width 47%
+    padding-left 3%
   .ficationEnsconceLiSpan
     color #999
     margin-right 10px
@@ -753,29 +833,24 @@ export default {
     width 33%
   .ficationEnsconceLitwo
     border-bottom 1px solid $color-border-list
-    height 80px
     width 100%
+    white-space nowrap
+    overflow hidden
+    text-overflow ellipsis
   .ficationEnsconceLitwoDiv
-    float left
     position relative
     overflow hidden
-    width 50%
   .ficationEnsconceLitwoSpan
-    float left
     margin 0 15px 0
     line-height 40px
     color #999
   .ficationEnsconceLitwoSpantwo
-    float left
     color #fff
-    width 460px
     padding 10px 0
     word-break break-all
     word-wrap break-word
   .ficationEnsconceLitwoSpanThree
-    float left
     color #fff
-    width 1030px
     margin-top 12px
     word-break break-all
     word-wrap break-word
@@ -941,4 +1016,37 @@ export default {
     margin-bottom 10px
     text-align right
     overflow hidden
+  .ficationEnsconceUl li:last-child
+    border none
+  .ficationEnsconceUlRight
+    float right
+    width 543px
+    background #0b111a
+    overflow hidden
+    justify-content center
+    align-items center
+    display inline-block
+  .ficationEnsconceUlRight li:last-child
+    border none
+  .tlefttoprightLiLast
+    height 70px
+  .tabulationRightfirst
+    border-bottom none!important
+  .repairSpan
+    color #7fdbf9
+    font-size 18px
+    float left
+  .repairSpanOne
+    width 536px
+    margin-left 40px
+    color #7fdbf9
+    font-size 18px
+    float left
+    text-align left
+  .repairSpanTwo
+    width 536px
+    color #7fdbf9
+    text-align left
+    font-size 18px
+    float right
 </style>
