@@ -455,10 +455,8 @@ export default {
       this.axios.post(findAllApproval(token, checktaskdetailid)).then((data) => {
         if (data.data.code === 0) {
           //  data.data.data 之前是一个数组, 多个对象, 先取第一条,修改时间11月9日
-          console.log('/1')
           if (data.data.data.length) {
-            console.log('/2')
-            this.historicalExamination = data.data.data[0]
+            this.historicalExamination = data.data.data[data.data.data.length - 1]
             this.radio = this.historicalExamination.approvalstate ? this.historicalExamination.approvalstate : ''
             this.textarea = this.historicalExamination.approvalopinion ? this.historicalExamination.approvalopinion : ''
           } else {
@@ -467,7 +465,6 @@ export default {
               approvername: ''
             }
             this.historicalExamination = obj
-            console.log('////////')
           }
         }
       })

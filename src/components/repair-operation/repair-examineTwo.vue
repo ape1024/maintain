@@ -68,7 +68,7 @@
           </div>
           <div class="tabulationRight">
             <div class="flagSpanDiv">
-              <span class="repairSpan">检查情况</span>
+              <span class="repairSpan">安排情况</span>
             </div>
             <div class="tleftBottom tabulationRightfirst">
               <ul class="tlefttopRight">
@@ -105,8 +105,8 @@
       </div>
       <section class="classification">
         <div class="flagSpanDiv">
-          <span class="repairSpanOne">检查情况</span>
-          <span class="repairSpanTwo">检查情况</span>
+          <span class="repairSpanOne">处理情况</span>
+          <span class="repairSpanTwo">审查情况</span>
         </div>
         <ul class="ficationUl">
           <li :key="index" v-for="(item ,index) in reworkData" class="ficationLi">
@@ -116,7 +116,7 @@
                  {{fmtDate(item.repairtime)}}
                 </span>
                 <span class="ficationLiDivSpantwo">
-                  <!--{{obtainState(item.repairstate)}}-->
+                  {{obtainState(item.repairstate)}}
                 </span>
               </p>
               <p class="ficationLiDivPtwo">
@@ -321,7 +321,6 @@
                   <span class="ficationEnsconceLitwoSpan">审核意见：</span>
                   <span class="tlefttoprightLiSPanFour">
                   <el-input
-                    :disabled="ApprovalItemBoolean"
                     resize="none"
                     type="textarea"
                     :rows="2"
@@ -334,7 +333,7 @@
                   <div @click="ExaminationDiv" v-if="!ApprovalItemBoolean" class="conserve">
                     审查
                   </div>
-                  <div v-if="ApprovalItemBoolean" class="conserve articleReview">
+                  <div @click="revisionOpinion" v-if="ApprovalItemBoolean" class="conserve">
                     审查
                   </div>
                 </li>
@@ -660,12 +659,14 @@ export default {
       this.auditConclusion = Auditorsstate
       this.classificationBoolean = true
     },
-    confirmAuditors () {
-      if (this.auditConclusion) {
-        this.axios.post(maintainRepairModifyApprovalOptionByTaskid(this.auditConclusion, this.examine.repairtaskid)).then((response) => {
+    revisionOpinion () {
+      if (this.Auditorsstate) {
+        this.axios.post(maintainRepairModifyApprovalOptionByTaskid(this.Auditorsstate, this.examine.repairtaskid)).then((response) => {
           if (response.data.code === 0) {
-            this.classificationBoolean = false
-            this.Auditorsstate = this.auditConclusion
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
           }
         })
       } else {
