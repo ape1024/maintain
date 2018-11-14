@@ -209,6 +209,7 @@
                   <span class="tlefttoprightLiSPan">
                     {{item.approvalopinion}}
                   </span>
+                  <p v-show="AuditorsPersonnel && JurisdictionApproval" class="header_p_twelve threelevel_litwo_ptwo" @click.stop="updateAuditorsmodify(item)">修改</p>
                 </li>
               </ul>
             </div>
@@ -353,7 +354,7 @@
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
-import { maintainRepairModifyApprovalOptionByTaskid, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId, maintainRepairgetgetRepariTaskQueryApprovalItem } from '../../api/user'
+import { maintainRepairModifyApprovalOptionByTaskid, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId, maintainRepairgetgetRepariTaskQueryApprovalItem, maintainRepairModifyApprovalOptionByTaskidTwo } from '../../api/user'
 export default {
   name: 'repair-lookover',
   props: ['examine', 'state', 'repairtasks', 'title'],
@@ -380,10 +381,18 @@ export default {
       JurisdictionApproval: '',
       imgUrl: '',
       tateReview: '',
-      ApprovalItem: []
+      ApprovalItem: [],
+      auditConclusionItemId: '',
+      variableValue: ''
     }
   },
   methods: {
+    updateAuditorsmodify (item) {
+      this.variableValue = 1
+      this.auditConclusionItemId = item.approvalid
+      this.auditConclusion = item.approvalopinion
+      this.classificationBoolean = true
+    },
     ergodicStor (nub) {
       let Name = ''
       this.ApprovalItem.forEach((val) => {
@@ -475,22 +484,63 @@ export default {
       this.classificationBoolean = false
     },
     updateAuditors (Auditorsstate) {
+      this.variableValue = 2
       this.auditConclusion = Auditorsstate
       this.classificationBoolean = true
     },
     confirmAuditors () {
-      if (this.auditConclusion) {
-        this.axios.post(maintainRepairModifyApprovalOptionByTaskid(this.auditConclusion, this.examine.repairtaskid)).then((response) => {
-          if (response.data.code === 0) {
-            this.classificationBoolean = false
-            this.Auditorsstate = this.auditConclusion
-          }
-        })
+      if (this.variableValue === 1) {
+        if (this.auditConclusion) {
+          let token = JSON.parse(window.sessionStorage.token)
+          let approvalid = this.auditConclusionItemId
+          let approvalopinion = this.auditConclusion
+          this.axios.post(maintainRepairModifyApprovalOptionByTaskidTwo(token, approvalid, approvalopinion)).then((response) => {
+            if (response.data.code === 0) {
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+              this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {
+                if (response.data.code === 0) {
+                  if (response.data.data.length !== 0) {
+                    response.data.data.forEach((val) => {
+                      val.flag = false
+                    })
+                    response.data.data[0].flag = true
+                    this.reworkData = response.data.data
+                  } else {
+                    this.ficationBoolean = true
+                  }
+                  this.classificationBoolean = false
+                }
+              })
+            } else {
+              this.$message({
+                message: '修改失败',
+                type: 'warning'
+              })
+            }
+          })
+        } else {
+          this.$message({
+            message: '审查意见不能为空',
+            type: 'warning'
+          })
+        }
       } else {
-        this.$message({
-          message: '请填写审批内容!',
-          type: 'warning'
-        })
+        if (this.auditConclusion) {
+          this.axios.post(maintainRepairModifyApprovalOptionByTaskid(this.auditConclusion, this.examine.repairtaskid)).then((response) => {
+            if (response.data.code === 0) {
+              this.classificationBoolean = false
+              this.Auditorsstate = this.auditConclusion
+            }
+          })
+        } else {
+          this.$message({
+            message: '请填写审批内容!',
+            type: 'warning'
+          })
+        }
       }
     }
   },
@@ -505,21 +555,8 @@ export default {
         this.JurisdictionApproval = val.approval
       }
     })
-    this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {
-      if (response.data.code === 0) {
-        if (response.data.data.length !== 0) {
-          response.data.data.forEach((val) => {
-            val.flag = false
-          })
-          this.reworkData = response.data.data
-        } else {
-          this.ficationBoolean = true
-        }
-      }
-    })
     this.axios.post(maintainRepairgetgetRepariTaskQueryApprovalItem()).then((response) => {
       if (response.data.code === 0) {
-        console.log(response)
         this.ApprovalItem = response.data.data
       }
     })

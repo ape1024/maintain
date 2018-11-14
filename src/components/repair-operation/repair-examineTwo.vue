@@ -193,12 +193,12 @@
                 </li>
                 <li class="ficationEnsconceLi">
                   <span class="ficationEnsconceLitwoSpan">
-                    审查结论:
+                    审查结论: {{item.ApprovalItemBoolean}}
                   </span>
                   <span class="tlefttoprightLiSPan">
                     <!--{{ergodicStor(item.approvalstate)}}-->
-                    <el-radio-group  v-model="item.approvalstate">
-                      <el-radio :disabled="item.ApprovalItemBoolean" :key="index" v-for="(item, index) in ApprovalItem" :label="item.value">{{item.name}}</el-radio>
+                    <el-radio-group :disabled="item.ApprovalItemBoolean"  v-model="item.approvalstate">
+                      <el-radio  :key="index" v-for="(item, index) in ApprovalItem" :label="item.value">{{item.name}}</el-radio>
                     </el-radio-group>
                   </span>
                 </li>
@@ -208,13 +208,12 @@
                   </span>
                   <span class="tlefttoprightLiSPanFour">
                     <el-input
-                      :disabled="item.ApprovalItemBoolean"
                       resize="none"
                       type="textarea"
                       :rows="2"
                       placeholder="请输入内容"
                       v-model="item.approvalopinion">
-</el-input>
+                    </el-input>
                   </span>
                 </li>
                 <li class="ficationEnsconceLi">
@@ -435,7 +434,7 @@
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
-import { maintainRepairModifyApprovalOptionByTaskid, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId, maintainRepairgetgetRepariTaskQueryApprovalItem, maintainRepairgetFaultSelectItems, maintainRepairapprovalTask } from '../../api/user'
+import { maintainRepairModifyApprovalOptionByTaskid, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId, maintainRepairgetgetRepariTaskQueryApprovalItem, maintainRepairgetFaultSelectItems, maintainRepairapprovalTask, maintainRepairModifyApprovalOptionByTaskidTwo } from '../../api/user'
 export default {
   name: 'repair-examineTwo',
   props: ['examine', 'state', 'repairtasks', 'title'],
@@ -539,37 +538,64 @@ export default {
       })
     },
     Examination (item) {
-      this.repairtaskid = item.repairtaskid
-      if (item.approvalopinion) {
-        this.SubmissionapprovalOpinion = item.approvalopinion
-      } else {
-        this.SubmissionapprovalOpinion = ''
-        this.$message({
-          message: '审核意见不能为空!',
-          type: 'warning'
-        })
-        return false
-      }
-      if (item.approvalstate) {
-        this.SubmissionapprovalState = item.approvalstate
-      } else {
-        this.SubmissionapprovalState = ''
-        this.$message({
-          message: '审查结论不能为空!',
-          type: 'warning'
-        })
-        return false
-      }
-      this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
-        if (response.data.code === 0) {
-          this.faulttreatment = response.data.data.faulttreatment
-          this.faultreason = response.data.data.faultreason
-          this.faultrange = response.data.data.faultrange
-          this.faulttype = response.data.data.faulttype
-          this.faultphenomenon = response.data.data.faultphenomenon
-          this.classificationBoolean = true
+      if (!item.ApprovalItemBoolean) {
+        console.log('//////;//')
+        this.repairtaskid = item.repairtaskid
+        if (item.approvalopinion) {
+          this.SubmissionapprovalOpinion = item.approvalopinion
+        } else {
+          this.SubmissionapprovalOpinion = ''
+          this.$message({
+            message: '审核意见不能为空!',
+            type: 'warning'
+          })
+          return false
         }
-      })
+        if (item.approvalstate) {
+          this.SubmissionapprovalState = item.approvalstate
+        } else {
+          this.SubmissionapprovalState = ''
+          this.$message({
+            message: '审查结论不能为空!',
+            type: 'warning'
+          })
+          return false
+        }
+        this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
+          if (response.data.code === 0) {
+            this.faulttreatment = response.data.data.faulttreatment
+            this.faultreason = response.data.data.faultreason
+            this.faultrange = response.data.data.faultrange
+            this.faulttype = response.data.data.faulttype
+            this.faultphenomenon = response.data.data.faultphenomenon
+            this.classificationBoolean = true
+          }
+        })
+      } else {
+        if (item.approvalopinion) {
+          let token = JSON.parse(window.sessionStorage.token)
+          let approvalid = item.approvalid
+          let approvalopinion = item.approvalopinion
+          this.axios.post(maintainRepairModifyApprovalOptionByTaskidTwo(token, approvalid, approvalopinion)).then((response) => {
+            if (response.data.code === 0) {
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: '修改失败',
+                type: 'warning'
+              })
+            }
+          })
+        } else {
+          this.$message({
+            message: '审查意见不能为空',
+            type: 'warning'
+          })
+        }
+      }
     },
     ergodicStor (nub) {
       let Name = ''
@@ -688,31 +714,9 @@ export default {
         this.JurisdictionApproval = val.approval
       }
     })
-    this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {
-      console.log('//////////////')
-      console.log(maintainRepairfindReworksByTaskid(this.examine.repairtaskid))
-      console.log(response)
-      if (response.data.code === 0) {
-        if (response.data.data.length) {
-          response.data.data.forEach((val) => {
-            val.flag = false
-            if (val.repairstate === 5) {
-              val.ApprovalItemBoolean = false
-            } else {
-              val.ApprovalItemBoolean = true
-            }
-          })
-          console.log(response.data.data)
-          this.reworkData = response.data.data
-        } else {
-          this.ficationBoolean = true
-        }
-      }
-    })
     this.axios.post(maintainRepairgetgetRepariTaskQueryApprovalItem()).then((response) => {
       if (response.data.code === 0) {
         this.ApprovalItem = response.data.data
-        console.log(this.ApprovalItem)
       }
     })
     this.axios.post(maintainRepairgetApprovalInfos(this.examine.repairtaskid)).then((response) => {
@@ -753,8 +757,15 @@ export default {
         if (response.data.data.length !== 0) {
           response.data.data.forEach((val) => {
             val.flag = false
+            if (val.approvalstate === 5) {
+              val.ApprovalItemBoolean = false
+            } else {
+              val.ApprovalItemBoolean = true
+            }
           })
           response.data.data[0].flag = true
+          console.log('//////')
+          console.log(response)
           this.reworkData = response.data.data
         } else {
           this.ficationBoolean = true

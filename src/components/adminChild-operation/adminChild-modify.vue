@@ -602,8 +602,6 @@ export default {
   created () {
     //  审核日期
     this.conclusionExamination = this.tiemerIf(this.modify.approvaltime)
-    console.log(this.modify.approvaltime)
-    console.log(this.tiemerIf(this.modify.approvaltime))
     //  审核意见
     this.approvalOpinion = this.modify.approvalopinion
     //  findAllRootAreasTree  下午写

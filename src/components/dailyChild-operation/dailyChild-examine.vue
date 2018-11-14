@@ -327,10 +327,10 @@ export default {
       let date = new Date(obj)
       let Y = date.getFullYear() + '/'
       let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '/'
-      let D = date.getDate() + ' '
-      let h = date.getHours() + ':'
-      let m = date.getMinutes() + ':'
-      let s = date.getSeconds()
+      let D = date.getDate() < 10 ? '0' + date.getDate() + ' ' : date.getDate() + ' '
+      let h = date.getHours() < 10 ? '0' + date.getHours() + ':' : date.getHours() + ':'
+      let m = date.getMinutes() < 10 ? '0' + date.getMinutes() + ':' : date.getMinutes() + ':'
+      let s = date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds()
       return Y + M + D + h + m + s
     },
     assignment () {
@@ -576,8 +576,6 @@ export default {
     DialogImg
   },
   created () {
-    console.log('///......')
-    console.log(this.examineName)
     this.DetailsByDeviceId()
     //  任务审批选项
     this.axios.post(maintainDailygetTaskApprovalItems()).then((response) => {

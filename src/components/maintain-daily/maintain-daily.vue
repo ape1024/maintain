@@ -234,8 +234,6 @@ export default {
     },
     // 选中事件
     selectStyle (item, index) {
-      console.log('/////')
-      console.log(item)
       if (item.flag) {
         item.flag = false
         return

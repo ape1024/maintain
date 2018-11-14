@@ -334,6 +334,9 @@ export const maintainRepairModifyApprovalOptionByTaskid = (approvalOption, taski
   const url = `${Test}/repairtasks/modifyApprovalOption?taskid=${taskid}&approvalOption=${approvalOption}`
   return url
 }
+export const maintainRepairModifyApprovalOptionByTaskidTwo = (token, approvalid, approvalOption) => {
+  return `${Test}/repairtasks/modifyApprovalOption2?token=${token}&approvalid=${approvalid}&approvalOption=${approvalOption}`
+}
 //  获取任务审批记录
 export const maintainRepairgetApprovalInfos = (ID) => {
   const url = `${Test}/repairtasks/getApprovalInfos?repairtaskid=${ID}`

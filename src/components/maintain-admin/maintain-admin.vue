@@ -170,7 +170,6 @@ export default {
         let areaid = this.regionModel[this.regionModel.length - 1]
         this.axios.post(CalcDevCount(token, this.maintainProject, areaid, 1, 30)).then((response) => {
           if (response.data.code === 0) {
-            console.log(response)
             this.tableData = response.data.data.datas
             this.numberPages = response.data.data.totalPage
           }
