@@ -50,6 +50,8 @@ import dailyFile from '../components/archives-child/dailyFile'
 import inspectFile from '../components/archives-child/inspectFile'
 // 维护保养归档
 import maintainFile from '../components/archives-child/maintainFile'
+//  基本设备管理
+// import equipmentManagement from '../components/'
 
 Vue.use(Router)
 
@@ -166,6 +168,10 @@ const routes = [
           path: 'structureNew',
           component: structureNew
         }
+          // , {
+          //   path: 'equipmentManagement',
+          //   component: equipmentManagement
+          // }
         ]
       },
       {

@@ -127,7 +127,8 @@
                 <i v-show="!item.flag" class="el-icon-arrow-up"></i>
               </p>
               <p class="ficationLiDivPthree">
-                {{obtainState(item.approvalstate)}}
+                <!--{{obtainState(item.repairstate)}}-->
+                返工
               </p>
             </div>
             <div v-show="item.flag" class="ficationEnsconce">
@@ -209,7 +210,7 @@
                   <span class="tlefttoprightLiSPan">
                     {{item.approvalopinion}}
                   </span>
-                  <p v-show="AuditorsPersonnel && JurisdictionApproval" class="header_p_twelve threelevel_litwo_ptwo" @click.stop="updateAuditorsmodify(item)">修改</p>
+                  <p v-show="AuditorsPersonnel && JurisdictionApproval" v-if="item.approvalid" class="header_p_twelve threelevel_litwo_ptwo" @click.stop="updateAuditorsmodify(item)">修改</p>
                 </li>
               </ul>
             </div>
@@ -454,7 +455,7 @@ export default {
             arr.push(`${this.imgUrl}${val}`)
           })
         } else {
-          arr.push(src)
+          arr.push(`${this.imgUrl}${src}`)
         }
         return arr
       }

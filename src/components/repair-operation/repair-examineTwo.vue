@@ -124,7 +124,8 @@
                 <i v-show="!item.flag" class="el-icon-arrow-up"></i>
               </p>
               <p class="ficationLiDivPthree">
-                {{obtainState(item.repairstate)}}
+                <!--{{obtainState(item.repairstate)}}-->
+                返工
               </p>
             </div>
             <div v-show="item.flag" class="ficationEnsconce">
@@ -193,7 +194,7 @@
                 </li>
                 <li class="ficationEnsconceLi">
                   <span class="ficationEnsconceLitwoSpan">
-                    审查结论: {{item.ApprovalItemBoolean}}
+                    审查结论:
                   </span>
                   <span class="tlefttoprightLiSPan">
                     <!--{{ergodicStor(item.approvalstate)}}-->
@@ -434,7 +435,7 @@
 <script>
 import DialogImg from 'base/dialog-img/dialog-img'
 import { formatDate } from '../../../node_modules/element-ui/packages/date-picker/src/util'
-import { maintainRepairModifyApprovalOptionByTaskid, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId, maintainRepairgetgetRepariTaskQueryApprovalItem, maintainRepairgetFaultSelectItems, maintainRepairapprovalTask, maintainRepairModifyApprovalOptionByTaskidTwo } from '../../api/user'
+import { maintainRepairModifyApprovalOptionByTaskid, maintainRepairfindReworksByTaskid, maintainRepairgetApprovalInfos, getCheckTaskByRepairTaskId, maintainRepairgetgetRepariTaskQueryApprovalItem, maintainRepairgetFaultSelectItems, maintainRepairapprovalTask, maintainRepairModifyApprovalOptionByTaskidTwo, maintainRepairapprovalTaskTwo } from '../../api/user'
 export default {
   name: 'repair-examineTwo',
   props: ['examine', 'state', 'repairtasks', 'title'],
@@ -538,9 +539,9 @@ export default {
       })
     },
     Examination (item) {
+      let token = JSON.parse(window.sessionStorage.token)
       if (!item.ApprovalItemBoolean) {
-        console.log('//////;//')
-        this.repairtaskid = item.repairtaskid
+        this.repairtaskid = this.examine.repairtaskid
         if (item.approvalopinion) {
           this.SubmissionapprovalOpinion = item.approvalopinion
         } else {
@@ -561,19 +562,34 @@ export default {
           })
           return false
         }
-        this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
-          if (response.data.code === 0) {
-            this.faulttreatment = response.data.data.faulttreatment
-            this.faultreason = response.data.data.faultreason
-            this.faultrange = response.data.data.faultrange
-            this.faulttype = response.data.data.faulttype
-            this.faultphenomenon = response.data.data.faultphenomenon
-            this.classificationBoolean = true
-          }
-        })
+        if (item.approvalstate === 100) {
+          this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
+            if (response.data.code === 0) {
+              this.faulttreatment = response.data.data.faulttreatment
+              this.faultreason = response.data.data.faultreason
+              this.faultrange = response.data.data.faultrange
+              this.faulttype = response.data.data.faulttype
+              this.faultphenomenon = response.data.data.faultphenomenon
+              this.classificationBoolean = true
+            }
+          })
+        } else {
+          console.log(token)
+          console.log(this.repairtaskid)
+          console.log(this.SubmissionapprovalOpinion)
+          console.log(this.SubmissionapprovalState)
+          this.axios.post(maintainRepairapprovalTaskTwo(token, this.repairtaskid, this.SubmissionapprovalOpinion, this.SubmissionapprovalState)).then((data) => {
+            if (data.data.code === 0) {
+              this.$message({
+                message: '审批成功',
+                type: 'success'
+              })
+              this.$emit('mine', this.thisPage)
+            }
+          })
+        }
       } else {
         if (item.approvalopinion) {
-          let token = JSON.parse(window.sessionStorage.token)
           let approvalid = item.approvalid
           let approvalopinion = item.approvalopinion
           this.axios.post(maintainRepairModifyApprovalOptionByTaskidTwo(token, approvalid, approvalopinion)).then((response) => {
@@ -581,6 +597,24 @@ export default {
               this.$message({
                 message: '修改成功',
                 type: 'success'
+              })
+              this.axios.post(maintainRepairfindReworksByTaskid(this.examine.repairtaskid)).then((response) => {
+                if (response.data.code === 0) {
+                  if (response.data.data.length !== 0) {
+                    response.data.data.forEach((val) => {
+                      val.flag = false
+                      if (val.approvalstate === 5) {
+                        val.ApprovalItemBoolean = false
+                      } else {
+                        val.ApprovalItemBoolean = true
+                      }
+                    })
+                    response.data.data[0].flag = true
+                    this.reworkData = response.data.data
+                  } else {
+                    this.ficationBoolean = true
+                  }
+                }
               })
             } else {
               this.$message({
@@ -652,7 +686,7 @@ export default {
             arr.push(`${this.imgUrl}${val}`)
           })
         } else {
-          arr.push(src)
+          arr.push(`${this.imgUrl}${src}`)
         }
         return arr
       }
@@ -707,6 +741,7 @@ export default {
     DialogImg
   },
   created () {
+    console.log(this.state)
     // 权限
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
@@ -764,8 +799,6 @@ export default {
             }
           })
           response.data.data[0].flag = true
-          console.log('//////')
-          console.log(response)
           this.reworkData = response.data.data
         } else {
           this.ficationBoolean = true

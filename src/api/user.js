@@ -347,6 +347,9 @@ export const maintainRepairapprovalTask = (token, repairtaskid, approvalOpinion,
   const url = `${Test}/repairtasks/approvalTask?token=${token}&repairtaskid=${repairtaskid}&approvalOpinion=${approvalOpinion}&approvalState=${approvalState}&assignmenttime=${assignmenttime}&faulttypeid=${faulttypeData}&faultreasonid=${faultreasonData}&faultrangeid=${faultrangeData}&faultphenomenonid=${faultphenomenonData}&faulttreamentid=${faulttreatmentData}`
   return url
 }
+export const maintainRepairapprovalTaskTwo = (token, repairtaskid, approvalOpinion, approvalState) => {
+  return `${Test}/repairtasks/approvalTask?token=${token}&repairtaskid=${repairtaskid}&approvalOpinion=${approvalOpinion}&approvalState=${approvalState}`
+}
 //  验证维修
 export const maintainRepaircheckTask = (token, repairtaskid, confirmopinion) => {
   const url = `${Test}/repairtasks/checkTask?token=${token}&taskID=${repairtaskid}&confirmopinion=${confirmopinion}`
