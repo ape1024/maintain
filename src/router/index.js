@@ -40,6 +40,8 @@ import tercalateProject from '../components/intercalate-child/tercalateChild-pro
 import taskrules from '../components/intercalate-child/intercalateChild-Taskrules'
 // 我的消息
 import tercalateInfo from '../components/intercalate-child/tercalateChild-info'
+//  基本设备管理
+import equipmentManagement from '../components/intercalate-child/intercalateChild-equipmentManagement'
 // 测试组织机构
 import structureNew from '../components/intercalate-child/intercalateChild-structureNew'
 // 消防设施归档
@@ -50,8 +52,6 @@ import dailyFile from '../components/archives-child/dailyFile'
 import inspectFile from '../components/archives-child/inspectFile'
 // 维护保养归档
 import maintainFile from '../components/archives-child/maintainFile'
-//  基本设备管理
-// import equipmentManagement from '../components/'
 
 Vue.use(Router)
 
@@ -167,12 +167,10 @@ const routes = [
         }, {
           path: 'structureNew',
           component: structureNew
-        }
-          // , {
-          //   path: 'equipmentManagement',
-          //   component: equipmentManagement
-          // }
-        ]
+        }, {
+          path: 'equipmentManagement',
+          component: equipmentManagement
+        }]
       },
       {
         path: '/home',
