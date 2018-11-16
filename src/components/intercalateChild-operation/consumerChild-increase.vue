@@ -822,8 +822,15 @@ export default {
       //  服务机构
       this.axios.post(getRootOrganizationsNotProprietor()).then((response) => {
         if (response.data.code === 0) {
-          this.proprietorName = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])
-          this.proprietorNameTwo = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])
+          console.log(this.organizationtype)
+          if (this.organizationtype === 1) {
+            this.proprietorName = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])
+            this.proprietorNameTwo = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])
+          } else {
+            this.organizationDisableTwo = true
+            this.proprietorName = response.data.data
+            this.proprietorNameTwo = response.data.data
+          }
         }
       })
     },
@@ -870,12 +877,13 @@ export default {
         this.province = response.data.data
       }
     })
-    this.getRootOrganizationsNotProprietor()
-    this.getProprietorOrganization()
     this.axios.post(managementgetUserOrganization(token)).then((response) => {
       if (response.data.code === 0) {
         const data = response.data.data
         let type = data.organizationtype
+        this.organizationtype = type // 服务机构类型,处理是否显示新增服务机构
+        this.getRootOrganizationsNotProprietor()
+        this.getProprietorOrganization()
         if (type === 1) {
           this.proprieTor = data.organizationid
           this.organizationDisable = false
