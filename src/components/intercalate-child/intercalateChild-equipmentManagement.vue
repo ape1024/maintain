@@ -1,90 +1,94 @@
 <template>
   <div class="subject">
-      <section class="subject_top">
-        <div class="subject_top__div">
-          <ul class="ul_input">
-            <li class="li_input">
-              <p class="div_p">建筑区域：</p>
-              <div class="div_input">
-                <el-cascader
-                  size="mini"
-                  clearable
-                  :options="regionDate"
-                  v-model="regionModel"
-                  :props="regionProps"
-                  change-on-select>>
-                </el-cascader>
-              </div>
-            </li>
-          </ul>
-          <div class="button">
-            <!--查询-->
-            <div class="query" @click="query">
-              查 询
+    <section class="subject_top">
+      <div class="subject_top__div">
+        <ul class="ul_input">
+          <li class="li_input">
+            <p class="div_p">建筑区域：</p>
+            <div class="div_input">
+              <el-cascader
+                size="mini"
+                clearable
+                :options="regionDate"
+                v-model="regionModel"
+                :props="regionProps"
+                change-on-select>>
+              </el-cascader>
             </div>
+          </li>
+        </ul>
+        <div class="button">
+          <!--查询-->
+          <div class="query" @click="query">
+            查 询
+          </div>
+          <!--新增-->
+          <div v-if="JurisdictionInsert" @click.stop="auditing" class="newly">
+            新 增
           </div>
         </div>
-      </section>
-      <section class="subject_bottom">
-        <ul class="header_ul">
-          <li class="header_lithree">
-            建筑区域
-          </li>
-          <li class="header_li">
-            设施总数量
-          </li>
-          <li class="header_li">
-            待审批数量
-          </li>
-          <li class="header_li">
-            已存档数量
-          </li>
-          <li class="header_li">
-            需修改数量
-          </li>
-          <li class="header_li">
-            停用数量
-          </li>
-        </ul>
-        <ul class="table_ul">
-          <li v-for="(item) in tableData" class="table_li" :key="item.deviceid" :id="item.areaid">
-            <ul :id="item.id" class="inline_ul" @click="selectStyle (item)">
-              <li class="header_lithree">
-                <i class="header_lithreeII" :class="!item.flag ? 'el-icon-circle-plus-outline' : 'el-icon-remove-outline'"></i>
-                {{item.areaname}}
-              </li>
-              <li class="header_li">{{item.alldevcount}}</li>
-              <li class="header_li">{{item.checkdevnum}}</li>
-              <li class="header_li">{{item.filedevnum}}</li>
-              <li class="header_li">{{item.updatedevnum}}</li>
-              <li class="header_li">{{item.stopdevnum}}</li>
-            </ul>
-            <transition enter-active-class="fadeInUp"
-                        leave-active-class="fadeOutDown">
-              <div v-if="item.flag" class="inline_div">
-                <adminchild :adminid="adminAreaid" :tabChild="tableChild" @transmission="Transmission"></adminchild>
-              </div>
-            </transition>
-          </li>
-        </ul>
-        <div class="numberPages" v-if="numberPagesBoolean">
-          <el-pagination
-            background
-            layout="prev, pager, next"
-            @current-change="numberPagesChange"
-            :current-page="currentPage"
-            :page-count="numberPages">
-          </el-pagination>
-        </div>
-      </section>
-      <section v-if="review_boolean" @click.stop class="review">
-        <increase v-if="review_boolean" :msg="review_boolean" @transmission="Transmission" @say="onSay" ></increase>
-      </section>
-    </div>
+      </div>
+    </section>
+    <section class="subject_bottom">
+      <ul class="header_ul">
+        <li class="header_lithree">
+          建筑区域
+        </li>
+        <li class="header_li">
+          设施总数量
+        </li>
+        <li class="header_li">
+          待审批数量
+        </li>
+        <li class="header_li">
+          已存档数量
+        </li>
+        <li class="header_li">
+          需修改数量
+        </li>
+        <li class="header_li">
+          停用数量
+        </li>
+      </ul>
+      <ul class="table_ul">
+        <li v-for="(item) in tableData" class="table_li" :key="item.deviceid" :id="item.areaid">
+          <ul :id="item.id" class="inline_ul" @click="selectStyle (item)">
+            <li class="header_lithree">
+              <i class="header_lithreeII" :class="!item.flag ? 'el-icon-circle-plus-outline' : 'el-icon-remove-outline'"></i>
+              {{item.areaname}}
+            </li>
+            <li class="header_li">{{item.alldevcount}}</li>
+            <li class="header_li">{{item.checkdevnum}}</li>
+            <li class="header_li">{{item.filedevnum}}</li>
+            <li class="header_li">{{item.updatedevnum}}</li>
+            <li class="header_li">{{item.stopdevnum}}</li>
+          </ul>
+          <transition enter-active-class="fadeInUp"
+                      leave-active-class="fadeOutDown">
+            <div v-if="item.flag" class="inline_div">
+              <adminchild :adminid="adminAreaid" :tabChild="tableChild" @transmission="Transmission"></adminchild>
+            </div>
+          </transition>
+        </li>
+      </ul>
+      <div class="numberPages" v-if="numberPagesBoolean">
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          @current-change="numberPagesChange"
+          :current-page="currentPage"
+          :page-count="numberPages">
+        </el-pagination>
+      </div>
+    </section>
+    <section v-if="review_boolean" @click.stop class="review">
+      <increase v-if="review_boolean" :msg="review_boolean" @transmission="Transmission" @say="onSay" ></increase>
+    </section>
+  </div>
 </template>
 
 <script>
-import adminchild from '../admin-child/admin-child'
+import adminchild from '../intercalateChild-operation/equipmentManagement-Child'
 import increase from '../admin-child/adminChild-review'
 import { maintainReportfindManufactures, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate, findAllRootAreasTree } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
@@ -97,6 +101,18 @@ export default {
     increase
   },
   methods: {
+    init () {
+      this.tableData = []
+      let token = JSON.parse(window.sessionStorage.token)
+      let regionId = (this.regionModel)[0]
+      this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
+        if (data.data.code === 0) {
+          this.tableData = data.data.data.datas
+          this.numberPagesBoolean = true
+          this.numberPages = data.data.data.totalPage
+        }
+      })
+    },
     numberPagesChange (el) {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(findAllRootAreasTree(this.maintainProject)).then((response) => {
@@ -105,7 +121,7 @@ export default {
           this.regionModel.push((this.regionDate)[0].areaid)
           //  获取 列表数据 默认第一页 20个
           let regionId = (this.regionModel).shift()
-          this.axios.post(CalcDevCount(token, -1, regionId, el, 20)).then((data) => {
+          this.axios.post(CalcDevCount(token, this.maintainProject, regionId, el, 20)).then((data) => {
             if (data.data.code === 0) {
               this.tableData = data.data.data.datas
               this.numberPagesBoolean = true
@@ -122,7 +138,7 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       //  获取 列表数据 默认第一页 20个
       let regionId = el[el.length - 1]
-      this.axios.post(CalcDevCount(token, -1, regionId, 1, 20)).then((data) => {
+      this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
         if (data.data.code === 0) {
           this.tableData = data.data.data.datas
           this.numberPages = data.data.data.totalPage
@@ -164,7 +180,7 @@ export default {
       } else {
         let token = JSON.parse(window.sessionStorage.token)
         let areaid = this.regionModel[this.regionModel.length - 1]
-        this.axios.post(CalcDevCount(token, -1, areaid, 1, 30)).then((response) => {
+        this.axios.post(CalcDevCount(token, this.maintainProject, areaid, 1, 30)).then((response) => {
           if (response.data.code === 0) {
             this.tableData = response.data.data.datas
             this.numberPages = response.data.data.totalPage
@@ -284,7 +300,7 @@ export default {
         this.regionModel.push((this.regionDate)[0].areaid)
         //  获取 列表数据 默认第一页 20个
         let regionId = (this.regionModel)[0]
-        this.axios.post(CalcDevCount(token, -1, regionId, 1, 20)).then((data) => {
+        this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
           if (data.data.code === 0) {
             this.tableData = data.data.data.datas
             this.numberPagesBoolean = true
@@ -320,7 +336,7 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin 12px 12px 0
+    margin 0 12px 0
     background rgba(000,000,000,.47)
   .subject_top
     overflow hidden
@@ -485,22 +501,22 @@ export default {
     background $color-barckground-transparent
     z-index 11
     overflow hidden
-.subject_top__div
-  overflow hidden
-.el-container
-  margin 12px 12px 0
-.el-main
-  padding 10px
-.subject_bottom
-  overflow hidden
-  margin 10px
-  min-height 800px
-  background rgba(000,000,000,.35)
-  .numberPages
+  .subject_top__div
     overflow hidden
-    margin 20px 0
-    text-align center
-  .header_lithreeII
-    color #4ea4db
-    margin-right 10px
+  .el-container
+    margin 12px 12px 0
+  .el-main
+    padding 10px
+  .subject_bottom
+    overflow hidden
+    margin 10px
+    min-height 800px
+    background rgba(000,000,000,.35)
+    .numberPages
+      overflow hidden
+      margin 20px 0
+      text-align center
+    .header_lithreeII
+      color #4ea4db
+      margin-right 10px
 </style>

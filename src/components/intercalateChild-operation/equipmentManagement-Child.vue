@@ -53,6 +53,9 @@
       <li class="threelevel_litwo">
         操作
       </li>
+      <li v-if="JurisdictionApproval" @click="approvalstateS" class="threelevel_lifive">
+        批量审批
+      </li>
     </ul>
     <ul class="threelevel_list">
       <li :key="$index" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
@@ -85,7 +88,7 @@
             {{dataset.madedate}}
           </li>
           <!--<li class="threelevel_lithree">-->
-            <!--<p :style="{color: devicestatecodeColor(dataset.devicestatecode)}">{{devicestateCode(dataset.devicestatecode)}}</p>-->
+          <!--<p :style="{color: devicestatecodeColor(dataset.devicestatecode)}">{{devicestateCode(dataset.devicestatecode)}}</p>-->
           <!--</li>-->
           <li class="threelevel_lithree">
             <p :style="{color: examineCodeColor(dataset.approvalstatecode)}">
@@ -94,7 +97,35 @@
             <!--{{dataset.approvalstatecode}}-->
           </li>
           <li class="threelevel_litwo">
+            <div v-if="!JurisdictionSuper">
+              <p v-if="JurisdictionApproval && dataset.disabledBoolean" @click.stop="question(dataset.deviceid)" class="header_p_eight threelevel_litwo_p">
+                审核
+              </p>
+              <p v-if="JurisdictionApproval && !dataset.disabledBoolean" class="header_p_Eleven threelevel_litwo_p">
+                审核
+              </p>
+            </div>
+            <div v-if="JurisdictionSuper">
+              <p  @click.stop="question(dataset.deviceid)" class="header_p_eight threelevel_litwo_p">
+                审核
+              </p>
+            </div>
             <p v-if="JurisdictionSelect" @click.stop="examine(dataset.deviceid)" class="header_p_ten">查看</p>
+            <p v-if="JurisdictionUpdate && dataset.disabledBoolean" @click.stop="modify(dataset, dataset.deviceid)" class="header_p_twelve">
+              修改
+            </p>
+            <p v-if="JurisdictionUpdate && !dataset.disabledBoolean" class="header_p_Eleven">
+              修改
+            </p>
+            <p v-if="JurisdictionDelete&&dataset.disabledBoolean" class="header_p_eleven" @click.stop="">
+              <el-button type="text" @click="amputate($index, tabChild, dataset.deviceid)">删除</el-button>
+            </p>
+            <p v-if="JurisdictionDelete&&!dataset.disabledBoolean" class="header_p_Eleven" @click.stop="">
+              删除
+            </p>
+            <p class="superJurisdiction" v-if="JurisdictionSuper && !dataset.disabledBoolean" @click="amputate($index, tabChild, dataset.deviceid)">
+              删档
+            </p>
           </li>
         </ul>
       </li>
@@ -128,7 +159,7 @@ import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, 
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin, loadingMixin],
-  name: 'admin-child',
+  name: 'equipmentManagement-Child',
   props: ['adminid'],
   components: {
     childLookover,
@@ -176,7 +207,7 @@ export default {
   },
   methods: {
     DetailProjects () {
-      this.axios.post(admingetDevListDetailProjects(this.adminid, '')).then((response) => {
+      this.axios.post(admingetDevListDetailProjects(this.adminid, this.maintainProject)).then((response) => {
         if (!response) {
           // 请求失败关闭加载
           this.closeLoadingDialog()
@@ -241,8 +272,9 @@ export default {
       manufactorModel = manufactorModel.length && manufactorModel[manufactorModel.length - 1] !== -1 ? manufactorModel : ''
       runningState = typeof runningState === 'number' ? runningState : ''
       AuditstatusD = AuditstatusD && AuditstatusD !== -1 ? AuditstatusD : ''
-
-      this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, '')).then((response) => {
+      console.log(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, this.maintainProject)
+      this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, this.maintainProject)).then((response) => {
+        console.log(response)
         if (response.data.code === 0) {
           response.data.data.forEach((val) => {
             val.checked = false
@@ -595,52 +627,52 @@ export default {
       float left
       width 18.5%
       overflow hidden
-     .threelevel_lithree
-       float left
-       width 7.5%
-       padding-left 1%
-       position relative
+    .threelevel_lithree
+      float left
+      width 7.5%
+      padding-left 1%
+      position relative
 
   .threelevel_list
-      margin: 4px;
-      overflow: hidden;
-      position: relative;
-    .threelevel_list_li
-        width 100%
-        overflow hidden
+    margin: 4px;
+    overflow: hidden;
+    position: relative;
+  .threelevel_list_li
+    width 100%
+    overflow hidden
+    height 40px
+    line-height 40px
+    position relative
+    .threelevel_list_ul
+      width 100%
+      overflow hidden
+      height 40px
+      .threelevel_li
+        float left
+        width 8.5%
         height 40px
-        line-height 40px
-        position relative
-        .threelevel_list_ul
-          width 100%
-          overflow hidden
-          height 40px
-          .threelevel_li
-            float left
-            width 8.5%
-            height 40px
-            overflow hidden
-            text-overflow ellipsis
-            white-space nowrap
-          .threelevel_litwo
-            float left
-            width 23.5%
-            height 40px
-            overflow hidden
-            text-overflow ellipsis
-            white-space nowrap
-          .threelevel_lithree
-            float left
-            width 7.5%
-            height 40px
-            padding-left 1%
-            overflow hidden
-            text-overflow ellipsis
-            white-space nowrap
-          .threelevel_litwo p
-            float left
-            margin-right 20px
-            cursor pointer
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
+      .threelevel_litwo
+        float left
+        width 23.5%
+        height 40px
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
+      .threelevel_lithree
+        float left
+        width 7.5%
+        height 40px
+        padding-left 1%
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
+      .threelevel_litwo p
+        float left
+        margin-right 20px
+        cursor pointer
   .threelevel_list_ul:hover
     background #253147
   .review
@@ -684,6 +716,6 @@ export default {
   .superJurisdiction
     color #cc5966
   .threelevel_lithreeSSpan
-     display inline-block
-     width 14px
+    display inline-block
+    width 14px
 </style>
