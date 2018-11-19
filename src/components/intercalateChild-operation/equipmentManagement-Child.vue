@@ -241,8 +241,7 @@ export default {
       manufactorModel = manufactorModel.length && manufactorModel[manufactorModel.length - 1] !== -1 ? manufactorModel : ''
       runningState = typeof runningState === 'number' ? runningState : ''
       AuditstatusD = AuditstatusD && AuditstatusD !== -1 ? AuditstatusD : ''
-
-      this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, '')).then((response) => {
+      this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           response.data.data.forEach((val) => {
             val.checked = false

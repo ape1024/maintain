@@ -239,13 +239,17 @@
             <div class="communicationTopLeft">
               <p class="communicationTopLeftP">技术要求:</p>
               <span class="communicationTopLeftSpan">
-                <el-input size="mini" v-model="technical " placeholder="请输入内容"></el-input>
+                <el-input   type="textarea"
+                            :rows="2"
+                            resize="none" size="mini" v-model="technical " placeholder="请输入内容"></el-input>
               </span>
             </div>
             <div class="communicationTopLeft">
               <p class="communicationTopLeftP">技术说明:</p>
               <span class="communicationTopLeftSpan">
-                <el-input size="mini" v-model="technicalNote" placeholder="请输入内容"></el-input>
+                <el-input  type="textarea"
+                           :rows="2"
+                           resize="none" size="mini" v-model="technicalNote" placeholder="请输入内容"></el-input>
               </span>
             </div>
           </div>

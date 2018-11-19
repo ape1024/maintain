@@ -277,7 +277,7 @@ export default {
     // 权限
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'device') {
+      if (val.functioncode === 'basedevice') {
         this.JurisdictionInsert = val.insert
       }
     })
