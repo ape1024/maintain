@@ -7,14 +7,14 @@
         <router-link v-show="this.organizationSelect" to="/home/intercalate/structureNew"><li class="headerLi">组织机构</li></router-link>
         <router-link v-show="this.roleSelect" to="/home/intercalate/karakters"><li class="headerLi">角色管理</li></router-link>
         <router-link v-show="this.userSelect" to="/home/intercalate/consumer"><li class="headerLi">用户设置</li></router-link>
-        <router-link v-show="this.projectSelect" to="/home/intercalate/project"><li class="headerLi">项目设置</li></router-link>
-        <router-link v-show="this.standardSelect" to="/home/intercalate/taskrules"><li v-if="true" class="headerLi">维管标准</li></router-link>
-        <router-link v-show="this.infoSelect" to="/home/intercalate/info"><li class="headerLi">消息管理</li></router-link>
         <router-link to="/home/intercalate/equipmentManagement">
           <li class="headerLi">
             基本设备管理
           </li>
         </router-link>
+        <router-link v-show="this.projectSelect" to="/home/intercalate/project"><li class="headerLi">项目设置</li></router-link>
+        <router-link v-show="this.standardSelect" to="/home/intercalate/taskrules"><li v-if="true" class="headerLi">维管标准</li></router-link>
+        <router-link v-show="this.infoSelect" to="/home/intercalate/info"><li class="headerLi">消息管理</li></router-link>
       </ul>
     </header>
     <div class="intercalateRouter">

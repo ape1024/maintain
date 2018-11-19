@@ -3,7 +3,7 @@
     <section class="subject_top">
       <ul class="ul_input">
         <li class="li_input">
-          <p class="div_p">区 域：</p>
+          <p class="div_p">建筑区域：</p>
           <div class="div_input">
             <el-cascader
               size="mini"
@@ -584,6 +584,7 @@ export default {
   @import "~common/stylus/variable"
   .subject
     overflow hidden
+    margin 12px
     position relative
     background rgba(0,0,0,0.45)
   .subject_top

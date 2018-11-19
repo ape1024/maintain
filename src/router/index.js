@@ -1,4 +1,5 @@
 import Vue from 'vue'
+
 import Router from 'vue-router'
 // 登录
 import login from '../components/login/login'
@@ -183,9 +184,15 @@ const routes = [
     redirect: '/login'
   }
 ]
+console.log('/////////////////////1')
+console.log('/////////////////////2')
 
 let router = new Router({
   routes
 })
-
+// router.beforeEach((to, from, next) => {
+//   if (!window.localStorage.pattern) {
+//     next({ path: '/intercalate' })
+//   }
+// })
 export default router

@@ -3,7 +3,7 @@
     <section class="subject_top">
       <ul class="ul_input">
         <li class="li_input">
-          <p class="div_p">区 域：</p>
+          <p class="div_p">建筑区域：</p>
           <div class="div_input">
             <el-cascader
               size="mini"
@@ -527,6 +527,7 @@ export default {
     color $color-header-b-normal
     font-size $font-size-medium
     height 32px
+    padding 4px 0
     line-height 32px
     background #354d76
   .header_li

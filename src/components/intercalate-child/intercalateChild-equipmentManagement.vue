@@ -101,18 +101,6 @@ export default {
     increase
   },
   methods: {
-    init () {
-      this.tableData = []
-      let token = JSON.parse(window.sessionStorage.token)
-      let regionId = (this.regionModel)[0]
-      this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
-        if (data.data.code === 0) {
-          this.tableData = data.data.data.datas
-          this.numberPagesBoolean = true
-          this.numberPages = data.data.data.totalPage
-        }
-      })
-    },
     numberPagesChange (el) {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(findAllRootAreasTree(this.maintainProject)).then((response) => {
@@ -121,7 +109,7 @@ export default {
           this.regionModel.push((this.regionDate)[0].areaid)
           //  获取 列表数据 默认第一页 20个
           let regionId = (this.regionModel).shift()
-          this.axios.post(CalcDevCount(token, this.maintainProject, regionId, el, 20)).then((data) => {
+          this.axios.post(CalcDevCount(token, -1, regionId, el, 20)).then((data) => {
             if (data.data.code === 0) {
               this.tableData = data.data.data.datas
               this.numberPagesBoolean = true
@@ -138,7 +126,7 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       //  获取 列表数据 默认第一页 20个
       let regionId = el[el.length - 1]
-      this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
+      this.axios.post(CalcDevCount(token, -1, regionId, 1, 20)).then((data) => {
         if (data.data.code === 0) {
           this.tableData = data.data.data.datas
           this.numberPages = data.data.data.totalPage
@@ -180,7 +168,7 @@ export default {
       } else {
         let token = JSON.parse(window.sessionStorage.token)
         let areaid = this.regionModel[this.regionModel.length - 1]
-        this.axios.post(CalcDevCount(token, this.maintainProject, areaid, 1, 30)).then((response) => {
+        this.axios.post(CalcDevCount(token, -1, areaid, 1, 30)).then((response) => {
           if (response.data.code === 0) {
             this.tableData = response.data.data.datas
             this.numberPages = response.data.data.totalPage
@@ -300,7 +288,7 @@ export default {
         this.regionModel.push((this.regionDate)[0].areaid)
         //  获取 列表数据 默认第一页 20个
         let regionId = (this.regionModel)[0]
-        this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
+        this.axios.post(CalcDevCount(token, -1, regionId, 1, 20)).then((data) => {
           if (data.data.code === 0) {
             this.tableData = data.data.data.datas
             this.numberPagesBoolean = true
@@ -336,7 +324,7 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin 0 12px 0
+    margin 0 12px
     background rgba(000,000,000,.47)
   .subject_top
     overflow hidden

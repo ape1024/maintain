@@ -3,7 +3,7 @@
     <div  class="macrocosm">
       <header class="header" :style="{ background: 'url(static/img/header.png) no-repeat' }">
         <div class="header_left">
-          <ul class="ul_router">
+          <ul v-if="maintainProject" class="ul_router">
             <router-link to="/home/maintain-home-new">
               <li>
                 <i class="headerHome"></i>
@@ -65,6 +65,50 @@
               </li>
             </router-link>
           </ul>
+          <ul v-if="!maintainProject" class="ul_router">
+              <li>
+                <i class="headerHome"></i>
+                首页
+              </li>
+              <li>
+                <i class="headerAdmin"></i>
+                消防设施
+              </li>
+              <li>
+                <i class="headerDaily"></i>
+                日常巡检
+              </li>
+              <li>
+                <i class="headerInspect"></i>
+                检查测试
+              </li>
+              <li>
+                <i class="headerMaintain"></i>
+                维护保养
+              </li>
+              <li>
+                <i class="headerRepair"></i>
+                故障问题
+              </li>
+              <li>
+                <i class="headerArchives"></i>
+                工作档案
+              </li>
+              <li>
+                <i class="headerReport"></i>
+                现场反馈
+              </li>
+              <li>
+                <i class="headerArranged"></i>
+                定制计划
+              </li>
+              <router-link to="/home/intercalate">
+                <li>
+                  <i class="headerIntercalate"></i>
+                  系统设置
+                </li>
+              </router-link>
+          </ul>
         </div>
         <div class="header_right">
           <MaintainheaderRight :name="username"></MaintainheaderRight>
@@ -81,8 +125,9 @@
 <script>
 import login from '../login/login'
 import MaintainheaderRight from '../maintain-headerRight/maintain-headerRight'
-// import { judgeToken } from 'api/user'
+import { projectMixin } from 'common/js/mixin'
 export default {
+  mixins: [projectMixin],
   components: {
     MaintainheaderRight,
     login
@@ -100,6 +145,11 @@ export default {
   methods: {
   },
   created () {
+    if (!this.maintainProject) {
+      this.$router.replace('/home/intercalate')
+    } else {
+      this.$router.replace('/home')
+    }
   }
 }
 </script>
