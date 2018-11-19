@@ -451,7 +451,7 @@ export default {
               return {
                 ...m,
                 organizationid: m.roleid,
-                organizationname: `${m.organizationname}-${m.rolename}`
+                organizationname: !m.organizationname ? `${m.rolename}` : `${m.organizationname}-${m.rolename}`
               }
             })
           }
