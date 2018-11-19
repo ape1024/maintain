@@ -210,7 +210,7 @@ export default {
       if (val.functioncode === 'info') {
         this.infoSelect = val.insert
       }
-      if (val.functioncode === 'basedevice') {
+      if (val.functioncode === 'device') {
         this.basedeviceSelect = val.select
       }
     })
