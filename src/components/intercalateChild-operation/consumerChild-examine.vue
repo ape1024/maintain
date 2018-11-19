@@ -126,6 +126,7 @@
           <div class="substance">
             <div class="substanceDiv">
               <div class="firecontrol">
+                /////
                 {{organizeText}}
               </div>
               <div @click.stop v-show="organizeboolean" class="firecontrolDiv">
@@ -475,12 +476,9 @@ export default {
     float left
     cursor pointer
     width 1066px
-    height 30px
-    background #fff
+    max-height 55px
+    overflow-y auto
     text-indent 1em
-    white-space nowrap
-    white-space nowrap
-    text-overflow ellipsis
     line-height 30px
     color $color-border-b-fault
     border-radius 5px

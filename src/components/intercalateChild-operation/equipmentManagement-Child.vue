@@ -53,9 +53,6 @@
       <li class="threelevel_litwo">
         操作
       </li>
-      <li v-if="JurisdictionApproval" @click="approvalstateS" class="threelevel_lifive">
-        批量审批
-      </li>
     </ul>
     <ul class="threelevel_list">
       <li :key="$index" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
@@ -97,35 +94,7 @@
             <!--{{dataset.approvalstatecode}}-->
           </li>
           <li class="threelevel_litwo">
-            <div v-if="!JurisdictionSuper">
-              <p v-if="JurisdictionApproval && dataset.disabledBoolean" @click.stop="question(dataset.deviceid)" class="header_p_eight threelevel_litwo_p">
-                审核
-              </p>
-              <p v-if="JurisdictionApproval && !dataset.disabledBoolean" class="header_p_Eleven threelevel_litwo_p">
-                审核
-              </p>
-            </div>
-            <div v-if="JurisdictionSuper">
-              <p  @click.stop="question(dataset.deviceid)" class="header_p_eight threelevel_litwo_p">
-                审核
-              </p>
-            </div>
             <p v-if="JurisdictionSelect" @click.stop="examine(dataset.deviceid)" class="header_p_ten">查看</p>
-            <p v-if="JurisdictionUpdate && dataset.disabledBoolean" @click.stop="modify(dataset, dataset.deviceid)" class="header_p_twelve">
-              修改
-            </p>
-            <p v-if="JurisdictionUpdate && !dataset.disabledBoolean" class="header_p_Eleven">
-              修改
-            </p>
-            <p v-if="JurisdictionDelete&&dataset.disabledBoolean" class="header_p_eleven" @click.stop="">
-              <el-button type="text" @click="amputate($index, tabChild, dataset.deviceid)">删除</el-button>
-            </p>
-            <p v-if="JurisdictionDelete&&!dataset.disabledBoolean" class="header_p_Eleven" @click.stop="">
-              删除
-            </p>
-            <p class="superJurisdiction" v-if="JurisdictionSuper && !dataset.disabledBoolean" @click="amputate($index, tabChild, dataset.deviceid)">
-              删档
-            </p>
           </li>
         </ul>
       </li>
@@ -159,7 +128,7 @@ import { admindelDevice, adminfindDeviceDetail, adminFindInspectionMaintenance, 
 import { projectMixin, loadingMixin } from 'common/js/mixin'
 export default {
   mixins: [projectMixin, loadingMixin],
-  name: 'equipmentManagement-Child',
+  name: 'admin-child',
   props: ['adminid'],
   components: {
     childLookover,
@@ -207,7 +176,7 @@ export default {
   },
   methods: {
     DetailProjects () {
-      this.axios.post(admingetDevListDetailProjects(this.adminid, this.maintainProject)).then((response) => {
+      this.axios.post(admingetDevListDetailProjects(this.adminid, '')).then((response) => {
         if (!response) {
           // 请求失败关闭加载
           this.closeLoadingDialog()
@@ -500,7 +469,7 @@ export default {
     this.DetailProjects()
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'basedevice') {
+      if (val.functioncode === 'device') {
         this.JurisdictionSelect = val.select
         this.JurisdictionDelete = val.delete
         this.JurisdictionApproval = val.approval

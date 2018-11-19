@@ -275,7 +275,7 @@
               </div>
             </div>
             <p class="substanceP">
-              组织机构：
+              执行部门：
             </p>
           </div>
         </div>
