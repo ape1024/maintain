@@ -160,11 +160,6 @@ export default {
   methods: {
   },
   created () {
-    if (!this.maintainProject) {
-      this.$router.replace('/home/intercalate')
-    } else {
-      this.$router.replace('/home')
-    }
     // 权限
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
@@ -214,6 +209,16 @@ export default {
         this.basedeviceSelect = val.select
       }
     })
+    if (!this.maintainProject) {
+      if (this.organizationSelect || this.roleSelect || this.userSelect || this.projectSelect || this.standardSelect || this.infoSelect || this.basedeviceSelect) {
+        // blanKpage
+        this.$router.replace('/home/intercalate')
+      } else {
+        this.$router.replace('/home/blanKpage')
+      }
+    } else {
+      this.$router.replace('/home')
+    }
   }
 }
 </script>

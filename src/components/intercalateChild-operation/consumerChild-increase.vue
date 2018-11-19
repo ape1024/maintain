@@ -266,7 +266,7 @@
                   <el-checkbox-group v-model="checkedCities">
                     <el-tree :data="organize" :props="organizeProps" node-key="id" :expand-on-click-node="false">
                       <div class="custom-tree-node" slot-scope="{ node, data }">
-                        <el-checkbox :label="data.organizationId">{{checkboxDefaultVal}}</el-checkbox>
+                        <el-checkbox :label="data.organizationId" @change="checkboxChange" :disabled="data.disabled">{{checkboxDefaultVal}}</el-checkbox>
                         <div class="custom-tree-node-expand" @click="checkboxClick(node)">               {{data.organizationName}}</div>
                       </div>
                     </el-tree>
@@ -461,6 +461,7 @@ export default {
   },
   watch: {
     checkedCities (el) {
+      console.log(el)
       this.organizeText = ''
       let result = ''
       let findData = (data, val) => {
@@ -503,6 +504,10 @@ export default {
     }
   },
   methods: {
+    checkboxChange () {
+      //  label 关联整个对象 ,给每个对象加两个值, 一个控制其 是否选中 一个控制其 是否可选  通过这个对象来 筛选获取,id 和 name
+      //  el-checkbox :label="data"
+    },
     Servicechange (el) {
       if (el) {
         this.proprietorName = this.proprieTorDate
@@ -902,7 +907,27 @@ export default {
                 return false
               } else {
                 this.organize = []
-                this.organize.push(data.data.data)
+                data.data.data = [data.data.data]
+                let finData = (data) => {
+                  data.forEach((item) => {
+                    item.disabled = false
+                    item.selected = false
+                    if (data.subOrgnizations) {
+                      finData(data.subOrgnizations)
+                    }
+                  })
+                }
+                finData(data.data.data)
+                console.log(data.data.data)
+                this.organize = data.data.data
+                let finsubOrgnizations = (data) => {
+                  data.forEach((item) => {
+                    item.disabled = false
+                    if (item.subOrgnizations) {
+                      finsubOrgnizations(item.subOrgnizations)
+                    }
+                  })
+                }
                 let result = ''
                 let findData = (data, val) => {
                   let flag = true

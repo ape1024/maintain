@@ -53,6 +53,8 @@ import dailyFile from '../components/archives-child/dailyFile'
 import inspectFile from '../components/archives-child/inspectFile'
 // 维护保养归档
 import maintainFile from '../components/archives-child/maintainFile'
+//  空白页
+import blanKpage from '../components/maintain-Blankpage/maintain-Blankpage'
 
 Vue.use(Router)
 
@@ -174,6 +176,10 @@ const routes = [
         }]
       },
       {
+        path: 'blanKpage',
+        component: blanKpage
+      },
+      {
         path: '/home',
         redirect: '/home/maintain-home-new'
       }
@@ -184,8 +190,6 @@ const routes = [
     redirect: '/login'
   }
 ]
-console.log('/////////////////////1')
-console.log('/////////////////////2')
 
 let router = new Router({
   routes

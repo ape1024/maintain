@@ -694,11 +694,8 @@ export default {
     .entryList .listLi:nth-child(even)
       background #141d2c
   .paging
-     text-align left
-     margin-left 500px
+     text-align center
      init()
-     position fixed
-     bottom 40px
   .adhibit
     width 100%
     height 100%
