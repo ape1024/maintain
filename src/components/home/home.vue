@@ -11,55 +11,55 @@
               </li>
             </router-link>
             <router-link to="/home/admin">
-              <li>
+              <li v-show="deviceSelect">
                 <i class="headerAdmin"></i>
                 消防设施
               </li>
             </router-link>
             <router-link to="/home/daily">
-              <li>
+              <li v-show="taskXjSelect">
                 <i class="headerDaily"></i>
                 日常巡检
               </li>
             </router-link>
             <router-link to="/home/inspect">
-              <li>
+              <li v-show="taskJcSelect">
                 <i class="headerInspect"></i>
                 检查测试
               </li>
             </router-link>
             <router-link to="/home/maintain">
-              <li>
+              <li v-show="taskWbSelect">
                 <i class="headerMaintain"></i>
                 维护保养
               </li>
             </router-link>
             <router-link to="/home/repair">
-              <li>
+              <li v-show="taskGzwxSelect">
                 <i class="headerRepair"></i>
                 故障问题
               </li>
             </router-link>
             <router-link to="/home/archives">
-              <li>
+              <li v-show="fileSelect">
                 <i class="headerArchives"></i>
                 工作档案
               </li>
             </router-link>
             <router-link to="/home/report">
-              <li>
+              <li v-show="feedbackSelect">
                 <i class="headerReport"></i>
                 现场反馈
               </li>
             </router-link>
             <router-link to="/home/plan">
-              <li>
+              <li v-show="planSelect">
                 <i class="headerArranged"></i>
                 定制计划
               </li>
             </router-link>
             <router-link to="/home/intercalate">
-              <li>
+              <li v-show="organizationSelect || roleSelect || userSelect || projectSelect || standardSelect || infoSelect || basedeviceSelect">
                 <i class="headerIntercalate"></i>
                 系统设置
               </li>
@@ -94,12 +94,76 @@ export default {
       headername: '',
       portrait: '',
       textarea: '',
-      username: ''
+      username: '',
+      deviceSelect: false, // 消防设备
+      taskXjSelect: false, // 日常巡检
+      taskJcSelect: false, // 检查测试
+      taskWbSelect: false, // 维护保养
+      taskGzwxSelect: false, // 故障问题
+      fileSelect: false, // 工作档案
+      feedbackSelect: false, // 现场反馈
+      planSelect: false, // 定制计划
+      organizationSelect: false,
+      roleSelect: false,
+      userSelect: false,
+      projectSelect: false,
+      standardSelect: false,
+      infoSelect: false,
+      basedeviceSelect: false
     }
   },
   methods: {
   },
   created () {
+    // 权限
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'device') {
+        this.deviceSelect = val.select
+      }
+      if (val.functioncode === 'task_xj') {
+        this.taskXjSelect = val.select
+      }
+      if (val.functioncode === 'task_jc') {
+        this.taskJcSelect = val.select
+      }
+      if (val.functioncode === 'task_wb') {
+        this.taskWbSelect = val.select
+      }
+      if (val.functioncode === 'task_gzwx') {
+        this.taskGzwxSelect = val.select
+      }
+      if (val.functioncode === 'feedback') {
+        this.feedbackSelect = val.select
+      }
+      if (val.functioncode === 'plan') {
+        this.planSelect = val.select
+      }
+      if (val.functioncode === 'file') {
+        this.fileSelect = val.select
+      }
+      if (val.functioncode === 'organization') {
+        this.organizationSelect = val.select
+      }
+      if (val.functioncode === 'role') {
+        this.roleSelect = val.select
+      }
+      if (val.functioncode === 'user') {
+        this.userSelect = val.select
+      }
+      if (val.functioncode === 'project') {
+        this.projectSelect = val.select
+      }
+      if (val.functioncode === 'standard') {
+        this.standardSelect = val.select
+      }
+      if (val.functioncode === 'info') {
+        this.infoSelect = val.insert
+      }
+      if (val.functioncode === 'basedevice') {
+        this.basedeviceSelect = val.select
+      }
+    })
   }
 }
 </script>

@@ -822,7 +822,6 @@ export default {
       //  服务机构
       this.axios.post(getRootOrganizationsNotProprietor()).then((response) => {
         if (response.data.code === 0) {
-          console.log(this.organizationtype)
           if (this.organizationtype === 1) {
             this.proprietorName = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])
             this.proprietorNameTwo = response.data.data.concat([{organizationid: -1, organizationname: ' -- 新增服务机构 --'}])

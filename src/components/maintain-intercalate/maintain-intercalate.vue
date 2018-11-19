@@ -4,17 +4,13 @@
       <ul class="headerUl">
         <!--<router-link to="/intercalate/department"><li class="headerLi">维保部门管理</li></router-link>-->
         <!--<router-link to="/home/intercalate/structure"><li class="headerLi">组织机构</li></router-link>-->
-        <router-link v-show="this.organizationSelect" to="/home/intercalate/structureNew"><li class="headerLi">组织机构</li></router-link>
-        <router-link v-show="this.roleSelect" to="/home/intercalate/karakters"><li class="headerLi">角色管理</li></router-link>
-        <router-link v-show="this.userSelect" to="/home/intercalate/consumer"><li class="headerLi">用户设置</li></router-link>
-        <router-link v-show="this.projectSelect" to="/home/intercalate/project"><li class="headerLi">项目设置</li></router-link>
-        <router-link v-show="this.standardSelect" to="/home/intercalate/taskrules"><li v-if="true" class="headerLi">维管标准</li></router-link>
-        <router-link v-show="this.infoSelect" to="/home/intercalate/info"><li class="headerLi">消息管理</li></router-link>
-        <router-link to="/home/intercalate/equipmentManagement">
-          <li class="headerLi">
-            基本设备管理
-          </li>
-        </router-link>
+        <router-link v-show="organizationSelect" to="/home/intercalate/structureNew"><li class="headerLi">组织机构</li></router-link>
+        <router-link v-show="roleSelect" to="/home/intercalate/karakters"><li class="headerLi">角色管理</li></router-link>
+        <router-link v-show="userSelect" to="/home/intercalate/consumer"><li class="headerLi">用户设置</li></router-link>
+        <router-link v-show="projectSelect" to="/home/intercalate/project"><li class="headerLi">项目设置</li></router-link>
+        <router-link v-show="standardSelect" to="/home/intercalate/taskrules"><li v-if="true" class="headerLi">维管标准</li></router-link>
+        <router-link v-show="infoSelect" to="/home/intercalate/info"><li class="headerLi">消息管理</li></router-link>
+        <router-link v-show="basedeviceSelect" to="/home/intercalate/equipmentManagement"><li class="headerLi">基本设备管理</li></router-link>
       </ul>
     </header>
     <div class="intercalateRouter">
@@ -33,7 +29,8 @@ export default {
       userSelect: false,
       projectSelect: false,
       standardSelect: false,
-      infoSelect: false
+      infoSelect: false,
+      basedeviceSelect: false
     }
   },
   methods: {
@@ -43,23 +40,38 @@ export default {
       Jurisdiction.forEach((val) => {
         if (val.functioncode === 'organization') {
           this.organizationSelect = val.select
+          this.jump(this.organizationSelect, '/home/intercalate/structureNew')
         }
         if (val.functioncode === 'role') {
           this.roleSelect = val.select
+          this.jump(this.roleSelect, '/home/intercalate/karakters')
         }
         if (val.functioncode === 'user') {
           this.userSelect = val.select
+          this.jump(this.userSelect, '/home/intercalate/consumer')
         }
         if (val.functioncode === 'project') {
           this.projectSelect = val.select
+          this.jump(this.projectSelect, '/home/intercalate/project')
         }
         if (val.functioncode === 'standard') {
           this.standardSelect = val.select
+          this.jump(this.standardSelect, '/home/intercalate/taskrules')
         }
         if (val.functioncode === 'info') {
           this.infoSelect = val.insert
+          this.jump(this.infoSelect, '/home/intercalate/info')
+        }
+        if (val.functioncode === 'basedevice') {
+          this.basedeviceSelect = val.select
+          this.jump(this.basedeviceSelect, '/home/intercalate/equipmentManagement')
         }
       })
+    },
+    jump (currentFlag, path) {
+      if (this.flag) return
+      currentFlag && this.$router.push({ path })
+      this.flag = true
     }
   },
   created () {

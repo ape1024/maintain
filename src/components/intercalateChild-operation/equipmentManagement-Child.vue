@@ -272,9 +272,7 @@ export default {
       manufactorModel = manufactorModel.length && manufactorModel[manufactorModel.length - 1] !== -1 ? manufactorModel : ''
       runningState = typeof runningState === 'number' ? runningState : ''
       AuditstatusD = AuditstatusD && AuditstatusD !== -1 ? AuditstatusD : ''
-      console.log(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, this.maintainProject)
       this.axios.post(getDevListDetailProjectsThree(equipmentdata, runningState, AuditstatusD, this.adminid, manufactorModel, this.maintainProject)).then((response) => {
-        console.log(response)
         if (response.data.code === 0) {
           response.data.data.forEach((val) => {
             val.checked = false
@@ -502,7 +500,7 @@ export default {
     this.DetailProjects()
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'device') {
+      if (val.functioncode === 'basedevice') {
         this.JurisdictionSelect = val.select
         this.JurisdictionDelete = val.delete
         this.JurisdictionApproval = val.approval

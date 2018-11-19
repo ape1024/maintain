@@ -574,10 +574,6 @@ export default {
             }
           })
         } else {
-          console.log(token)
-          console.log(this.repairtaskid)
-          console.log(this.SubmissionapprovalOpinion)
-          console.log(this.SubmissionapprovalState)
           this.axios.post(maintainRepairapprovalTaskTwo(token, this.repairtaskid, this.SubmissionapprovalOpinion, this.SubmissionapprovalState)).then((data) => {
             if (data.data.code === 0) {
               this.$message({
@@ -741,7 +737,6 @@ export default {
     DialogImg
   },
   created () {
-    console.log(this.state)
     // 权限
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
