@@ -67,6 +67,7 @@ export default {
           this.jump(this.basedeviceSelect, '/home/intercalate/equipmentManagement')
         }
       })
+      this.flag = false
     },
     jump (currentFlag, path) {
       if (this.flag) return
@@ -76,6 +77,12 @@ export default {
   },
   created () {
     this.authority()
+  },
+  beforeRouteUpdate (to, from, next) {
+    next()
+    if (to.path === '/home/intercalate') {
+      this.authority()
+    }
   }
 }
 </script>

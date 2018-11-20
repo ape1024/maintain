@@ -87,7 +87,7 @@
           <li class="informationLitwo">
             <div class="informationDiv">
               <div class="content">
-                <el-select size="mini" v-model="projectDate" multiple placeholder="请选择">
+                <el-select size="mini" collapse-tags v-model="projectDate" multiple placeholder="请选择">
                   <el-option
                     v-for="item in projectType"
                     :key="item.worktypeid"
@@ -252,7 +252,7 @@
       </div>
       <div class="purview">
         <header class="contentHeader">
-          <p class="headerP">组织机构</p>
+          <p class="headerP">执行部门</p>
           <p class="headerLine"></p>
         </header>
         <div class="purviewDiv">
@@ -266,7 +266,7 @@
                   <el-checkbox-group v-model="checkedCities">
                     <el-tree :data="organize" :props="organizeProps" node-key="id" :expand-on-click-node="false">
                       <div class="custom-tree-node" slot-scope="{ node, data }">
-                        <el-checkbox :label="data.organizationId" @change="checkboxChange" :disabled="data.disabled">{{checkboxDefaultVal}}</el-checkbox>
+                        <el-checkbox :label="data.organizationId" @change="checkboxChange(data)" :disabled="data.disabled">{{checkboxDefaultVal}}</el-checkbox>
                         <div class="custom-tree-node-expand" @click="checkboxClick(node)">               {{data.organizationName}}</div>
                       </div>
                     </el-tree>
@@ -275,7 +275,7 @@
               </div>
             </div>
             <p class="substanceP">
-              执行部门：
+
             </p>
           </div>
         </div>
@@ -456,30 +456,11 @@ export default {
       checkedCities: [],
       proprietorService: '',
       proprietorNameTwo: '',
-      organizationDisableThree: ''
+      organizationDisableThree: '',
+      selectedAndActive: []
     }
   },
   watch: {
-    checkedCities (el) {
-      console.log(el)
-      this.organizeText = ''
-      let result = ''
-      let findData = (data, val) => {
-        let flag = true
-        data.forEach((item) => {
-          if (item.organizationId === val) {
-            result += ` ${item.organizationName} `
-            flag = false
-          } else if (flag && item.subOrgnizations) {
-            findData(item.subOrgnizations, val)
-          }
-        })
-      }
-      el.forEach((data) => {
-        findData(this.organize, data)
-      })
-      this.organizeText = result
-    },
     proprietornameDate (el) {
       if (!el) {
         this.checkedCities = []
@@ -493,10 +474,21 @@ export default {
             if (!data) {
               this.organize = []
             } else {
+              response.data.data = [response.data.data]
+              let finData = (data) => {
+                data.forEach((item) => {
+                  item.disabled = false
+                  item.selected = false
+                  if (data.subOrgnizations) {
+                    finData(data.subOrgnizations)
+                  }
+                })
+              }
+              finData(response.data.data)
               this.checkedCities = []
               this.organize = []
               this.organizeText = ''
-              this.organize.push(data)
+              this.organize = response.data.data
             }
           }
         })
@@ -504,9 +496,60 @@ export default {
     }
   },
   methods: {
-    checkboxChange () {
+    checkboxChange (el) {
       //  label 关联整个对象 ,给每个对象加两个值, 一个控制其 是否选中 一个控制其 是否可选  通过这个对象来 筛选获取,id 和 name
       //  el-checkbox :label="data"
+      el.selected = !el.selected
+      el.subOrgnizations = this.resetTreeChildrenData(el.selected, el.subOrgnizations)
+      console.log(el)
+      // 显示文字
+      // 发送给后台数据
+      // 找到选中病可操作的数据
+      // this.selectedAndActive = []
+      this.checkboxText()
+      // selected && !disabled
+    },
+    resetTreeChildrenData (flag, data) {
+      if (!data) return []
+      return data.map(t => {
+        return {
+          ...t,
+          disabled: flag,
+          subOrgnizations: this.resetTreeChildrenData(flag, t.subOrgnizations)
+        }
+      })
+    },
+    checkboxText () {
+      this.selectedAndActive = []
+      this.organizeText = ''
+      let findata = (data) => {
+        let flag = true
+        data.forEach((data) => {
+          // console.log(data)
+          if (data.selected && !data.disabled) {
+            this.selectedAndActive.push(data.organizationId)
+            flag = false
+          } else if (flag && data.subOrgnizations) {
+            findata(data.subOrgnizations)
+          }
+        })
+      }
+      findata(this.organize)
+      console.log(this.selectedAndActive)
+      let finText = (data, id) => {
+        let flag = true
+        data.forEach((data) => {
+          if (data.organizationId === id) {
+            this.organizeText += ` ${data.organizationName} `
+            flag = false
+          } else if (flag && data.subOrgnizations) {
+            finText(data.subOrgnizations, id)
+          }
+        })
+      }
+      this.selectedAndActive.forEach((val) => {
+        finText(this.organize, val)
+      })
     },
     Servicechange (el) {
       if (el) {
@@ -605,9 +648,9 @@ export default {
       this.regionUl = false
     },
     conserve () {
-      if (!this.checkedCities.length && this.proprietornameDate !== -1) {
+      if (!this.selectedAndActive.length && this.proprietornameDate !== -1) {
         this.$message({
-          message: '请选择组织机构',
+          message: '请选择执行部门',
           type: 'warning'
         })
         return false
@@ -651,6 +694,7 @@ export default {
               // 服务机构
               // this.getRootOrganizationsNotProprietor()
               this.proprietornameDate = response.data.data
+              console.log(this.proprietornameDate)
               // 添加新增服务机构
               this.checkedCities = [this.proprietornameDate]
               this.submitCurrentData()
@@ -708,7 +752,7 @@ export default {
         'areas': areas,
         'baseDevices': baseDevices,
         'files': this.documentPapers,
-        'organizations': this.checkedCities,
+        'organizations': this.selectedAndActive,
         'project': {
           'enddate': `${this.endDate}`,
           'proprietor': `${this.proprieTor}`,
@@ -920,14 +964,7 @@ export default {
                 finData(data.data.data)
                 console.log(data.data.data)
                 this.organize = data.data.data
-                let finsubOrgnizations = (data) => {
-                  data.forEach((item) => {
-                    item.disabled = false
-                    if (item.subOrgnizations) {
-                      finsubOrgnizations(item.subOrgnizations)
-                    }
-                  })
-                }
+                console.log(this.organize)
                 let result = ''
                 let findData = (data, val) => {
                   let flag = true
@@ -1024,8 +1061,7 @@ export default {
         width 100%
         position relative
         display inline-block
-        margin-bottom 15px
-        margin-top 10px
+        margin-top  15px
       .informationP
         color $color-border-b-fault
         font-size $font-size-medium
@@ -1068,6 +1104,7 @@ export default {
         margin-bottom 10px
         .substanceP
           float left
+          width 80px
           color $color-border-b-fault
           margin-left  66px
           line-height 30px
