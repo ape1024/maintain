@@ -7,9 +7,6 @@ if (clientIdJson) {
   clientId = `${parseInt(Math.random() * 8000 + 1000)}${new Date().getTime()}`
   window.sessionStorage.setItem('clientId', JSON.stringify(clientId))
 }
-
-console.log(window.localStorage.pattern)
-
 const state = {
   userData: {
     areaId: '1'

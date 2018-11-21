@@ -126,7 +126,6 @@
           <div class="substance">
             <div class="substanceDiv">
               <div class="firecontrol">
-                /////
                 {{organizeText}}
               </div>
               <div @click.stop v-show="organizeboolean" class="firecontrolDiv">

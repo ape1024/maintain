@@ -62,7 +62,7 @@ export default {
           this.infoSelect = val.insert
           this.jump(this.infoSelect, '/home/intercalate/info')
         }
-        if (val.functioncode === 'device') {
+        if (val.functioncode === 'basedevice') {
           this.basedeviceSelect = val.select
           this.jump(this.basedeviceSelect, '/home/intercalate/equipmentManagement')
         }

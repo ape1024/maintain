@@ -134,6 +134,9 @@ export default {
         }
       })
     },
+    init () {
+
+    },
     // init () {
     //   this.numberPagesBoolean = false
     //   this.currentPage = 1

@@ -90,7 +90,7 @@
 <script>
 import adminchild from '../admin-child/admin-child'
 import increase from '../admin-child/adminChild-review'
-import { maintainReportfindManufactures, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate, findAllRootAreasTree } from '../../api/user'
+import { maintainReportfindManufactures, CalcDevCount, findAllDeviceType, FindDevAllstate, FindDevAllApprovalstate, getTreeByProjectId } from '../../api/user'
 import { projectMixin } from 'common/js/mixin'
 
 export default {
@@ -103,19 +103,26 @@ export default {
   methods: {
     init () {
       this.tableData = []
+      //
       let token = JSON.parse(window.sessionStorage.token)
-      let regionId = (this.regionModel)[0]
-      this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
+      this.axios.post(getTreeByProjectId(this.maintainProject)).then((data) => {
         if (data.data.code === 0) {
-          this.tableData = data.data.data.datas
-          this.numberPagesBoolean = true
-          this.numberPages = data.data.data.totalPage
+          this.regionDate = data.data.data
+          this.regionModel.push((this.regionDate)[0].areaid)
+          let regionId = (this.regionModel)[0]
+          this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
+            if (data.data.code === 0) {
+              this.tableData = data.data.data.datas
+              this.numberPagesBoolean = true
+              this.numberPages = data.data.data.totalPage
+            }
+          })
         }
       })
     },
     numberPagesChange (el) {
       let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(findAllRootAreasTree(this.maintainProject)).then((response) => {
+      this.axios.post(getTreeByProjectId(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.regionDate = response.data.data
           this.regionModel.push((this.regionDate)[0].areaid)
@@ -294,7 +301,7 @@ export default {
       }
     })
     // 获取区域
-    this.axios.post(findAllRootAreasTree(this.maintainProject)).then((response) => {
+    this.axios.post(getTreeByProjectId(this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         this.regionDate = response.data.data
         this.regionModel.push((this.regionDate)[0].areaid)

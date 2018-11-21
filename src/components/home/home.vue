@@ -114,12 +114,13 @@ export default {
     }
   },
   methods: {
+    init () {
+
+    }
   },
   created () {
     // 权限
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
-    console.log('///////////////////////////////////////')
-    console.log(Jurisdiction)
     Jurisdiction.forEach((val) => {
       if (val.functioncode === 'device') {
         this.deviceSelect = val.select

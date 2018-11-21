@@ -501,7 +501,6 @@ export default {
       //  el-checkbox :label="data"
       el.selected = !el.selected
       el.subOrgnizations = this.resetTreeChildrenData(el.selected, el.subOrgnizations)
-      console.log(el)
       // 显示文字
       // 发送给后台数据
       // 找到选中病可操作的数据
@@ -525,7 +524,6 @@ export default {
       let findata = (data) => {
         let flag = true
         data.forEach((data) => {
-          // console.log(data)
           if (data.selected && !data.disabled) {
             this.selectedAndActive.push(data.organizationId)
             flag = false
@@ -535,7 +533,6 @@ export default {
         })
       }
       findata(this.organize)
-      console.log(this.selectedAndActive)
       let finText = (data, id) => {
         let flag = true
         data.forEach((data) => {
@@ -694,9 +691,8 @@ export default {
               // 服务机构
               // this.getRootOrganizationsNotProprietor()
               this.proprietornameDate = response.data.data
-              console.log(this.proprietornameDate)
               // 添加新增服务机构
-              this.checkedCities = [this.proprietornameDate]
+              this.selectedAndActive = [this.proprietornameDate]
               this.submitCurrentData()
             } else {
               this.$message({
@@ -962,9 +958,7 @@ export default {
                   })
                 }
                 finData(data.data.data)
-                console.log(data.data.data)
                 this.organize = data.data.data
-                console.log(this.organize)
                 let result = ''
                 let findData = (data, val) => {
                   let flag = true
@@ -977,9 +971,6 @@ export default {
                     }
                   })
                 }
-                this.checkedCities.forEach((data) => {
-                  findData(this.organize, data)
-                })
                 this.organizeText = result
               }
             }
