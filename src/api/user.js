@@ -53,6 +53,9 @@ export const FindAllRolesByOrgID = (data) => {
   const url = `${Test}/roles/FindAllRolesByOrgID?orgid=${data}`
   return url
 }
+export const getRolesListByOrg = (token, organizationId) => {
+  return `${Test}/users/getRolesListByOrg?token=${token}&organizationId=${organizationId}`
+}
 //  getTaskParams
 export const getTaskParams = (checktaskdetailid) => {
   const url = `${Test}/task/getTaskParams?detailID=${checktaskdetailid}`

@@ -134,7 +134,7 @@
               <div v-if="!(((item.endTime + 86400000)) > timestamp)  && JurisdictionData.check" @click.stop="pigeonhole(item.taskID)" class="pigeonhole">
                 归 档
               </div>
-              <div v-if="JurisdictionData.approval" @click.stop="batchAudit" class="batchDiv">
+              <div v-if="JurisdictionData.approval" @click.stop="batchAudit(item)" class="batchDiv">
                 批量审核
               </div>
               <div v-if="Jurisdictionplan" class="planView" @click.stop="planView(item.checkplanid)">
@@ -220,7 +220,24 @@ export default {
     },
     ExaminationApproval (el) {
       // let token = JSON.parse(window.sessionStorage.token)
-      this.DailyCurrentTaskStat()
+      this.DailyCurrentChild()
+      this.axios.post(maintainDailyCurrentTaskStat(1, this.maintainProject, this.selectProps.selectStartDate, this.selectProps.selectEndDate)).then((response) => {
+        if (response.data.code === 0) {
+          // this.tableDatataskStat = response.data.data
+          if (response.data.data.length) {
+            response.data.data.forEach((val) => {
+              if (val.taskID === el) {
+                this.clickItm.sum = val.sum
+                this.clickItm.finish = val.finish
+                this.clickItm.waitapproval = val.waitapproval
+                this.clickItm.error = val.error
+                this.clickItm.problem = val.problem
+                this.clickItm.assign = val.assign
+              }
+            })
+          }
+        }
+      })
     },
     query () {
       this.selectProps = {
@@ -242,6 +259,7 @@ export default {
       this.tableDatataskStat.forEach((val) => {
         val.flag = false
       })
+      this.clickItm = item
       let clickId = item.taskID
       this.click_id = item.taskID
       let areaid = this.selectProps.selectRegion.length !== 0 ? this.selectProps.selectRegion[this.selectProps.selectRegion.length - 1] : ''
@@ -353,7 +371,7 @@ export default {
         this.closeLoadingDialog()
       })
     },
-    batchAudit () {
+    batchAudit (item) {
       this.$confirm('是否将选中的多项工作记录批量审核为归档?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -374,6 +392,7 @@ export default {
           })
           return false
         } else {
+          let digitGroup = arr.length
           arr = arr.join()
           let token = JSON.parse(window.sessionStorage.token)
           this.axios.post(batchApprovalCheckTaskByDetailIDs(token, this.click_id, arr)).then((response) => {
@@ -382,7 +401,9 @@ export default {
                 message: '审批成功',
                 type: 'success'
               })
-              this.DailyCurrentTaskStat()
+              item.finish = item.finish + digitGroup
+              item.waitapproval = item.waitapproval - digitGroup
+              this.DailyCurrentChild()
             }
           })
         }
@@ -391,6 +412,64 @@ export default {
           type: 'info',
           message: '已取消'
         })
+      })
+    },
+    DailyCurrentChild () {
+      let token = JSON.parse(window.sessionStorage.token)
+      let conclusion = this.selectProps.selectWorkConclusion.length !== 0 ? this.selectProps.selectWorkConclusion[this.selectProps.selectWorkConclusion.length - 1] : ''
+      let clickId = this.click_id
+      let areaid = this.selectProps.selectRegion.length !== 0 ? this.selectProps.selectRegion[this.selectProps.selectRegion.length - 1] : ''
+      let basedevicecode = this.selectProps.selectEquipmentData.length !== 0 ? this.selectProps.selectEquipmentData[this.selectProps.selectEquipmentData.length - 1] : ''
+      basedevicecode = !basedevicecode ? '' : basedevicecode
+      let approvalstates = !this.selectProps.selectAuditstatus ? '' : this.selectProps.selectAuditstatus
+      this.axios.post(getCurrentTaskDeviceStatJsonTwo(token, conclusion, clickId, areaid, basedevicecode, approvalstates)).then((response) => {
+        if (response.data.code === 0) {
+          if (response.data.data.length !== 0) {
+            response.data.data.forEach((val) => {
+              val.choose = false
+              if (val.details) {
+                val.details.forEach((data) => {
+                  data.flag = false
+                  if (data.photos) {
+                    data.photosArr = []
+                    if (data.photos.indexOf(',') !== -1) {
+                      let arr = data.photos.split(',')
+                      data.photosArr = arr
+                    } else {
+                      data.photosArr.push(data.photos)
+                    }
+                  }
+                  if (!data.iswaitapproval) {
+                    if (!data.isapproval) {
+                      data.iswaitapprovalName = ''
+                      data.disabled = true
+                    } else {
+                      data.iswaitapprovalName = '已审批'
+                      data.disabled = true
+                    }
+                  } else {
+                    data.iswaitapprovalName = '待审批'
+                    data.disabled = false
+                  }
+                  if (data.isassigned) {
+                    data.isassignedName = '已安排'
+                    data.disabled = true
+                  } else {
+                    data.isassignedName = '未安排'
+                  }
+                  if (data.conclusion !== 1) {
+                    data.disabled = true
+                  } else {
+                    data.isassignedName = '/'
+                  }
+                })
+              }
+            })
+            this.dailyChild = response.data.data
+          } else {
+            this.dailyChild = response.data.data
+          }
+        }
       })
     },
     // 获取日常巡检

@@ -240,8 +240,9 @@ export default {
       })
     },
     modiFysay (ev) {
-      this.modifyBoolean = ev
-      this.examineBoolean = ev
+      this.modifyBoolean = false
+      this.examineBoolean = false
+      this.$emit('modifyingData')
       this.DetailProjects()
     },
     AuditstatusChang () {
@@ -336,6 +337,8 @@ export default {
                   message: '删除成功',
                   type: 'success'
                 })
+                this.DetailProjects()
+                this.$emit('modifyingData')
               } else {
                 this.$message.error('删除失败')
               }
@@ -456,9 +459,11 @@ export default {
         type: 'warning'
       }).then(() => {
         let arr = []
+        let checkedChangeLength = 0
         this.tabChild.forEach((val) => {
           if (!val.disabled) {
             if (val.checked) {
+              checkedChangeLength = checkedChangeLength + val.devicecount
               arr.push(val.deviceid)
             }
           }
@@ -478,7 +483,8 @@ export default {
                 message: '审批成功',
                 type: 'success'
               })
-              // this.$emit('transmission')
+              this.DetailProjects()
+              this.$emit('modifyingData', checkedChangeLength)
             } else {
               this.$message({
                 message: '审批失败',

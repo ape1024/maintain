@@ -109,12 +109,12 @@ export default {
         if (data.data.code === 0) {
           this.regionDate = data.data.data
           this.regionModel.push((this.regionDate)[0].areaid)
-          let regionId = (this.regionModel)[0]
-          this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((data) => {
-            if (data.data.code === 0) {
-              this.tableData = data.data.data.datas
+          let regionId = (this.regionDate)[0].areaid
+          this.axios.post(CalcDevCount(token, this.maintainProject, regionId, 1, 20)).then((item) => {
+            if (item.data.code === 0) {
+              this.tableData = item.data.data.datas
               this.numberPagesBoolean = true
-              this.numberPages = data.data.data.totalPage
+              this.numberPages = item.data.data.totalPage
             }
           })
         }

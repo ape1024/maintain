@@ -66,7 +66,7 @@
           <transition enter-active-class="fadeInUp"
                       leave-active-class="fadeOutDown">
             <div v-if="item.flag" class="inline_div">
-              <adminchild :adminid="adminAreaid" :tabChild="tableChild" @transmission="Transmission"></adminchild>
+              <adminchild :adminid="adminAreaid" :tabChild="tableChild" @transmission="Transmission" @modifyingData="ModifyingData" ></adminchild>
             </div>
           </transition>
         </li>
@@ -101,7 +101,27 @@ export default {
     increase
   },
   methods: {
+    ModifyingData (el) {
+      let token = JSON.parse(window.sessionStorage.token)
+      let regionId = this.regionModel[this.regionModel.length - 1]
+      this.axios.post(CalcDevCount(token, -1, regionId, this.currentpageData, 20)).then((data) => {
+        if (data.data.code === 0) {
+          data.data.data.datas.forEach((val) => {
+            if (val.areaid === this.adminAreaid) {
+              this.selectItem.alldevcount = val.alldevcount
+              this.selectItem.checkdevnum = val.checkdevnum
+              this.selectItem.filedevnum = val.filedevnum
+              this.selectItem.updatedevnum = val.updatedevnum
+              this.selectItem.stopdevnum = val.stopdevnum
+            }
+          })
+          this.numberPagesBoolean = true
+          this.numberPages = data.data.data.totalPage
+        }
+      })
+    },
     numberPagesChange (el) {
+      this.currentpageData = el
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(findAllRootAreasTree(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
@@ -180,8 +200,8 @@ export default {
       }
     },
     selectStyle (item) {
-      this.adminAreaid = item.areaid
       if (item.flag) {
+        this.selectItem = ''
         item.flag = false
       } else {
         this.tableData.forEach((val) => {
@@ -189,6 +209,8 @@ export default {
             val.flag = false
           }
         })
+        this.adminAreaid = item.areaid
+        this.selectItem = item
         item.flag = true
       }
     },
@@ -272,7 +294,10 @@ export default {
       adminAreaid: '',
       numberPages: 1,
       numberPagesBoolean: false,
-      currentPage: 1
+      currentPage: 1,
+      selectItem: '',
+      currentpageData: 1,
+      adminAreaidItm: ''
     }
   },
   created () {

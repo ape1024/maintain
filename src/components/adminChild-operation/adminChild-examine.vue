@@ -157,7 +157,7 @@ export default {
             message: '审核成功',
             type: 'success'
           })
-          this.$emit('modifysay', false)
+          this.$emit('modifysay', this.question.devicecount)
         }
       })
     },

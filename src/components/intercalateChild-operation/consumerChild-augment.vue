@@ -50,7 +50,7 @@
               用户角色：
             </p>
             <div class="subjectRigh">
-              <el-select size="mini"  v-model="userstate" multiple placeholder="请选择">
+              <el-select size="mini" :disabled="roleDisabled " v-model="userstate" multiple placeholder="请选择">
                 <el-option
                   v-for="item in roleSelect"
                   :key="item.roleid"
@@ -173,7 +173,7 @@
 </template>
 
 <script>
-import { appUser, getRolesList, getJobList, getOrganizationTrees, upload, FindAllRolesByOrgID } from '../../api/user'
+import { appUser, getRolesList, getJobList, getOrganizationTrees, upload, getRolesListByOrg } from '../../api/user'
 export default {
   name: 'consumerChild-augment',
   props: ['increaseBoolean'],
@@ -221,18 +221,25 @@ export default {
         label: 'organizationName',
         children: 'subOrgnizations',
         value: 'organizationId'
-      }
+      },
+      roleDisabled: true
     }
   },
   watch: {
     organizeOptions (val) {
       let data = val[val.length - 1]
-      this.FindAllRolesByOrg(data)
+      if (data) {
+        this.roleDisabled = false
+        let token = JSON.parse(window.sessionStorage.token)
+        this.FindAllRolesByOrg(token, data)
+      } else {
+        this.roleDisabled = true
+      }
     }
   },
   methods: {
-    FindAllRolesByOrg (data) {
-      this.axios.post(FindAllRolesByOrgID(data)).then((response) => {
+    FindAllRolesByOrg (token, data) {
+      this.axios.post(getRolesListByOrg(token, data)).then((response) => {
         if (response.data.code === 0) {
           this.roleSelect = response.data.data
         }
