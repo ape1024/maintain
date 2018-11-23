@@ -527,16 +527,28 @@ export default {
         })
         return false
       }
-      this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
-        if (response.data.code === 0) {
-          this.faulttreatment = response.data.data.faulttreatment
-          this.faultreason = response.data.data.faultreason
-          this.faultrange = response.data.data.faultrange
-          this.faulttype = response.data.data.faulttype
-          this.faultphenomenon = response.data.data.faultphenomenon
-          this.classificationBoolean = true
-        }
-      })
+      if (this.approvalradio === 100) {
+        this.axios.post(maintainRepairgetFaultSelectItems()).then((response) => {
+          if (response.data.code === 0) {
+            this.faulttreatment = response.data.data.faulttreatment
+            this.faultreason = response.data.data.faultreason
+            this.faultrange = response.data.data.faultrange
+            this.faulttype = response.data.data.faulttype
+            this.faultphenomenon = response.data.data.faultphenomenon
+            this.classificationBoolean = true
+          }
+        })
+      } else {
+        let token = JSON.parse(window.sessionStorage.token)
+        this.axios.post(maintainRepairapprovalTaskTwo(token, this.repairtaskid, this.SubmissionapprovalOpinion, this.SubmissionapprovalState)).then((response) => {
+          if (response.data.code === 0) {
+            this.$message({
+              message: '审批成功',
+              type: 'success'
+            })
+          }
+        })
+      }
     },
     Examination (item) {
       let token = JSON.parse(window.sessionStorage.token)

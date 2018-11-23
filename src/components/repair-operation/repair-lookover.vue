@@ -71,7 +71,7 @@
           </div>
           <div class="tabulationRight">
             <div class="flagSpanDiv">
-              <span class="repairSpan">检查情况</span>
+              <span class="repairSpan">安排情况</span>
             </div>
             <div class="tleftBottom tabulationRightfirst">
               <ul class="tlefttopRight">

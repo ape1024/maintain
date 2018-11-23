@@ -129,7 +129,6 @@
               <el-input
                 type="textarea"
                 :rows="2"
-                disabled
                 resize="none"
                 placeholder=""
                 v-model="textarea">

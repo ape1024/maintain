@@ -263,11 +263,7 @@ export default {
     this.axios.post(maintainDailygetRepairOrgTreeByDeviceId(this.msg.deviceid, this.maintainProject)).then((response) => {
       if (response.data.code === 0) {
         if (response.data.data.length) {
-          response.data.data.forEach((val) => {
-            if (val.projectId === this.maintainProject) {
-              this.maintenance = val.subOrgnizations
-            }
-          })
+          this.maintenance = response.data.data
         } else {
           this.maintenance = []
         }

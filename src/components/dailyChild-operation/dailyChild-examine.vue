@@ -291,7 +291,7 @@ export default {
       }, 200)
     },
     amputatematters (checktaskdetailid) {
-      this.$confirm('是否删除此设备?', '提示', {
+      this.$confirm('确认删除该条工作记录?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

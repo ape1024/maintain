@@ -43,8 +43,7 @@
               <span class="structureSpan">*</span>组织机构类型：
             </p>
             <div class="content">
-              <el-select size="mini"
-                         v-model="regimentaValue" placeholder="请选择">
+              <el-select size="mini" v-model="regimentaValue" placeholder="请选择">
                 <el-option
                   v-for="item in regimentation"
                   :key="item.value"
@@ -176,6 +175,26 @@
             </div>
           </div>
         </li>
+        <li class="informationLitwo">
+          <div class="informationDiv">
+            <p class="informationP">角色管理</p>
+            <div class="content">
+              <el-select
+                v-model="roleManagementData"
+                multiple
+                size="mini"
+                collapse-tags
+                placeholder="请选择">
+                <el-option
+                  v-for="item in roleManagement"
+                  :key="item.roleid"
+                  :label="item.rolename"
+                  :value="item.roleid">
+                </el-option>
+              </el-select>
+            </div>
+          </div>
+        </li>
         <!--上传图标-->
         <li class="informationLithree" v-show=" regimentaValue !== 4 &&  regimentaValue !== 5">
           <div class="informationDivthree">
@@ -230,7 +249,7 @@
 </template>
 <script>
 import $ from 'jquery'
-import {managementAuthority, managementCreatedProvince, getAllHigherOrgIDs, managementhandleNodeClickTwo, getCitiesByProvinceId, getCountiesByCityId, getOrganizationTrees, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, upload, organizationDelete, managementhandleNodeClickOne} from '../../api/user'
+import { managementAuthority, managementCreatedProvince, getAllHigherOrgIDs, managementhandleNodeClickTwo, getCitiesByProvinceId, getCountiesByCityId, getOrganizationTrees, managementCreatedorganization, getFirebrigades, getFirecontrolcategory, getIndustrycategory, upload, organizationDelete, managementhandleNodeClickOne, getRolesListByOrg } from '../../api/user'
 export default {
   props: {
     info: {
@@ -240,7 +259,10 @@ export default {
   },
   watch: {
     info (data) {
+      this.roleManagement = []
+      this.roleManagementData = []
       if (data.organizationId === '') {
+        this.gettingRoles(true, data.organization.organizationId)
         this.conserveBoolean = false
         this.dataRoot = true
         if (data.organization.organizationType === 1 || data.organization.organizationType === 2) {
@@ -262,6 +284,7 @@ export default {
         this.DataorganizationId = data.organizationId
         if (data.organization.root) {
           this.dataRoot = false
+          this.gettingRoles(true, data.organization.organizationId)
         } else {
           this.dataRoot = true
         }
@@ -270,6 +293,7 @@ export default {
         const urlTwo = managementhandleNodeClickTwo(organizationId)
         // 优先判断上级组织机构改变事件
         this.getSuperiorOrganization(organizationId)
+        this.gettingRoles(false, data.organization.organizationId)
         this.changeType(organizationId)
         this.axios.post(urlTwo).then((response) => {
           let urlDate = response.data.data
@@ -325,6 +349,28 @@ export default {
           // 县城
           this.countytownId = urlData.countyid
         })
+      }
+    },
+    companyDate (data) {
+      if (data.length) {
+        this.roleManagement = []
+        this.gettingRoles(true, data[data.length - 1])
+      }
+    },
+    roleManagement () {
+      if (this.roleManagementData.length && this.roleManagement.length) {
+        let roleManagementArr = []
+        let sectrion = (val) => {
+          this.roleManagement.forEach((data) => {
+            if (data.roleid === val) {
+              roleManagementArr.push(data.roleid)
+            }
+          })
+        }
+        this.roleManagementData.forEach((val) => {
+          sectrion(val)
+        })
+        this.roleManagementData = roleManagementArr
       }
     }
   },
@@ -409,10 +455,30 @@ export default {
       conserveBoolean: true,
       dataRoot: true,
       // 用于删除组织
-      DataorganizationId: ''
+      DataorganizationId: '',
+      roleManagement: [],
+      roleManagementData: []
     }
   },
   methods: {
+    gettingRoles (flag, organizationId) {
+      let token = JSON.parse(window.sessionStorage.token)
+      if (flag) {
+        this.axios.post(getRolesListByOrg(token, organizationId)).then((response) => {
+          if (response.data.code === 0) {
+            this.roleManagement = response.data.data
+          }
+        })
+      } else {
+        this.axios.post(getRolesListByOrg(token, organizationId)).then((response) => {
+          if (response.data.code === 0) {
+            response.data.data.forEach((val) => {
+              this.roleManagementData.push(val.roleid)
+            })
+          }
+        })
+      }
+    },
     subjectClick () {
       this.firecontrolBoolean = false
       this.buildscopeBoolean = false
@@ -580,6 +646,8 @@ export default {
       let file = this.imageUrlTwo === '' ? this.imageUrl : this.imageUrlTwo
       // 备注
       const memo = !this.textarea ? '' : this.textarea
+      //  角色管理
+      let roles = this.roleManagementData
       // 新建组织id 可以为空
       let organization = ''
       let fireBrigadeId = this.superVisionData
@@ -604,13 +672,18 @@ export default {
         }
       }
       if (commitflag) {
-        this.axios.post(managementAuthority(token, organizationType, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
+        this.axios.post(managementAuthority(token, organizationType, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo), roles).then((response) => {
           if (response.data.code === 0) {
             this.$message({
               message: '新增成功',
               type: 'success'
             })
             this.$emit('refresh')
+          } else {
+            this.$message({
+              message: `${response.data.message}`,
+              type: 'warning'
+            })
           }
         })
       } else {
@@ -662,6 +735,8 @@ export default {
         })
         return false
       }
+      //  角色管理
+      let roles = this.roleManagementData
       // 单位名称
       const organizationname = this.organizationname
       // 组织缩写
@@ -705,13 +780,18 @@ export default {
         }
       }
       if (commitflag) {
-        this.axios.post(managementAuthority(token, organizationType, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo)).then((response) => {
+        this.axios.post(managementAuthority(token, organizationType, fireBrigadeId, fireControlCategoryId, industryCategoryId, file, organization, parentid, countyid, city, province, organizationcode, organizationname, organizationshortname, address, professionalcategory, scope, level, qualificationnumber, linkman, tel, memo), roles).then((response) => {
           if (response.data.code === 0) {
             this.$message({
               message: '修改成功',
               type: 'success'
             })
             this.$emit('refresh')
+          } else {
+            this.$message({
+              message: `${response.data.message}`,
+              type: 'warning'
+            })
           }
         })
       } else {
@@ -763,12 +843,13 @@ export default {
     // 获取上级单位
     getSuperiorOrganization (organizationId) {
       this.axios.post(getAllHigherOrgIDs(organizationId)).then((response) => {
-        this.companyDate = []
         if (response.data.code === 0) {
+          this.superiorSupervisor = response.data.data[response.data.data.length - 1]
           if (response.data.data.length <= 1) {
             this.companyDate = []
           } else {
             let data = response.data.data
+            //  获取上级主管单位
             data.pop()
             this.companyDate = data
           }
