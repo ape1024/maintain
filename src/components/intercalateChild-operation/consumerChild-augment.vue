@@ -50,7 +50,7 @@
               用户角色：
             </p>
             <div class="subjectRigh">
-              <el-select size="mini" :disabled="roleDisabled " v-model="userstate" multiple placeholder="请选择">
+              <el-select size="mini" :disabled="roleDisabled " v-model="userstate" multiple collapse-tags placeholder="请选择">
                 <el-option
                   v-for="item in roleSelect"
                   :key="item.roleid"
