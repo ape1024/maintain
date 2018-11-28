@@ -99,19 +99,19 @@
         <ul class="entryList">
           <li v-for="(item, $index) in information"  :key="$index" class="listLi">
             <ul class="listLiulL">
-              <li class="entryLione">
+              <li class="entryLione" :title="item.usercode?item.usercode:' '">
                 {{item.usercode?item.usercode:' '}}
               </li>
-              <li class="entryLitwo">
+              <li class="entryLitwo" :title="item.username?item.username:' '">
                 {{item.username?item.username:' '}}
               </li>
               <li class="entryLitwo" :title="item.rolenames">
                 {{item.rolenames?item.rolenames:' '}}
               </li>
-              <li class="entryLifive">{{item.email?item.email:' '}}</li>
-              <li class="entryLitwo">{{item.tel?item.tel:' '}}</li>
-              <li class="entryLifive">{{item.organizationname?item.organizationname:' '}}</li>
-              <li class="entryLithree">{{item.lastlogintime?fmtDate(item.lastlogintime):' '}}</li>
+              <li class="entryLifive" :title="item.email?item.email:' '">{{item.email?item.email:' '}}</li>
+              <li class="entryLitwo" :title="item.tel?item.tel:' '">{{item.tel?item.tel:' '}}</li>
+              <li class="entryLifive" :title="item.organizationname?item.organizationname:' '">{{item.organizationname?item.organizationname:' '}}</li>
+              <li class="entryLithree" :title="item.lastlogintime?fmtDate(item.lastlogintime):' '">{{item.lastlogintime?fmtDate(item.lastlogintime):' '}}</li>
               <!-- <li class="entryLithree">
                 {{item.userroleid?item.userroleid:' '}}
               </li>-->
@@ -186,7 +186,7 @@
     </section>
     <!--授权-->
     <section v-if="accreditBBoolean" class="adhibit">
-      <accredit @acredit="Acredit" :userid="authorizationUserid" v-if="accreditBBoolean"></accredit>
+      <accredit @acredit="Acredit" @acreditUpadata="AcreditUpadata" :userid="authorizationUserid" v-if="accreditBBoolean"></accredit>
     </section>
   </div>
 </template>
@@ -265,6 +265,10 @@ export default {
     }
   },
   methods: {
+    AcreditUpadata (el) {
+      this.accreditBBoolean = el
+      this.search()
+    },
     // 获取数据列表
     search () {
       //  用户名
@@ -635,8 +639,12 @@ export default {
       padding-left 1%
       text-align left
     .entryLitwo
-      width 8%
-      text-align left10
+      width 7%
+      padding 0 .5%
+      text-align left
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
       float left
     .entryLithree
       width 12%

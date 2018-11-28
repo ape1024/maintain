@@ -41,7 +41,7 @@ export default {
             message: '设置成功',
             type: 'success'
           })
-          this.$emit('acredit', false)
+          this.$emit('acreditUpadata', false)
         }
       })
     },

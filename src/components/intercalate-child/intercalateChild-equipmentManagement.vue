@@ -352,7 +352,6 @@ export default {
     width 100%
     overflow hidden
     position relative
-    margin 0 12px
     background rgba(000,000,000,.47)
   .subject_top
     overflow hidden
