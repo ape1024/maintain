@@ -248,13 +248,13 @@
         </li>
         <!--操作按钮-->
         <li class="informationLifour">
-          <div v-show="conserveBoolean" @click="conserve" class="conserve">
+          <div v-show="conserveBoolean && JurisdictionUpdate" @click="conserve" class="conserve">
             保存
           </div>
           <div v-show="!conserveBoolean" @click="newConserve" class="conserve">
             新增保存
           </div>
-          <div v-show="conserveBoolean" class="amputateDIv" @click="amputate">
+          <div v-show="conserveBoolean && JurisdictionDelete" class="amputateDIv" @click="amputate">
             删除
           </div>
         </li>
@@ -965,6 +965,15 @@ export default {
     let token = JSON.parse(window.sessionStorage.token)
     this.getOrganizationTree(token)
     this.getProfessional()
+    // 判断角色
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'organization') {
+        this.JurisdictionInsert = val.insert
+        this.JurisdictionUpdate = val.update
+        this.JurisdictionDelete = val.delete
+      }
+    })
     // 组织类别
     const Createdorganization = managementCreatedorganization(token)
     this.axios.post(Createdorganization).then((response) => {
