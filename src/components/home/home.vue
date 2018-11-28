@@ -5,61 +5,61 @@
         <div class="header_left">
           <ul class="ul_router">
             <router-link to="/home/maintain-home-new">
-              <li>
+              <li v-if="this.maintainProject">
                 <i class="headerHome"></i>
                 首页
               </li>
             </router-link>
             <router-link to="/home/admin">
-              <li v-show="deviceSelect">
+              <li v-if="deviceSelect && this.maintainProject">
                 <i class="headerAdmin"></i>
                 消防设施
               </li>
             </router-link>
             <router-link to="/home/daily">
-              <li v-show="taskXjSelect">
+              <li v-if="taskXjSelect && this.maintainProject">
                 <i class="headerDaily"></i>
                 日常巡检
               </li>
             </router-link>
             <router-link to="/home/inspect">
-              <li v-show="taskJcSelect">
+              <li v-if="taskJcSelect && this.maintainProject">
                 <i class="headerInspect"></i>
                 检查测试
               </li>
             </router-link>
             <router-link to="/home/maintain">
-              <li v-show="taskWbSelect">
+              <li v-if="taskWbSelect && this.maintainProject">
                 <i class="headerMaintain"></i>
                 维护保养
               </li>
             </router-link>
             <router-link to="/home/repair">
-              <li v-show="taskGzwxSelect">
+              <li v-if="taskGzwxSelect && this.maintainProject">
                 <i class="headerRepair"></i>
                 故障问题
               </li>
             </router-link>
             <router-link to="/home/archives">
-              <li v-show="fileSelect">
+              <li v-if="fileSelect && this.maintainProject">
                 <i class="headerArchives"></i>
                 工作档案
               </li>
             </router-link>
             <router-link to="/home/report">
-              <li v-show="feedbackSelect">
+              <li v-if="feedbackSelect && this.maintainProject">
                 <i class="headerReport"></i>
                 现场反馈
               </li>
             </router-link>
             <router-link to="/home/plan">
-              <li v-show="planSelect">
+              <li v-if="planSelect && this.maintainProject">
                 <i class="headerArranged"></i>
                 定制计划
               </li>
             </router-link>
             <router-link to="/home/intercalate">
-              <li v-show="organizationSelect || roleSelect || userSelect || projectSelect || standardSelect || infoSelect || basedeviceSelect">
+              <li v-if="organizationSelect || roleSelect || userSelect || projectSelect || standardSelect || infoSelect || basedeviceSelect">
                 <i class="headerIntercalate"></i>
                 系统设置
               </li>

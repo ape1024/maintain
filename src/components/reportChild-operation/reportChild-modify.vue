@@ -259,6 +259,7 @@ export default {
         init()
         .informationTopLitwo
           width 33%
+          line-height 20px
           font-size $font-size-medium
           color $color-border-b-fault
           float left
