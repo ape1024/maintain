@@ -506,7 +506,7 @@ export default {
     this.DetailProjects()
     let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
     Jurisdiction.forEach((val) => {
-      if (val.functioncode === 'device') {
+      if (val.functioncode === 'basedevice') {
         this.JurisdictionSelect = val.select
         this.JurisdictionDelete = val.delete
         this.JurisdictionApproval = val.approval
