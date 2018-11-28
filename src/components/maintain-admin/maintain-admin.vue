@@ -187,7 +187,7 @@ export default {
       } else {
         let token = JSON.parse(window.sessionStorage.token)
         let areaid = this.regionModel[this.regionModel.length - 1]
-        this.axios.post(CalcDevCount(token, this.maintainProject, areaid, 1, 30)).then((response) => {
+        this.axios.post(CalcDevCount(token, this.maintainProject, areaid, 1, 20)).then((response) => {
           if (response.data.code === 0) {
             this.tableData = response.data.data.datas
             this.numberPages = response.data.data.totalPage
