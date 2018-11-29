@@ -3,8 +3,8 @@
     <div class="info-manage">
       <div class="header">
         <div class="header-info-switch">
-          <div class="header-info-switch-item" :class="{'header-info-switch-item-selected': selected === 1}" @click="switchType(1)">发件</div>
-          <div class="header-info-switch-item" :class="{'header-info-switch-item-selected': selected === 2}" @click="switchType(1)">收件</div>
+          <div class="header-info-switch-item" :class="{'header-info-switch-item-selected' : selected === 0}" @click="switchType(0)">发件</div>
+          <div class="header-info-switch-item" :class="{'header-info-switch-item-selected' : selected === 1}" @click="switchType(1)">收件</div>
         </div>
         <div class="header-info-search">
           <el-input size="mini" v-model="searchVal" placeholder="关键字搜索">
@@ -19,7 +19,6 @@
       </div>
       <div class="content">
         <div class="content-header">
-          <div class="item type">消息类型</div>
           <div class="item title">标题</div>
           <div class="item person">发布人员</div>
           <div class="item time">发布时间</div>
@@ -29,13 +28,12 @@
         </div>
         <div class="content-body">
           <div class="content-body-wrap" :key="index" v-for="(item, index) in list">
-            <div class="item type">{{resetType(item.msgtype)}}</div>
             <div class="item title">{{item.msgtitle}}</div>
             <div class="item person">{{item.sendername}}</div>
             <div class="item time">{{resetTimeModel(item.createtime)}}</div>
-            <div class="item state" :style="{'color' : resetMsgStateColor(item.msgtype, item.msgstate)}">{{resetMsgState(item.msgtype, item.msgstate)}}</div>
+            <div class="item state" :style="{'color' : resetMsgStateColor(item.readstate)}">{{resetMsgState(item.readstate)}}</div>
             <div class="item important" :style="{'color' : resetMsgLevelColor(item.msglevel)}">{{resetMsgLevel(item.msglevel)}}</div>
-            <div class="item handle" @click="examineMsg(item.msgtype, item.messageid, item.content)">查看</div>
+            <div class="item handle" @click="examineMsg(item.receiveid, item.content)">查看</div>
           </div>
         </div>
       </div>
@@ -73,19 +71,20 @@ export default {
       totalPage: 0,
       list: [],
       JurisdictionInsert: '',
-      selected: 1
+      selected: 0
     }
   },
   methods: {
     switchType (i) {
-
+      if (this.selected === i) return
       this.selected = i
+      this.getMessageList(1, LEN, '')
     },
     add () {
       this.addState = true
     },
-    examineMsg (type, id, msg) {
-      if (type === this.msgType.send) {
+    examineMsg (id, msg) {
+      if (this.selected === this.msgType.send) {
         this.examineMessage = msg
         this.examineState = true
       } else {
@@ -93,6 +92,7 @@ export default {
           if (res.data.code === 0) {
             this.examineMessage = msg
             this.examineState = true
+            this.updateMessageList()
           }
         })
       }
@@ -100,16 +100,8 @@ export default {
     resetTimeModel (time) {
       return resetTime(time, 'all')
     },
-    resetType (type) {
-      switch (type) {
-        case this.msgType.receive:
-          return '收件'
-        case this.msgType.send:
-          return '发件'
-      }
-    },
-    resetMsgState (type, state) {
-      if (type === this.msgType.send) return '---'
+    resetMsgState (state) {
+      if (this.selected === this.msgType.send) return '---'
       switch (state) {
         case 0:
           return '未读'
@@ -147,7 +139,6 @@ export default {
       }
     },
     searchData () {
-      this.searchVal = ''
       this.getMessageList(1, LEN, this.searchVal)
     },
     handleCurrentChange (val) {
@@ -160,12 +151,14 @@ export default {
       // 重置分页
       const totalPage = this.totalPage
       this.totalPage = 0
-      this.axios.post(getMessageList(this.msgType.total, pageIndex, pageSize, msg)).then((response) => {
+      this.axios.post(getMessageList(this.selected, pageIndex - 1, pageSize, msg)).then((response) => {
+        // 重置搜索条件
+        this.searchVal = ''
         if (response && response.data.code === 0) {
           const data = response.data.data
-          this.totalPage = data.pageTotal
-          this.pageIndex = data.pageIndex
-          this.list = data.data
+          this.totalPage = data.totalPages
+          this.pageIndex = pageIndex
+          this.list = data.content
         } else {
           this.totalPage = totalPage
         }
@@ -216,8 +209,8 @@ export default {
             padding 10px 30px
             background #202F49
             border-radius 5px
-            .header-info-switch-item-selected
-              background #152135
+            &.header-info-switch-item-selected
+              background #314989
         .header-info-add
           color #fff
           float right
@@ -262,12 +255,10 @@ export default {
               height 14px
               &:last-child
                 color #296186
-        .type
-          width 12%
         .title
           width 40%
         .person
-          width 10%
+          width 20%
         .time
           width 10%
         .state
@@ -275,7 +266,7 @@ export default {
         .important
           width 10%
         .handle
-          width 8%
+          width 10%
           cursor pointer
       .footer
         position absolute

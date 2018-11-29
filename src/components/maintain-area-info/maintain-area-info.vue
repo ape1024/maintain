@@ -31,8 +31,8 @@ export default {
     getMessageCount () {
       this.axios.post(getMessageCount()).then((res) => {
         if (res && res.data.code === 0) {
-          this.allInfo = res.data.data.messageCount
-          this.awaitInfo = res.data.data.unReadMessageCount
+          this.allInfo = res.data.data.receiveMessageTotalCount
+          this.awaitInfo = res.data.data.unReadReceiveMessageCount
         }
       })
     }
