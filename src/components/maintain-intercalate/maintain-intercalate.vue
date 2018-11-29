@@ -10,7 +10,8 @@
         <router-link v-show="basedeviceSelect" to="/home/intercalate/equipmentManagement"><li class="headerLi">基本设备管理</li></router-link>
         <router-link v-show="projectSelect" to="/home/intercalate/project"><li class="headerLi">项目设置</li></router-link>
         <router-link v-show="standardSelect" to="/home/intercalate/taskrules"><li v-if="true" class="headerLi">维管标准</li></router-link>
-        <router-link v-show="infoSelect" to="/home/intercalate/info"><li class="headerLi">消息管理</li></router-link>
+        <!--<router-link v-show="infoSelect" to="/home/intercalate/info"><li class="headerLi">消息管理</li></router-link>-->
+        <router-link to="/home/intercalate/info"><li class="headerLi">消息管理</li></router-link>
       </ul>
     </header>
     <div class="intercalateRouter">

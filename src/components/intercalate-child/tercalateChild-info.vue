@@ -11,7 +11,7 @@
             </i>
           </el-input>
         </div>
-        <div class="header-info-add" @click="add">新 增</div>
+        <div v-if="JurisdictionInsert" class="header-info-add" @click="add">新 增</div>
       </div>
       <div class="content">
         <div class="content-header">
@@ -67,7 +67,8 @@ export default {
       searchVal: '',
       pageIndex: 1,
       totalPage: 0,
-      list: []
+      list: [],
+      JurisdictionInsert: ''
     }
   },
   methods: {
@@ -163,6 +164,21 @@ export default {
     }
   },
   created () {
+    // const promise = new Promise({resolve, reject} => {
+    //   console.log(1)
+    //   resolve()
+    //   console.log(2)
+    // })
+    // promise.then(()=>{
+    //   console.log(3)
+    // })
+    // console.log(4)
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'info') {
+        this.JurisdictionInsert = val.insert
+      }
+    })
     this.msgType = {
       total: 2,
       receive: 1,
