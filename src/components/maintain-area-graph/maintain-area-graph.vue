@@ -160,7 +160,14 @@ export default {
             },
             center: ['45%', '50%'],
             data: innerData.map(t => {
-              return {value: t.count, name: t.name}
+              if (t.name === '正常') {
+              }
+              return {
+                value: t.count,
+                name: t.name,
+                itemStyle: {
+                  color: t.name === '正常' ? '#53DCAD' : '#c23531'
+                }}
             })
           },
           {

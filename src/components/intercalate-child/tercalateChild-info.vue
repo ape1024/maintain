@@ -2,6 +2,10 @@
   <div class="subject">
     <div class="info-manage">
       <div class="header">
+        <div class="header-info-switch">
+          <div class="header-info-switch-item" :class="{'header-info-switch-item-selected': selected === 1}" @click="switchType(1)">发件</div>
+          <div class="header-info-switch-item" :class="{'header-info-switch-item-selected': selected === 2}" @click="switchType(1)">收件</div>
+        </div>
         <div class="header-info-search">
           <el-input size="mini" v-model="searchVal" placeholder="关键字搜索">
             <i
@@ -68,10 +72,15 @@ export default {
       pageIndex: 1,
       totalPage: 0,
       list: [],
-      JurisdictionInsert: ''
+      JurisdictionInsert: '',
+      selected: 1
     }
   },
   methods: {
+    switchType (i) {
+
+      this.selected = i
+    },
     add () {
       this.addState = true
     },
@@ -205,6 +214,19 @@ export default {
       .header
         overflow hidden
         padding 20px 0
+        .header-info-switch
+          float left
+          margin-left 20px
+          .header-info-switch-item
+            display inline-block
+            font-size $font-size-small
+            cursor pointer
+            color #fff
+            padding 10px 30px
+            background #202F49
+            border-radius 5px
+            .header-info-switch-item-selected
+              background #152135
         .header-info-add
           color #fff
           float right
