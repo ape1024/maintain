@@ -856,8 +856,8 @@ export const findAreasTree = (areaid) => {
   return url
 }
 // 发布通知
-export const deliverAnnouncement = (title, sendTime, effectTime, level, content, ids) => {
-  return `${Test}/message/createMessage?msgtitle=${title}&sendtime=${sendTime}&effecttime=${effectTime}&msglevel=${level}&content=${content}&receiveids=${ids}`
+export const deliverAnnouncement = (title, sendTime, effectTime, level, content, ids, names) => {
+  return `${Test}/message/createMessage?msgtitle=${title}&sendtime=${sendTime}&effecttime=${effectTime}&msglevel=${level}&content=${content}&receiveids=${ids}&receivenames=${names}`
 }
 // 获取接收人
 export const getReceivePer = () => {
@@ -873,7 +873,7 @@ export const getMessageCount = () => {
 }
 // 更新消息状态
 export const updateMsgState = (id) => {
-  return `${Test}/message/updataMessageState?messageid=${id}`
+  return `${Test}/message/updataMessageState?receiveId=${id}`
 }
 // 获取折线图数据
 export const getDevFaultCountForYear = (projectId, areaId, year) => {
