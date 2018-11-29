@@ -199,6 +199,7 @@
                 multiple
                 size="mini"
                 collapse-tags
+                :disabled="roleDisabled"
                 placeholder="请选择">
                 <el-option
                   v-for="item in roleManagement"
@@ -277,6 +278,7 @@ export default {
       this.roleManagement = []
       this.roleManagementData = []
       if (data.organizationId === '') {
+        console.log('/1')
         this.gettingRoles(true, data.organization.organizationId)
         this.conserveBoolean = false
         this.dataRoot = true
@@ -300,6 +302,13 @@ export default {
         this.DataorganizationId = data.organizationId
         if (data.organization.root) {
           this.dataRoot = false
+          let userOrgenization = JSON.parse(window.sessionStorage.userInfo).organizationid
+          console.log(this.roleDisabled)
+          if (data.organization.parentid && (userOrgenization === data.organizationId)) {
+            this.roleDisabled = true
+          } else {
+            this.roleDisabled = false
+          }
           this.gettingRoles(true, data.organization.organizationId)
         } else {
           this.dataRoot = true
@@ -492,7 +501,8 @@ export default {
       DataorganizationId: '',
       roleManagementData: [],
       roleManagement: [],
-      superiorSupervisor: ''
+      superiorSupervisor: '',
+      roleDisabled: false
     }
   },
   methods: {

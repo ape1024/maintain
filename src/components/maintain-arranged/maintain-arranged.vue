@@ -55,22 +55,22 @@
       <ul class="table_ul">
         <li class="table_li" :key="index" v-for="(item, index) in arrangedData">
           <ul class="inline_ul">
-            <li class="repair_li">
+            <li :title="item.planname" class="repair_li">
               {{item.planname}}
             </li>
             <li class="repair_litwo">
               {{conversion(item.worktypeid)}}
             </li>
-            <li class="repair_litwo">
+            <li :title="item.plancode" class="repair_litwo">
               {{item.plancode}}
             </li>
             <li class="repair_litwo">
               {{conversionPlanState(item.planstate)}}
             </li>
-            <li class="repair_litwo">
+            <li :title="item.createTime" class="repair_litwo">
               {{(item.createTime)}}
             </li>
-            <li class="repair_litwo">
+            <li :title="item.creatername" class="repair_litwo">
               {{item.creatername}}
             </li>
             <li :title="item.plandesc" class="repair_lithree">

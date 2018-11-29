@@ -7,7 +7,7 @@
         <div class="content-left-info">待查收：{{awaitInfo}}</div>
       </div>
       <div class="content-right">
-        <div class="look-info" @click="lookInfo">立即查看</div>
+        <div v-if="JurisdictionSelect" class="look-info" @click="lookInfo">立即查看</div>
       </div>
     </div>
   </div>
@@ -19,11 +19,13 @@ export default {
   data () {
     return {
       allInfo: 0,
-      awaitInfo: 0
+      awaitInfo: 0,
+      JurisdictionSelect: ''
     }
   },
   methods: {
     lookInfo () {
+      console.log(this.$router)
       this.$router.push({
         path: '/home/intercalate/info'
       })
@@ -41,6 +43,12 @@ export default {
     clearInterval(this.interVal)
   },
   created () {
+    let Jurisdiction = JSON.parse(window.sessionStorage.Jurisdiction)
+    Jurisdiction.forEach((val) => {
+      if (val.functioncode === 'info') {
+        this.JurisdictionSelect = val.select
+      }
+    })
     const delay = 1000 * 60 * 10
     this.title = '消息通知'
     this.getMessageCount()

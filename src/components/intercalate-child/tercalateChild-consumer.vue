@@ -54,7 +54,7 @@
             </div>
           </li>
         </ul>
-        <div @click="search" class="search">
+        <div @click="searchData" class="search">
           搜 索
         </div>
         <div v-if="JurisdictionInsert" @click="induce" class="superinduce">
@@ -268,6 +268,18 @@ export default {
     AcreditUpadata (el) {
       this.accreditBBoolean = el
       this.search()
+    },
+    searchData () {
+      let token = JSON.parse(window.sessionStorage.token)
+      // const len = this.selectedOptions.length
+      // const selectOptionsData = len === 0 ? '' : this.selectedOptions[(len - 1)]
+      const selectRoleId = this.role.length === 0 ? '' : this.role[1]
+      this.axios.post(findAllBy(this.organizationId, selectRoleId, this.Username, this.Handphone, 1, this.pageSize, token)).then((response) => {
+        if (response.data.code === 0) {
+          this.information = response.data.data.data
+          this.totalPage = response.data.data.pageTotal
+        }
+      })
     },
     // 获取数据列表
     search () {

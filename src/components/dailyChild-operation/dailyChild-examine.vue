@@ -123,7 +123,7 @@
                 <ul class="title_ul">
                   <li class="title_li" v-for="(item ,index) in determinant" :key="index">
                     <ul class="title_li_ul">
-                      <li class="opinion_li">
+                      <li :title="item.requirement" class="opinion_li">
                         {{item.requirement}}
                       </li>
                       <li class="opinion_litwo">

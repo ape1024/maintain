@@ -81,10 +81,10 @@
           <li :title="dataset.manufacturename" class="threelevel_lithree">
             {{dataset.manufacturename}}
           </li>
-          <li class="threelevel_lithree">
+          <li :title="dataset.devicemodelname" class="threelevel_lithree">
             {{dataset.devicemodelname}}
           </li>
-          <li class="threelevel_lithree">
+          <li :title="dataset.madedate" class="threelevel_lithree">
             {{dataset.madedate}}
           </li>
           <!--<li class="threelevel_lithree">-->

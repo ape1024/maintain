@@ -53,8 +53,8 @@
             <div>{{information.devicecount}}{{information.unit}}</div>
           </li>
           <li class="lookover_li">
-            <p class="lookover_p">有效日期：</p>
-            <div>{{tiemerIf(this.information.effectivedate)}}</div>
+            <p class="lookover_p">生产日期：</p>
+            <div>{{tiemerIf(this.information.madedate)}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">MAC编码：</p>
@@ -65,8 +65,8 @@
             <div :title="information.parameters">{{information.parameters}}</div>
           </li>
           <li class="lookover_li">
-            <p class="lookover_p">生产日期：</p>
-            <div>{{tiemerIf(this.information.madedate)}}</div>
+            <p class="lookover_p">有效日期：</p>
+            <div>{{tiemerIf(this.information.effectivedate)}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">备注说明：</p>

@@ -177,13 +177,14 @@
         </li>
         <li class="informationLitwo">
           <div class="informationDiv">
-            <p class="informationP">角色管理</p>
+            <p class="informationP">角色管理：</p>
             <div class="content">
               <el-select
                 v-model="roleManagementData"
                 multiple
                 size="mini"
                 collapse-tags
+                :disabled="roleDisabled"
                 placeholder="请选择">
                 <el-option
                   v-for="item in roleManagement"
@@ -284,8 +285,19 @@ export default {
         this.DataorganizationId = data.organizationId
         if (data.organization.root) {
           this.dataRoot = false
+          console.log('/2')
+          let userOrgenization = JSON.parse(window.sessionStorage.userInfo).organizationid
+          if (data.organization.parentid && (userOrgenization === data.organizationId)) {
+            this.roleDisabled = true
+            console.log(this.roleDisabled)
+          } else {
+            this.roleDisabled = false
+          }
+          console.log(userOrgenization)
+          // if (data.organizationId)
           this.gettingRoles(true, data.organization.organizationId)
         } else {
+          console.log('/3')
           this.dataRoot = true
         }
         this.organizationId = organizationId
@@ -457,7 +469,8 @@ export default {
       // 用于删除组织
       DataorganizationId: '',
       roleManagement: [],
-      roleManagementData: []
+      roleManagementData: [],
+      roleDisabled: false
     }
   },
   methods: {

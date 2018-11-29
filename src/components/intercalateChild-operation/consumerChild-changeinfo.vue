@@ -13,7 +13,7 @@
             <div class="subjectRigh">
               <el-input
                 size="mini"
-                :disabled="nameoflanding"
+                disabled
                 placeholder=""
                 v-model="nameoflanding"
                 clearable>
@@ -51,7 +51,7 @@
               用户角色：
             </p>
             <div class="subjectRigh">
-              <el-select size="mini" v-model="userstate" multiple placeholder="请选择" :disabled="userstate">
+              <el-select size="mini" v-model="userstate" multiple placeholder="请选择" disabled>
                 <el-option
                   v-for="item in roleSelect"
                   :key="item.roleid"
@@ -110,7 +110,7 @@
               工作职务：
             </p>
             <div class="subjectRigh">
-              <el-select size="mini" v-model="businesspostCode" placeholder="请选择" :disabled="businesspostCode ==='系统管理员'">
+              <el-select size="mini" v-model="businesspostCode" placeholder="请选择" disabled>
                 <el-option
                   v-for="item in businesspost"
                   :key="item.value"
