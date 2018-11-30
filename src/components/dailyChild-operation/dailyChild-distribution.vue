@@ -313,8 +313,6 @@ export default {
       height 185px
       box-sizing border-box
       overflow auto
-      &::-webkit-scrollbar
-        display none
     .maintenance
       width 55%
       box-sizing border-box
@@ -323,7 +321,6 @@ export default {
         font-size $font-size-small
         color #999
         line-height 20px
-
   .arrange
     padding 15px
     display flex
@@ -371,11 +368,10 @@ export default {
     max-height 260px
   .tree-wrapper
     float left
+    width 300px
     box-sizing border-box
     height 260px
     overflow auto
-    &::-webkit-scrollbar
-      display none
   .personnel
     width 100%
     overflow hidden

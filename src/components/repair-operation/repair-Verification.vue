@@ -59,11 +59,7 @@
                 <li class="tlefttopli">
                   <div class="tlefttopli__Div">
                     <span class="tlefttopli_Span">处理意见：</span>
-                    <span class="tlefttopli_Spantwo">{{examine.creater}}</span>
-                  </div>
-                  <div class="tlefttopli__Div">
-                    <span class="tlefttopli_Span">审核结论：</span>
-                    <span class="tlefttopli_SpanThree">{{Auditorsstate}}</span>
+                    <span class="tlefttopli_Spantwo">{{examine.disposeopinion}}</span>
                   </div>
                 </li>
                 <li class="tlefttopli">

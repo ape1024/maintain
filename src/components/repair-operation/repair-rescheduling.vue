@@ -446,7 +446,7 @@ export default {
     width 50%
     height 240px
     float right
-    overflow-y scroll
+    overflow-y auto
     overflow-x hidden
   .tree-wrapper
     float left
@@ -514,7 +514,7 @@ export default {
   .personChargeDiv
     float left
     width 450px
-    overflow-y scroll
+    overflow auto
     height 240px
   .explainBottom
     init()
@@ -526,6 +526,6 @@ export default {
       margin-right 110px
      .closedown
        closedown()
-  ::-webkit-scrollbar
-    display none
+  /*::-webkit-scrollbar*/
+    /*display none*/
 </style>
