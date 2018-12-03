@@ -40,7 +40,7 @@
               </div>
             </div>
             <div class="modify_liDiv">
-              <p class="modify_li_p"><span class="increaseSpan">*</span>规格型号：</p>
+              <p class="modify_li_p">规格型号：</p>
               <div class="modify_li_div">
                 <el-select size="mini" @change="versionChang(versionValue)" v-model="versionValue" placeholder="">
                   <el-option
@@ -74,7 +74,7 @@
               <!--</div>-->
             <!--</div>-->
             <div class="modify_liDivtwo">
-              <p class="modify_li_p"><span class="modifySpantwo">*</span>设施位置：</p>
+              <p class="modify_li_p"><span class="increaseSpan">*</span>设施位置：</p>
               <div class="modify_li_div">
                 <div class="content">
                   <el-cascader
@@ -423,6 +423,13 @@ export default {
       }
       files = files.join()
       let areaid = this.facilityLocationDate[this.facilityLocationDate.length - 1]
+      if (!areaid) {
+        this.$message({
+          message: '请先选择设施位置',
+          type: 'warning'
+        })
+        return false
+      }
       // token
       let token = JSON.parse(window.sessionStorage.token)
       //   设备 id
@@ -477,6 +484,13 @@ export default {
           }
         })
       } else if (this.versionManufacturer === true) {
+        if (!this.manufactorModel) {
+          this.$message({
+            message: '请先选择生产厂家！',
+            type: 'warning'
+          })
+          return false
+        }
         this.axios.post(AddDivecemodels(manufacturerid, devicetypeid, this.versionCustom, this.technicalParameter)).then((Item) => {
           if (Item.data.code === 0) {
             devicemodel = Item.data.data.divecemodelid
@@ -484,6 +498,13 @@ export default {
           }
         })
       } else {
+        if (!this.manufactorModel) {
+          this.$message({
+            message: '请先选择生产厂家！',
+            type: 'warning'
+          })
+          return false
+        }
         devicemodel = this.versionValue
         manufacturerid = this.manufactorModel
         this.requestModification(token, Deviceid, this.maintainProject, areaid, manufacturerid, devicecode, basedeviceid, devicemodel, position, parameters, memo, mac, madedate, effectivedate, devunitid, files)

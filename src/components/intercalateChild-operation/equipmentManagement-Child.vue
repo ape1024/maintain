@@ -136,7 +136,7 @@
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
-      <childLookover :inspection="examineInspection" :information="examineInformation" :msg="lookoverBoolean" @look="Onlook"></childLookover>
+      <childLookover :inspection="ebasedevicexamineInspection" :information="examineInformation" :msg="lookoverBoolean" @look="Onlook"></childLookover>
     </section>
     <section v-if="modifyBoolean" @click.stop class="review">
       <!--修改-->

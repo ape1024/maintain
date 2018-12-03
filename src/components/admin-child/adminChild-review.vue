@@ -706,6 +706,13 @@ export default {
       } else {
         icons = this.uploadData.join()
       }
+      if (!this.tabulationtitle.length) {
+        this.$message({
+          message: '请逐一录入每台设施的具体信息',
+          type: 'warning'
+        })
+        return
+      }
       this.tabulationtitle.forEach((val) => {
         let obj = {
           a: val.a,
@@ -721,38 +728,6 @@ export default {
       })
       //  单位
       let devunitid = ''
-      // if (!this.Company) {
-      //   this.$message({
-      //     message: '请填写设施单位',
-      //     type: 'warning'
-      //   })
-      //   return false
-      // } else {
-      //   devunitid = this.Company
-      // }
-      // if (!this.Company) {
-      //   this.$message({
-      //     message: '请选择设施单位',
-      //     type: 'warning'
-      //   })
-      //   return false
-      // }
-      // if (this.Company === -999) {
-      //   if (!this.CompanyInput) {
-      //     this.$message({
-      //       message: '请填写设施单位',
-      //       type: 'warning'
-      //     })
-      //     return false
-      //   } else {
-      //     const data = await this.axios.post(AddDevUnit(token, devicetypeid, this.CompanyInput)).then((Data) => Data)
-      //     if (data.data.code === 0) {
-      //       devunitid = data.data.data.devunitId
-      //     }
-      //   }
-      // } else {
-      //   devunitid = this.Company
-      // }
       if (this.categoryDate.length !== 0) {
         if (this.customManufacturer === true) {
           if (!this.customManufacturerDate) {
@@ -781,6 +756,13 @@ export default {
           })
         } else if (this.versionManufacturer === true) {
           //  厂家 id
+          if (!this.manufactorModel) {
+            this.$message({
+              message: '请先选择生产厂家！',
+              type: 'warning'
+            })
+            return false
+          }
           manufacturerid = this.manufactorModel
           this.axios.post(AddDivecemodels(manufacturerid, basedeviceid, this.versionCustom, this.technicalParameter)).then((Item) => {
             if (Item.data.code === 0) {
@@ -790,6 +772,13 @@ export default {
             }
           })
         } else {
+          if (!this.manufactorModel) {
+            this.$message({
+              message: '请先选择生产厂家！',
+              type: 'warning'
+            })
+            return false
+          }
           devicemodel = this.versionValue
           manufacturerid = this.manufactorModel
           this.requestCreation(rowcount, token, this.maintainProject, devicetypeid, manufacturerid, this.basedevicecode, devicemodel, parameters, memo, madedate, effectivedate, icons, devunitid, tabulationtitle)

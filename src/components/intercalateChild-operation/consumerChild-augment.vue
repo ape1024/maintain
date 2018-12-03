@@ -325,9 +325,11 @@ export default {
       let url = appUser(urltoken, organizationid, usercode, username, Userpwd, email, tel, job, memo, roleids, headportrait)
       this.axios.post(url).then((response) => {
         if (response.data.code === 0) {
-          this.thisPage = this.increaseBoolean
-          this.thisPage = !this.thisPage
-          this.$emit('incr', this.thisPage)
+          this.$message({
+            message: '创建成功',
+            type: 'success'
+          })
+          this.$emit('incr', false)
         } else {
           this.$message.error(response.data.message)
         }
