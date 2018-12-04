@@ -1,5 +1,5 @@
 // 地图接口
-window.osmUrlConfig = 'http://114.215.46.71:8080'
+// window.osmUrlConfig = 'http://114.215.46.71:8080'
 // 请求接口
 window.Test = 'http://172.16.200.20:8920'
 //  小磊

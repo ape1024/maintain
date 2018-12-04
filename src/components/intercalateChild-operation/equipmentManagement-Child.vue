@@ -136,7 +136,7 @@
     </section>
     <section v-if="lookoverBoolean" @click.stop class="review">
       <!--查看-->
-      <childLookover :inspection="ebasedevicexamineInspection" :information="examineInformation" :msg="lookoverBoolean" @look="Onlook"></childLookover>
+      <childLookover :inspection="examineInspection" :information="examineInformation" :msg="lookoverBoolean" @look="Onlook"></childLookover>
     </section>
     <section v-if="modifyBoolean" @click.stop class="review">
       <!--修改-->
@@ -359,11 +359,14 @@ export default {
       })
     },
     examine (deviceid) {
+      console.log(deviceid)
       // 点击查看
       this.axios.post(adminfindDeviceDetail(deviceid)).then((response) => {
         if (response.data.code === 0) {
+          console.log('/1')
           this.examineInformation = response.data.data
           this.axios.post(adminFindInspectionMaintenance(deviceid)).then((data) => {
+            console.log('/2')
             if (data.data.code === 0) {
               this.examineInspection = data.data.data
               this.lookoverBoolean = true
