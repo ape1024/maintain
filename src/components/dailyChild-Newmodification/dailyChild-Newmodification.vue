@@ -15,7 +15,7 @@
             <li class="cephalosomeOne">
               进度
             </li>
-            <li class="cephalosomeOne">
+            <li class="cephalosomepositionOne">
               设置位置
             </li>
             <li class="cephalosomeSix">
@@ -34,7 +34,7 @@
                 <li class="cephalosomeThree">处理状态</li>
               </ul>
             </div>
-            <li class="cephalosomeOne cephalosomelv">操作</li>
+            <li class="cephalosomeparticularsOne cephalosomelv">操作</li>
           </ul>
         </div>
         <!--list-->
@@ -53,7 +53,7 @@
                 <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
                   <span title="总数量">{{item.sumcount }}</span> / <span class="heavyPlayLiSpan" title="已完成">{{item.finshedcount }}</span> / <span class="heavyPlayLiSpanThree" title="故障问题">{{item.errcount}}</span>  / <span class="heavyPlayLiSpantwo" title="待审核">{{item.waitapprovalcount }}</span> / <span title="已安排">{{item.assigncount}}</span>
                 </li>
-                <li :title="item.position" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne">
+                <li :title="item.position" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomepositionOne">
                   {{item.position}}
                 </li>
                 <li :title="item.devicecount" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeSix">
@@ -69,7 +69,7 @@
                     <li class="heavyPlayLi cephalosomeThree">
                       {{data.checkperson}}{{data.others}}
                     </li>
-                    <li class="heavyPlayLi cephalosomeThree">
+                    <li :title="!data.checktime ? '' : fmtDate(data.checktime)" class="heavyPlayLi cephalosomeThree">
                       {{!data.checktime ? '' : fmtDate(data.checktime)}}
                     </li>
                     <li class="heavyPlayLi cephalosomeThree" :class="data.conclusion !== 1 ? 'conkoutClass' : 'regularClass'">
@@ -84,7 +84,7 @@
                   </ul>
                 </div>
                 <!--操作-->
-                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeOne cephalosomelv">
+                <li :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeparticularsOne cephalosomelv">
                   <span @click.stop="particulars(item.deviceid)" class="cephalosomeFiveSpan">详情</span>
                 </li>
               </ul>
@@ -274,6 +274,12 @@ export default {
     overflow hidden
     text-overflow ellipsis
     white-space nowrap
+    /*.cephalosomeSeven  */
+      /*width 12.8%  */
+      /*text-align center  */
+      /*overflow hidden  */
+      /*text-overflow ellipsis  */
+      /*white-space nowrap*/
   .cephalosomeFour
     width 8%
     overflow hidden
@@ -334,7 +340,7 @@ export default {
   .heavyPlayLiSpanThree
      color #c7a038
   .heavyPlayLiDiv
-    width 45%
+    width 32%
     overflow hidden
     position relative
     float left
@@ -378,4 +384,20 @@ export default {
   .threelevel_lithreeSSpan
     display inline-block
     width 14px
+  .cephalosomepositionOne
+    width 25%
+    padding-right 0.5%
+    padding-left 0.5%
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+  .cephalosomeparticularsOne
+    width 8%
+    padding-right 0.5%
+    padding-left 0.5%
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+  .cephalosomeUl .cephalosomeparticularsOne:last-child
+    border-right none
 </style>

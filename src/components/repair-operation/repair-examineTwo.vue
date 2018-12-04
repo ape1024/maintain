@@ -429,6 +429,7 @@
         </div>
       </div>
     </transition>
+    <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
   </div>
 </template>
 

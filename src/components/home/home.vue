@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <div  class="macrocosm">
-      <header class="header" :style="{ background: 'url(static/img/header.png) no-repeat' }">
+      <header class="header" :style="{ background: 'url(static/img/header.png) no-repeat', backgroundSize : '100% 100%' }">
         <div class="header_left">
           <ul class="ul_router">
             <router-link to="/home/maintain-home-new">
