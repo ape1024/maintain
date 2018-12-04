@@ -292,9 +292,9 @@ export const mapMixin = {
         }
 
         // 重置所有弹窗状态
-        this.$refs.iconListPopup.close()
-        this.$refs.iconPopup.close()
-        this.$refs.polygonPopup.close()
+        this.$refs.iconListPopup && this.$refs.iconListPopup.close()
+        this.$refs.iconPopup && this.$refs.iconPopup.close()
+        this.$refs.polygonPopup && this.$refs.polygonPopup.close()
         // 请求成功
         const list = data.subAreaList
         const area = data.areaInfo
@@ -376,7 +376,7 @@ export const mapMixin = {
           deviceData
         })
         // 关闭列表图标弹窗，删除原来图标
-        this.$refs.iconListPopup.close()
+        this.$refs.iconListPopup && this.$refs.iconListPopup.close()
         this.iconList.forEach((t) => {
           this.removeLayer(t)
         })
@@ -405,9 +405,9 @@ export const mapMixin = {
     },
     fullScreenESC () {
       if (this.state) {
-        this.$refs.iconListPopup.close()
-        this.$refs.iconPopup.close()
-        this.$refs.polygonPopup.close()
+        this.$refs.iconListPopup && this.$refs.iconListPopup.close()
+        this.$refs.iconPopup && this.$refs.iconPopup.close()
+        this.$refs.polygonPopup && this.$refs.polygonPopup.close()
         this.closeFullScreen()
       }
     },
@@ -422,7 +422,7 @@ export const mapMixin = {
       } else if (this.polygonSelected === index && info.data) {
         this.polygonData = this.areaInfoState ? createFactoryData(info.data) : createBuildingData(info.data)
         this.polygonPos = {x, y}
-        this.$refs.polygonPopup.open()
+        this.$refs.polygonPopup && this.$refs.polygonPopup.open()
       }
       this.polygonSelected = index
     },

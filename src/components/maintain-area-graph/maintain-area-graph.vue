@@ -55,6 +55,7 @@ export default {
       this.resetCount()
       // 嵌套环形
       this.axios.post(getCircleData(this.maintainProject, this.currentAreaId)).then(res => {
+        if (!this.$refs.nestedRing) return
         if (res && res.data.code === 0) {
           const data = res.data.data
           if (!data.devfaultcount.length && !data.devstatecount.length) {
@@ -68,6 +69,7 @@ export default {
       // 折线图数据
       const yearVal = new Date().getFullYear()
       this.axios.post(getDevFaultCountForYear(this.maintainProject, this.currentAreaId, yearVal)).then((res) => {
+        if (!this.$refs.lineGraph) return
         if (res && res.data.code === 0) {
           if (!res.data.data.length) {
             this.lineGraphLoading = true
