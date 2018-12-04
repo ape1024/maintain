@@ -30,7 +30,7 @@ export default {
       userSelect: false,
       projectSelect: false,
       standardSelect: false,
-      infoSelect: false,
+      infoSelect: true,
       basedeviceSelect: false
     }
   },
@@ -59,10 +59,10 @@ export default {
           this.standardSelect = val.select
           this.jump(this.standardSelect, '/home/intercalate/taskrules')
         }
-        if (val.functioncode === 'info') {
-          this.infoSelect = val.insert
-          this.jump(this.infoSelect, '/home/intercalate/info')
-        }
+        // if (val.functioncode === 'info') {
+        //   this.infoSelect = val.insert
+        //   this.jump(this.infoSelect, '/home/intercalate/info')
+        // }
         if (val.functioncode === 'basedevice') {
           this.basedeviceSelect = val.select
           this.jump(this.basedeviceSelect, '/home/intercalate/equipmentManagement')
@@ -77,6 +77,11 @@ export default {
     }
   },
   created () {
+    const data = this.$route.query
+    if (data.jump) {
+      this.$router.push({path: '/home/intercalate/info'})
+      this.flag = true
+    }
     this.authority()
   },
   beforeRouteUpdate (to, from, next) {

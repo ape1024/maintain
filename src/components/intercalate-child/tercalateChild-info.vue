@@ -33,7 +33,7 @@
             <div class="item time">{{resetTimeModel(item.createtime)}}</div>
             <div class="item state" :style="{'color' : resetMsgStateColor(item.readstate)}">{{resetMsgState(item.readstate)}}</div>
             <div class="item important" :style="{'color' : resetMsgLevelColor(item.msglevel)}">{{resetMsgLevel(item.msglevel)}}</div>
-            <div class="item handle" @click="examineMsg(item.receiveid, item.content)">查看</div>
+            <div class="item handle" @click="examineMsg(item.receiveid, item)">查看</div>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default {
     return {
       addState: false,
       examineState: false,
-      examineMessage: '',
+      examineMessage: {},
       searchVal: '',
       pageIndex: 1,
       totalPage: 0,
@@ -83,14 +83,28 @@ export default {
     add () {
       this.addState = true
     },
-    examineMsg (id, msg) {
+    examineMsg (id, data) {
       if (this.selected === this.msgType.send) {
-        this.examineMessage = msg
+        this.examineMessage = {
+          state: this.selected,
+          title: data.msgtitle,
+          person: this.selected === 0 ? data.recevieusername : data.sendername,
+          time: resetTime(data.sendtime, 'all'),
+          level: this.resetMsgLevel(data.msglevel),
+          content: data.content
+        }
         this.examineState = true
       } else {
         this.axios.post(updateMsgState(id)).then((res) => {
           if (res.data.code === 0) {
-            this.examineMessage = msg
+            this.examineMessage = {
+              state: this.selected,
+              title: data.msgtitle,
+              person: this.selected === 0 ? data.recevieusername : data.sendername,
+              time: resetTime(data.sendtime, 'all'),
+              level: this.resetMsgLevel(data.msglevel),
+              content: data.content
+            }
             this.examineState = true
             this.updateMessageList()
           }

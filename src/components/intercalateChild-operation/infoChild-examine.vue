@@ -3,7 +3,30 @@
     <div class="info-add-pos">
       <div class="info-add-wrap">
         <div class="title">通知内容</div>
-        <p class="desc">{{message}}</p>
+        <div class="info-content">
+          <div class="info-content-title">
+            <div class="info-desc">标题：</div>
+            <div class="info-val">{{message.title}}</div>
+          </div>
+          <div class="info-content-name">
+            <div class="info-desc">{{message.state === 0 ? '收件' : '发件'}}人员：</div>
+            <div class="info-val">{{message.person}}</div>
+          </div>
+          <div class="info-content-group">
+            <div class="info-content-time">
+              <div class="info-desc">{{message.state === 0 ? '发件' : '收件'}}时间：</div>
+              <div class="info-val">{{message.time}}</div>
+            </div>
+            <div class="info-content-level">
+              <div class="info-desc">消息级别：</div>
+              <div class="info-val">{{message.level}}</div>
+            </div>
+          </div>
+          <div class="info-content-desc">
+            <div class="info-desc">通知内容：</div>
+            <div class="info-val">{{message.content}}</div>
+          </div>
+        </div>
         <div class="handle">
           <div class="handle-val close" @click="close">关闭</div>
         </div>
@@ -20,8 +43,17 @@ export default {
       default: false
     },
     message: {
-      type: String,
-      default: ''
+      type: Object,
+      default: function () {
+        return {
+          state: 0,
+          title: '',
+          person: '',
+          time: '',
+          level: '',
+          content: ''
+        }
+      }
     }
   },
   methods: {
@@ -42,15 +74,53 @@ export default {
     .info-add-pos
       width 100%
       box-sizing border-box
-      margin-top 12%
+      margin-top 13%
       background #111A28
       .info-add-wrap
         width 800px
         margin 0 auto
         .title
-          padding 50px 0
+          padding 40px 0
           font-size $font-size-medium
           color #fff
+        .info-content
+          position relative
+          box-sizing border-box
+          padding 0 20px
+          color #fff
+          .info-content-title, .info-content-name, .info-content-group, .info-content-desc
+            position relative
+            width 100%
+            box-sizing border-box
+            height 40px
+            .info-content-time
+              position absolute
+              left 0
+              top 0
+              width 50%
+              box-sizing border-box
+            .info-content-level
+              position absolute
+              left 50%
+              top 0
+              width 50%
+              box-sizing border-box
+            .info-desc
+              position absolute
+              left 0
+              top 0
+              width 80px
+              color #666
+              font-size $font-size-small
+              line-height 20px
+            .info-val
+              position absolute
+              left 80px
+              top 0
+              right 0
+              font-size $font-size-small
+              word-break break-all
+              line-height 20px
         .desc
           width 100%
           box-sizing border-box
