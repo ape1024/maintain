@@ -40,7 +40,7 @@
                 故障问题
               </li>
             </router-link>
-            <router-link to="/home/archives">
+            <router-link to="/home/pigeonhole">
               <li v-if="fileSelect && this.maintainProject">
                 <i class="headerArchives"></i>
                 工作档案

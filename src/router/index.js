@@ -22,7 +22,7 @@ import maintain from '../components/maintain-maintain/maintain-maintain'
 // 故障维修
 import repair from '../components/maintain-repair/maintain-repair'
 // 档案
-import archives from '../components/maintain-archives/maintain-archives'
+// import archives from '../components/maintain-archives/maintain-archives'
 // 上报问题
 import report from '../components/maintain-report/maintain-report'
 // 计划
@@ -45,14 +45,16 @@ import tercalateInfo from '../components/intercalate-child/tercalateChild-info'
 import equipmentManagement from '../components/intercalate-child/intercalateChild-equipmentManagement'
 // 测试组织机构
 import structureNew from '../components/intercalate-child/intercalateChild-structureNew'
-// 消防设施归档
-import adminFile from '../components/archives-child/adminFile'
-// 日常巡检归档'
-import dailyFile from '../components/archives-child/dailyFile'
-// 检查测试归档
-import inspectFile from '../components/archives-child/inspectFile'
-// 维护保养归档
-import maintainFile from '../components/archives-child/maintainFile'
+// // 消防设施归档
+// import adminFile from '../components/archives-child/adminFile'
+// // 日常巡检归档'
+// import dailyFile from '../components/archives-child/dailyFile'
+// // 检查测试归档
+// import inspectFile from '../components/archives-child/inspectFile'
+// // 维护保养归档
+// import maintainFile from '../components/archives-child/maintainFile'
+//  归档新页面
+import pigeonhole from '../components/maintain-pigeonhole/maintain-pigeonhole'
 //  空白页
 import blanKpage from '../components/maintain-Blankpage/maintain-Blankpage'
 
@@ -121,25 +123,28 @@ const routes = [
       },
       {
         // 档案
-        path: 'archives',
-        component: archives,
-        children: [{
-          path: 'adminFile',
-          component: adminFile
-        }, {
-          path: 'dailyFile',
-          component: dailyFile
-        }, {
-          path: 'inspectFile',
-          component: inspectFile
-        }, {
-          path: 'maintainFile',
-          component: maintainFile
-        },
-        {
-          path: '/',
-          redirect: 'dailyFile'
-        }]
+        // path: 'archives',
+        path: 'pigeonhole',
+        // component: archives,
+        component: pigeonhole
+        // children: [{
+        //   path: 'adminFile',
+        //   component: adminFile
+        // }, {
+        //   path: 'dailyFile',
+        //   component: dailyFile
+        // }, {
+        //   path: 'inspectFile',
+        //   component: inspectFile
+        // }, {
+        //   path: 'maintainFile',
+        //   component: maintainFile
+        // }
+        // {
+        //   path: '/',
+        //   redirect: 'dailyFile'
+        // }
+        // ]
       },
       {
         // 上报

@@ -30,7 +30,7 @@ export default {
    .wrapper
      width 100%
      min-width 1900px
-     min-height 1080px
+     min-height 1040px
      overflow hidden
      background-size cover!important
 </style>
