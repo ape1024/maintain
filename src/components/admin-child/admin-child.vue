@@ -630,7 +630,6 @@ export default {
       width 7.5%
       padding-left 1%
       position relative
-
   .threelevel_list
     margin: 4px;
     overflow: hidden;
