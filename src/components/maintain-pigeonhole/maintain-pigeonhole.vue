@@ -15,10 +15,17 @@
         </div>
       </div>
       <div class="pigeonholeRight">
-        <div class="pigeonholeRightDiv">
-          <!--检查测试-->
+        <!--检查测试-->
+        <div v-if="InspectionFalse" class="pigeonholeRightDiv">
           <Inspection></Inspection>
-
+        </div>
+        <!--维护保养-->
+        <div v-if="maintenanceFalse" class="pigeonholeRightDiv">
+          <maintenance></maintenance>
+        </div>
+        <!--日常巡检-->
+        <div class="pigeonholeRightDiv" v-if="routineInspectionFalse">
+          <routineInspection></routineInspection>
         </div>
       </div>
     </div>
@@ -27,10 +34,14 @@
 
 <script>
 import Inspection from '../pigeonhole-operation/pigeonhole-Inspection'
+import maintenance from '../pigeonhole-operation/pigeonhole-maintenance'
+import routineInspection from '../pigeonhole-operation/pigeonhole-routineInspection'
 export default {
   name: 'maintain-pigeonhole',
   components: {
-    Inspection
+    Inspection,
+    maintenance,
+    routineInspection
   },
   data () {
     return {
@@ -50,20 +61,22 @@ export default {
         label: '维保工作记录',
         children: [{
           label: '工作计划',
-          category: 2
+          category: 3
         }, {
           label: '日常巡检',
-          category: 2
+          category: 2,
+          id: 2
         }, {
           label: '检查测试',
           id: 3,
           category: 2
         }, {
           label: '维护保养',
-          category: 2
+          category: 2,
+          id: 1
         }, {
           label: '故障问题',
-          category: 2
+          category: 3
         }]
       }, {
         label: '维保工作报告',
@@ -73,14 +86,29 @@ export default {
         children: 'children',
         label: 'label'
       },
-      input: '',
-      startTime: '',
-      endTime: ''
+      categoryId: '',
+      //  检查测试
+      InspectionFalse: false,
+      //  维护保养
+      maintenanceFalse: false,
+      //  日常巡检
+      routineInspectionFalse: false
     }
   },
   methods: {
     handleNodeClick (data) {
-      console.log(data)
+      this.maintenanceFalse = false
+      this.routineInspectionFalse = false
+      this.InspectionFalse = false
+      if (data.category === 2) {
+        if (data.id === 1) {
+          this.maintenanceFalse = true
+        } else if (data.id === 2) {
+          this.routineInspectionFalse = true
+        } else if (data.id === 3) {
+          this.InspectionFalse = true
+        }
+      }
     }
   }
 }
@@ -132,9 +160,9 @@ export default {
         overflow hidden
         position relative
     .pigeonholeRight
-      height 1064px
       background rgba(0,0,0,0.47)
       overflow hidden
+      padding-bottom 20px
       position relative
       .pigeonholeRightDiv
         margin 12px 8px

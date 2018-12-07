@@ -908,6 +908,6 @@ export const exportMaintenanceReportForMonth = (token, projectid, beginTime, end
 export const findAllApproval = (token, recordid) => {
   return `${Test}/task/findAllApproval?token=${token}&recordid=${recordid}`
 }
-export const getChecktaskdetailsByPlanid = (planid, pageindex, pagesize, begindate, enddate) => {
-  return `${Test}/task/getChecktaskdetailsByPlanid?planid=${planid}&pageindex=${pageindex}&pagesize=${pagesize}&begindate=${begindate}&enddate=${enddate}`
+export const getChecktaskdetailsByPlanid = (planid, pageindex, pagesize, begindate, enddate, basedevicecode, areaid, conclusion) => {
+  return `${Test}/task/getChecktaskdetailsByPlanid?planid=${planid}&pageindex=${pageindex}&pagesize=${pagesize}&begindate=${begindate}&enddate=${enddate}&basedevicecode=${basedevicecode}&areaid=${areaid}&conclusion=${conclusion}`
 }

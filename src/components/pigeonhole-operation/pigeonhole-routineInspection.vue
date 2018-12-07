@@ -168,9 +168,8 @@
 import { projectMixin } from 'common/js/mixin'
 import { maintainArrangegetAllPlansTwo, getChecktaskdetailsByPlanid, findAllDeviceType, getTreeByProjectId, getWorkconclusion } from '../../api/user'
 export default {
-  name: 'pigeonhole-Inspection',
+  name: 'pigeonhole-routineInspection',
   mixins: [projectMixin],
-  props: [`planid`],
   data () {
     return {
       input: '',
@@ -226,6 +225,36 @@ export default {
   methods: {
     init () {
       this.Initialization()
+    },
+    Initialization () {
+      this.equipmentDate = []
+      this.locationDate = []
+      this.conclusionData = ''
+      this.principalmainbody = []
+      this.regionModel = []
+      this.equipmentDate = []
+      this.locationformation = []
+      let token = JSON.parse(window.sessionStorage.token)
+      this.axios.post(maintainArrangegetAllPlansTwo(this.maintainProject, 2)).then((response) => {
+        if (response.data.code === 0) {
+          if (response.data.data.length) {
+            this.regionModel = response.data.data
+            this.regionDate = response.data.data[0].checkplanid
+            this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+          }
+        }
+      })
+      this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.equipmentinformation = response.data.data
+        }
+      })
+      //  获取位置
+      this.axios.post(getTreeByProjectId(this.maintainProject)).then((response) => {
+        if (response.data.code === 0) {
+          this.locationformation = response.data.data
+        }
+      })
     },
     query () {
       this.equipmentDate = []
@@ -291,39 +320,10 @@ export default {
           }
         }
       })
-    },
-    Initialization () {
-      this.equipmentDate = []
-      this.locationDate = []
-      this.conclusionData = ''
-      this.principalmainbody = []
-      this.regionModel = []
-      this.equipmentDate = []
-      this.locationformation = []
-      let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(maintainArrangegetAllPlansTwo(this.maintainProject, 3)).then((response) => {
-        if (response.data.code === 0) {
-          if (response.data.data.length) {
-            this.regionModel = response.data.data
-            this.regionDate = response.data.data[0].checkplanid
-            this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
-          }
-        }
-      })
-      this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.equipmentinformation = response.data.data
-        }
-      })
-      //  获取位置
-      this.axios.post(getTreeByProjectId(this.maintainProject)).then((response) => {
-        if (response.data.code === 0) {
-          this.locationformation = response.data.data
-        }
-      })
     }
   },
   created () {
+    //  token
     //  时间节点
     let timestamp = (new Date()).getTime()
     this.startTime = this.fmtDate(timestamp - 3600 * 24 * 30 * 1000)
@@ -338,7 +338,6 @@ export default {
           value: '-999'
         }
         response.data.data.unshift(obj)
-        console.log(response.data.data)
         this.conclusion = response.data.data
       }
     })
@@ -487,7 +486,7 @@ export default {
     height 30px
     width 30px
   .principalMainbodyLiBorDer
-     border-bottom 1px solid #3f4856
+    border-bottom 1px solid #3f4856
   .lookover
     overflow hidden
     float right
