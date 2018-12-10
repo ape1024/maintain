@@ -338,7 +338,6 @@ export default {
           value: '-999'
         }
         response.data.data.unshift(obj)
-        console.log(response.data.data)
         this.conclusion = response.data.data
       }
     })
@@ -409,6 +408,7 @@ export default {
     width 66%
     font-size 16px
     color #fff
+    overflow hidden
     position relative
     float left
     .heavyPlayLiDivUl

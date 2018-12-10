@@ -911,3 +911,7 @@ export const findAllApproval = (token, recordid) => {
 export const getChecktaskdetailsByPlanid = (planid, pageindex, pagesize, begindate, enddate, basedevicecode, areaid, conclusion) => {
   return `${Test}/task/getChecktaskdetailsByPlanid?planid=${planid}&pageindex=${pageindex}&pagesize=${pagesize}&begindate=${begindate}&enddate=${enddate}&basedevicecode=${basedevicecode}&areaid=${areaid}&conclusion=${conclusion}`
 }
+export const findAllMaintenanceProject = (token, nameKey, pageIndex, pageSize) => {
+  let data = nameKey ? `nameKey=${nameKey}&` : ``
+  return `${Test}/workRecord/findAllMaintenanceProject?token=${token}&${data}pageIndex=${pageIndex}&pageSize=${pageSize}`
+}

@@ -27,6 +27,10 @@
         <div class="pigeonholeRightDiv" v-if="routineInspectionFalse">
           <routineInspection></routineInspection>
         </div>
+        <!--维保项目-->
+        <div v-if="MaintenanceprojectFalse" class="pigeonholeRightDiv">
+          <Maintenanceproject></Maintenanceproject>
+        </div>
       </div>
     </div>
   </div>
@@ -36,12 +40,14 @@
 import Inspection from '../pigeonhole-operation/pigeonhole-Inspection'
 import maintenance from '../pigeonhole-operation/pigeonhole-maintenance'
 import routineInspection from '../pigeonhole-operation/pigeonhole-routineInspection'
+import Maintenanceproject from '../pigeonhole-operation/pigeonhole-Maintenanceproject'
 export default {
   name: 'maintain-pigeonhole',
   components: {
     Inspection,
     maintenance,
-    routineInspection
+    routineInspection,
+    Maintenanceproject
   },
   data () {
     return {
@@ -52,7 +58,7 @@ export default {
           category: 1
         }, {
           label: '维保项目',
-          category: 1
+          category: 4
         }, {
           label: '消防设施',
           category: 1
@@ -92,7 +98,9 @@ export default {
       //  维护保养
       maintenanceFalse: false,
       //  日常巡检
-      routineInspectionFalse: false
+      routineInspectionFalse: false,
+      //  维保项目
+      MaintenanceprojectFalse: false
     }
   },
   methods: {
@@ -100,6 +108,7 @@ export default {
       this.maintenanceFalse = false
       this.routineInspectionFalse = false
       this.InspectionFalse = false
+      this.MaintenanceprojectFalse = false
       if (data.category === 2) {
         if (data.id === 1) {
           this.maintenanceFalse = true
@@ -108,6 +117,8 @@ export default {
         } else if (data.id === 3) {
           this.InspectionFalse = true
         }
+      } else if (data.category === 4) {
+        this.MaintenanceprojectFalse = true
       }
     }
   }
@@ -162,10 +173,9 @@ export default {
     .pigeonholeRight
       background rgba(0,0,0,0.47)
       overflow hidden
-      padding-bottom 20px
       position relative
       .pigeonholeRightDiv
-        margin 12px 8px
+        margin 22px 8px
         overflow hidden
         position relative
   .el-tree
