@@ -318,10 +318,10 @@ export const mapMixin = {
         this.maxZoom = this.areaInfoState ? 15 : 18
         // 根据状态不同进行不同操作
         if (!this.CRSState) {
-          if (!area.border.length) {
+          /* if (!area.border.length) {
             this.loading(false)
             return
-          }
+          } */
           // 初始化地图
           this.initMap(this.map1, this.minZoom, this.maxZoom)
           // 设置基本信息
