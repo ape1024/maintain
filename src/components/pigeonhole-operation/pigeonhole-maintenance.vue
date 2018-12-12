@@ -206,19 +206,23 @@ export default {
     equipmentDate (data) {
       if (data.length >= 2) {
         let basedevicecode = data[data.length - 1]
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, basedevicecode, this.locationDate, this.conclusionData)
+        let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, basedevicecode, locationDate, this.conclusionData)
       }
     },
     locationDate (data) {
       if (data.length) {
+        let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let areaid = data[data.length - 1]
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, this.equipmentDate, areaid, this.conclusionData)
+        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, equipmentDate, areaid, this.conclusionData)
       }
     },
     conclusionData (data) {
       if (data) {
+        let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
         let conclusion = Number(data) === -999 ? '' : data
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, conclusion)
+        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, equipmentDate, locationDate, conclusion)
       }
     }
   },

@@ -915,3 +915,16 @@ export const findAllMaintenanceProject = (token, nameKey, pageIndex, pageSize) =
   let data = nameKey ? `nameKey=${nameKey}&` : ``
   return `${Test}/workRecord/findAllMaintenanceProject?token=${token}&${data}pageIndex=${pageIndex}&pageSize=${pageSize}`
 }
+export const findTaskType = (token) => {
+  return `${Test}/workRecord/findTaskType?token=${token}`
+}
+export const findFaultProblem = (token, projectid, startTime, endTime, deviceType, deviceArea, taskType, handleResult, pageIndex, pageSize) => {
+  return `${Test}/workRecord/findFaultProblem?token=${token}&projectid=${projectid}&startTime=${startTime}&endTime=${endTime}&deviceType=${deviceType}&deviceArea=${deviceArea}&taskType=${taskType}&handleResult=${handleResult}&pageIndex=${pageIndex}&pageSize=${pageSize}`
+}
+export const getAllFeedbackstate = (token) => {
+  return `${Test}/feedback/getAllFeedbackstate?token=${token}`
+}
+//
+export const statFeedBackInfo = (token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize) => {
+  return `${Test}/feedback/statFeedBackInfo?token=${token}&projectid=${projectid}&devtypeid=${devtypeid}&areaid=${areaid}&devstate=${devstate}&start=${start}&end=${end}&pageIndex=${pageIndex}&pageSize=${pageSize}`
+}

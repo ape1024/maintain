@@ -3,19 +3,6 @@
     <div class="rightHeader">
       <ul class="rightHeaderUl">
         <li class="rightHeaderLi">
-          <p class="rightHeaderLiP">计划名称：</p>
-          <div class="rightHeaderLiDivOne">
-            <el-select size="mini" clearable v-model="regionDate" placeholder="请选择">
-              <el-option
-                v-for="item in regionModel"
-                :key="item.checkplanid"
-                :label="item.planname"
-                :value="item.checkplanid">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="rightHeaderLi">
           <p class="rightHeaderLiP">时间：</p>
           <div class="rightHeaderLiDiv">
             <el-date-picker
@@ -48,16 +35,15 @@
         <div class="schedule">
           明细表
         </div>
-        <!--汇总表-->
-        <div class="summary">
-          汇总表
-        </div>
       </div>
     </div>
     <div class="principalPart">
       <div class="principalHeader">
         <ul class="principalHeaderUl">
-          <li class="principalHeaderLi principalHeaderLiOne principalPartI">设施类别
+          <li class="principalHeaderLi principalHeaderLiOne">
+            <el-checkbox @change="checkedChang" v-model="checked"></el-checkbox>
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施类别
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
               <el-cascader
@@ -70,7 +56,7 @@
               ></el-cascader>
             </div>
           </li>
-          <li class="principalHeaderLi principalHeaderLiOne principalPartI">设施位置
+          <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施位置
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
               <el-cascader
@@ -83,67 +69,92 @@
               ></el-cascader>
             </div>
           </li>
-          <div class="heavyPlayLiDiv">
-            <ul>
-              <li class="principalHeaderLi heavyPlayLiDivLiOne">工作方式</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiThree">工作事项</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiThree">工作记录</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiOne">工作人员</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiTwo">工作时间</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiOne">工作结论
-                <i class="el-icon-caret-bottom"></i>
-                <div class="threelevel_ensconce">
-                  <el-select v-model="conclusionData" placeholder="请选择">
-                    <el-option
-                      v-for="item in conclusion"
-                      :key="item.value"
-                      :label="item.name"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </div>
-              </li>
-              <li class="principalHeaderLi heavyPlayLiDivLiTwo">现场照片</li>
-            </ul>
-          </div>
-          <li class="lookoverTwo">操作</li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            任务类型
+            <i class="el-icon-caret-bottom"></i>
+            <div class="threelevel_ensconce">
+              <el-select size="mini" v-model="taskTypeData" placeholder="请选择">
+                <el-option
+                  v-for="item in taskType"
+                  :key="item.workmodeid"
+                  :label="item.workmodename"
+                  :value="item.workmodeid">
+                </el-option>
+              </el-select>
+            </div>
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiOne">
+            异常情况
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            安排人员
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            安排时间
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            处理人员
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            处理时间
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            处理结果
+            <i class="el-icon-caret-bottom"></i>
+            <div class="threelevel_ensconce">
+              <el-select size="mini" v-model="processingData" placeholder="请选择">
+                <el-option
+                  v-for="item in processing"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </div>
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            现场照片
+          </li>
+          <li class="principalHeaderLi principalHeaderLiOne">操作</li>
         </ul>
       </div>
       <ul class="principalMainbody">
         <li class="principalMainbodyLi principalMainbodyLiBorDer" :key="index" v-for="(item, index) in principalmainbody">
-          <ul class="principalMainbodyLiUl">
-            <li :title="item.devicename" :style="{height: item.checktaskdetail.length * 40 + 'px', lineHeight: item.checktaskdetail.length * 40 + 'px'}" class="principalMainbodyLiUlLi principalHeaderLiOne">
-              {{item.devicename}}
+          <ul class="principalHeaderUl">
+            <li class="principalHeaderLi principalHeaderLiOne">
+              <el-checkbox v-model="item.flag"></el-checkbox>
             </li>
-            <li :style="{height: item.checktaskdetail.length * 40 + 'px', lineHeight: item.checktaskdetail.length * 40 + 'px'}" :title="item.areaname" class="principalMainbodyLiUlLi principalHeaderLiOne">
+            <li :title="item.basedevicename" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
+              {{item.basedevicename}}
+            </li>
+            <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
               {{item.areaname}}
             </li>
-            <div class="heavyPlayLiDiv">
-              <ul class="heavyPlayLiDivUl" :key="sumIndex" v-for="(data, sumIndex) in item.checktaskdetail">
-                <li :title="data.workmodename" class="principalHeaderLiTwo heavyPlayLiDivLiOne">
-                  {{data.workmodename}}
-                </li>
-                <li :title="data.workitem" class="principalHeaderLiTwo heavyPlayLiDivLiThree">
-                  {{data.workitem}}
-                </li>
-                <li class="principalHeaderLiTwo heavyPlayLiDivLiThree" :title="data.workrecord">
-                  {{data.workrecord}}
-                </li>
-                <li :title="data.checkperson + data.others" class="principalHeaderLiTwo heavyPlayLiDivLiOne">
-                  {{data.checkperson}} {{data.others}}
-                </li>
-                <li :title="!data.submittime ? '' : fmtDate(data.submittime)" class="principalHeaderLi heavyPlayLiDivLiTwo">
-                  {{!data.submittime ? '' : fmtDate(data.submittime)}}
-                </li>
-                <li :title="data.conclusionData" class="principalHeaderLi heavyPlayLiDivLiOne">
-                  {{data.conclusionData}}
-                </li>
-                <li :title="data.photosArr" class="principalHeaderLiTwo heavyPlayLiDivLiTwo">
-                  <img class="principalHeaderLiImg" :key="photosIndex" v-for="(photosItem, photosIndex) in data.photosArr" :src="`${photosItem}`" alt="">
-                </li>
-              </ul>
-            </div>
-            <li :style="{height: item.checktaskdetail.length * 40 + 'px', lineHeight: item.checktaskdetail.length * 40 + 'px'}" class="principalHeaderLi heavyPlayLiDivLiOne lookover">
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.worktypename}}
+            </li>
+            <li class="principalHeaderLi heavyPlayLiDivLiOne">
+              {{item.exception}}
+            </li>
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.creatername}}
+            </li>
+            <li :title="item.createtime ? fmtDate(item.createtime) : ''" class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.createtime ? fmtDate(item.createtime) : ''}}
+            </li>
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.repairpersonname}}
+            </li>
+            <li :title="item.repairtime ? fmtDate(item.repairtime) : ''" class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.repairtime ? fmtDate(item.repairtime) : ''}}
+            </li>
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.taskstatusText}}
+            </li>
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+              <img class="principalHeaderLiImg" :key="urlIndex" v-for="(url, urlIndex) in item.beforephotosArr" :src="url" alt="">
+            </li>
+            <li class="principalHeaderLi principalHeaderLiOne lookover">
               查看
             </li>
           </ul>
@@ -166,9 +177,9 @@
 
 <script>
 import { projectMixin } from 'common/js/mixin'
-import { maintainArrangegetAllPlansTwo, getChecktaskdetailsByPlanid, findAllDeviceType, getTreeByProjectId, getWorkconclusion } from '../../api/user'
+import { findTaskType, findFaultProblem, findAreasTreeByProjectid, findAllDeviceType } from '../../api/user'
 export default {
-  name: 'pigeonhole-routineInspection',
+  name: 'pigeonhole-faultproblem',
   mixins: [projectMixin],
   data () {
     return {
@@ -176,7 +187,6 @@ export default {
       startTime: '',
       endTime: '',
       options: [],
-      regionDate: '',
       regionModel: [],
       principalmainbody: [],
       urlPhotos: '',
@@ -199,30 +209,50 @@ export default {
       currentPage: 1,
       numberPages: 1,
       conclusion: [],
-      conclusionData: ''
+      conclusionData: '',
+      checked: '',
+      taskType: '',
+      taskTypeData: '',
+      processingData: '',
+      picPath: '',
+      processing: [{
+        id: -999,
+        name: '所有'
+      },
+      {
+        id: 5,
+        name: '已处理'
+      }, {
+        id: -5,
+        name: '未处理'
+      }]
     }
   },
   watch: {
     equipmentDate (data) {
       if (data.length >= 2) {
-        let basedevicecode = data[data.length - 1]
+        let token = JSON.parse(window.sessionStorage.token)
+        let equipmentDate = data[data.length - 1]
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, basedevicecode, locationDate, this.conclusionData)
+        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, 0, 20)
       }
     },
     locationDate (data) {
       if (data.length) {
-        let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
-        let areaid = data[data.length - 1]
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, equipmentDate, areaid, this.conclusionData)
+        let token = JSON.parse(window.sessionStorage.token)
+        let locationDate = data[data.length - 1]
+        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, 0, 20)
       }
     },
-    conclusionData (data) {
+    processingData (data) {
+      console.log(data)
       if (data) {
-        let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        let processingData = data === -999 ? '' : data
+        let token = JSON.parse(window.sessionStorage.token)
+        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        let conclusion = Number(data) === -999 ? '' : data
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, equipmentDate, locationDate, conclusion)
+        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, processingData, 0, 20)
       }
     }
   },
@@ -230,44 +260,46 @@ export default {
     init () {
       this.Initialization()
     },
+    query () {
+      let token = JSON.parse(window.sessionStorage.token)
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, '', '', '', '', 0, 20)
+    },
     Initialization () {
       this.equipmentDate = []
       this.locationDate = []
-      this.conclusionData = ''
-      this.principalmainbody = []
-      this.regionModel = []
-      this.equipmentDate = []
-      this.locationformation = []
+      this.taskTypeData = ''
+      this.processingData = ''
+      //  设施类别
       let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(maintainArrangegetAllPlansTwo(this.maintainProject, 2)).then((response) => {
-        if (response.data.code === 0) {
-          if (response.data.data.length) {
-            this.regionModel = response.data.data
-            this.regionDate = response.data.data[0].checkplanid
-            this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
-          }
-        }
-      })
       this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.equipmentinformation = response.data.data
         }
       })
-      //  获取位置
-      this.axios.post(getTreeByProjectId(this.maintainProject)).then((response) => {
+      //  设施位置
+      this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.locationformation = response.data.data
         }
       })
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.taskTypeData, this.processingData, 0, 20)
     },
-    query () {
-      this.equipmentDate = []
-      this.locationDate = []
-      this.conclusionData = ''
-      this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+    checkedChang (data) {
+      if (data) {
+        this.principalmainbody.forEach((val) => {
+          val.flag = true
+        })
+      } else {
+        this.principalmainbody.forEach((val) => {
+          val.flag = false
+        })
+      }
     },
     numberPagesChange (el) {
-      this.getData(this.regionDate, el, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+      let token = JSON.parse(window.sessionStorage.token)
+      let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, el, 20)
     },
     fmtDate (obj) {
       let date = new Date(obj)
@@ -277,74 +309,53 @@ export default {
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     },
     recurrence (obj) {
-      obj.forEach((val) => {
-        if (val.conclusion === -1) {
-          val.conclusionData = `问题`
-        } else if (val.conclusion === 1) {
-          val.conclusionData = `正常`
-        } else if (val.conclusion === -2) {
-          val.conclusionData = `故障`
-        }
-      })
+
     },
-    photoprint (obj) {
-      obj.forEach((val) => {
-        val.photosArr = []
-        if (val.photos) {
-          if (val.photos.indexOf(',') !== -1) {
-            let arr = val.photos.split(',')
-            arr.forEach((item) => {
-              val.photosArr.push(`${this.urlPhotos}${item}`)
-            })
-          } else {
-            val.photosArr.push(`${this.urlPhotos}${val.photos}`)
-          }
-        }
-      })
-    },
-    getData (planid, pageindex, pagesize, begindate, enddate, basedevicecode, areaid, conclusion) {
-      this.axios.post(getChecktaskdetailsByPlanid(planid, pageindex, pagesize, begindate, enddate, basedevicecode, areaid, conclusion)).then((data) => {
-        if (data.data.code === 0) {
-          this.urlPhotos = data.data.data.url
-          this.numberPages = data.data.data.sum
-          this.paginationFlag = true
-          if (data.data.data.data.length) {
-            let finData = (data) => {
-              data.forEach((item) => {
-                if (item.checktaskdetail.length) {
-                  this.recurrence(item.checktaskdetail)
-                  this.photoprint(item.checktaskdetail)
-                }
-              })
+    getData (token, maintainProject, startTime, endTime, equipmentDate, locationDate, taskTypeData, processingData, pageIndex, pageSize) {
+      this.axios.post(findFaultProblem(token, maintainProject, startTime, endTime, equipmentDate, locationDate, taskTypeData, processingData, pageIndex, pageSize)).then((response) => {
+        if (response.data.code === 0) {
+          this.picPath = response.data.data.picPath
+          response.data.data.data.forEach((val) => {
+            val.flag = false
+            val.beforephotosArr = []
+            if (val.beforephotos) {
+              if (val.beforephotos.indexOf(',') !== -1) {
+                let arr = val.beforephotos.split(',')
+                arr.forEach((data) => {
+                  val.beforephotosArr.push(`${this.picPath}${data}`)
+                })
+              } else {
+                val.beforephotosArr.push(`${this.picPath}${val.beforephotos}`)
+              }
             }
-            finData(data.data.data.data)
-            this.principalmainbody = data.data.data.data
-          } else {
-            this.principalmainbody = []
-          }
+            console.log(val.taskstatus)
+            if (val.taskstatus === -5) {
+              val.taskstatusText = '未处理'
+            } else {
+              val.taskstatusText = '已处理'
+            }
+          })
+          this.paginationFlag = true
+          this.numberPages = response.data.data.sum
+          this.principalmainbody = response.data.data.data
         }
       })
     }
   },
   created () {
-    //  token
     //  时间节点
+    let token = JSON.parse(window.sessionStorage.token)
     let timestamp = (new Date()).getTime()
     this.startTime = this.fmtDate(timestamp - 3600 * 24 * 30 * 1000)
     this.endTime = this.fmtDate(timestamp + 3600 * 24 * 1000)
-    //  获取计划名称
     this.Initialization()
-    //  审核结论
-    this.axios.post(getWorkconclusion()).then((response) => {
+    //  任务类型
+    this.axios.post(findTaskType(token)).then((response) => {
       if (response.data.code === 0) {
-        let obj = {
-          name: '所有',
-          value: '-999'
-        }
-        response.data.data.unshift(obj)
-        this.conclusion = response.data.data
+        this.taskType = response.data.data
       }
     })
+    //  处理结果
   }
 }
 </script>
@@ -394,17 +405,15 @@ export default {
       height 32px
       padding 2px 0 6px
       background #354d76
-      .principalHeaderUl
-        overflow hidden
-        position relative
+
   .principalHeaderLiOne
-    width 14%
-    padding 0 1%
+    width 6%
   .heavyPlayLiDivLiOne
-    width 8%
-  .heavyPlayLiDivLiTwo
-    padding-right 1%
     width 13%
+    padding 0 .5%
+  .heavyPlayLiDivLiTwo
+    padding 0 1%
+    width 7%
   .heavyPlayLiDivLiThree
     padding-right 1%
     width 25%
@@ -412,6 +421,7 @@ export default {
     width 66%
     font-size 16px
     color #fff
+    overflow hidden
     position relative
     float left
     .heavyPlayLiDivUl
@@ -472,6 +482,7 @@ export default {
     text-align center
     white-space nowrap
     min-height 40px
+    max-height 40px
     line-height 38px
     color #fff
     float left
@@ -525,4 +536,25 @@ export default {
       overflow hidden
       position relative
       text-align center
+  .principalHeaderLiImg
+    margin 5px 6px 0 0
+    display inline-block
+    height 30px
+    width 30px
+  .principalHeaderUl
+    overflow hidden
+    position relative
+  .lookover
+    overflow hidden
+    float right
+    font-size 16px
+    color #3279a6
+    cursor pointer
+    text-align center
+</style>
+<style>
+  .principalHeaderLi .el-checkbox__label {
+    font-size: 16px;
+    color: #fff;
+  }
 </style>

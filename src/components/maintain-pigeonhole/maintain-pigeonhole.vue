@@ -31,6 +31,14 @@
         <div v-if="MaintenanceprojectFalse" class="pigeonholeRightDiv">
           <Maintenanceproject></Maintenanceproject>
         </div>
+        <!--故障问题-->
+        <div v-if="faultproblemFalse" class="pigeonholeRightDiv">
+          <faultproblem></faultproblem>
+        </div>
+        <!--现场反馈-->
+        <div v-if="feedbackFalse" class="pigeonholeRightDiv">
+          <feedback></feedback>
+        </div>
       </div>
     </div>
   </div>
@@ -41,13 +49,17 @@ import Inspection from '../pigeonhole-operation/pigeonhole-Inspection'
 import maintenance from '../pigeonhole-operation/pigeonhole-maintenance'
 import routineInspection from '../pigeonhole-operation/pigeonhole-routineInspection'
 import Maintenanceproject from '../pigeonhole-operation/pigeonhole-Maintenanceproject'
+import faultproblem from '../pigeonhole-operation/pigeonhole-faultproblem'
+import feedback from '../pigeonhole-operation/pigeonhole-feedback'
 export default {
   name: 'maintain-pigeonhole',
   components: {
     Inspection,
     maintenance,
     routineInspection,
-    Maintenanceproject
+    Maintenanceproject,
+    faultproblem,
+    feedback
   },
   data () {
     return {
@@ -100,7 +112,11 @@ export default {
       //  日常巡检
       routineInspectionFalse: false,
       //  维保项目
-      MaintenanceprojectFalse: false
+      MaintenanceprojectFalse: false,
+      //  故障问题
+      faultproblemFalse: false,
+      //  现场反馈
+      feedbackFalse: true
     }
   },
   methods: {

@@ -3,19 +3,6 @@
     <div class="rightHeader">
       <ul class="rightHeaderUl">
         <li class="rightHeaderLi">
-          <p class="rightHeaderLiP">计划名称：</p>
-          <div class="rightHeaderLiDivOne">
-            <el-select size="mini" clearable v-model="regionDate" placeholder="请选择">
-              <el-option
-                v-for="item in regionModel"
-                :key="item.checkplanid"
-                :label="item.planname"
-                :value="item.checkplanid">
-              </el-option>
-            </el-select>
-          </div>
-        </li>
-        <li class="rightHeaderLi">
           <p class="rightHeaderLiP">时间：</p>
           <div class="rightHeaderLiDiv">
             <el-date-picker
@@ -48,16 +35,15 @@
         <div class="schedule">
           明细表
         </div>
-        <!--汇总表-->
-        <div class="summary">
-          汇总表
-        </div>
       </div>
     </div>
     <div class="principalPart">
       <div class="principalHeader">
         <ul class="principalHeaderUl">
-          <li class="principalHeaderLi principalHeaderLiOne principalPartI">设施类别
+          <li class="principalHeaderLi principalHeaderLiOne">
+            <el-checkbox @change="checkedChang" v-model="checked"></el-checkbox>
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施类别
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
               <el-cascader
@@ -70,7 +56,7 @@
               ></el-cascader>
             </div>
           </li>
-          <li class="principalHeaderLi principalHeaderLiOne principalPartI">设施位置
+          <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施位置
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
               <el-cascader
@@ -83,67 +69,75 @@
               ></el-cascader>
             </div>
           </li>
-          <div class="heavyPlayLiDiv">
-            <ul>
-              <li class="principalHeaderLi heavyPlayLiDivLiOne">工作方式</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiThree">工作事项</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiThree">工作记录</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiOne">工作人员</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiTwo">工作时间</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiOne">工作结论
-                <i class="el-icon-caret-bottom"></i>
-                <div class="threelevel_ensconce">
-                  <el-select v-model="conclusionData" placeholder="请选择">
-                    <el-option
-                      v-for="item in conclusion"
-                      :key="item.value"
-                      :label="item.name"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </div>
-              </li>
-              <li class="principalHeaderLi heavyPlayLiDivLiTwo">现场照片</li>
-            </ul>
-          </div>
-          <li class="lookoverTwo">操作</li>
+          <li class="principalHeaderLi heavyPlayLiDivLiOne">
+            异常情况
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            反馈人员
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            反馈时间
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            确认人员
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            确认时间
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            处理结果
+            <i class="el-icon-caret-bottom"></i>
+            <div class="threelevel_ensconce">
+              <el-select size="mini" v-model="processingData" placeholder="请选择">
+                <el-option
+                  v-for="item in processing"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </li>
+          <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            现场照片
+          </li>
+          <li class="principalHeaderLi principalHeaderLiOne">操作</li>
         </ul>
       </div>
       <ul class="principalMainbody">
         <li class="principalMainbodyLi principalMainbodyLiBorDer" :key="index" v-for="(item, index) in principalmainbody">
-          <ul class="principalMainbodyLiUl">
-            <li :title="item.devicename" :style="{height: item.checktaskdetail.length * 40 + 'px', lineHeight: item.checktaskdetail.length * 40 + 'px'}" class="principalMainbodyLiUlLi principalHeaderLiOne">
+          <ul class="principalHeaderUl">
+            <li class="principalHeaderLi principalHeaderLiOne">
+              <el-checkbox v-model="item.flag"></el-checkbox>
+            </li>
+            <li :title="item.devicename" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
               {{item.devicename}}
             </li>
-            <li :style="{height: item.checktaskdetail.length * 40 + 'px', lineHeight: item.checktaskdetail.length * 40 + 'px'}" :title="item.areaname" class="principalMainbodyLiUlLi principalHeaderLiOne">
-              {{item.areaname}}
+            <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
+              {{item.fullareanasme}}
             </li>
-            <div class="heavyPlayLiDiv">
-              <ul class="heavyPlayLiDivUl" :key="sumIndex" v-for="(data, sumIndex) in item.checktaskdetail">
-                <li :title="data.workmodename" class="principalHeaderLiTwo heavyPlayLiDivLiOne">
-                  {{data.workmodename}}
-                </li>
-                <li :title="data.workitem" class="principalHeaderLiTwo heavyPlayLiDivLiThree">
-                  {{data.workitem}}
-                </li>
-                <li class="principalHeaderLiTwo heavyPlayLiDivLiThree" :title="data.workrecord">
-                  {{data.workrecord}}
-                </li>
-                <li :title="data.checkperson + data.others" class="principalHeaderLiTwo heavyPlayLiDivLiOne">
-                  {{data.checkperson}} {{data.others}}
-                </li>
-                <li :title="!data.submittime ? '' : fmtDate(data.submittime)" class="principalHeaderLi heavyPlayLiDivLiTwo">
-                  {{!data.submittime ? '' : fmtDate(data.submittime)}}
-                </li>
-                <li :title="data.conclusionData" class="principalHeaderLi heavyPlayLiDivLiOne">
-                  {{data.conclusionData}}
-                </li>
-                <li :title="data.photosArr" class="principalHeaderLiTwo heavyPlayLiDivLiTwo">
-                  <img class="principalHeaderLiImg" :key="photosIndex" v-for="(photosItem, photosIndex) in data.photosArr" :src="`${photosItem}`" alt="">
-                </li>
-              </ul>
-            </div>
-            <li :style="{height: item.checktaskdetail.length * 40 + 'px', lineHeight: item.checktaskdetail.length * 40 + 'px'}" class="principalHeaderLi heavyPlayLiDivLiOne lookover">
+            <li class="principalHeaderLi heavyPlayLiDivLiOne">
+              {{item.feedbackinfo}}
+            </li>
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.feedbackperson}}
+            </li>
+            <li :title="item.feedbacktime ? fmtDate(item.feedbacktime) : ''" class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.feedbacktime ? fmtDate(item.feedbacktime) : ''}}
+            </li>
+            <li :title="item.confirmpersonname" class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.confirmpersonname}}
+            </li>
+            <li :title="item.confirmpertime ? fmtDate(item.confirmpertime) : ''" class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.confirmpertime ? fmtDate(item.confirmpertime) : ''}}
+            </li>
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.disposestate ? viewProcessing(item.disposestate) : ''}}
+            </li>
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+              <img class="principalHeaderLiImg" :key="urlIndex" v-for="(url, urlIndex) in item.photosArr" :src="url" alt="">
+            </li>
+            <li class="principalHeaderLi principalHeaderLiOne lookover">
               查看
             </li>
           </ul>
@@ -166,9 +160,9 @@
 
 <script>
 import { projectMixin } from 'common/js/mixin'
-import { maintainArrangegetAllPlansTwo, getChecktaskdetailsByPlanid, findAllDeviceType, getTreeByProjectId, getWorkconclusion } from '../../api/user'
+import { statFeedBackInfo, findAreasTreeByProjectid, findAllDeviceType, getAllFeedbackstate } from '../../api/user'
 export default {
-  name: 'pigeonhole-routineInspection',
+  name: 'pigeonhole-feedback',
   mixins: [projectMixin],
   data () {
     return {
@@ -176,7 +170,6 @@ export default {
       startTime: '',
       endTime: '',
       options: [],
-      regionDate: '',
       regionModel: [],
       principalmainbody: [],
       urlPhotos: '',
@@ -199,30 +192,37 @@ export default {
       currentPage: 1,
       numberPages: 1,
       conclusion: [],
-      conclusionData: ''
+      conclusionData: '',
+      checked: '',
+      taskType: '',
+      processingData: '',
+      picPath: '',
+      processing: []
     }
   },
   watch: {
     equipmentDate (data) {
       if (data.length >= 2) {
-        let basedevicecode = data[data.length - 1]
+        let token = JSON.parse(window.sessionStorage.token)
+        let equipmentDate = data[data.length - 1]
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, basedevicecode, locationDate, this.conclusionData)
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, this.processingData, this.startTime, this.endTime, 1, 20)
       }
     },
     locationDate (data) {
       if (data.length) {
-        let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
-        let areaid = data[data.length - 1]
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, equipmentDate, areaid, this.conclusionData)
+        let token = JSON.parse(window.sessionStorage.token)
+        let locationDate = data[data.length - 1]
+        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, this.processingData, this.startTime, this.endTime, 1, 20)
       }
     },
-    conclusionData (data) {
+    processingData (data) {
       if (data) {
-        let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        let token = JSON.parse(window.sessionStorage.token)
+        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        let conclusion = Number(data) === -999 ? '' : data
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, equipmentDate, locationDate, conclusion)
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, data, this.startTime, this.endTime, 1, 20)
       }
     }
   },
@@ -230,44 +230,41 @@ export default {
     init () {
       this.Initialization()
     },
+    query () {
+
+    },
     Initialization () {
+      let token = JSON.parse(window.sessionStorage.token)
       this.equipmentDate = []
       this.locationDate = []
-      this.conclusionData = ''
-      this.principalmainbody = []
-      this.regionModel = []
-      this.equipmentDate = []
-      this.locationformation = []
-      let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(maintainArrangegetAllPlansTwo(this.maintainProject, 2)).then((response) => {
-        if (response.data.code === 0) {
-          if (response.data.data.length) {
-            this.regionModel = response.data.data
-            this.regionDate = response.data.data[0].checkplanid
-            this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
-          }
-        }
-      })
+      this.processingData = ''
+      //  设施类别
       this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.equipmentinformation = response.data.data
         }
       })
-      //  获取位置
-      this.axios.post(getTreeByProjectId(this.maintainProject)).then((response) => {
+      //  设施位置
+      this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.locationformation = response.data.data
         }
       })
+      this.getData(token, this.maintainProject, this.equipmentDate, this.locationDate, this.processingData, this.startTime, this.endTime, 1, 20)
     },
-    query () {
-      this.equipmentDate = []
-      this.locationDate = []
-      this.conclusionData = ''
-      this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+    checkedChang (data) {
     },
     numberPagesChange (el) {
-      this.getData(this.regionDate, el, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+
+    },
+    viewProcessing (data) {
+      let text = ''
+      this.processing.forEach((val) => {
+        if (val.value === data) {
+          text = val.name
+        }
+      })
+      return text
     },
     fmtDate (obj) {
       let date = new Date(obj)
@@ -277,72 +274,44 @@ export default {
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     },
     recurrence (obj) {
-      obj.forEach((val) => {
-        if (val.conclusion === -1) {
-          val.conclusionData = `问题`
-        } else if (val.conclusion === 1) {
-          val.conclusionData = `正常`
-        } else if (val.conclusion === -2) {
-          val.conclusionData = `故障`
-        }
-      })
+
     },
-    photoprint (obj) {
-      obj.forEach((val) => {
-        val.photosArr = []
-        if (val.photos) {
-          if (val.photos.indexOf(',') !== -1) {
-            let arr = val.photos.split(',')
-            arr.forEach((item) => {
-              val.photosArr.push(`${this.urlPhotos}${item}`)
-            })
-          } else {
-            val.photosArr.push(`${this.urlPhotos}${val.photos}`)
-          }
-        }
-      })
-    },
-    getData (planid, pageindex, pagesize, begindate, enddate, basedevicecode, areaid, conclusion) {
-      this.axios.post(getChecktaskdetailsByPlanid(planid, pageindex, pagesize, begindate, enddate, basedevicecode, areaid, conclusion)).then((data) => {
-        if (data.data.code === 0) {
-          this.urlPhotos = data.data.data.url
-          this.numberPages = data.data.data.sum
-          this.paginationFlag = true
-          if (data.data.data.data.length) {
-            let finData = (data) => {
-              data.forEach((item) => {
-                if (item.checktaskdetail.length) {
-                  this.recurrence(item.checktaskdetail)
-                  this.photoprint(item.checktaskdetail)
-                }
-              })
+    getData (token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize) {
+      this.axios.post(statFeedBackInfo(token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize)).then((response) => {
+        if (response.data.code === 0) {
+          console.log(response)
+          response.data.data.devs.datas.forEach((val) => {
+            val.flag = false
+            val.photosArr = []
+            if (val.photos) {
+              if (val.photos.indexOf(',') !== -1) {
+                let arr = val.photos.split(',')
+                arr.forEach((item) => {
+                  val.photosArr.push(`${item}`)
+                })
+              } else {
+                val.photosArr.push(val.photos)
+              }
             }
-            finData(data.data.data.data)
-            this.principalmainbody = data.data.data.data
-          } else {
-            this.principalmainbody = []
-          }
+          })
+          this.paginationFlag = true
+          this.numberPages = response.data.data.devs.totalPage
+          this.principalmainbody = response.data.data.devs.datas
         }
       })
     }
   },
   created () {
-    //  token
     //  时间节点
+    let token = JSON.parse(window.sessionStorage.token)
     let timestamp = (new Date()).getTime()
     this.startTime = this.fmtDate(timestamp - 3600 * 24 * 30 * 1000)
     this.endTime = this.fmtDate(timestamp + 3600 * 24 * 1000)
-    //  获取计划名称
     this.Initialization()
-    //  审核结论
-    this.axios.post(getWorkconclusion()).then((response) => {
+    //  处理结果
+    this.axios.post(getAllFeedbackstate(token)).then((response) => {
       if (response.data.code === 0) {
-        let obj = {
-          name: '所有',
-          value: '-999'
-        }
-        response.data.data.unshift(obj)
-        this.conclusion = response.data.data
+        this.processing = response.data.data
       }
     })
   }
@@ -394,17 +363,14 @@ export default {
       height 32px
       padding 2px 0 6px
       background #354d76
-      .principalHeaderUl
-        overflow hidden
-        position relative
   .principalHeaderLiOne
-    width 14%
-    padding 0 1%
+    width 6%
   .heavyPlayLiDivLiOne
-    width 8%
-  .heavyPlayLiDivLiTwo
-    padding-right 1%
     width 13%
+    padding 0 .5%
+  .heavyPlayLiDivLiTwo
+    padding 0 1%
+    width 8%
   .heavyPlayLiDivLiThree
     padding-right 1%
     width 25%
@@ -412,6 +378,7 @@ export default {
     width 66%
     font-size 16px
     color #fff
+    overflow hidden
     position relative
     float left
     .heavyPlayLiDivUl
@@ -469,9 +436,11 @@ export default {
   .principalHeaderLi
     overflow hidden
     position relative
+    text-overflow ellipsis
     text-align center
     white-space nowrap
     min-height 40px
+    max-height 40px
     line-height 38px
     color #fff
     float left
@@ -525,4 +494,25 @@ export default {
       overflow hidden
       position relative
       text-align center
+  .principalHeaderLiImg
+    margin 5px 6px 0 0
+    display inline-block
+    height 30px
+    width 30px
+  .principalHeaderUl
+    overflow hidden
+    position relative
+  .lookover
+    overflow hidden
+    float right
+    font-size 16px
+    color #3279a6
+    cursor pointer
+    text-align center
+</style>
+<style>
+  .principalHeaderLi .el-checkbox__label {
+    font-size: 16px;
+    color: #fff;
+  }
 </style>
