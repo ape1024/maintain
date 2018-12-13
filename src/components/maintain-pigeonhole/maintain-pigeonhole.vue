@@ -39,6 +39,10 @@
         <div v-if="feedbackFalse" class="pigeonholeRightDiv">
           <feedback></feedback>
         </div>
+        <!--消防设施-->
+        <div v-if="protectionFacilities" class="pigeonholeRightDiv">
+          <protectionFacilities></protectionFacilities>
+        </div>
       </div>
     </div>
   </div>
@@ -51,6 +55,7 @@ import routineInspection from '../pigeonhole-operation/pigeonhole-routineInspect
 import Maintenanceproject from '../pigeonhole-operation/pigeonhole-Maintenanceproject'
 import faultproblem from '../pigeonhole-operation/pigeonhole-faultproblem'
 import feedback from '../pigeonhole-operation/pigeonhole-feedback'
+import protectionFacilities from '../pigeonhole-operation/pigeonhole-protectionFacilities'
 export default {
   name: 'maintain-pigeonhole',
   components: {
@@ -59,7 +64,8 @@ export default {
     routineInspection,
     Maintenanceproject,
     faultproblem,
-    feedback
+    feedback,
+    protectionFacilities
   },
   data () {
     return {
@@ -67,19 +73,22 @@ export default {
         label: '单位基本情况',
         children: [{
           label: '建筑信息',
-          category: 1
+          category: 5
         }, {
           label: '维保项目',
           category: 4
         }, {
           label: '消防设施',
           category: 1
+        }, {
+          label: '现场反馈',
+          category: 3
         }]
       }, {
         label: '维保工作记录',
         children: [{
           label: '工作计划',
-          category: 3
+          category: 6
         }, {
           label: '日常巡检',
           category: 2,
@@ -98,7 +107,7 @@ export default {
         }]
       }, {
         label: '维保工作报告',
-        category: 3
+        category: 7
       }],
       defaultProps: {
         children: 'children',
@@ -116,7 +125,9 @@ export default {
       //  故障问题
       faultproblemFalse: false,
       //  现场反馈
-      feedbackFalse: true
+      feedbackFalse: false,
+      //  消防设施
+      protectionFacilities: true
     }
   },
   methods: {
@@ -125,6 +136,8 @@ export default {
       this.routineInspectionFalse = false
       this.InspectionFalse = false
       this.MaintenanceprojectFalse = false
+      this.feedbackFalse = false
+      this.protectionFacilities = false
       if (data.category === 2) {
         if (data.id === 1) {
           this.maintenanceFalse = true
@@ -135,6 +148,10 @@ export default {
         }
       } else if (data.category === 4) {
         this.MaintenanceprojectFalse = true
+      } else if (data.category === 3) {
+        this.feedbackFalse = true
+      } else if (data.category === 1) {
+        this.protectionFacilities = true
       }
     }
   }

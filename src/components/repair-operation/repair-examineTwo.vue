@@ -612,7 +612,7 @@ export default {
                   if (response.data.data.length !== 0) {
                     response.data.data.forEach((val) => {
                       val.flag = false
-                      if (val.approvalstate === 5) {
+                      if (val.approvalstate === 5 || val.approvalstate === 20) {
                         val.ApprovalItemBoolean = false
                       } else {
                         val.ApprovalItemBoolean = true
@@ -762,6 +762,7 @@ export default {
         this.ApprovalItem = response.data.data
       }
     })
+
     this.axios.post(maintainRepairgetApprovalInfos(this.examine.repairtaskid)).then((response) => {
       if (response.data.code === 0) {
         this.getApprovalInfos = response.data.data
@@ -770,7 +771,7 @@ export default {
           this.AuditorsTimer = !this.getApprovalInfos[0].approvaltime ? '' : this.fmtDate(this.getApprovalInfos[0].approvaltime)
           this.Auditorsstate = this.getApprovalInfos[0].approvalopinion
           this.approvalradio = this.getApprovalInfos[0].approvalstate
-          if (this.getApprovalInfos[0].approvalstate === 5) {
+          if (this.getApprovalInfos[0].approvalstate === 5 || this.getApprovalInfos[0].approvalstate === 20) {
             this.ApprovalItemBoolean = false
           } else {
             this.ApprovalItemBoolean = true

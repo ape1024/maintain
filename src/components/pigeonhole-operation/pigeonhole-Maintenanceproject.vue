@@ -118,7 +118,7 @@ export default {
   methods: {
     numberPagesChange (index) {
       let token = JSON.parse(window.sessionStorage.token)
-      this.getData(token, this.Keyword, index, 20)
+      this.getData(token, this.Keyword, index, 15)
     },
     fmtDate (obj) {
       let date = new Date(obj)
@@ -129,12 +129,11 @@ export default {
     },
     query () {
       let token = JSON.parse(window.sessionStorage.token)
-      this.getData(token, this.Keyword, 0, 20)
+      this.getData(token, this.Keyword, 0, 15)
     },
     getData (token, Keyword, pageIndex, pageSize) {
       this.axios.post(findAllMaintenanceProject(token, Keyword, pageIndex, pageSize)).then((response) => {
         if (response.data.code === 0) {
-          //  response.data.data.sum
           this.numberPages = response.data.data.sum
           response.data.data.data.forEach((val) => {
             val.choice = false
@@ -147,7 +146,7 @@ export default {
   },
   created () {
     let token = JSON.parse(window.sessionStorage.token)
-    this.getData(token, this.Keyword, 0, 20)
+    this.getData(token, this.Keyword, 0, 15)
   }
 }
 </script>

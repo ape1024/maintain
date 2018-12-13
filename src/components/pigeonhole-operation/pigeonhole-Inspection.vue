@@ -206,24 +206,27 @@ export default {
   watch: {
     equipmentDate (data) {
       if (data.length >= 2) {
+        this.paginationFlag = false
         let basedevicecode = data[data.length - 1]
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, basedevicecode, locationDate, this.conclusionData)
+        this.getData(this.regionDate, 1, 15, this.startTime, this.endTime, basedevicecode, locationDate, this.conclusionData)
       }
     },
     locationDate (data) {
       if (data.length) {
+        this.paginationFlag = false
         let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let areaid = data[data.length - 1]
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, equipmentDate, areaid, this.conclusionData)
+        this.getData(this.regionDate, 1, 15, this.startTime, this.endTime, equipmentDate, areaid, this.conclusionData)
       }
     },
     conclusionData (data) {
       if (data) {
+        this.paginationFlag = false
         let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
         let conclusion = Number(data) === -999 ? '' : data
-        this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, equipmentDate, locationDate, conclusion)
+        this.getData(this.regionDate, 1, 15, this.startTime, this.endTime, equipmentDate, locationDate, conclusion)
       }
     }
   },
@@ -235,10 +238,11 @@ export default {
       this.equipmentDate = []
       this.locationDate = []
       this.conclusionData = ''
-      this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+      this.paginationFlag = false
+      this.getData(this.regionDate, 1, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
     },
     numberPagesChange (el) {
-      this.getData(this.regionDate, el, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+      this.getData(this.regionDate, el, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
     },
     fmtDate (obj) {
       let date = new Date(obj)
@@ -310,7 +314,7 @@ export default {
           if (response.data.data.length) {
             this.regionModel = response.data.data
             this.regionDate = response.data.data[0].checkplanid
-            this.getData(this.regionDate, 1, 20, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+            this.getData(this.regionDate, 1, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
           }
         }
       })

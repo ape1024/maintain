@@ -46,14 +46,14 @@
           <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施类别
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
-              <el-cascader
-                size="mini"
-                clearable
-                v-model="equipmentDate"
-                :options="equipmentinformation"
-                :props="equipmentProps"
-                change-on-select
-              ></el-cascader>
+              <el-select size="mini" v-model="equipmentDate" placeholder="请选择">
+                <el-option
+                  v-for="item in equipmentinformation"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
             </div>
           </li>
           <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施位置
@@ -110,16 +110,16 @@
             <li class="principalHeaderLi principalHeaderLiOne">
               <el-checkbox v-model="item.flag"></el-checkbox>
             </li>
-            <li :title="item.devicename" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
+            <li :title="item.devicename" class="principalHeaderLi heavyPlayLiDivLiOne">
               {{item.devicename}}
             </li>
-            <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
+            <li :title="item.fullareanasme" class="principalHeaderLi heavyPlayLiDivLiOne">
               {{item.fullareanasme}}
             </li>
-            <li class="principalHeaderLi heavyPlayLiDivLiOne">
+            <li :title="item.feedbackinfo" class="principalHeaderLi heavyPlayLiDivLiOne">
               {{item.feedbackinfo}}
             </li>
-            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            <li :title="item.feedbackperson" class="principalHeaderLi heavyPlayLiDivLiTwo">
               {{item.feedbackperson}}
             </li>
             <li :title="item.feedbacktime ? fmtDate(item.feedbacktime) : ''" class="principalHeaderLi heavyPlayLiDivLiTwo">
@@ -173,7 +173,7 @@ export default {
       regionModel: [],
       principalmainbody: [],
       urlPhotos: '',
-      equipmentDate: [],
+      equipmentDate: '',
       equipmentinformation: [],
       equipmentProps: {
         children: 'children',
@@ -202,27 +202,29 @@ export default {
   },
   watch: {
     equipmentDate (data) {
-      if (data.length >= 2) {
+      if (data) {
+        this.paginationFlag = false
         let token = JSON.parse(window.sessionStorage.token)
-        let equipmentDate = data[data.length - 1]
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(token, this.maintainProject, equipmentDate, locationDate, this.processingData, this.startTime, this.endTime, 1, 20)
+        this.getData(token, this.maintainProject, data, locationDate, this.processingData, this.startTime, this.endTime, 1, 15)
       }
     },
     locationDate (data) {
       if (data.length) {
+        this.paginationFlag = false
         let token = JSON.parse(window.sessionStorage.token)
         let locationDate = data[data.length - 1]
-        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
-        this.getData(token, this.maintainProject, equipmentDate, locationDate, this.processingData, this.startTime, this.endTime, 1, 20)
+        let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, this.processingData, this.startTime, this.endTime, 1, 15)
       }
     },
     processingData (data) {
       if (data) {
+        this.paginationFlag = false
         let token = JSON.parse(window.sessionStorage.token)
-        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(token, this.maintainProject, equipmentDate, locationDate, data, this.startTime, this.endTime, 1, 20)
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, data, this.startTime, this.endTime, 1, 15)
       }
     }
   },
@@ -231,11 +233,15 @@ export default {
       this.Initialization()
     },
     query () {
-
+      let token = JSON.parse(window.sessionStorage.token)
+      this.equipmentDate = ''
+      this.locationDate = []
+      this.processingData = ''
+      this.getData(token, this.maintainProject, '', '', '', this.startTime, this.endTime, 1, 15)
     },
     Initialization () {
       let token = JSON.parse(window.sessionStorage.token)
-      this.equipmentDate = []
+      this.equipmentDate = ''
       this.locationDate = []
       this.processingData = ''
       //  设施类别
@@ -250,12 +256,15 @@ export default {
           this.locationformation = response.data.data
         }
       })
-      this.getData(token, this.maintainProject, this.equipmentDate, this.locationDate, this.processingData, this.startTime, this.endTime, 1, 20)
+      this.getData(token, this.maintainProject, this.equipmentDate, this.locationDate, this.processingData, this.startTime, this.endTime, 1, 15)
     },
     checkedChang (data) {
     },
     numberPagesChange (el) {
-
+      let token = JSON.parse(window.sessionStorage.token)
+      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+      this.getData(token, this.maintainProject, equipmentDate, locationDate, this.processingData, this.startTime, this.endTime, el, 15)
     },
     viewProcessing (data) {
       let text = ''
@@ -279,7 +288,6 @@ export default {
     getData (token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize) {
       this.axios.post(statFeedBackInfo(token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize)).then((response) => {
         if (response.data.code === 0) {
-          console.log(response)
           response.data.data.devs.datas.forEach((val) => {
             val.flag = false
             val.photosArr = []

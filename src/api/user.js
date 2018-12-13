@@ -928,3 +928,11 @@ export const getAllFeedbackstate = (token) => {
 export const statFeedBackInfo = (token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize) => {
   return `${Test}/feedback/statFeedBackInfo?token=${token}&projectid=${projectid}&devtypeid=${devtypeid}&areaid=${areaid}&devstate=${devstate}&start=${start}&end=${end}&pageIndex=${pageIndex}&pageSize=${pageSize}`
 }
+
+export const statTaskDevListInfo = (token, projectid, devtypeid, areaid, devstate, pageIndex, pageSize) => {
+  return `${Test}/feedback/statTaskDevListInfo?token=${token}&projectid=${projectid}&devtypeid=${devtypeid}&areaid=${areaid}&devstate=${devstate}&pageIndex=${pageIndex}&pageSize=${pageSize}`
+}
+//
+export const getAllTaskDevstate = (token) => {
+  return `${Test}/feedback/getAllTaskDevstate?token=${token}`
+}
