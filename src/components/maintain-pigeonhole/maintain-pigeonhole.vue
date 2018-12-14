@@ -10,7 +10,7 @@
         </div>
         <div class="leftSubject">
           <div class="leftSubjectDiv">
-            <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+            <el-tree accordion highlight-current :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
           </div>
         </div>
       </div>
@@ -127,7 +127,7 @@ export default {
       //  现场反馈
       feedbackFalse: false,
       //  消防设施
-      protectionFacilities: true
+      protectionFacilities: false
     }
   },
   methods: {

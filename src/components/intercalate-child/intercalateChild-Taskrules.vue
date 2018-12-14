@@ -447,6 +447,7 @@ export default {
       }
     },
     handleNodeClick (node) {
+      console.log(node)
       switch (node.Identification) {
         case 1:
           this.maks = true
@@ -456,7 +457,7 @@ export default {
           this.formatting()
           break
         case 2:
-          this.maks = false
+          this.maks = true
           this.maksConserve = false
           this.checkStandardsNode = node
           this.tabulation = []
@@ -528,7 +529,6 @@ export default {
                   }
                 }
               })
-
               this.axios.post(getTechnicalRequirements(node.value)).then((data) => {
                 if (data.data.code === 0) {
                   this.tabulation = data.data.data
@@ -1214,9 +1214,9 @@ export default {
     color #fff
     border-radius 5px
     margin-right 78px
-    height 36px
+    height 29px
     text-align center
-    line-height 36px
+    line-height 29px
     background #3292a6
     transition .2s
     cursor pointer
@@ -1310,9 +1310,9 @@ export default {
     margin-right 20px
     color #fff
     border-radius 5px
-    height 36px
+    height 29px
     text-align center
-    line-height 36px
+    line-height 29px
     background #999
     transition .2s
     &:hover
@@ -1323,9 +1323,9 @@ export default {
     margin-right 20px
     color #fff
     border-radius 5px
-    height 36px
+    height 29px
     text-align center
-    line-height 36px
+    line-height 29px
     background #999
     transition .2s
     &:hover

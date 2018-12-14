@@ -936,3 +936,8 @@ export const statTaskDevListInfo = (token, projectid, devtypeid, areaid, devstat
 export const getAllTaskDevstate = (token) => {
   return `${Test}/feedback/getAllTaskDevstate?token=${token}`
 }
+
+//
+export const exportTaskReport = (token, type, planid, begindate, enddate, devicecode, areaid, conclusion) => {
+  return `${Test}/taskexport/exportTaskReport?token=${token}&type=${type}&planid=${planid}&begindate=${begindate}&enddate=${enddate}&devicecode=${devicecode}&areaid=${areaid}&conclusion=${conclusion}`
+}

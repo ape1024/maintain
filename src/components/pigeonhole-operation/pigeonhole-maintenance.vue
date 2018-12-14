@@ -45,13 +45,13 @@
       </div>
       <div class="rightHeaderRight">
         <!--明细表-->
-        <div class="schedule">
+        <div class="schedule" @click="schedule">
           明细表
         </div>
         <!--汇总表-->
-        <div class="summary">
-          汇总表
-        </div>
+        <!--<div class="summary">-->
+          <!--汇总表-->
+        <!--</div>-->
       </div>
     </div>
     <div class="principalPart">
@@ -166,7 +166,7 @@
 
 <script>
 import { projectMixin } from 'common/js/mixin'
-import { maintainArrangegetAllPlansTwo, getChecktaskdetailsByPlanid, findAllDeviceType, getTreeByProjectId, getWorkconclusion } from '../../api/user'
+import { maintainArrangegetAllPlansTwo, getChecktaskdetailsByPlanid, findAllDeviceType, getTreeByProjectId, getWorkconclusion, exportTaskReport } from '../../api/user'
 export default {
   name: 'pigeonhole-maintenance',
   mixins: [projectMixin],
@@ -208,7 +208,7 @@ export default {
         this.paginationFlag = false
         let basedevicecode = data[data.length - 1]
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(this.regionDate, 1, 15, this.startTime, this.endTime, basedevicecode, locationDate, this.conclusionData)
+        this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, basedevicecode, locationDate, this.conclusionData)
       }
     },
     locationDate (data) {
@@ -216,7 +216,7 @@ export default {
         this.paginationFlag = false
         let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let areaid = data[data.length - 1]
-        this.getData(this.regionDate, 1, 15, this.startTime, this.endTime, equipmentDate, areaid, this.conclusionData)
+        this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, equipmentDate, areaid, this.conclusionData)
       }
     },
     conclusionData (data) {
@@ -225,13 +225,30 @@ export default {
         let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
         let conclusion = Number(data) === -999 ? '' : data
-        this.getData(this.regionDate, 1, 15, this.startTime, this.endTime, equipmentDate, locationDate, conclusion)
+        this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, equipmentDate, locationDate, conclusion)
       }
     }
   },
   methods: {
     init () {
       this.Initialization()
+    },
+    derivation (type) {
+      let token = JSON.parse(window.sessionStorage.token)
+      let planid = this.regionDate
+      let begindate = this.startTime
+      let endTime = this.endTime
+      let devicecode = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+      let areaid = this.locationDate.length ? this.locationDate[this.locationDate.length] : ''
+      let conclusion = this.conclusionData ? this.conclusionData : ''
+      this.axios.post(exportTaskReport(token, type, planid, begindate, endTime, devicecode, areaid, conclusion)).then((response) => {
+        if (response.data.code === 0) {
+          window.open(response.data.data, '_blank')
+        }
+      })
+    },
+    schedule () {
+      this.derivation(5)
     },
     Initialization () {
       this.equipmentDate = []
@@ -247,7 +264,7 @@ export default {
           if (response.data.data.length) {
             this.regionModel = response.data.data
             this.regionDate = response.data.data[0].checkplanid
-            this.getData(this.regionDate, 1, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+            this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
           }
         }
       })
@@ -268,10 +285,11 @@ export default {
       this.locationDate = []
       this.conclusionData = ''
       this.paginationFlag = false
-      this.getData(this.regionDate, 1, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+      this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
     },
     numberPagesChange (el) {
-      this.getData(this.regionDate, el, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+      let index = el - 1
+      this.getData(this.regionDate, index, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
     },
     fmtDate (obj) {
       let date = new Date(obj)
