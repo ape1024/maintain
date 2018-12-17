@@ -80,12 +80,15 @@
             <li :title="item.createtime ? fmtDate(item.createtime) : ''" class="principalHeaderLi heavyPlayLiDivLiFour">
               {{item.createtime ? fmtDate(item.createtime) : ''}}
             </li>
-            <li class="principalHeaderLi heavyPlayLiDivLiFour cephalosomeFiveSpan">
+            <li class="principalHeaderLi heavyPlayLiDivLiFour cephalosomeFiveSpan" @click="exaMine(item.projectid)">
               查看
             </li>
           </ul>
         </li>
       </ul>
+      <section v-if="examineBoolean"  class="adhibit">
+        <examine :examine="examineBoolean" :exaDate="exaMineDate" @mine="Mine"></examine>
+      </section>
       <div class="pagination">
         <div v-if="paginationFlag" class="paginationDiv">
           <el-pagination
@@ -102,9 +105,13 @@
 </template>
 
 <script>
-import { findAllMaintenanceProject } from '../../api/user'
+import examine from '../intercalateChild-operation/consumerChild-examine'
+import { findAllMaintenanceProject, findDetailByProjectid } from '../../api/user'
 export default {
   name: 'pigeonhole-Maintenanceproject',
+  components: {
+    examine
+  },
   data () {
     return {
       checked: '',
@@ -112,10 +119,23 @@ export default {
       currentPage: 1,
       numberPages: 1,
       Keyword: '',
-      subject: []
+      subject: [],
+      examineBoolean: false,
+      exaMineDate: ''
     }
   },
   methods: {
+    Mine () {
+      this.examineBoolean = false
+    },
+    exaMine (itemId) {
+      this.axios.post(findDetailByProjectid(itemId)).then((response) => {
+        if (response.data.code === 0) {
+          this.exaMineDate = response.data.data
+          this.examineBoolean = true
+        }
+      })
+    },
     numberPagesChange (index) {
       let token = JSON.parse(window.sessionStorage.token)
       this.getData(token, this.Keyword, index, 15)
@@ -336,6 +356,14 @@ export default {
   .cephalosomeFiveSpan
     cursor pointer
     color #3279a6
+  .adhibit
+    width 100%
+    height 100%
+    background rgba(000,000,000,.4)
+    z-index 111
+    position fixed
+    left 0
+    top 0
 </style>
 <style>
   .principalHeaderLi .el-checkbox__label {

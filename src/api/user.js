@@ -941,3 +941,11 @@ export const getAllTaskDevstate = (token) => {
 export const exportTaskReport = (token, type, planid, begindate, enddate, devicecode, areaid, conclusion) => {
   return `${Test}/taskexport/exportTaskReport?token=${token}&type=${type}&planid=${planid}&begindate=${begindate}&enddate=${enddate}&devicecode=${devicecode}&areaid=${areaid}&conclusion=${conclusion}`
 }
+
+export const getAllDetailsByDeviceId = (taskId, deviceId) => {
+  return `${Test}/task/getAllDetailsByDeviceId?taskId=${taskId}&deviceId=${deviceId}`
+}
+
+export const generateFeedbackInfo = (token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize) => {
+  return `${Test}/taskexport/generateFeedbackInfo?token=${token}&projectid=${projectid}&devtypeid=${devtypeid}&areaid=${areaid}&devstate=${devstate}&start=${start}&end=${end}&pageIndex=${pageIndex}&pageSize=${pageSize}`
+}

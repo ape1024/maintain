@@ -104,9 +104,11 @@
                 </div>
               </li>
               <li class="principalHeaderLi heavyPlayLiDivLiTwo">现场照片</li>
+              <li class="principalHeaderLi heavyPlayLiDivLiOne lookoverHeader">
+                查看
+              </li>
             </ul>
           </div>
-          <li class="lookoverTwo">操作</li>
         </ul>
       </div>
       <ul class="principalMainbody">
@@ -120,7 +122,7 @@
             </li>
             <div class="heavyPlayLiDiv">
               <ul class="heavyPlayLiDivUl" :key="sumIndex" v-for="(data, sumIndex) in item.checktaskdetail">
-                <li :title="data.workmodename" class="principalHeaderLiTwo heavyPlayLiDivLiOne">
+                <li :title="data.workmodename" class="principalHeaderLi heavyPlayLiDivLiOne">
                   {{data.workmodename}}
                 </li>
                 <li :title="data.workitem" class="principalHeaderLiTwo heavyPlayLiDivLiThree">
@@ -135,20 +137,26 @@
                 <li :title="!data.submittime ? '' : fmtDate(data.submittime)" class="principalHeaderLi heavyPlayLiDivLiTwo">
                   {{!data.submittime ? '' : fmtDate(data.submittime)}}
                 </li>
-                <li :title="data.conclusionData" class="principalHeaderLi heavyPlayLiDivLiOne">
+                <li :title="data.conclusionData" class="principalHeaderLi heavyPlayLiDivLiOne" :class="[data.conclusion === 1 ? 'conclusionClassOne' : 'conclusionClassThree']">
                   {{data.conclusionData}}
                 </li>
                 <li :title="data.photosArr" class="principalHeaderLiTwo heavyPlayLiDivLiTwo">
                   <img class="principalHeaderLiImg" :key="photosIndex" v-for="(photosItem, photosIndex) in data.photosArr" :src="`${photosItem}`" alt="">
                 </li>
+                <li class="principalHeaderLi heavyPlayLiDivLiOne lookover principalPartI" @click.stop="particulars(item.deviceid, data)">
+                  查看
+                </li>
               </ul>
             </div>
-            <li :style="{height: item.checktaskdetail.length * 40 + 'px', lineHeight: item.checktaskdetail.length * 40 + 'px'}" class="principalHeaderLi heavyPlayLiDivLiOne lookover">
-              查看
-            </li>
+            <!--<li :style="{height: item.checktaskdetail.length * 40 + 'px', lineHeight: item.checktaskdetail.length * 40 + 'px'}">-->
+              <!--查看-->
+            <!--</li>-->
           </ul>
         </li>
       </ul>
+      <div v-if="examineBoolean" class="review">
+        <examine :examineName="clicktaskname" @examineMine="examineBoolean" :taskidCode="clickId" :equipmentCode="equipmentID" @mineupdate="mineSwitchupdate"></examine>
+      </div>
       <div class="pagination">
         <div v-if="paginationFlag" class="paginationDiv">
           <el-pagination
@@ -166,10 +174,14 @@
 
 <script>
 import { projectMixin } from 'common/js/mixin'
+import examine from '../pigeonholeChildren-operation/pigeonhole-examine'
 import { maintainArrangegetAllPlansTwo, getChecktaskdetailsByPlanid, findAllDeviceType, getTreeByProjectId, getWorkconclusion, exportTaskReport } from '../../api/user'
 export default {
   name: 'pigeonhole-maintenance',
   mixins: [projectMixin],
+  components: {
+    examine
+  },
   data () {
     return {
       input: '',
@@ -199,7 +211,11 @@ export default {
       currentPage: 1,
       numberPages: 1,
       conclusion: [],
-      conclusionData: ''
+      conclusionData: '',
+      clicktaskname: '',
+      clickId: '',
+      equipmentID: '',
+      examineBoolean: false
     }
   },
   watch: {
@@ -232,6 +248,15 @@ export default {
   methods: {
     init () {
       this.Initialization()
+    },
+    particulars (deviceid, item) {
+      this.clicktaskname = item.devicename
+      this.clickId = item.checktaskid
+      this.equipmentID = deviceid
+      this.examineBoolean = true
+    },
+    mineSwitchupdate () {
+      this.examineBoolean = false
     },
     derivation (type) {
       let token = JSON.parse(window.sessionStorage.token)
@@ -425,12 +450,12 @@ export default {
     width 8%
   .heavyPlayLiDivLiTwo
     padding-right 1%
-    width 13%
+    width 9%
   .heavyPlayLiDivLiThree
     padding-right 1%
     width 25%
   .heavyPlayLiDiv
-    width 66%
+    width 72%
     font-size 16px
     color #fff
     position relative
@@ -519,6 +544,12 @@ export default {
     color #3279a6
     text-align center
     width 6%
+  .lookoverHeader
+    overflow hidden
+    float right
+    font-size 16px
+    text-align center
+    width 6%
   .lookoverTwo
     overflow hidden
     float right
@@ -546,4 +577,17 @@ export default {
       overflow hidden
       position relative
       text-align center
+  .conclusionClassOne
+    color #3acf76!important
+  .conclusionClassThree
+     color #cfb53a!important
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background $color-barckground-transparent
+    z-index 11
+    overflow hidden
 </style>

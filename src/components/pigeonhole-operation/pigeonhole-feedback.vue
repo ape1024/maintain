@@ -32,8 +32,8 @@
       </div>
       <div class="rightHeaderRight">
         <!--明细表-->
-        <div class="schedule">
-          明细表
+        <div class="schedule" @click="schedule">
+          导出
         </div>
       </div>
     </div>
@@ -137,12 +137,16 @@
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
               <img class="principalHeaderLiImg" :key="urlIndex" v-for="(url, urlIndex) in item.photosArr" :src="url" alt="">
             </li>
-            <li class="principalHeaderLi principalHeaderLiOne lookover">
+            <li class="principalHeaderLi principalHeaderLiOne lookover" @click.stop="examine(item.feedbackid)">
               查看
             </li>
           </ul>
         </li>
       </ul>
+      <section v-if="lookoverBoolean" @click.stop class="review">
+        <!--查看-->
+        <childLookover :msg="examineData" @look="Onlook"></childLookover>
+      </section>
       <div class="pagination">
         <div v-if="paginationFlag" class="paginationDiv">
           <el-pagination
@@ -160,10 +164,14 @@
 
 <script>
 import { projectMixin } from 'common/js/mixin'
-import { statFeedBackInfo, findAreasTreeByProjectid, findAllDeviceType, getAllFeedbackstate } from '../../api/user'
+import childLookover from '../reportChild-operation/reportChild-lookover-'
+import { statFeedBackInfo, findAreasTreeByProjectid, findAllDeviceType, getAllFeedbackstate, maintainReportfindFeedbacksByFeedbackid, generateFeedbackInfo } from '../../api/user'
 export default {
   name: 'pigeonhole-feedback',
   mixins: [projectMixin],
+  components: {
+    childLookover
+  },
   data () {
     return {
       input: '',
@@ -197,7 +205,9 @@ export default {
       taskType: '',
       processingData: '',
       picPath: '',
-      processing: []
+      processing: [],
+      lookoverBoolean: false,
+      examineData: ''
     }
   },
   watch: {
@@ -231,6 +241,29 @@ export default {
   methods: {
     init () {
       this.Initialization()
+    },
+    schedule () {
+      let token = JSON.parse(window.sessionStorage.token)
+      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+      this.axios.post(generateFeedbackInfo(token, this.maintainProject, equipmentDate, locationDate, this.processingData, this.startTime, this.endTime, this.currentPage, 15)).then((response) => {
+        console.log(response)
+        if (response.data.code === 0) {
+          window.open(response.data.data, '_blank')
+        }
+      })
+    },
+    Onlook () {
+      this.lookoverBoolean = false
+    },
+    examine (ID) {
+      console.log(ID)
+      this.axios.post(maintainReportfindFeedbacksByFeedbackid(ID)).then((response) => {
+        if (response.data.code === 0) {
+          this.examineData = response.data.data
+          this.lookoverBoolean = true
+        }
+      })
     },
     query () {
       let token = JSON.parse(window.sessionStorage.token)
@@ -517,6 +550,15 @@ export default {
     color #3279a6
     cursor pointer
     text-align center
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background $color-barckground-transparent
+    z-index 11
+    overflow hidden
 </style>
 <style>
   .principalHeaderLi .el-checkbox__label {

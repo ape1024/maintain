@@ -10,7 +10,13 @@
         </div>
         <div class="leftSubject">
           <div class="leftSubjectDiv">
-            <el-tree accordion highlight-current :data="data" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+            <el-tree
+              accordion
+              default-expand-all
+              highlight-current
+              :data="data"
+              :props="defaultProps"
+              @node-click="handleNodeClick"></el-tree>
           </div>
         </div>
       </div>
@@ -72,9 +78,6 @@ export default {
       data: [{
         label: '单位基本情况',
         children: [{
-          label: '建筑信息',
-          category: 5
-        }, {
           label: '维保项目',
           category: 4
         }, {
@@ -85,29 +88,24 @@ export default {
           category: 3
         }]
       }, {
+        id: 2,
         label: '维保工作记录',
         children: [{
-          label: '工作计划',
-          category: 6
-        }, {
           label: '日常巡检',
           category: 2,
-          id: 2
+          id: 22
         }, {
           label: '检查测试',
-          id: 3,
+          id: 33,
           category: 2
         }, {
           label: '维护保养',
           category: 2,
-          id: 1
+          id: 11
         }, {
           label: '故障问题',
           category: 3
         }]
-      }, {
-        label: '维保工作报告',
-        category: 7
       }],
       defaultProps: {
         children: 'children',
@@ -139,11 +137,11 @@ export default {
       this.feedbackFalse = false
       this.protectionFacilities = false
       if (data.category === 2) {
-        if (data.id === 1) {
+        if (data.id === 11) {
           this.maintenanceFalse = true
-        } else if (data.id === 2) {
+        } else if (data.id === 22) {
           this.routineInspectionFalse = true
-        } else if (data.id === 3) {
+        } else if (data.id === 33) {
           this.InspectionFalse = true
         }
       } else if (data.category === 4) {

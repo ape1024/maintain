@@ -210,6 +210,10 @@ export default {
     }
   },
   created () {
+    console.log('//////////////////////')
+    console.log(this.dailychild)
+    console.log(this.clicktaskname)
+    console.log(this.clickId)
   }
 }
 </script>

@@ -119,16 +119,20 @@
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
               {{item.effectivedate}}
             </li>
-            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo" :class="[item.devicestatename === '正常' ? 'conclusionClassOne' : 'conclusionClassThree']">
               {{item.devicestatename}}
             </li>
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
               <img class="principalHeaderLiImg" :key="urlIndex" v-for="(url, urlIndex) in item.photosArr" :src="url" alt="">
             </li>
-            <li class="principalHeaderLi principalHeaderLiOne">操作</li>
+            <li class="principalHeaderLi principalHeaderLiOne cephalosomeFiveSpan" @click.stop="examine(item.deviceid)">查看</li>
           </ul>
         </li>
       </ul>
+      <section v-if="lookoverBoolean" @click.stop class="review">
+        <!--查看-->
+        <childLookover :inspection="examineInspection" :information="examineInformation" :msg="lookoverBoolean" @look="Onlook"></childLookover>
+      </section>
       <div class="pagination">
         <div v-if="paginationFlag" class="paginationDiv">
           <el-pagination
@@ -146,10 +150,15 @@
 
 <script>
 import { projectMixin } from 'common/js/mixin'
-import { findAreasTreeByProjectid, findAllDeviceType, getAllTaskDevstate, statTaskDevListInfo } from '../../api/user'
+import { stateData } from '../../common/js/utils'
+import childLookover from '../adminChild-operation/adminChild-lookover'
+import { findAreasTreeByProjectid, findAllDeviceType, getAllTaskDevstate, statTaskDevListInfo, adminfindDeviceDetail, adminFindInspectionMaintenance } from '../../api/user'
 export default {
   name: 'pigeonhole-protectionFacilities',
   mixins: [projectMixin],
+  components: {
+    childLookover
+  },
   data () {
     return {
       input: '',
@@ -182,7 +191,10 @@ export default {
       taskType: '',
       processingData: '',
       picPath: '',
-      processing: []
+      processing: [],
+      examineInformation: '',
+      lookoverBoolean: false,
+      examineInspection: ''
     }
   },
   watch: {
@@ -207,6 +219,23 @@ export default {
   methods: {
     init () {
       this.Initialization()
+    },
+    Onlook () {
+      this.lookoverBoolean = false
+    },
+    examine (deviceid) {
+      // 点击查看
+      this.axios.post(adminfindDeviceDetail(deviceid)).then((response) => {
+        if (response.data.code === 0) {
+          this.examineInformation = response.data.data
+          this.axios.post(adminFindInspectionMaintenance(deviceid)).then((data) => {
+            if (data.data.code === 0) {
+              this.examineInspection = data.data.data
+              this.lookoverBoolean = true
+            }
+          })
+        }
+      })
     },
     query () {
       let token = JSON.parse(window.sessionStorage.token)
@@ -289,6 +318,7 @@ export default {
   },
   created () {
     //  时间节点
+    console.log(stateData)
     let token = JSON.parse(window.sessionStorage.token)
     this.Initialization()
     //  处理结果
@@ -493,6 +523,22 @@ export default {
     color #3279a6
     cursor pointer
     text-align center
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background $color-barckground-transparent
+    z-index 1111
+    overflow hidden
+  .cephalosomeFiveSpan
+    cursor pointer
+    color #3279a6
+  .conclusionClassOne
+    color #3acf76!important
+  .conclusionClassThree
+    color #cfb53a!important
 </style>
 <style>
   .principalHeaderLi .el-checkbox__label {
