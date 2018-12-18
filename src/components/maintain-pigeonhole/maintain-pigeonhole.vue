@@ -21,31 +21,31 @@
         </div>
       </div>
       <div class="pigeonholeRight">
-        <!--检查测试-->
+        <!--检查测试 2-->
         <div v-if="InspectionFalse" class="pigeonholeRightDiv">
           <Inspection></Inspection>
         </div>
-        <!--维护保养-->
+        <!--维护保养 2-->
         <div v-if="maintenanceFalse" class="pigeonholeRightDiv">
           <maintenance></maintenance>
         </div>
-        <!--日常巡检-->
+        <!--日常巡检  2-->
         <div class="pigeonholeRightDiv" v-if="routineInspectionFalse">
           <routineInspection></routineInspection>
         </div>
-        <!--维保项目-->
+        <!--维保项目  4-->
         <div v-if="MaintenanceprojectFalse" class="pigeonholeRightDiv">
           <Maintenanceproject></Maintenanceproject>
         </div>
-        <!--故障问题-->
+        <!--故障问题 5-->
         <div v-if="faultproblemFalse" class="pigeonholeRightDiv">
           <faultproblem></faultproblem>
         </div>
-        <!--现场反馈-->
+        <!--现场反馈  3-->
         <div v-if="feedbackFalse" class="pigeonholeRightDiv">
           <feedback></feedback>
         </div>
-        <!--消防设施-->
+        <!--消防设施 1-->
         <div v-if="protectionFacilities" class="pigeonholeRightDiv">
           <protectionFacilities></protectionFacilities>
         </div>
@@ -104,7 +104,7 @@ export default {
           id: 11
         }, {
           label: '故障问题',
-          category: 3
+          category: 5
         }]
       }],
       defaultProps: {
@@ -136,6 +136,7 @@ export default {
       this.MaintenanceprojectFalse = false
       this.feedbackFalse = false
       this.protectionFacilities = false
+      this.faultproblemFalse = false
       if (data.category === 2) {
         if (data.id === 11) {
           this.maintenanceFalse = true
@@ -150,6 +151,8 @@ export default {
         this.feedbackFalse = true
       } else if (data.category === 1) {
         this.protectionFacilities = true
+      } else if (data.category === 5) {
+        this.faultproblemFalse = true
       }
     }
   }

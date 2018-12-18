@@ -32,8 +32,8 @@
       </div>
       <div class="rightHeaderRight">
         <!--明细表-->
-        <div class="schedule">
-          明细表
+        <div class="schedule" @click="schedule">
+          导出
         </div>
       </div>
     </div>
@@ -46,27 +46,27 @@
           <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施类别
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
-              <el-cascader
-                size="mini"
-                clearable
-                v-model="equipmentDate"
-                :options="equipmentinformation"
-                :props="equipmentProps"
-                change-on-select
-              ></el-cascader>
+              <el-select size="mini" v-model="equipmentDate" placeholder="请选择">
+                <el-option
+                  v-for="item in equipmentinformation"
+                  :key="item.deviceTypeId"
+                  :label="item.deviceTypeName"
+                  :value="item.deviceTypeId">
+                </el-option>
+              </el-select>
             </div>
           </li>
           <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施位置
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
-              <el-cascader
-                size="mini"
-                clearable
-                v-model="locationDate"
-                :options="locationformation"
-                :props="locationProps"
-                change-on-select
-              ></el-cascader>
+              <el-select size="mini" v-model="locationDate" placeholder="请选择">
+                <el-option
+                  v-for="item in locationformation"
+                  :key="item.deviceAreaId"
+                  :label="item.deviceAreaName"
+                  :value="item.deviceAreaId">
+                </el-option>
+              </el-select>
             </div>
           </li>
           <li class="principalHeaderLi heavyPlayLiDivLiTwo">
@@ -154,12 +154,16 @@
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
               <img class="principalHeaderLiImg" :key="urlIndex" v-for="(url, urlIndex) in item.beforephotosArr" :src="url" alt="">
             </li>
-            <li class="principalHeaderLi principalHeaderLiOne lookover">
+            <li class="principalHeaderLi principalHeaderLiOne lookover" @click="examine(item)">
               查看
             </li>
           </ul>
         </li>
       </ul>
+      <section v-if="lookoverBoolean" @click.stop class="review">
+        <!--查看-->
+        <childLookover :examine="examineData" :title="examinationTitle" :state="taskState" :repairtasks="repairtasksName" @look="Onlook"></childLookover>
+      </section>
       <div class="pagination">
         <div v-if="paginationFlag" class="paginationDiv">
           <el-pagination
@@ -176,11 +180,15 @@
 </template>
 
 <script>
+import childLookover from '../repair-operation/repair-lookover'
 import { projectMixin } from 'common/js/mixin'
-import { findTaskType, findFaultProblem, findAreasTreeByProjectid, findAllDeviceType } from '../../api/user'
+import { findTaskType, findFaultProblem, findDeviceType, findDeviceArea, generateProblemRecordInfo, maintainRepairfindTaskByTaskid, getRepairUsers, maintainRepairgetRepairStates } from '../../api/user'
 export default {
   name: 'pigeonhole-faultproblem',
   mixins: [projectMixin],
+  components: {
+    childLookover
+  },
   data () {
     return {
       input: '',
@@ -190,14 +198,14 @@ export default {
       regionModel: [],
       principalmainbody: [],
       urlPhotos: '',
-      equipmentDate: [],
+      equipmentDate: '',
       equipmentinformation: [],
       equipmentProps: {
         children: 'children',
         label: 'name',
         value: 'code'
       },
-      locationDate: [],
+      locationDate: '',
       locationformation: [],
       locationProps: {
         children: 'areas',
@@ -225,35 +233,41 @@ export default {
       }, {
         id: -5,
         name: '未处理'
-      }]
+      }],
+      lookoverBoolean: false,
+      examinationTitle: '',
+      examineData: '',
+      repairtasksName: ''
     }
   },
   watch: {
+    taskTypeData (data) {
+      let token = JSON.parse(window.sessionStorage.token)
+      let locationDate = this.locationDate ? this.locationDate : ''
+      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, data, this.processingData, 0, 15)
+    },
     equipmentDate (data) {
-      if (data.length >= 2) {
-        this.paginationFlag = false
-        let token = JSON.parse(window.sessionStorage.token)
-        let equipmentDate = data[data.length - 1]
-        let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, 0, 15)
-      }
+      this.paginationFlag = false
+      let token = JSON.parse(window.sessionStorage.token)
+      let equipmentDate = data
+      let locationDate = this.locationDate ? this.locationDate : ''
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, 0, 15)
     },
     locationDate (data) {
-      if (data.length) {
-        this.paginationFlag = false
-        let token = JSON.parse(window.sessionStorage.token)
-        let locationDate = data[data.length - 1]
-        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
-        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, 0, 15)
-      }
+      this.paginationFlag = false
+      let token = JSON.parse(window.sessionStorage.token)
+      let locationDate = data
+      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, 0, 15)
     },
     processingData (data) {
       if (data) {
         this.paginationFlag = false
         let processingData = data === -999 ? '' : data
         let token = JSON.parse(window.sessionStorage.token)
-        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
-        let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+        let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+        let locationDate = this.locationDate ? this.locationDate : ''
         this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, processingData, 0, 15)
       }
     }
@@ -262,25 +276,87 @@ export default {
     init () {
       this.Initialization()
     },
+    getTaskState () {
+      //  获取维修任务状态
+      this.axios.post(maintainRepairgetRepairStates()).then((response) => {
+        if (response.data.code === 0) {
+          this.taskState = response.data.data
+        }
+      })
+    },
+    Onlook () {
+      this.lookoverBoolean = false
+    },
+    examine (item) {
+      // 点击查看
+      let id = !item.refid ? item.repairtaskid : item.refid
+      this.examinationTitle = item.repairtypename
+      this.axios.post(maintainRepairfindTaskByTaskid(id)).then((response) => {
+        if (response.data.code === 0) {
+          this.axios.post(getRepairUsers(id)).then((data) => {
+            if (data.data.data.length !== 0) {
+              let arr = []
+              data.data.data.forEach((val) => {
+                arr.push(val.username)
+              })
+              this.repairtasksName = arr.join(',')
+            }
+            this.examineData = response.data.data
+            this.lookoverBoolean = true
+          })
+        }
+      })
+      this.getTaskState()
+    },
+    schedule () {
+      let arr = []
+      this.principalmainbody.forEach((val) => {
+        if (val.flag) {
+          arr.push(val.repairtaskid)
+        }
+      })
+      if (arr.length) {
+        let String = arr.join()
+        let token = JSON.parse(window.sessionStorage.token)
+        this.axios.post(generateProblemRecordInfo(token, String)).then((response) => {
+          if (response.data.code === 0) {
+            if (response.data.data.length) {
+              response.data.data.forEach((val) => {
+                window.open(val, '_blank')
+              })
+            }
+          }
+        })
+      } else {
+        this.$message({
+          message: '请选择故障问题',
+          type: 'warning'
+        })
+      }
+    },
     query () {
+      this.equipmentDate = ''
+      this.locationDate = ''
+      this.taskTypeData = ''
+      this.processingData = ''
       let token = JSON.parse(window.sessionStorage.token)
       this.paginationFlag = false
       this.getData(token, this.maintainProject, this.startTime, this.endTime, '', '', '', '', 0, 15)
     },
     Initialization () {
-      this.equipmentDate = []
-      this.locationDate = []
+      this.equipmentDate = ''
+      this.locationDate = ''
       this.taskTypeData = ''
       this.processingData = ''
       //  设施类别
       let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
+      this.axios.post(findDeviceType(token, this.maintainProject, this.startTime, this.endTime)).then((response) => {
         if (response.data.code === 0) {
           this.equipmentinformation = response.data.data
         }
       })
       //  设施位置
-      this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
+      this.axios.post(findDeviceArea(token, this.maintainProject, this.startTime, this.endTime)).then((response) => {
         if (response.data.code === 0) {
           this.locationformation = response.data.data
         }
@@ -300,8 +376,8 @@ export default {
     },
     numberPagesChange (el) {
       let token = JSON.parse(window.sessionStorage.token)
-      let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
-      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+      let locationDate = this.locationDate ? this.locationDate : ''
       this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, el, 15)
     },
     fmtDate (obj) {
@@ -331,7 +407,6 @@ export default {
                 val.beforephotosArr.push(`${this.picPath}${val.beforephotos}`)
               }
             }
-            console.log(val.taskstatus)
             if (val.taskstatus === -5) {
               val.taskstatusText = '未处理'
             } else {
@@ -358,7 +433,6 @@ export default {
         this.taskType = response.data.data
       }
     })
-    //  处理结果
   }
 }
 </script>
@@ -554,6 +628,15 @@ export default {
     color #3279a6
     cursor pointer
     text-align center
+  .review
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    background $color-barckground-transparent
+    z-index 11
+    overflow hidden
 </style>
 <style>
   .principalHeaderLi .el-checkbox__label {

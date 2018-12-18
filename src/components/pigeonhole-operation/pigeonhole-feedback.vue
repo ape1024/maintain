@@ -257,7 +257,6 @@ export default {
       this.lookoverBoolean = false
     },
     examine (ID) {
-      console.log(ID)
       this.axios.post(maintainReportfindFeedbacksByFeedbackid(ID)).then((response) => {
         if (response.data.code === 0) {
           this.examineData = response.data.data

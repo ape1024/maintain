@@ -949,3 +949,15 @@ export const getAllDetailsByDeviceId = (taskId, deviceId) => {
 export const generateFeedbackInfo = (token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize) => {
   return `${Test}/taskexport/generateFeedbackInfo?token=${token}&projectid=${projectid}&devtypeid=${devtypeid}&areaid=${areaid}&devstate=${devstate}&start=${start}&end=${end}&pageIndex=${pageIndex}&pageSize=${pageSize}`
 }
+
+export const generateProblemRecordInfo = (token, repairTaskIds) => {
+  return `${Test}/statement/generateFacilities?token=${token}&repairTaskIds=${repairTaskIds}`
+}
+
+export const findDeviceType = (token, projectid, startTime, endTime) => {
+  return `${Test}/workRecord/findDeviceType?token=${token}&projectid=${projectid}&startTime=${startTime}&endTime=${endTime}`
+}
+
+export const findDeviceArea = (token, projectid, startTime, endTime) => {
+  return `${Test}/workRecord/findDeviceArea?token=${token}&projectid=${projectid}&startTime=${startTime}&endTime=${endTime}`
+}

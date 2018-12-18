@@ -98,12 +98,18 @@ export default {
           let data = response.data
           if (data.code === 0) {
             if (data.data.code === -1) {
-              alert('账号错误，请重新登录！')
+              this.$message({
+                message: '账号错误，请重新登录！',
+                type: 'warning'
+              })
               return false
             } else {
               //  用户已登录
               if (data.data.code === -3) {
-                alert('密码错误，请重新登录！')
+                this.$message({
+                  message: '密码错误，请重新登录！',
+                  type: 'warning'
+                })
                 return false
               } else {
                 if (data.data.code === 0) {
