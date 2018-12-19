@@ -946,8 +946,8 @@ export const getAllDetailsByDeviceId = (taskId, deviceId) => {
   return `${Test}/task/getAllDetailsByDeviceId?taskId=${taskId}&deviceId=${deviceId}`
 }
 
-export const generateFeedbackInfo = (token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize) => {
-  return `${Test}/taskexport/generateFeedbackInfo?token=${token}&projectid=${projectid}&devtypeid=${devtypeid}&areaid=${areaid}&devstate=${devstate}&start=${start}&end=${end}&pageIndex=${pageIndex}&pageSize=${pageSize}`
+export const generateFeedbackInfo = (token, projectid, start, end, feedbackids) => {
+  return `${Test}/taskexport/generateFeedbackInfo?token=${token}&projectid=${projectid}&start=${start}&end=${end}&feedbackids=${feedbackids}`
 }
 
 export const generateProblemRecordInfo = (token, repairTaskIds) => {
@@ -960,4 +960,17 @@ export const findDeviceType = (token, projectid, startTime, endTime) => {
 
 export const findDeviceArea = (token, projectid, startTime, endTime) => {
   return `${Test}/workRecord/findDeviceArea?token=${token}&projectid=${projectid}&startTime=${startTime}&endTime=${endTime}`
+}
+
+export const generateContractInfos = (token, projectIds) => {
+  return `${Test}/statement/generateContractInfos?token=${token}&projectIds=${projectIds}`
+}
+
+export const generateTaskDevDetailInfo = (token, projectid, devids) => {
+  return `${Test}/taskexport/generateTaskDevDetailInfo?token=${token}&projectid=${projectid}&devids=${devids}`
+}
+
+//  http://172.16.6.16:8920
+export const generateTaskTaizgangInfo = (token, projectid, devids, areaid) => {
+  return `${Test}/taskexport/generateTaskTaizgangInfo?token=${token}&projectid=${projectid}&devids=${devids}&areaid=${areaid}`
 }

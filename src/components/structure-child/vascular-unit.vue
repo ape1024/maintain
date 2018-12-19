@@ -638,6 +638,13 @@ export default {
         })
         return false
       }
+      if (!this.roleManagementData.length) {
+        this.$message({
+          message: '请选择角色管理',
+          type: 'warning'
+        })
+        return false
+      }
       // 单位名称
       const organizationname = this.organizationname
       // 组织缩写

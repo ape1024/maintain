@@ -14,7 +14,7 @@
       </div>
       <div class="rightHeaderRight">
         <!--导出-->
-        <div class="schedule">
+        <div class="schedule" @click="schedule">
           导出
         </div>
       </div>
@@ -23,7 +23,7 @@
       <div class="principalHeader">
         <ul class="principalHeaderUl">
           <li class="principalHeaderLi heavyPlayLiDivLiOne">
-            <el-checkbox v-model="checked"></el-checkbox>
+            <el-checkbox v-model="checked" @change="checkedChange"></el-checkbox>
           </li>
           <li class="principalHeaderLi heavyPlayLiDivLiTwo">项目编号
           </li>
@@ -106,7 +106,7 @@
 
 <script>
 import examine from '../intercalateChild-operation/consumerChild-examine'
-import { findAllMaintenanceProject, findDetailByProjectid } from '../../api/user'
+import { findAllMaintenanceProject, findDetailByProjectid, generateContractInfos } from '../../api/user'
 export default {
   name: 'pigeonhole-Maintenanceproject',
   components: {
@@ -125,6 +125,46 @@ export default {
     }
   },
   methods: {
+    checkedChange (data) {
+      if (data) {
+        this.subject.forEach((val) => {
+          val.choice = true
+        })
+      } else {
+        this.subject.forEach((val) => {
+          val.choice = false
+        })
+      }
+    },
+    schedule () {
+      let arr = []
+      if (this.subject.length) {
+        this.subject.forEach((val) => {
+          if (val.choice) {
+            arr.push(val.projectid)
+          }
+        })
+        if (arr.length) {
+          let String = arr.join()
+          let token = JSON.parse(window.sessionStorage.token)
+          this.axios.post(generateContractInfos(token, String)).then((response) => {
+            console.log(response)
+            if (response.data.code === 0) {
+              if (response.data.data.length) {
+                response.data.data.forEach((val) => {
+                  window.open(val, '_blank')
+                })
+              }
+            }
+          })
+        } else {
+          this.$message({
+            message: '请选择项目',
+            type: 'warning'
+          })
+        }
+      }
+    },
     Mine () {
       this.examineBoolean = false
     },

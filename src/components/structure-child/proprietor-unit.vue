@@ -192,7 +192,7 @@
         </li>
         <li class="informationLitwo">
           <div class="informationDiv">
-            <p class="informationP">角色管理：</p>
+            <p class="informationP"><span class="structureSpan">*</span>角色管理：</p>
             <div class="content">
               <el-select
                 v-model="roleManagementData"
@@ -671,6 +671,13 @@ export default {
       if (!organizationcode && organizationType === 3) {
         this.$message({
           message: '请填写单位编码',
+          type: 'warning'
+        })
+        return false
+      }
+      if (!this.roleManagementData.length) {
+        this.$message({
+          message: '请选择角色管理',
           type: 'warning'
         })
         return false

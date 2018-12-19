@@ -21,8 +21,14 @@
       </div>
       <div class="rightHeaderRight">
         <!--明细表-->
-        <div class="schedule">
+        <div class="schedule" @click="schedule">
           明细表
+        </div>
+        <div class="maintenance">
+          运维记录
+        </div>
+        <div class="Information" @click="information">
+          信息卡
         </div>
       </div>
     </div>
@@ -45,10 +51,13 @@
               </el-select>
             </div>
           </li>
-          <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">管理编码
-          </li>
-          <li class="principalHeaderLi heavyPlayLiDivLiOne">
+          <!--<li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">管理编码-->
+          <!--</li>-->
+          <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
             设置位置
+            <div class="threelevel_ensconce">
+
+            </div>
           </li>
           <li class="principalHeaderLi heavyPlayLiDivLiTwo">
             数量
@@ -92,20 +101,20 @@
             <li class="principalHeaderLi principalHeaderLiOne">
               <el-checkbox v-model="item.flag"></el-checkbox>
             </li>
-            <li :title="item.devicename" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
-              {{item.devicename}}
+            <li :title="item.devicetypename" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
+              {{item.devicetypename}}
             </li>
-            <li :title="item.devivccode" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
-              {{item.devivccode}}
-            </li>
+            <!--<li :title="item.devivccode" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">-->
+              <!--{{item.devivccode}}-->
+            <!--</li>-->
             <li :title="item.fullareaname" class="principalHeaderLi heavyPlayLiDivLiOne">
               {{item.fullareaname}}
             </li>
             <li :title="item.devicecount" class="principalHeaderLi heavyPlayLiDivLiTwo">
               {{item.devicecount}}
             </li>
-            <li :title="item.devivccode" class="principalHeaderLi heavyPlayLiDivLiTwo">
-              {{item.devivccode}}
+            <li :title="item.devicecode" class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.devicecode}}
             </li>
             <li :title="item.manafacutename" class="principalHeaderLi heavyPlayLiDivLiTwo">
               {{item.manafacutename}}
@@ -150,9 +159,8 @@
 
 <script>
 import { projectMixin } from 'common/js/mixin'
-import { stateData } from '../../common/js/utils'
 import childLookover from '../adminChild-operation/adminChild-lookover'
-import { findAreasTreeByProjectid, findAllDeviceType, getAllTaskDevstate, statTaskDevListInfo, adminfindDeviceDetail, adminFindInspectionMaintenance } from '../../api/user'
+import { findAreasTreeByProjectid, findAllDeviceType, getAllTaskDevstate, statTaskDevListInfo, adminfindDeviceDetail, adminFindInspectionMaintenance, generateTaskDevDetailInfo, generateTaskTaizgangInfo } from '../../api/user'
 export default {
   name: 'pigeonhole-protectionFacilities',
   mixins: [projectMixin],
@@ -187,7 +195,7 @@ export default {
       numberPages: 1,
       conclusion: [],
       conclusionData: '',
-      checked: '',
+      checked: false,
       taskType: '',
       processingData: '',
       picPath: '',
@@ -217,6 +225,67 @@ export default {
     }
   },
   methods: {
+    schedule () {
+      let arr = []
+      this.principalmainbody.forEach((val) => {
+        if (val.flag) {
+          arr.push(val.deviceid)
+        }
+      })
+      if (arr.length) {
+        let token = JSON.parse(window.sessionStorage.token)
+        let String = arr.join()
+        let areaid = this.locationDate[this.locationDate.length - 1]
+        this.axios.post(generateTaskTaizgangInfo(token, this.maintainProject, String, areaid)).then((response) => {
+          if (response.data.code === 0) {
+            console.log(response.data.data)
+            if (response.data.data) {
+              let array = []
+              if (response.data.data.indexOf(',') === -1) {
+                array.push(response.data.data)
+              } else {
+                array = response.data.data.split(',')
+              }
+              array.forEach((val) => {
+                window.open(val, '_blank')
+              })
+            }
+          }
+        })
+      }
+    },
+    information () {
+      let token = JSON.parse(window.sessionStorage.token)
+      let arr = []
+      this.principalmainbody.forEach((val) => {
+        if (val.flag) {
+          arr.push(val.deviceid)
+        }
+      })
+      if (arr.length) {
+        let String = arr.join()
+        this.axios.post(generateTaskDevDetailInfo(token, this.maintainProject, String)).then((response) => {
+          if (response.data.code === 0) {
+            if (response.data.data) {
+              let array = []
+              if (response.data.data.indexOf(',') === -1) {
+                array.push(response.data.data)
+              } else {
+                array = response.data.data.split(',')
+              }
+              array.forEach((val) => {
+                window.open(val, '_blank')
+              })
+            }
+          }
+        })
+      } else {
+        this.$message({
+          message: '请选择设备',
+          type: 'warning'
+        })
+      }
+    },
     init () {
       this.Initialization()
     },
@@ -261,11 +330,25 @@ export default {
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.locationformation = response.data.data
+          console.log(response.data.data)
+          console.log(response.data.data)
+          if (response.data.data.length) {
+            this.locationDate.push(response.data.data[0].areaid)
+            this.getData(token, this.maintainProject, this.equipmentDate, response.data.data[0].areaid, this.processingData, 1, 15)
+          }
         }
       })
-      this.getData(token, this.maintainProject, this.equipmentDate, this.locationDate, this.processingData, 1, 15)
     },
     checkedChang (data) {
+      if (data) {
+        this.principalmainbody.forEach((val) => {
+          val.flag = true
+        })
+      } else {
+        this.principalmainbody.forEach((val) => {
+          val.flag = false
+        })
+      }
     },
     numberPagesChange (el) {
       let token = JSON.parse(window.sessionStorage.token)
@@ -318,7 +401,6 @@ export default {
   },
   created () {
     //  时间节点
-    console.log(stateData)
     let token = JSON.parse(window.sessionStorage.token)
     this.Initialization()
     //  处理结果
@@ -379,7 +461,7 @@ export default {
   .principalHeaderLiOne
     width 6%
   .heavyPlayLiDivLiOne
-    width 10.5%
+    width 15.5%
     padding 0 .5%
   .heavyPlayLiDivLiTwo
     padding 0 .5%
@@ -539,6 +621,38 @@ export default {
     color #3acf76!important
   .conclusionClassThree
     color #cfb53a!important
+  .Information
+    width 106px
+    height 29px
+    color #fff
+    line-height 29px
+    border-radius 5px
+    font-size 14px
+    text-align center
+    display inline-block
+    margin-right 20px
+    cursor pointer
+    -webkit-transition 0.2s
+    transition 0.2s
+    background #8d8877
+    &:hover
+     background #a29c89
+  .maintenance
+    width 106px
+    height 29px
+    color #fff
+    line-height 29px
+    border-radius 5px
+    font-size 14px
+    text-align center
+    display inline-block
+    margin-right 20px
+    cursor pointer
+    -webkit-transition 0.2s
+    transition 0.2s
+    background #3acf76
+    &:hover
+      background #42e583
 </style>
 <style>
   .principalHeaderLi .el-checkbox__label {

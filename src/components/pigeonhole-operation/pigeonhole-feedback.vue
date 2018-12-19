@@ -244,14 +244,28 @@ export default {
     },
     schedule () {
       let token = JSON.parse(window.sessionStorage.token)
-      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
-      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-      this.axios.post(generateFeedbackInfo(token, this.maintainProject, equipmentDate, locationDate, this.processingData, this.startTime, this.endTime, this.currentPage, 15)).then((response) => {
-        console.log(response)
-        if (response.data.code === 0) {
-          window.open(response.data.data, '_blank')
+      let arr = []
+      this.principalmainbody.forEach((val) => {
+        if (val.flag) {
+          arr.push(val.feedbackid)
         }
       })
+      if (arr.length) {
+        let String = arr.join()
+        this.axios.post(generateFeedbackInfo(token, this.maintainProject, this.startTime, this.endTime, String)).then((response) => {
+          if (response.data.code === 0) {
+            let array = []
+            if (response.data.data.indexOf(',') === -1) {
+              array.push(response.data.data)
+            } else {
+              array = response.data.data.split(',')
+            }
+            array.forEach((val) => {
+              window.open(val, '_blank')
+            })
+          }
+        })
+      }
     },
     Onlook () {
       this.lookoverBoolean = false
@@ -291,6 +305,15 @@ export default {
       this.getData(token, this.maintainProject, this.equipmentDate, this.locationDate, this.processingData, this.startTime, this.endTime, 1, 15)
     },
     checkedChang (data) {
+      if (data) {
+        this.principalmainbody.forEach((val) => {
+          val.flag = true
+        })
+      } else {
+        this.principalmainbody.forEach((val) => {
+          val.flag = false
+        })
+      }
     },
     numberPagesChange (el) {
       let token = JSON.parse(window.sessionStorage.token)
