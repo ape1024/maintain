@@ -132,7 +132,7 @@
               {{item.devicestatename}}
             </li>
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
-              <img class="principalHeaderLiImg" :key="urlIndex" v-for="(url, urlIndex) in item.photosArr" :src="url" alt="">
+              <img class="principalHeaderLiImg" @click="selectImg(item.photosArr, urlIndex)" :key="urlIndex" v-for="(url, urlIndex) in item.photosArr" :src="url" alt="">
             </li>
             <li class="principalHeaderLi principalHeaderLiOne cephalosomeFiveSpan" @click.stop="examine(item.deviceid)">查看</li>
           </ul>
@@ -153,6 +153,7 @@
           </el-pagination>
         </div>
       </div>
+      <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </div>
   </section>
 </template>
@@ -160,12 +161,14 @@
 <script>
 import { projectMixin } from 'common/js/mixin'
 import childLookover from '../adminChild-operation/adminChild-lookover'
+import DialogImg from 'base/dialog-img/dialog-img'
 import { findAreasTreeByProjectid, findAllDeviceType, getAllTaskDevstate, statTaskDevListInfo, adminfindDeviceDetail, adminFindInspectionMaintenance, generateTaskDevDetailInfo, generateTaskTaizgangInfo } from '../../api/user'
 export default {
   name: 'pigeonhole-protectionFacilities',
   mixins: [projectMixin],
   components: {
-    childLookover
+    childLookover,
+    DialogImg
   },
   data () {
     return {
@@ -202,7 +205,8 @@ export default {
       processing: [],
       examineInformation: '',
       lookoverBoolean: false,
-      examineInspection: ''
+      examineInspection: '',
+      imgList: []
     }
   },
   watch: {
@@ -225,6 +229,13 @@ export default {
     }
   },
   methods: {
+    selectImg (list, index) {
+      this.imgList = list
+      setTimeout(() => {
+        this.$refs.dialogImg.switchIndex(index)
+        this.$refs.dialogImg.open()
+      }, 200)
+    },
     schedule () {
       let arr = []
       this.principalmainbody.forEach((val) => {
@@ -247,10 +258,15 @@ export default {
                 array = response.data.data.split(',')
               }
               array.forEach((val) => {
-                window.open(val, '_blank')
+                window.location.href = val
               })
             }
           }
+        })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请选择设备'
         })
       }
     },
@@ -274,7 +290,7 @@ export default {
                 array = response.data.data.split(',')
               }
               array.forEach((val) => {
-                window.open(val, '_blank')
+                window.location.href = val
               })
             }
           }
@@ -307,12 +323,19 @@ export default {
       })
     },
     query () {
-      let token = JSON.parse(window.sessionStorage.token)
-      this.equipmentDate = ''
-      this.processingData = ''
-      this.paginationFlag = false
-      let areaid = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-      this.getData(token, this.maintainProject, '', areaid, '', 1, 15)
+      if (this.locationDate.length) {
+        let token = JSON.parse(window.sessionStorage.token)
+        this.equipmentDate = ''
+        this.processingData = ''
+        this.paginationFlag = false
+        let areaid = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+        this.getData(token, this.maintainProject, '', areaid, '', 1, 15)
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请选择建筑区域'
+        })
+      }
     },
     Initialization () {
       this.paginationFlag = false

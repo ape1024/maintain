@@ -632,14 +632,13 @@ export default {
       width 7.5%
     .threelevel_litwo
       float left
-      width 18.5%
+      width 10.5%
       overflow hidden
     .threelevel_lithree
       float left
-      width 7.5%
+      width 8.5%
       padding-left 1%
       position relative
-
   .threelevel_list
     margin: 4px;
     overflow: hidden;
@@ -663,14 +662,14 @@ export default {
         white-space nowrap
       .threelevel_litwo
         float left
-        width 23.5%
+        width 15.5%
         height 40px
         overflow hidden
         text-overflow ellipsis
         white-space nowrap
       .threelevel_lithree
         float left
-        width 7.5%
+        width 8.5%
         height 40px
         padding-left 1%
         overflow hidden

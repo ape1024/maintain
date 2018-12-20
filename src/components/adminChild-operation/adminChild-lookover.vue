@@ -22,63 +22,63 @@
         <ul class="information">
           <li class="lookover_litwo">
             <p class="lookover_p">生产厂家：</p>
-            <div :title="information.name">{{information.name}}</div>
+            <div class="lookover_Div" :title="information.name">{{information.name}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">创建人员：</p>
-            <div>{{information.creatername}}</div>
+            <div class="lookover_Div">{{information.creatername}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">创建日期：</p>
-            <div>{{tiemerIf(this.information.createtime)}}</div>
+            <div class="lookover_Div">{{tiemerIf(this.information.createtime)}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">规格型号：</p>
-            <div>{{information.devicemodelname}}</div>
+            <div class="lookover_Div">{{information.devicemodelname}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">审核人员：</p>
-            <div>{{information.approvername}}</div>
+            <div class="lookover_Div">{{information.approvername}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">审核日期：</p>
-            <div>{{tiemerIf(this.information.approvaltime)}}</div>
+            <div class="lookover_Div">{{tiemerIf(this.information.approvaltime)}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">设备位置：</p>
-            <div :title="information.position">{{information.position}}</div>
+            <div :title="information.position" class="lookover_Div">{{information.position}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">设备数量：</p>
-            <div>{{information.devicecount}}{{information.unit}}</div>
+            <div class="lookover_Div">{{information.devicecount}}{{information.unit}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">生产日期：</p>
-            <div>{{tiemerIf(this.information.madedate)}}</div>
+            <div class="lookover_Div">{{tiemerIf(this.information.madedate)}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">MAC编码：</p>
-            <div>{{information.mac}}</div>
+            <div class="lookover_Div">{{information.mac}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">技术参数：</p>
-            <div :title="information.parameters">{{information.parameters}}</div>
+            <div class="lookover_Div" :title="information.parameters">{{information.parameters}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">有效日期：</p>
-            <div>{{tiemerIf(this.information.effectivedate)}}</div>
+            <div class="lookover_Div">{{tiemerIf(this.information.effectivedate)}}</div>
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">区域编码：</p>
-            <div>{{information.areacode}}</div>
+            <div class="lookover_Div">{{information.areacode}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">备注说明：</p>
-            <div :title="information.memo">{{information.memo}}</div>
+            <div class="lookover_Div" :title="information.memo">{{information.memo}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">审核意见：</p>
-            <div :title="information.approvalopinion">{{information.approvalopinion}}</div>
+            <div class="lookover_Div" :title="information.approvalopinion">{{information.approvalopinion}}</div>
           </li>
 
           <li class="lookover_lithree">
@@ -317,6 +317,8 @@ export default {
          width 150px
          float left
          overflow hidden
+         text-overflow ellipsis
+         white-space nowrap
          color $color-text
     .fastener
        width 100%
@@ -340,4 +342,8 @@ export default {
     display inline-block
     cursor pointer
     margin-right 20px
+  .lookover_Div
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
 </style>

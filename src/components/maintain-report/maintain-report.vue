@@ -582,6 +582,7 @@ export default {
   .header_litwo
     float left
     height 32px
+    text-align center
     line-height 32px
     width 11%
     white-space nowrap

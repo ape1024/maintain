@@ -18,7 +18,7 @@
             <li class="cephalosomepositionOne">
               设置位置
             </li>
-            <li class="cephalosomeSix">
+            <li class="cephalosomeSix textAlign">
               设备数量
             </li>
             <div class="heavyPlayLiDiv">
@@ -56,8 +56,9 @@
                 <li :title="item.position" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomepositionOne">
                   {{item.position}}
                 </li>
-                <li :title="item.devicecount" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeSix">
-                  {{item.devicecount}}                </li>
+                <li :title="item.devicecount" :style="{height: item.details.length * 40 + 'px', lineHeight: item.details.length * 40 + 'px'}" class="heavyPlayLi cephalosomeSix textAlign">
+                  {{item.devicecount}}
+                </li>
                 <div class="heavyPlayLiDiv">
                   <ul :key="$index" v-for="(data, $index) in item.details" class="heavyPlayLiUl">
                     <li :title="data.workitem" class="heavyPlayLi cephalosomeTwo" >
@@ -210,10 +211,6 @@ export default {
     }
   },
   created () {
-    console.log('//////////////////////')
-    console.log(this.dailychild)
-    console.log(this.clicktaskname)
-    console.log(this.clickId)
   }
 }
 </script>
@@ -404,4 +401,6 @@ export default {
     white-space nowrap
   .cephalosomeUl .cephalosomeparticularsOne:last-child
     border-right none
+  .textAlign
+    text-align center
 </style>

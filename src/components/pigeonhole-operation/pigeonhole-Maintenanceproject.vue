@@ -152,7 +152,7 @@ export default {
             if (response.data.code === 0) {
               if (response.data.data.length) {
                 response.data.data.forEach((val) => {
-                  window.open(val, '_blank')
+                  window.location.href = val
                 })
               }
             }
@@ -188,8 +188,15 @@ export default {
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     },
     query () {
-      let token = JSON.parse(window.sessionStorage.token)
-      this.getData(token, this.Keyword, 0, 15)
+      if (this.Keyword) {
+        let token = JSON.parse(window.sessionStorage.token)
+        this.getData(token, this.Keyword, 0, 15)
+      } else {
+        this.$message({
+          message: '请填写关键字',
+          type: 'warning'
+        })
+      }
     },
     getData (token, Keyword, pageIndex, pageSize) {
       this.axios.post(findAllMaintenanceProject(token, Keyword, pageIndex, pageSize)).then((response) => {

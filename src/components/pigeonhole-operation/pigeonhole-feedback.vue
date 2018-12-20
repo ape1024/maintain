@@ -135,7 +135,7 @@
               {{item.disposestate ? viewProcessing(item.disposestate) : ''}}
             </li>
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
-              <img class="principalHeaderLiImg" :key="urlIndex" v-for="(url, urlIndex) in item.photosArr" :src="url" alt="">
+              <img @click="selectImg(item.photosArr, urlIndex)" class="principalHeaderLiImg" :key="urlIndex" v-for="(url, urlIndex) in item.photosArr" :src="url" alt="">
             </li>
             <li class="principalHeaderLi principalHeaderLiOne lookover" @click.stop="examine(item.feedbackid)">
               查看
@@ -158,19 +158,22 @@
           </el-pagination>
         </div>
       </div>
+      <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </div>
   </section>
 </template>
 
 <script>
 import { projectMixin } from 'common/js/mixin'
+import DialogImg from 'base/dialog-img/dialog-img'
 import childLookover from '../reportChild-operation/reportChild-lookover-'
 import { statFeedBackInfo, findAreasTreeByProjectid, findAllDeviceType, getAllFeedbackstate, maintainReportfindFeedbacksByFeedbackid, generateFeedbackInfo } from '../../api/user'
 export default {
   name: 'pigeonhole-feedback',
   mixins: [projectMixin],
   components: {
-    childLookover
+    childLookover,
+    DialogImg
   },
   data () {
     return {
@@ -207,7 +210,8 @@ export default {
       picPath: '',
       processing: [],
       lookoverBoolean: false,
-      examineData: ''
+      examineData: '',
+      imgList: []
     }
   },
   watch: {
@@ -242,6 +246,13 @@ export default {
     init () {
       this.Initialization()
     },
+    selectImg (list, index) {
+      this.imgList = list
+      setTimeout(() => {
+        this.$refs.dialogImg.switchIndex(index)
+        this.$refs.dialogImg.open()
+      }, 200)
+    },
     schedule () {
       let token = JSON.parse(window.sessionStorage.token)
       let arr = []
@@ -261,9 +272,14 @@ export default {
               array = response.data.data.split(',')
             }
             array.forEach((val) => {
-              window.open(val, '_blank')
+              window.location.href = val
             })
           }
+        })
+      } else {
+        this.$message({
+          message: '请选择设备',
+          type: 'warning'
         })
       }
     },
@@ -279,11 +295,18 @@ export default {
       })
     },
     query () {
-      let token = JSON.parse(window.sessionStorage.token)
-      this.equipmentDate = ''
-      this.locationDate = []
-      this.processingData = ''
-      this.getData(token, this.maintainProject, '', '', '', this.startTime, this.endTime, 1, 15)
+      if (this.startTime && this.endTime) {
+        let token = JSON.parse(window.sessionStorage.token)
+        this.equipmentDate = ''
+        this.locationDate = []
+        this.processingData = ''
+        this.getData(token, this.maintainProject, '', '', '', this.startTime, this.endTime, 1, 15)
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请选择时间'
+        })
+      }
     },
     Initialization () {
       let token = JSON.parse(window.sessionStorage.token)

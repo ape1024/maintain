@@ -48,7 +48,7 @@
         <li class="repair_lithree">
           计划说明
         </li>
-        <li class="repair_lithree">
+        <li class="repair_liFour">
           操作
         </li>
       </ul>
@@ -76,7 +76,7 @@
             <li :title="item.plandesc" class="repair_lithree">
               {{item.plandesc}}
             </li>
-            <li class="repair_lithree">
+            <li class="repair_liFour">
               <div v-if="JurisdictionUpdate">
                 <p v-if="item.planstate !== 100"  @click.stop="setPlan(item.checkplanid)" class="header_p_eight threelevel_litwo_p">
                   启用
@@ -538,7 +538,7 @@ export default {
     height 32px
     padding-left 1%
   .repair_li
-    width 9%
+    width 16%
     padding-left 1%
     height 32px
     float left
@@ -553,7 +553,7 @@ export default {
     text-align center
     position relative
   .repair_lithree
-    width 19%
+    width 20%
     padding-right 1%
     height 32px
     float left
@@ -561,6 +561,15 @@ export default {
     overflow hidden
     text-overflow ellipsis
     text-align left
+  .repair_liFour
+    width 11%
+    padding-right 1%
+    height 32px
+    float left
+    white-space nowrap
+    overflow hidden
+    text-overflow ellipsis
+    text-align center
   .header_p_one
     color $color-text-tile-state
   .header_p_two

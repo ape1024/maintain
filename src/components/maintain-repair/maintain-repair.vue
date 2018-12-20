@@ -87,7 +87,7 @@
         <li class="repair_lithree">
           审核状态
         </li>
-        <li class="repair_litwo">
+        <li class="repair_lifive textAlign">
           操作
         </li>
       </ul>
@@ -847,4 +847,6 @@ export default {
     float left
     margin-top 1px
     width 167px
+  .textAlign
+    text-align center
 </style>

@@ -1,11 +1,11 @@
 <template>
   <div class="admin_child">
     <ul class="threelevel_header">
-      <li class="threelevel_lithree">
+      <li class="threelevel_litwo">
         <el-checkbox v-model="checkedData" @change="checkedChange"></el-checkbox>
         设施编码
       </li>
-      <li class="threelevel_lithree">
+      <li class="threelevel_litwo">
         设施类别 <i class="el-icon-caret-bottom"></i>
         <div class="threelevel_ensconce">
           <el-cascader
@@ -19,16 +19,16 @@
           ></el-cascader>
         </div>
       </li>
-      <li class="threelevel_liL">
+      <li class="threelevel_lithree">
         mac地址
       </li>
-      <li class="threelevel_lithree">
+      <li class="threelevel_litwo">
         设施位置
       </li>
       <li class="threelevel_lithree">
         数量
       </li>
-      <li class="threelevel_lithree">
+      <li class="threelevel_litwo">
         生产厂家
       </li>
       <li class="threelevel_lithree">
@@ -50,7 +50,7 @@
           </el-select>
         </div>
       </li>
-      <li class="threelevel_litwo">
+      <li class="threelevel_li">
         操作
       </li>
       <!--<li v-if="JurisdictionApproval" @click="approvalstateS" class="threelevel_lifive">-->
@@ -60,25 +60,25 @@
     <ul class="threelevel_list">
       <li :key="$index" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
-          <li :title="dataset.devicecode" class="threelevel_lithree">
+          <li :title="dataset.devicecode" class="threelevel_litwo">
             <span class="threelevel_lithreeSSpan">
               <el-checkbox v-if="dataset.selectbox" v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>
             </span>
             {{dataset.devicecode}}
           </li>
-          <li :title="dataset.devicename" class="threelevel_lithree">
+          <li :title="dataset.devicename" class="threelevel_litwo">
             {{dataset.devicename}}
           </li>
-          <li :title="dataset.mac" class="threelevel_liL">
+          <li :title="dataset.mac" class="threelevel_lithree">
             {{dataset.mac}}
           </li>
-          <li :title="dataset.position" class="threelevel_lithree">
+          <li :title="dataset.position" class="threelevel_litwo">
             {{dataset.position}}
           </li>
           <li :title="dataset.devcount2" class="threelevel_lithree">
             {{dataset.devcount2}}
           </li>
-          <li :title="dataset.manufacturename" class="threelevel_lithree">
+          <li :title="dataset.manufacturename" class="threelevel_litwo">
             {{dataset.manufacturename}}
           </li>
           <li :title="dataset.devicemodelname" class="threelevel_lithree">
@@ -96,7 +96,7 @@
             </p>
             <!--{{dataset.approvalstatecode}}-->
           </li>
-          <li class="threelevel_litwo">
+          <li class="threelevel_li">
             <!--<div v-if="!JurisdictionSuper">-->
               <!--<p v-if="JurisdictionApproval && dataset.disabledBoolean" @click.stop="question(dataset.deviceid)" class="header_p_eight threelevel_litwo_p">-->
                 <!--审核-->
@@ -620,15 +620,18 @@ export default {
     background #354d76
     .threelevel_li
       float left
-      width 7.5%
+      width 6%
+      text-align center
     .threelevel_litwo
       float left
-      width 18.5%
+      width 13.5%
+      padding-left .5%
+      position relative
       overflow hidden
     .threelevel_lithree
       float left
-      width 7.5%
-      padding-left 1%
+      width 7%
+      padding-left .5%
       position relative
   .threelevel_list
     margin: 4px;
@@ -646,23 +649,26 @@ export default {
       height 40px
       .threelevel_li
         float left
-        width 8.5%
+        width 5%
+        padding-left .5%
+        text-align center
         height 40px
         overflow hidden
         text-overflow ellipsis
         white-space nowrap
       .threelevel_litwo
         float left
-        width 23.5%
+        width 13.5%
+        padding-left .5%
         height 40px
         overflow hidden
         text-overflow ellipsis
         white-space nowrap
       .threelevel_lithree
         float left
-        width 7.5%
+        width 7%
+        padding-left .5%
         height 40px
-        padding-left 1%
         overflow hidden
         text-overflow ellipsis
         white-space nowrap

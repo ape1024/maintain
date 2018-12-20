@@ -83,9 +83,6 @@ export default {
         }, {
           label: '消防设施',
           category: 1
-        }, {
-          label: '现场反馈',
-          category: 3
         }]
       }, {
         id: 2,
@@ -105,6 +102,9 @@ export default {
         }, {
           label: '故障问题',
           category: 5
+        }, {
+          label: '现场反馈',
+          category: 3
         }]
       }],
       defaultProps: {

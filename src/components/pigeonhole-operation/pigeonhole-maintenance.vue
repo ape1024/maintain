@@ -141,7 +141,7 @@
                   {{data.conclusionData}}
                 </li>
                 <li :title="data.photosArr" class="principalHeaderLiTwo heavyPlayLiDivLiTwo">
-                  <img class="principalHeaderLiImg" :key="photosIndex" v-for="(photosItem, photosIndex) in data.photosArr" :src="`${photosItem}`" alt="">
+                  <img @click="selectImg(data.photosArr, photosIndex)" class="principalHeaderLiImg" :key="photosIndex" v-for="(photosItem, photosIndex) in data.photosArr" :src="`${photosItem}`" alt="">
                 </li>
                 <li class="principalHeaderLi heavyPlayLiDivLiOne lookover principalPartI" @click.stop="particulars(item.deviceid, data)">
                   查看
@@ -168,19 +168,22 @@
           </el-pagination>
         </div>
       </div>
+      <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </div>
   </section>
 </template>
 
 <script>
 import { projectMixin } from 'common/js/mixin'
+import DialogImg from 'base/dialog-img/dialog-img'
 import examine from '../pigeonholeChildren-operation/pigeonhole-examine'
 import { maintainArrangegetAllPlansTwo, getChecktaskdetailsByPlanid, findAllDeviceType, getTreeByProjectId, getWorkconclusion, exportTaskReport } from '../../api/user'
 export default {
   name: 'pigeonhole-maintenance',
   mixins: [projectMixin],
   components: {
-    examine
+    examine,
+    DialogImg
   },
   data () {
     return {
@@ -215,7 +218,8 @@ export default {
       clicktaskname: '',
       clickId: '',
       equipmentID: '',
-      examineBoolean: false
+      examineBoolean: false,
+      imgList: []
     }
   },
   watch: {
@@ -246,7 +250,15 @@ export default {
     }
   },
   methods: {
+    selectImg (list, index) {
+      this.imgList = list
+      setTimeout(() => {
+        this.$refs.dialogImg.switchIndex(index)
+        this.$refs.dialogImg.open()
+      }, 200)
+    },
     init () {
+      this.regionDate = ''
       this.Initialization()
     },
     particulars (deviceid, item) {
@@ -264,16 +276,30 @@ export default {
       let begindate = this.startTime
       let endTime = this.endTime
       let devicecode = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
-      let areaid = this.locationDate.length ? this.locationDate[this.locationDate.length] : ''
+      let areaid = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
       let conclusion = this.conclusionData ? this.conclusionData : ''
       this.axios.post(exportTaskReport(token, type, planid, begindate, endTime, devicecode, areaid, conclusion)).then((response) => {
         if (response.data.code === 0) {
-          window.open(response.data.data, '_blank')
+          window.location.href = response.data.data
         }
       })
     },
     schedule () {
-      this.derivation(5)
+      if (this.regionDate) {
+        if (this.startTime && this.endTime) {
+          this.derivation(5)
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '请选择时间'
+          })
+        }
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请选择计划'
+        })
+      }
     },
     Initialization () {
       this.equipmentDate = []
@@ -306,11 +332,25 @@ export default {
       })
     },
     query () {
-      this.equipmentDate = []
-      this.locationDate = []
-      this.conclusionData = ''
-      this.paginationFlag = false
-      this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+      if (this.regionDate) {
+        if (this.startTime && this.endTime) {
+          this.equipmentDate = []
+          this.locationDate = []
+          this.conclusionData = ''
+          this.paginationFlag = false
+          this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '请选择时间'
+          })
+        }
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请选择计划'
+        })
+      }
     },
     numberPagesChange (el) {
       let index = el - 1
@@ -401,19 +441,16 @@ export default {
     overflow hidden
     background #111a28
     padding 20px 0
-    display flex
     .rightHeaderUl
       margin-left 30px
       overflow hidden
       float left
       position relative
-      display flex
       .rightHeaderLi
         float left
         overflow hidden
         line-height 40px
         margin-right 20px
-        display flex
         .rightHeaderLiP
           color #eee
           float left
@@ -421,11 +458,9 @@ export default {
           line-height 40px
         .rightHeaderLiDiv
           float left
-          display flex
           width 167px
         .rightHeaderLiDivOne
           float left
-          display flex
           width 260px
   .principalPart
     width 100%

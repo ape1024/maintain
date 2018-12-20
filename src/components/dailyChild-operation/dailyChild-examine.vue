@@ -229,10 +229,8 @@
             </div>
           </div>
           <div class="opinion">
-
           </div>
         </div>
-
       </section>
       <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </section>

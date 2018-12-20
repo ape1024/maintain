@@ -152,7 +152,7 @@
               {{item.taskstatusText}}
             </li>
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
-              <img class="principalHeaderLiImg" :key="urlIndex" v-for="(url, urlIndex) in item.beforephotosArr" :src="url" alt="">
+              <img @click="selectImg(item.beforephotosArr, urlIndex)" class="principalHeaderLiImg" :key="urlIndex" v-for="(url, urlIndex) in item.beforephotosArr" :src="url" alt="">
             </li>
             <li class="principalHeaderLi principalHeaderLiOne lookover" @click="examine(item)">
               查看
@@ -175,6 +175,7 @@
           </el-pagination>
         </div>
       </div>
+      <dialog-img ref="dialogImg" :list="imgList"></dialog-img>
     </div>
   </section>
 </template>
@@ -182,12 +183,14 @@
 <script>
 import childLookover from '../repair-operation/repair-lookover'
 import { projectMixin } from 'common/js/mixin'
+import DialogImg from 'base/dialog-img/dialog-img'
 import { findTaskType, findFaultProblem, findDeviceType, findDeviceArea, generateProblemRecordInfo, maintainRepairfindTaskByTaskid, getRepairUsers, maintainRepairgetRepairStates } from '../../api/user'
 export default {
   name: 'pigeonhole-faultproblem',
   mixins: [projectMixin],
   components: {
-    childLookover
+    childLookover,
+    DialogImg
   },
   data () {
     return {
@@ -237,7 +240,8 @@ export default {
       lookoverBoolean: false,
       examinationTitle: '',
       examineData: '',
-      repairtasksName: ''
+      repairtasksName: '',
+      imgList: []
     }
   },
   watch: {
@@ -273,6 +277,13 @@ export default {
     }
   },
   methods: {
+    selectImg (list, index) {
+      this.imgList = list
+      setTimeout(() => {
+        this.$refs.dialogImg.switchIndex(index)
+        this.$refs.dialogImg.open()
+      }, 200)
+    },
     init () {
       this.Initialization()
     },
@@ -322,26 +333,33 @@ export default {
           if (response.data.code === 0) {
             if (response.data.data.length) {
               response.data.data.forEach((val) => {
-                window.open(val, '_blank')
+                window.location.href = val
               })
             }
           }
         })
       } else {
         this.$message({
-          message: '请选择故障问题',
+          message: '请选择故障设备',
           type: 'warning'
         })
       }
     },
     query () {
-      this.equipmentDate = ''
-      this.locationDate = ''
-      this.taskTypeData = ''
-      this.processingData = ''
-      let token = JSON.parse(window.sessionStorage.token)
-      this.paginationFlag = false
-      this.getData(token, this.maintainProject, this.startTime, this.endTime, '', '', '', '', 0, 15)
+      if (this.startTime && this.endTime) {
+        this.equipmentDate = ''
+        this.locationDate = ''
+        this.taskTypeData = ''
+        this.processingData = ''
+        let token = JSON.parse(window.sessionStorage.token)
+        this.paginationFlag = false
+        this.getData(token, this.maintainProject, this.startTime, this.endTime, '', '', '', '', 0, 15)
+      } else {
+        this.$message({
+          message: '请选择时间',
+          type: 'warning'
+        })
+      }
     },
     Initialization () {
       this.equipmentDate = ''
@@ -443,19 +461,16 @@ export default {
     overflow hidden
     background #111a28
     padding 20px 0
-    display flex
     .rightHeaderUl
       margin-left 30px
       overflow hidden
       float left
       position relative
-      display flex
       .rightHeaderLi
         float left
         overflow hidden
         line-height 40px
         margin-right 20px
-        display flex
         .rightHeaderLiP
           color #eee
           float left

@@ -190,7 +190,7 @@ export default {
             this.DailyCurrentTaskStat()
           } else {
             this.$message({
-              type: 'info',
+              type: 'warning',
               message: '归档失败'
             })
           }
