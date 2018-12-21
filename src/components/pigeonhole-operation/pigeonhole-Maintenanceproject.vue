@@ -3,9 +3,9 @@
     <div class="rightHeader">
       <ul class="rightHeaderUl">
         <li class="rightHeaderLi">
-          <p class="rightHeaderLiP">关键字：</p>
+          <p class="rightHeaderLiP">项目名称：</p>
           <div class="rightHeaderLiDivOne">
-            <el-input size="mini" v-model="Keyword" placeholder="请输入内容"></el-input>
+            <el-input clearable size="mini" v-model="Keyword" placeholder="请输入内容"></el-input>
           </div>
         </li>
       </ul>
@@ -114,7 +114,7 @@ export default {
   },
   data () {
     return {
-      checked: '',
+      checked: false,
       paginationFlag: '',
       currentPage: 1,
       numberPages: 1,
@@ -148,11 +148,16 @@ export default {
           let String = arr.join()
           let token = JSON.parse(window.sessionStorage.token)
           this.axios.post(generateContractInfos(token, String)).then((response) => {
-            console.log(response)
             if (response.data.code === 0) {
               if (response.data.data.length) {
+                let download = (url) => {
+                  let iframe = document.createElement('iframe')
+                  iframe.style.display = 'none'
+                  iframe.src = url
+                  document.body.appendChild(iframe)
+                }
                 response.data.data.forEach((val) => {
-                  window.location.href = val
+                  download(val)
                 })
               }
             }
@@ -188,18 +193,12 @@ export default {
       return y + `-` + m.substring(m.length - 2, m.length) + `-` + d.substring(d.length - 2, d.length)
     },
     query () {
-      if (this.Keyword) {
-        let token = JSON.parse(window.sessionStorage.token)
-        this.getData(token, this.Keyword, 0, 15)
-      } else {
-        this.$message({
-          message: '请填写关键字',
-          type: 'warning'
-        })
-      }
+      let token = JSON.parse(window.sessionStorage.token)
+      this.getData(token, this.Keyword, 0, 15)
     },
     getData (token, Keyword, pageIndex, pageSize) {
       this.axios.post(findAllMaintenanceProject(token, Keyword, pageIndex, pageSize)).then((response) => {
+        this.checked = false
         if (response.data.code === 0) {
           this.numberPages = response.data.data.sum
           response.data.data.data.forEach((val) => {

@@ -11,7 +11,6 @@
         <div class="leftSubject">
           <div class="leftSubjectDiv">
             <el-tree
-              accordion
               default-expand-all
               highlight-current
               :data="data"

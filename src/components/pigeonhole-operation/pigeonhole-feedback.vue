@@ -218,9 +218,11 @@ export default {
     equipmentDate (data) {
       if (data) {
         this.paginationFlag = false
+        let equipmentDate = data !== -999 ? data : ''
         let token = JSON.parse(window.sessionStorage.token)
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(token, this.maintainProject, data, locationDate, this.processingData, this.startTime, this.endTime, 1, 15)
+        let processingData = this.processingData && this.processingData !== -999 ? this.processingData : ''
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, this.startTime, this.endTime, 1, 15)
       }
     },
     locationDate (data) {
@@ -228,17 +230,19 @@ export default {
         this.paginationFlag = false
         let token = JSON.parse(window.sessionStorage.token)
         let locationDate = data[data.length - 1]
-        let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
-        this.getData(token, this.maintainProject, equipmentDate, locationDate, this.processingData, this.startTime, this.endTime, 1, 15)
+        let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
+        let processingData = this.processingData && this.processingData !== -999 ? this.processingData : ''
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, this.startTime, this.endTime, 1, 15)
       }
     },
     processingData (data) {
       if (data) {
+        let processingData = data !== -999 ? this.processingData : ''
         this.paginationFlag = false
         let token = JSON.parse(window.sessionStorage.token)
-        let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+        let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(token, this.maintainProject, equipmentDate, locationDate, data, this.startTime, this.endTime, 1, 15)
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, this.startTime, this.endTime, 1, 15)
       }
     }
   },
@@ -271,8 +275,14 @@ export default {
             } else {
               array = response.data.data.split(',')
             }
+            let download = (url) => {
+              let iframe = document.createElement('iframe')
+              iframe.style.display = 'none'
+              iframe.src = url
+              document.body.appendChild(iframe)
+            }
             array.forEach((val) => {
-              window.location.href = val
+              download(val)
             })
           }
         })
@@ -316,6 +326,11 @@ export default {
       //  设施类别
       this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
+          let obj = {
+            id: -999,
+            name: '全部'
+          }
+          response.data.data.unshift(obj)
           this.equipmentinformation = response.data.data
         }
       })
@@ -340,9 +355,10 @@ export default {
     },
     numberPagesChange (el) {
       let token = JSON.parse(window.sessionStorage.token)
-      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+      let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
       let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-      this.getData(token, this.maintainProject, equipmentDate, locationDate, this.processingData, this.startTime, this.endTime, el, 15)
+      let processingData = this.processingData && this.processingData !== -999 ? this.processingData : ''
+      this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, this.startTime, this.endTime, el, 15)
     },
     viewProcessing (data) {
       let text = ''
@@ -366,6 +382,7 @@ export default {
     getData (token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize) {
       this.axios.post(statFeedBackInfo(token, projectid, devtypeid, areaid, devstate, start, end, pageIndex, pageSize)).then((response) => {
         if (response.data.code === 0) {
+          this.checked = false
           response.data.data.devs.datas.forEach((val) => {
             val.flag = false
             val.photosArr = []
@@ -397,6 +414,11 @@ export default {
     //  处理结果
     this.axios.post(getAllFeedbackstate(token)).then((response) => {
       if (response.data.code === 0) {
+        let obj = {
+          value: -999,
+          name: '全部'
+        }
+        response.data.data.unshift(obj)
         this.processing = response.data.data
       }
     })

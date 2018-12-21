@@ -116,8 +116,8 @@
             <li :title="item.devicecode" class="principalHeaderLi heavyPlayLiDivLiTwo">
               {{item.devicecode}}
             </li>
-            <li :title="item.manafacutename" class="principalHeaderLi heavyPlayLiDivLiTwo">
-              {{item.manafacutename}}
+            <li :title="item.manufacturername" class="principalHeaderLi heavyPlayLiDivLiTwo">
+              {{item.manufacturername}}
             </li>
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
               {{item.devicemodel}}
@@ -212,20 +212,21 @@ export default {
   watch: {
     equipmentDate (data) {
       if (data) {
+        let typeData = data === -999 ? '' : data
         this.paginationFlag = false
         let token = JSON.parse(window.sessionStorage.token)
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(token, this.maintainProject, data, locationDate, this.processingData, 1, 15)
+        let processingData = this.processingData === -999 ? '' : this.processingData
+        this.getData(token, this.maintainProject, typeData, locationDate, processingData, 1, 15)
       }
     },
     processingData (data) {
-      if (data) {
-        this.paginationFlag = false
-        let token = JSON.parse(window.sessionStorage.token)
-        let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
-        let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        this.getData(token, this.maintainProject, equipmentDate, locationDate, data, 1, 15)
-      }
+      let processingData = data === -999 ? '' : data
+      this.paginationFlag = false
+      let token = JSON.parse(window.sessionStorage.token)
+      let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
+      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+      this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, 1, 15)
     }
   },
   methods: {
@@ -249,7 +250,6 @@ export default {
         let areaid = this.locationDate[this.locationDate.length - 1]
         this.axios.post(generateTaskTaizgangInfo(token, this.maintainProject, String, areaid)).then((response) => {
           if (response.data.code === 0) {
-            console.log(response.data.data)
             if (response.data.data) {
               let array = []
               if (response.data.data.indexOf(',') === -1) {
@@ -257,8 +257,14 @@ export default {
               } else {
                 array = response.data.data.split(',')
               }
+              let download = (url) => {
+                let iframe = document.createElement('iframe')
+                iframe.style.display = 'none'
+                iframe.src = url
+                document.body.appendChild(iframe)
+              }
               array.forEach((val) => {
-                window.location.href = val
+                download(val)
               })
             }
           }
@@ -289,8 +295,14 @@ export default {
               } else {
                 array = response.data.data.split(',')
               }
+              let download = (url) => {
+                let iframe = document.createElement('iframe')
+                iframe.style.display = 'none'
+                iframe.src = url
+                document.body.appendChild(iframe)
+              }
               array.forEach((val) => {
-                window.location.href = val
+                download(val)
               })
             }
           }
@@ -346,6 +358,11 @@ export default {
       //  设施类别
       this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
+          let obj = {
+            id: -999,
+            name: '全部'
+          }
+          response.data.data.unshift(obj)
           this.equipmentinformation = response.data.data
         }
       })
@@ -353,8 +370,6 @@ export default {
       this.axios.post(findAreasTreeByProjectid(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.locationformation = response.data.data
-          console.log(response.data.data)
-          console.log(response.data.data)
           if (response.data.data.length) {
             this.locationDate.push(response.data.data[0].areaid)
             this.getData(token, this.maintainProject, this.equipmentDate, response.data.data[0].areaid, this.processingData, 1, 15)
@@ -377,7 +392,8 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
       let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-      this.getData(token, this.maintainProject, equipmentDate, locationDate, this.processingData, el, 15)
+      let processingData = this.processingData === -999 ? '' : this.processingData
+      this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, el, 15)
     },
     viewProcessing (data) {
       let text = ''
@@ -401,6 +417,7 @@ export default {
     getData (token, projectid, devtypeid, areaid, devstate, pageIndex, pageSize) {
       this.axios.post(statTaskDevListInfo(token, projectid, devtypeid, areaid, devstate, pageIndex, pageSize)).then((response) => {
         if (response.data.code === 0) {
+          this.checked = false
           response.data.data.devs.datas.forEach((val) => {
             val.flag = false
             val.photosArr = []
@@ -429,6 +446,11 @@ export default {
     //  处理结果
     this.axios.post(getAllTaskDevstate(token)).then((response) => {
       if (response.data.code === 0) {
+        let obj = {
+          value: -999,
+          name: '全部'
+        }
+        response.data.data.unshift(obj)
         this.processing = response.data.data
       }
     })

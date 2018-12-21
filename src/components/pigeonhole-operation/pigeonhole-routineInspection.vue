@@ -57,7 +57,7 @@
     <div class="principalPart">
       <div class="principalHeader">
         <ul class="principalHeaderUl">
-          <li class="principalHeaderLi principalHeaderLiOne principalPartI">设施类别
+          <li class="principalHeaderLiTTTwo principalHeaderLiOne principalPartI">设施类别
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
               <el-cascader
@@ -70,7 +70,7 @@
               ></el-cascader>
             </div>
           </li>
-          <li class="principalHeaderLi principalHeaderLiOne principalPartI">设施位置
+          <li class="principalHeaderLiTTTwo principalHeaderLiOne principalPartI">设施位置
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
               <el-cascader
@@ -84,13 +84,13 @@
             </div>
           </li>
           <div class="heavyPlayLiDiv">
-            <ul>
-              <li class="principalHeaderLi heavyPlayLiDivLiOne">工作方式</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiThree">工作事项</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiThree">工作记录</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiOne">工作人员</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiTwo">工作时间</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiOne">工作结论
+            <ul class="heavyPlayLiDivUlUl">
+              <li class="principalHeaderLiTTTwo heavyPlayLiDivLiOne">工作方式</li>
+              <li class="principalHeaderLiTTTwo heavyPlayLiDivLiThree">工作事项</li>
+              <li class="principalHeaderLiTTTwo heavyPlayLiDivLiThree">工作记录</li>
+              <li class="principalHeaderLiTTTwo heavyPlayLiDivLiOne">工作人员</li>
+              <li class="principalHeaderLiTTTwo heavyPlayLiDivLiTwo">工作时间</li>
+              <li class="principalHeaderLiTTTwo heavyPlayLiDivLiOne">工作结论
                 <i class="el-icon-caret-bottom"></i>
                 <div class="threelevel_ensconce">
                   <el-select v-model="conclusionData" placeholder="请选择">
@@ -103,8 +103,8 @@
                   </el-select>
                 </div>
               </li>
-              <li class="principalHeaderLi heavyPlayLiDivLiTwo">现场照片</li>
-              <li class="principalHeaderLi heavyPlayLiDivLiOne lookoverHeader">
+              <li class="principalHeaderLiTTTwo heavyPlayLiDivLiTwo">现场照片</li>
+              <li class="principalHeaderLiTTTwo heavyPlayLiDivLiOne lookoverHeader">
                 查看
               </li>
             </ul>
@@ -221,17 +221,20 @@ export default {
   },
   watch: {
     equipmentDate (data) {
+      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
       if (data.length >= 2) {
         this.paginationFlag = false
         let basedevicecode = data[data.length - 1]
-        let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+        this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, basedevicecode, locationDate, this.conclusionData)
+      } else if (data[data.length - 1] === -999) {
+        let basedevicecode = ''
         this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, basedevicecode, locationDate, this.conclusionData)
       }
     },
     locationDate (data) {
       if (data.length) {
         this.paginationFlag = false
-        let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        let equipmentDate = this.equipmentDate.length && this.equipmentDate[this.equipmentDate.length - 1] !== -999 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let areaid = data[data.length - 1]
         this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, equipmentDate, areaid, this.conclusionData)
       }
@@ -239,7 +242,7 @@ export default {
     conclusionData (data) {
       if (data) {
         this.paginationFlag = false
-        let equipmentDate = this.equipmentDate.length ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        let equipmentDate = this.equipmentDate.length && this.equipmentDate[this.equipmentDate.length - 1] !== -999 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
         let conclusion = Number(data) === -999 ? '' : data
         this.getData(this.regionDate, 0, 15, this.startTime, this.endTime, equipmentDate, locationDate, conclusion)
@@ -272,12 +275,18 @@ export default {
       let planid = this.regionDate
       let begindate = this.startTime
       let endTime = this.endTime
-      let devicecode = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+      let devicecode = this.equipmentDate.length && this.equipmentDate[this.equipmentDate.length - 1] !== -999 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
       let areaid = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-      let conclusion = this.conclusionData ? this.conclusionData : ''
+      let conclusion = this.conclusionData && this.conclusionData !== -999 ? this.conclusionData : ''
       this.axios.post(exportTaskReport(token, type, planid, begindate, endTime, devicecode, areaid, conclusion)).then((response) => {
         if (response.data.code === 0) {
-          window.location.href = response.data.data
+          let download = (url) => {
+            let iframe = document.createElement('iframe')
+            iframe.style.display = 'none'
+            iframe.src = url
+            document.body.appendChild(iframe)
+          }
+          download(response.data.data)
         }
       })
     },
@@ -336,6 +345,11 @@ export default {
       })
       this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
+          let obj = {
+            code: -999,
+            name: '全部'
+          }
+          response.data.data.unshift(obj)
           this.equipmentinformation = response.data.data
         }
       })
@@ -369,7 +383,10 @@ export default {
     },
     numberPagesChange (el) {
       let index = el - 1
-      this.getData(this.regionDate, index, 15, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.conclusionData)
+      let devicecode = this.equipmentDate.length && this.equipmentDate[this.equipmentDate.length - 1] !== -999 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+      let conclusionData = this.conclusionData && this.conclusionData !== -999 ? this.conclusionData : ''
+      this.getData(this.regionDate, index, 15, this.startTime, this.endTime, devicecode, locationDate, conclusionData)
     },
     fmtDate (obj) {
       let date = new Date(obj)
@@ -488,8 +505,8 @@ export default {
       position relative
       color #d5d5d5
       font-size 16px
-      height 32px
-      padding 2px 0 6px
+      height 30px
+      padding 4px 0 6px
       background #354d76
       .principalHeaderUl
         overflow hidden
@@ -517,7 +534,6 @@ export default {
       box-sizing border-box
       line-height 40px
       height 40px
-      float left
       width 100%
   .principalPartI
     cursor pointer
@@ -658,4 +674,17 @@ export default {
     background #3acf76
     &:hover
       background #42e583
+  .heavyPlayLiDivUlUl
+    overflow hidden
+    position relative
+  .principalHeaderLiTTTwo
+    verflow hidden
+    position relative
+    text-align center
+    white-space nowrap
+    line-height 32px
+    color: #fff
+    float: left
+    -webkit-box-sizing: border-box
+    box-sizing: border-box
 </style>

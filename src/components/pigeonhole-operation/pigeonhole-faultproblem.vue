@@ -76,9 +76,9 @@
               <el-select size="mini" v-model="taskTypeData" placeholder="请选择">
                 <el-option
                   v-for="item in taskType"
-                  :key="item.workmodeid"
+                  :key="item.worktypeid"
                   :label="item.workmodename"
-                  :value="item.workmodeid">
+                  :value="item.worktypeid">
                 </el-option>
               </el-select>
             </div>
@@ -148,7 +148,7 @@
             <li :title="item.repairtime ? fmtDate(item.repairtime) : ''" class="principalHeaderLi heavyPlayLiDivLiTwo">
               {{item.repairtime ? fmtDate(item.repairtime) : ''}}
             </li>
-            <li class="principalHeaderLi heavyPlayLiDivLiTwo">
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo" :class="[item.taskstatus === 5 ? 'conclusionClassOne' : 'conclusionClassThree']">
               {{item.taskstatusText}}
             </li>
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
@@ -246,33 +246,37 @@ export default {
   },
   watch: {
     taskTypeData (data) {
+      let taskTypeData = data !== -999 ? data : ''
       let token = JSON.parse(window.sessionStorage.token)
       let locationDate = this.locationDate ? this.locationDate : ''
-      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
-      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, data, this.processingData, 0, 15)
+      let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, this.processingData, 0, 15)
     },
     equipmentDate (data) {
       this.paginationFlag = false
       let token = JSON.parse(window.sessionStorage.token)
-      let equipmentDate = data
+      let equipmentDate = data !== -999 ? data : ''
       let locationDate = this.locationDate ? this.locationDate : ''
-      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, 0, 15)
+      let taskTypeData = this.taskTypeData !== -999 ? this.taskTypeData : ''
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, this.processingData, 0, 15)
     },
     locationDate (data) {
       this.paginationFlag = false
       let token = JSON.parse(window.sessionStorage.token)
       let locationDate = data
-      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
-      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, 0, 15)
+      let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
+      let taskTypeData = this.taskTypeData !== -999 ? this.taskTypeData : ''
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, this.processingData, 0, 15)
     },
     processingData (data) {
       if (data) {
         this.paginationFlag = false
         let processingData = data === -999 ? '' : data
         let token = JSON.parse(window.sessionStorage.token)
-        let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+        let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
         let locationDate = this.locationDate ? this.locationDate : ''
-        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, processingData, 0, 15)
+        let taskTypeData = this.taskTypeData !== -999 ? this.taskTypeData : ''
+        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, processingData, 0, 15)
       }
     }
   },
@@ -332,8 +336,14 @@ export default {
         this.axios.post(generateProblemRecordInfo(token, String)).then((response) => {
           if (response.data.code === 0) {
             if (response.data.data.length) {
+              let download = (url) => {
+                let iframe = document.createElement('iframe')
+                iframe.style.display = 'none'
+                iframe.src = url
+                document.body.appendChild(iframe)
+              }
               response.data.data.forEach((val) => {
-                window.location.href = val
+                download(val)
               })
             }
           }
@@ -370,6 +380,11 @@ export default {
       let token = JSON.parse(window.sessionStorage.token)
       this.axios.post(findDeviceType(token, this.maintainProject, this.startTime, this.endTime)).then((response) => {
         if (response.data.code === 0) {
+          let obj = {
+            deviceTypeId: -999,
+            deviceTypeName: '全部'
+          }
+          response.data.data.unshift(obj)
           this.equipmentinformation = response.data.data
         }
       })
@@ -394,9 +409,11 @@ export default {
     },
     numberPagesChange (el) {
       let token = JSON.parse(window.sessionStorage.token)
-      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+      let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
       let locationDate = this.locationDate ? this.locationDate : ''
-      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, this.taskTypeData, this.processingData, el, 15)
+      let processingData = this.processingData !== -999 ? this.processingData : ''
+      let taskTypeData = this.taskTypeData !== -999 ? this.taskTypeData : ''
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, processingData, el, 15)
     },
     fmtDate (obj) {
       let date = new Date(obj)
@@ -411,6 +428,7 @@ export default {
     getData (token, maintainProject, startTime, endTime, equipmentDate, locationDate, taskTypeData, processingData, pageIndex, pageSize) {
       this.axios.post(findFaultProblem(token, maintainProject, startTime, endTime, equipmentDate, locationDate, taskTypeData, processingData, pageIndex, pageSize)).then((response) => {
         if (response.data.code === 0) {
+          this.checked = false
           this.picPath = response.data.data.picPath
           response.data.data.data.forEach((val) => {
             val.flag = false
@@ -448,6 +466,11 @@ export default {
     //  任务类型
     this.axios.post(findTaskType(token)).then((response) => {
       if (response.data.code === 0) {
+        let obj = {
+          worktypeid: -999,
+          workmodename: '全部'
+        }
+        response.data.data.unshift(obj)
         this.taskType = response.data.data
       }
     })
@@ -652,6 +675,10 @@ export default {
     background $color-barckground-transparent
     z-index 11
     overflow hidden
+  .conclusionClassOne
+    color #3acf76!important
+  .conclusionClassThree
+    color #cfb53a!important
 </style>
 <style>
   .principalHeaderLi .el-checkbox__label {
