@@ -797,7 +797,7 @@ export default {
       let organizationtype = this.regimentaValue
       if (organizationtype === '') {
         this.$message({
-          message: '组织类型不能为空',
+          message: '红色星号标记不能为空！',
           type: 'warning'
         })
         return
@@ -900,7 +900,7 @@ export default {
       const organization = this.organizationId
       if (organization === '') {
         this.$message({
-          message: '请选择结构组织',
+          message: '红色星号标记不能为空！',
           type: 'warning'
         })
         return false
@@ -912,7 +912,7 @@ export default {
         organizationtype = this.regimentaValue
         if (organizationtype === '') {
           this.$message({
-            message: '请选择组织机构',
+            message: '红色星号标记不能为空！',
             type: 'warning'
           })
           return false
@@ -930,7 +930,7 @@ export default {
       const organizationcode = this.encrypt
       if (!organizationcode) {
         this.$message({
-          message: '请填写单位编码',
+          message: '红色星号标记不能为空！',
           type: 'warning'
         })
         return false
@@ -939,7 +939,7 @@ export default {
       const organizationname = this.organizationname
       if (!organizationname) {
         this.$message({
-          message: '请填写单位名称',
+          message: '红色星号标记不能为空！',
           type: 'warning'
         })
         return false

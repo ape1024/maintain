@@ -223,13 +223,11 @@ export default {
     overflow hidden
     background #111a28
     padding 20px 0
-    display flex
     .rightHeaderUl
       margin-left 30px
       overflow hidden
       float left
       position relative
-      display flex
       .rightHeaderLi
         float left
         overflow hidden

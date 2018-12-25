@@ -930,7 +930,7 @@ export const statFeedBackInfo = (token, projectid, devtypeid, areaid, devstate, 
 }
 
 export const statTaskDevListInfo = (token, projectid, devtypeid, areaid, devstate, pageIndex, pageSize) => {
-  return `${Test}/feedback/statTaskDevListInfo?token=${token}&projectid=${projectid}&devtypeid=${devtypeid}&areaid=${areaid}&devstate=${devstate}&pageIndex=${pageIndex}&pageSize=${pageSize}`
+  return `${Test}/feedback/statTaskDevListInfo?token=${token}&projectid=${projectid}&basedevid=${devtypeid}&areaid=${areaid}&devstate=${devstate}&pageIndex=${pageIndex}&pageSize=${pageSize}`
 }
 //
 export const getAllTaskDevstate = (token) => {

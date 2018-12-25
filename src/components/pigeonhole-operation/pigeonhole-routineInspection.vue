@@ -70,7 +70,7 @@
               ></el-cascader>
             </div>
           </li>
-          <li class="principalHeaderLiTTTwo principalHeaderLiOne principalPartI">设施位置
+          <li class="principalHeaderLiTTTwo principalHeaderLiOne principalPartI">设置位置
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
               <el-cascader

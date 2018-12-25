@@ -199,12 +199,12 @@
         <p class="uploadP">附属文件：</p>
         <div class="uploadDiv">
           <div class="uploaddivIdiv">
-            <p class="uploaddivIdivP" @click="fullopen($index)" :key="$index" v-for="(item, $index) in exaDate.filenames">
-              {{item}}
-            </p>
-            <span >
-
-            </span>
+            <!--<a href="">-->
+              <p class="uploaddivIdivP" :key="$index" v-for="(item, $index) in filenamesImg">
+                <a target="_blank" :href="item.url" :download="item.url">{{item.name}}</a>
+                <!--{{item}}-->
+              </p>
+            <!--</a>-->
           </div>
         </div>
       </div>
@@ -249,7 +249,8 @@ export default {
         label: 'organizationName',
         value: 'organizationId'
       },
-      organize: []
+      organize: [],
+      filenamesImg: []
     }
   },
   watch: {
@@ -275,6 +276,14 @@ export default {
   },
   methods: {
     fullopen ($index) {
+      let download = (url) => {
+        let iframe = document.createElement('iframe')
+        iframe.style.display = 'none'
+        iframe.src = url
+        document.body.appendChild(iframe)
+      }
+      download((this.exaDate.fullnames)[$index])
+      // window.location.href = (this.exaDate.fullnames)[$index]
       // window.open((this.exaDate.fullnames)[$index])
     },
     closedown () {
@@ -299,6 +308,15 @@ export default {
     this.requirement = this.exaDate.projectsinfosviewdetail.requirement
     this.comment = this.exaDate.projectsinfosviewdetail.comment
     this.areas = this.exaDate.projectsinfosviewdetail.areas
+    this.exaDate.filenames.forEach((val) => {
+      let obj = {
+        name: val
+      }
+      this.filenamesImg.push(obj)
+    })
+    this.exaDate.fullnames.forEach((val, index) => {
+      this.filenamesImg[index].url = val
+    })
     if (this.exaDate.organization.length) {
       this.exaDate.organization.forEach((val) => {
         this.organizeText += `${val.organizationname}`

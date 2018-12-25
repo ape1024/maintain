@@ -447,7 +447,6 @@ export default {
       }
     },
     handleNodeClick (node) {
-      console.log(node)
       switch (node.Identification) {
         case 1:
           this.maks = true

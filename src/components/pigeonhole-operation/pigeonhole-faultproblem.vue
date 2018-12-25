@@ -46,27 +46,27 @@
           <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施类别
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
-              <el-select size="mini" v-model="equipmentDate" placeholder="请选择">
-                <el-option
-                  v-for="item in equipmentinformation"
-                  :key="item.deviceTypeId"
-                  :label="item.deviceTypeName"
-                  :value="item.deviceTypeId">
-                </el-option>
-              </el-select>
+              <el-cascader
+                size="mini"
+                clearable
+                v-model="equipmentDate"
+                :options="equipmentinformation"
+                :props="equipmentProps"
+                change-on-select
+              ></el-cascader>
             </div>
           </li>
-          <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施位置
+          <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设置位置
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
-              <el-select size="mini" v-model="locationDate" placeholder="请选择">
-                <el-option
-                  v-for="item in locationformation"
-                  :key="item.deviceAreaId"
-                  :label="item.deviceAreaName"
-                  :value="item.deviceAreaId">
-                </el-option>
-              </el-select>
+              <el-cascader
+                size="mini"
+                clearable
+                v-model="locationDate"
+                :options="locationformation"
+                :props="locationProps"
+                change-on-select
+              ></el-cascader>
             </div>
           </li>
           <li class="principalHeaderLi heavyPlayLiDivLiTwo">
@@ -148,7 +148,7 @@
             <li :title="item.repairtime ? fmtDate(item.repairtime) : ''" class="principalHeaderLi heavyPlayLiDivLiTwo">
               {{item.repairtime ? fmtDate(item.repairtime) : ''}}
             </li>
-            <li class="principalHeaderLi heavyPlayLiDivLiTwo" :class="[item.taskstatus === 5 ? 'conclusionClassOne' : 'conclusionClassThree']">
+            <li class="principalHeaderLi heavyPlayLiDivLiTwo" :class="[item.repairstate === 5 || item.repairstate === 10 ? 'conclusionClassOne' : 'conclusionClassThree']">
               {{item.taskstatusText}}
             </li>
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
@@ -184,7 +184,7 @@
 import childLookover from '../repair-operation/repair-lookover'
 import { projectMixin } from 'common/js/mixin'
 import DialogImg from 'base/dialog-img/dialog-img'
-import { findTaskType, findFaultProblem, findDeviceType, findDeviceArea, generateProblemRecordInfo, maintainRepairfindTaskByTaskid, getRepairUsers, maintainRepairgetRepairStates } from '../../api/user'
+import { findTaskType, findFaultProblem, findAllDeviceType, getTreeByProjectId, generateProblemRecordInfo, maintainRepairfindTaskByTaskid, getRepairUsers, maintainRepairgetRepairStates } from '../../api/user'
 export default {
   name: 'pigeonhole-faultproblem',
   mixins: [projectMixin],
@@ -201,14 +201,14 @@ export default {
       regionModel: [],
       principalmainbody: [],
       urlPhotos: '',
-      equipmentDate: '',
+      equipmentDate: [],
       equipmentinformation: [],
       equipmentProps: {
         children: 'children',
         label: 'name',
         value: 'code'
       },
-      locationDate: '',
+      locationDate: [],
       locationformation: [],
       locationProps: {
         children: 'areas',
@@ -235,7 +235,13 @@ export default {
         name: '已处理'
       }, {
         id: -5,
-        name: '未处理'
+        name: '未解决'
+      }, {
+        id: 0,
+        name: '未开始'
+      }, {
+        id: 10,
+        name: '已检验'
       }],
       lookoverBoolean: false,
       examinationTitle: '',
@@ -246,35 +252,45 @@ export default {
   },
   watch: {
     taskTypeData (data) {
-      let taskTypeData = data !== -999 ? data : ''
-      let token = JSON.parse(window.sessionStorage.token)
-      let locationDate = this.locationDate ? this.locationDate : ''
-      let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
-      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, this.processingData, 0, 15)
+      if (data) {
+        let taskTypeData = data !== -999 ? data : ''
+        let token = JSON.parse(window.sessionStorage.token)
+        let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+        let equipmentDate = this.equipmentDate >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, this.processingData, 0, 15)
+      }
     },
     equipmentDate (data) {
-      this.paginationFlag = false
       let token = JSON.parse(window.sessionStorage.token)
-      let equipmentDate = data !== -999 ? data : ''
-      let locationDate = this.locationDate ? this.locationDate : ''
+      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
       let taskTypeData = this.taskTypeData !== -999 ? this.taskTypeData : ''
-      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, this.processingData, 0, 15)
+      if (data.length >= 2) {
+        this.paginationFlag = false
+        let equipmentDate = data[data.length - 1]
+        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, this.processingData, 0, 15)
+      } else if (data[data.length - 1] === -999) {
+        this.paginationFlag = false
+        let equipmentDate = ''
+        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, this.processingData, 0, 15)
+      }
     },
     locationDate (data) {
-      this.paginationFlag = false
-      let token = JSON.parse(window.sessionStorage.token)
-      let locationDate = data
-      let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
-      let taskTypeData = this.taskTypeData !== -999 ? this.taskTypeData : ''
-      this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, this.processingData, 0, 15)
+      if (data.length) {
+        this.paginationFlag = false
+        let token = JSON.parse(window.sessionStorage.token)
+        let locationDate = data[data.length - 1]
+        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        let taskTypeData = this.taskTypeData !== -999 ? this.taskTypeData : ''
+        this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, this.processingData, 0, 15)
+      }
     },
     processingData (data) {
       if (data) {
         this.paginationFlag = false
         let processingData = data === -999 ? '' : data
         let token = JSON.parse(window.sessionStorage.token)
-        let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
-        let locationDate = this.locationDate ? this.locationDate : ''
+        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+        let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
         let taskTypeData = this.taskTypeData !== -999 ? this.taskTypeData : ''
         this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, processingData, 0, 15)
       }
@@ -357,8 +373,8 @@ export default {
     },
     query () {
       if (this.startTime && this.endTime) {
-        this.equipmentDate = ''
-        this.locationDate = ''
+        this.equipmentDate = []
+        this.locationDate = []
         this.taskTypeData = ''
         this.processingData = ''
         let token = JSON.parse(window.sessionStorage.token)
@@ -372,29 +388,29 @@ export default {
       }
     },
     Initialization () {
-      this.equipmentDate = ''
-      this.locationDate = ''
+      this.equipmentDate = []
+      this.locationDate = []
       this.taskTypeData = ''
       this.processingData = ''
       //  设施类别
       let token = JSON.parse(window.sessionStorage.token)
-      this.axios.post(findDeviceType(token, this.maintainProject, this.startTime, this.endTime)).then((response) => {
+      this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           let obj = {
-            deviceTypeId: -999,
-            deviceTypeName: '全部'
+            code: -999,
+            name: '全部'
           }
           response.data.data.unshift(obj)
           this.equipmentinformation = response.data.data
         }
       })
       //  设施位置
-      this.axios.post(findDeviceArea(token, this.maintainProject, this.startTime, this.endTime)).then((response) => {
+      this.axios.post(getTreeByProjectId(this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           this.locationformation = response.data.data
         }
       })
-      this.getData(token, this.maintainProject, this.startTime, this.endTime, this.equipmentDate, this.locationDate, this.taskTypeData, this.processingData, 0, 15)
+      this.getData(token, this.maintainProject, this.startTime, this.endTime, '', '', '', '', 0, 15)
     },
     checkedChang (data) {
       if (data) {
@@ -409,8 +425,8 @@ export default {
     },
     numberPagesChange (el) {
       let token = JSON.parse(window.sessionStorage.token)
-      let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
-      let locationDate = this.locationDate ? this.locationDate : ''
+      let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
+      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
       let processingData = this.processingData !== -999 ? this.processingData : ''
       let taskTypeData = this.taskTypeData !== -999 ? this.taskTypeData : ''
       this.getData(token, this.maintainProject, this.startTime, this.endTime, equipmentDate, locationDate, taskTypeData, processingData, el, 15)
@@ -443,10 +459,14 @@ export default {
                 val.beforephotosArr.push(`${this.picPath}${val.beforephotos}`)
               }
             }
-            if (val.taskstatus === -5) {
-              val.taskstatusText = '未处理'
-            } else {
+            if (val.repairstate === -5) {
+              val.taskstatusText = '未解决'
+            } else if (val.repairstate === 5) {
               val.taskstatusText = '已处理'
+            } else if (val.repairstate === 0) {
+              val.taskstatusText = '未开始'
+            } else if (val.repairstate === 10) {
+              val.taskstatusText = '已检验'
             }
           })
           this.paginationFlag = true

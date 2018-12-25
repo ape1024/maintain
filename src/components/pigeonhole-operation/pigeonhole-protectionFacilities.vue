@@ -41,14 +41,14 @@
           <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施类别
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
-              <el-select v-model="equipmentDate" placeholder="请选择">
-                <el-option
-                  v-for="item in equipmentinformation"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
+              <el-cascader
+                size="mini"
+                clearable
+                v-model="equipmentDate"
+                :options="equipmentinformation"
+                :props="equipmentProps"
+                change-on-select
+              ></el-cascader>
             </div>
           </li>
           <!--<li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">管理编码-->
@@ -101,8 +101,8 @@
             <li class="principalHeaderLi principalHeaderLiOne">
               <el-checkbox v-model="item.flag"></el-checkbox>
             </li>
-            <li :title="item.devicetypename" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
-              {{item.devicetypename}}
+            <li :title="item.basedevname" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
+              {{item.basedevname}}
             </li>
             <!--<li :title="item.devivccode" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">-->
               <!--{{item.devivccode}}-->
@@ -178,12 +178,12 @@ export default {
       regionModel: [],
       principalmainbody: [],
       urlPhotos: '',
-      equipmentDate: '',
+      equipmentDate: [],
       equipmentinformation: [],
       equipmentProps: {
         children: 'children',
         label: 'name',
-        value: 'code'
+        value: 'id'
       },
       locationDate: [],
       locationformation: [],
@@ -211,20 +211,24 @@ export default {
   },
   watch: {
     equipmentDate (data) {
-      if (data) {
-        let typeData = data === -999 ? '' : data
+      let token = JSON.parse(window.sessionStorage.token)
+      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+      let processingData = this.processingData === -999 ? '' : this.processingData
+      if (data.length >= 2) {
+        let equipmentDate = data[data.length - 1]
         this.paginationFlag = false
-        let token = JSON.parse(window.sessionStorage.token)
-        let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        let processingData = this.processingData === -999 ? '' : this.processingData
-        this.getData(token, this.maintainProject, typeData, locationDate, processingData, 1, 15)
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, 1, 15)
+      } else if (data[data.length - 1] === -999) {
+        this.paginationFlag = false
+        let equipmentDate = ''
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, 1, 15)
       }
     },
     processingData (data) {
       let processingData = data === -999 ? '' : data
       this.paginationFlag = false
       let token = JSON.parse(window.sessionStorage.token)
-      let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
+      let equipmentDate = this.equipmentDate >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
       let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
       this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, 1, 15)
     }
@@ -337,7 +341,7 @@ export default {
     query () {
       if (this.locationDate.length) {
         let token = JSON.parse(window.sessionStorage.token)
-        this.equipmentDate = ''
+        this.equipmentDate = []
         this.processingData = ''
         this.paginationFlag = false
         let areaid = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
@@ -352,7 +356,7 @@ export default {
     Initialization () {
       this.paginationFlag = false
       let token = JSON.parse(window.sessionStorage.token)
-      this.equipmentDate = ''
+      this.equipmentDate = []
       this.locationDate = []
       this.processingData = ''
       //  设施类别
@@ -390,7 +394,7 @@ export default {
     },
     numberPagesChange (el) {
       let token = JSON.parse(window.sessionStorage.token)
-      let equipmentDate = this.equipmentDate ? this.equipmentDate : ''
+      let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
       let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
       let processingData = this.processingData === -999 ? '' : this.processingData
       this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, el, 15)
@@ -464,19 +468,16 @@ export default {
     overflow hidden
     background #111a28
     padding 20px 0
-    display flex
     .rightHeaderUl
       margin-left 30px
       overflow hidden
       float left
       position relative
-      display flex
       .rightHeaderLi
         float left
         overflow hidden
         line-height 40px
         margin-right 20px
-        display flex
         .rightHeaderLiP
           color #eee
           float left

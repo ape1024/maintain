@@ -46,17 +46,17 @@
           <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施类别
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
-              <el-select size="mini" v-model="equipmentDate" placeholder="请选择">
-                <el-option
-                  v-for="item in equipmentinformation"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
+              <el-cascader
+                size="mini"
+                clearable
+                v-model="equipmentDate"
+                :options="equipmentinformation"
+                :props="equipmentProps"
+                change-on-select
+              ></el-cascader>
             </div>
           </li>
-          <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设施位置
+          <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">设置位置
             <i class="el-icon-caret-bottom"></i>
             <div class="threelevel_ensconce">
               <el-cascader
@@ -184,7 +184,7 @@ export default {
       regionModel: [],
       principalmainbody: [],
       urlPhotos: '',
-      equipmentDate: '',
+      equipmentDate: [],
       equipmentinformation: [],
       equipmentProps: {
         children: 'children',
@@ -216,12 +216,16 @@ export default {
   },
   watch: {
     equipmentDate (data) {
-      if (data) {
+      let token = JSON.parse(window.sessionStorage.token)
+      let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
+      let processingData = this.processingData && this.processingData !== -999 ? this.processingData : ''
+      if (data.length >= 2) {
         this.paginationFlag = false
-        let equipmentDate = data !== -999 ? data : ''
-        let token = JSON.parse(window.sessionStorage.token)
-        let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
-        let processingData = this.processingData && this.processingData !== -999 ? this.processingData : ''
+        let equipmentDate = data[data.length - 1]
+        this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, this.startTime, this.endTime, 1, 15)
+      } else if (data[data.length - 1] === -999) {
+        this.paginationFlag = false
+        let equipmentDate = ''
         this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, this.startTime, this.endTime, 1, 15)
       }
     },
@@ -230,7 +234,7 @@ export default {
         this.paginationFlag = false
         let token = JSON.parse(window.sessionStorage.token)
         let locationDate = data[data.length - 1]
-        let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
+        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let processingData = this.processingData && this.processingData !== -999 ? this.processingData : ''
         this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, this.startTime, this.endTime, 1, 15)
       }
@@ -240,7 +244,7 @@ export default {
         let processingData = data !== -999 ? this.processingData : ''
         this.paginationFlag = false
         let token = JSON.parse(window.sessionStorage.token)
-        let equipmentDate = this.equipmentDate && this.equipmentDate !== -999 ? this.equipmentDate : ''
+        let equipmentDate = this.equipmentDate.length >= 2 ? this.equipmentDate[this.equipmentDate.length - 1] : ''
         let locationDate = this.locationDate.length ? this.locationDate[this.locationDate.length - 1] : ''
         this.getData(token, this.maintainProject, equipmentDate, locationDate, processingData, this.startTime, this.endTime, 1, 15)
       }
@@ -307,7 +311,7 @@ export default {
     query () {
       if (this.startTime && this.endTime) {
         let token = JSON.parse(window.sessionStorage.token)
-        this.equipmentDate = ''
+        this.equipmentDate = []
         this.locationDate = []
         this.processingData = ''
         this.getData(token, this.maintainProject, '', '', '', this.startTime, this.endTime, 1, 15)
@@ -320,14 +324,14 @@ export default {
     },
     Initialization () {
       let token = JSON.parse(window.sessionStorage.token)
-      this.equipmentDate = ''
+      this.equipmentDate = []
       this.locationDate = []
       this.processingData = ''
       //  设施类别
       this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           let obj = {
-            id: -999,
+            code: -999,
             name: '全部'
           }
           response.data.data.unshift(obj)
