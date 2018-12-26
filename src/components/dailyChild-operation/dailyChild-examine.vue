@@ -313,7 +313,9 @@ export default {
     checkedChang () {
       if (this.checked === true) {
         this.equipment.forEach((val) => {
-          val.fuleco = true
+          if (!val.disabled) {
+            val.fuleco = true
+          }
         })
       } else {
         this.equipment.forEach((val) => {

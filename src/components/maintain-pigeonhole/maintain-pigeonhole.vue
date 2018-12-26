@@ -14,6 +14,8 @@
               default-expand-all
               highlight-current
               :data="data"
+              node-key="id"
+              :setCurrentKey="[4]"
               :props="defaultProps"
               @node-click="handleNodeClick"></el-tree>
           </div>
@@ -78,10 +80,12 @@ export default {
         label: '单位基本情况',
         children: [{
           label: '维保项目',
+          id: 4,
           category: 4
         }, {
           label: '消防设施',
-          category: 1
+          category: 1,
+          id: 1
         }]
       }, {
         id: 2,
@@ -100,10 +104,12 @@ export default {
           id: 11
         }, {
           label: '故障问题',
-          category: 5
+          category: 5,
+          id: 5
         }, {
           label: '现场反馈',
-          category: 3
+          category: 3,
+          id: 3
         }]
       }],
       defaultProps: {
@@ -118,7 +124,7 @@ export default {
       //  日常巡检
       routineInspectionFalse: false,
       //  维保项目
-      MaintenanceprojectFalse: false,
+      MaintenanceprojectFalse: true,
       //  故障问题
       faultproblemFalse: false,
       //  现场反馈
