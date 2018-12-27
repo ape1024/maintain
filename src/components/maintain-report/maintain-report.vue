@@ -437,7 +437,7 @@ export default {
     })
     //  获取处理状态
     this.axios.post(maintainReportgetFeedbackstateStates()).then((response) => {
-      this.disposeData = response.data.slice(1)
+      this.disposeData = response.data
     })
     //  获取确认状态
     this.axios.post(maintainReportgetConfrimStates()).then((response) => {

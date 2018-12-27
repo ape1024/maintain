@@ -11,11 +11,11 @@
         <div class="leftSubject">
           <div class="leftSubjectDiv">
             <el-tree
+              ref="treeDom"
               default-expand-all
               highlight-current
               :data="data"
               node-key="id"
-              :setCurrentKey="[4]"
               :props="defaultProps"
               @node-click="handleNodeClick"></el-tree>
           </div>
@@ -160,6 +160,9 @@ export default {
         this.faultproblemFalse = true
       }
     }
+  },
+  mounted () {
+    this.$refs.treeDom.setCurrentKey(4)
   }
 }
 </script>

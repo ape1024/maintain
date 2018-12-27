@@ -668,14 +668,14 @@ export default {
       const organizationcode = this.encrypt
       if (!organizationcode && organizationType === 3) {
         this.$message({
-          message: '请填写单位编码',
+          message: '红色星号标记不能为空!',
           type: 'warning'
         })
         return false
       }
       if (!this.roleManagementData.length) {
         this.$message({
-          message: '请选择角色管理',
+          message: '红色星号标记不能为空!',
           type: 'warning'
         })
         return false
@@ -787,6 +787,13 @@ export default {
       if (!organizationcode && organizationType === 3) {
         this.$message({
           message: '红色星号标记不能为空！',
+          type: 'warning'
+        })
+        return false
+      }
+      if (!this.roleManagementData.length) {
+        this.$message({
+          message: '红色星号标记不能为空!',
           type: 'warning'
         })
         return false

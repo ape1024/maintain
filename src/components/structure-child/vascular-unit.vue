@@ -177,7 +177,7 @@
         </li>
         <li class="informationLitwo">
           <div class="informationDiv">
-            <p class="informationP">角色管理：</p>
+            <p class="informationP"><span class="structureSpan">*</span>角色管理：</p>
             <div class="content">
               <el-select
                 v-model="roleManagementData"
@@ -747,6 +747,14 @@ export default {
       if (!organizationcode && organizationType === 3) {
         this.$message({
           message: '红色星号标记不能为空！',
+          type: 'warning'
+        })
+        return false
+      }
+      //  判断角色管理是否存在
+      if (!this.roleManagementData.length) {
+        this.$message({
+          message: '红色星号标记不能为空!',
           type: 'warning'
         })
         return false

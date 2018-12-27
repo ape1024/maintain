@@ -9,10 +9,12 @@ export const interceptors = function () {
     if (token) {
       if (config.url.indexOf('token') === -1) {
         if (config.url.indexOf('?') === -1) {
-          config.url = `${config.url}?token=${token}`
+          config.url = `${config.url}?token=${token}&ran=${Math.random()}`
         } else {
-          config.url = `${config.url}&token=${token}`
+          config.url = `${config.url}&token=${token}&ran=${Math.random()}`
         }
+      } else {
+        config.url = `${config.url}&ran=${Math.random()}`
       }
     }
     config.url = encodeURI(config.url)
