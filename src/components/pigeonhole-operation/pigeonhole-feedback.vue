@@ -110,8 +110,8 @@
             <li class="principalHeaderLi principalHeaderLiOne">
               <el-checkbox v-model="item.flag"></el-checkbox>
             </li>
-            <li :title="item.devicename" class="principalHeaderLi heavyPlayLiDivLiOne">
-              {{item.devicename}}
+            <li :title="item.basedevname" class="principalHeaderLi heavyPlayLiDivLiOne">
+              {{item.basedevname}}
             </li>
             <li :title="item.fullareanasme" class="principalHeaderLi heavyPlayLiDivLiOne">
               {{item.fullareanasme}}
