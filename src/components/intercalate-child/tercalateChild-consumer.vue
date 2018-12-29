@@ -449,14 +449,15 @@ export default {
     this.axios.post(managementCreatedOrganizationtree(token)).then((response) => {
       if (response.data.code === 0) {
         this.creatData = this.resetData(response.data.data, 'subOrgnizations', 1)
+        this.axios.post(managementCreatedtree(token)).then((response) => {
+          if (response.data.code === 0) {
+            this.data = this.resetData(response.data.data, 'subOrgnizations', 0)
+            this.data = this.data.concat(this.creatData)
+          }
+        })
       }
     })
-    this.axios.post(managementCreatedtree(token)).then((response) => {
-      if (response.data.code === 0) {
-        this.data = this.resetData(response.data.data, 'subOrgnizations', 0)
-        this.data = this.data.concat(this.creatData)
-      }
-    })
+
     this.authority()
     this.axios.post(karaktersFindAllRoles(token)).then((response) => {
       if (response.data.code === 0) {
