@@ -24,7 +24,7 @@
         <div class="schedule" @click="schedule">
           明细表
         </div>
-        <div class="maintenance">
+        <div class="maintenance" @click="maintenance">
           运维记录
         </div>
         <div class="Information" @click="information">
@@ -234,6 +234,12 @@ export default {
     }
   },
   methods: {
+    maintenance () {
+      this.$message({
+        type: 'warning',
+        message: '暂未开放'
+      })
+    },
     selectImg (list, index) {
       this.imgList = list
       setTimeout(() => {
@@ -595,6 +601,7 @@ export default {
     float left
     box-sizing border-box
   .principalHeaderLiImg
+    cursor pointer
     margin 5px 6px 0 0
     display inline-block
     height 30px

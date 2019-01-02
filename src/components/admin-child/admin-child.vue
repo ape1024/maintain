@@ -583,6 +583,7 @@ export default {
   .header_p_nine
     color #333333
   .header_p_ten
+    cursor pointer
     color $color-background-newly
   .header_p_eleven .el-button--text
     color #cc5966!important

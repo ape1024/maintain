@@ -47,7 +47,7 @@
           </li>
           <li class="lookover_litwo">
             <p class="lookover_p">设备位置：</p>
-            <div class="lookover_div">{{question.position}}</div>
+            <div class="lookover_div" :title="question.position">{{question.position}}</div>
           </li>
           <li class="lookover_li">
             <p class="lookover_p">设备数量：</p>
@@ -65,7 +65,7 @@
             <p class="lookover_p">审核人员：</p>
             <div class="lookover_div">{{question.approvername}}</div>
           </li>
-          <li class="lookover_litwo">
+          <li class="lookover_li">
             <p class="lookover_p">备注说明：</p>
             <div class="lookover_div">{{question.memo}}</div>
           </li>
@@ -321,8 +321,10 @@ export default {
         closedown()
         prohibit()
     .lookover_div
-      float left
       color $color-text
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
     .lookoverDivP
        float left
        color $color-text-tile-complete

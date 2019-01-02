@@ -32,7 +32,7 @@
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">项目负责人：</span>
-                    <span class="tlefttopli_Span">{{msg.leader}}</span>
+                    <span :title="msg.leader" class="tlefttopli_Span">{{msg.leader}}</span>
                   </p>
                   <p class="tlefttopHeaderP">
                     <span class="tlefttopHeaderSpan">联系电话：</span>
@@ -276,6 +276,7 @@ export default {
           line-height 30px
         .tlefttopHeaderSpan
           margin 0 12px
+          float left
           color $color-border-b-fault
         .tlefttopUl
           init()
@@ -414,7 +415,11 @@ export default {
         color $color-border-b-fault
         margin-bottom 20px
   .tlefttopli_Span
+    display inherit
     color #fff
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
   .tlefttopli_img
     display inline-block
     margin-right 20px

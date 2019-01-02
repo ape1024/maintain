@@ -583,6 +583,7 @@ export default {
     float left
     box-sizing border-box
   .principalHeaderLiImg
+    cursor pointer
     margin 5px 6px 0 0
     display inline-block
     height 30px

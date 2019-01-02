@@ -744,7 +744,7 @@ export default {
     .classification
       overflow hidden
       position relative
-      margin-left 30px
+      margin 10px 0 0 30px
       .ficationHeader
         init()
         font-size $font-size-small
