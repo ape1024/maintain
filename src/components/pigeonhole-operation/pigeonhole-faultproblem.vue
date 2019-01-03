@@ -127,8 +127,8 @@
             <li :title="item.basedevicename" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
               {{item.basedevicename}}
             </li>
-            <li class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
-              {{item.areaname}}
+            <li :title="item.position" class="principalHeaderLi heavyPlayLiDivLiOne principalPartI">
+              {{item.position}}
             </li>
             <li class="principalHeaderLi heavyPlayLiDivLiTwo">
               {{item.worktypename}}
@@ -569,6 +569,9 @@ export default {
       width 100%
   .principalPartI
     cursor pointer
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
   .rightHeaderLiPtwo
     color #eee
     float left

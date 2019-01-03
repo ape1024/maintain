@@ -189,7 +189,7 @@ export default {
       equipmentProps: {
         children: 'children',
         label: 'name',
-        value: 'code'
+        value: 'id'
       },
       locationDate: [],
       locationformation: [],
@@ -331,7 +331,7 @@ export default {
       this.axios.post(findAllDeviceType(token, this.maintainProject)).then((response) => {
         if (response.data.code === 0) {
           let obj = {
-            code: -999,
+            id: -999,
             name: '全部'
           }
           response.data.data.unshift(obj)

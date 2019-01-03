@@ -653,7 +653,7 @@ export default {
       let organizationType = this.regimentaValue
       if (organizationType === '') {
         this.$message({
-          message: '组织机构类型不能为空',
+          message: '红色星号标记不能为空!',
           type: 'warning'
         })
         return
