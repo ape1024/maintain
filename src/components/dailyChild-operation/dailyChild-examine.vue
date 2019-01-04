@@ -434,6 +434,8 @@ export default {
                   })
                   this.examineStore = false
                   this.DetailsByDeviceId()
+                  //  审核后, 将全选设置成false
+                  this.checked = false
                 }
               })
             })

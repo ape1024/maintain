@@ -262,7 +262,13 @@ export default {
       this.Initialization()
     },
     particulars (deviceid, item) {
-      this.clicktaskname = item.devicename
+      let clicktaskname = ''
+      this.regionModel.forEach((val) => {
+        if (val.checkplanid === this.regionDate) {
+          clicktaskname = val.planname
+        }
+      })
+      this.clicktaskname = clicktaskname
       this.clickId = item.checktaskid
       this.equipmentID = deviceid
       this.examineBoolean = true

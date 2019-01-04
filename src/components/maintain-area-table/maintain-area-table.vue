@@ -19,15 +19,15 @@
           <div :key="index" class="item" v-for="(item, index) in list">
             <div class="group">
               <div class="title time">{{item.effectiveTime}}</div>
-              <div class="title type">{{item.deviceTypeName}}</div>
+              <div :title="item.deviceTypeName" class="title type">{{item.deviceTypeName}}</div>
               <div class="title control">{{item.deviceCount}}</div>
               <div class="title code">{{item.deviceCode}}</div>
-              <div class="title pos">{{item.locationDescription}}</div>
+              <div :title="item.locationDescription" class="title pos">{{item.locationDescription}}</div>
               <div class="title made">{{item.madeDate}}</div>
-              <div class="title model">{{item.modelName}}</div>
-              <div class="title manufacture">{{item.manufactureName}}</div>
-              <div class="title state">{{item.action}}</div>
-              <div class="title handle" @click.stop="toggle(item.deviceId)">详情</div>
+              <div :title="item.modelName" class="title model">{{item.modelName}}</div>
+              <div :title="item.manufactureName" class="title manufacture">{{item.manufactureName}}</div>
+              <div :title="item.action" class="title state">{{item.action}}</div>
+              <div class="title handle seleColor" @click.stop="toggle(item.deviceId)">详情</div>
             </div>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default {
               deviceCount: t.devicecount,
               deviceCode: t.devicecode,
               locationDescription: t.position,
-              action: this.getDeviceState(t.devicestate),
+              action: t.devstatename,
               deviceId: t.deviceid,
               madeDate: t.madedate,
               modelName: t.devicemodelname,
@@ -266,4 +266,6 @@ export default {
       full-screen()
       background $color-barckground-transparent
       z-index $z-index-large
+  .seleColor
+    color #3279a6
 </style>

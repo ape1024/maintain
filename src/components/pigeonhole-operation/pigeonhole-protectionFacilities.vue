@@ -162,7 +162,7 @@
 import { projectMixin } from 'common/js/mixin'
 import childLookover from '../adminChild-operation/adminChild-lookover'
 import DialogImg from 'base/dialog-img/dialog-img'
-import { findAreasTreeByProjectid, findAllDeviceType, getAllTaskDevstate, statTaskDevListInfo, adminfindDeviceDetail, adminFindInspectionMaintenance, generateTaskDevDetailInfo, generateTaskTaizgangInfo } from '../../api/user'
+import { findAreasTreeByProjectid, findAllDeviceType, getAllTaskDevstate, statTaskDevListInfo, adminfindDeviceDetail, adminFindInspectionMaintenance, generateTaskDevDetailInfo, generateTaskTaizgangInfo, generateTaskWorksInfo } from '../../api/user'
 export default {
   name: 'pigeonhole-protectionFacilities',
   mixins: [projectMixin],
@@ -235,10 +235,40 @@ export default {
   },
   methods: {
     maintenance () {
-      this.$message({
-        type: 'warning',
-        message: '暂未开放'
+      let token = JSON.parse(window.sessionStorage.token)
+      let arr = []
+      this.principalmainbody.forEach((val) => {
+        if (val.flag) {
+          arr.push(val.deviceid)
+        }
       })
+      if (arr.length) {
+        let sTring = arr.join()
+        this.axios.post(generateTaskWorksInfo(token, this.maintainProject, sTring)).then((response) => {
+          if (response.data.data) {
+            let array = []
+            if (response.data.data.indexOf(',') === -1) {
+              array.push(response.data.data)
+            } else {
+              array = response.data.data.split(',')
+            }
+            let download = (url) => {
+              let iframe = document.createElement('iframe')
+              iframe.style.display = 'none'
+              iframe.src = url
+              document.body.appendChild(iframe)
+            }
+            array.forEach((val) => {
+              download(val)
+            })
+          }
+        })
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请选择设备'
+        })
+      }
     },
     selectImg (list, index) {
       this.imgList = list

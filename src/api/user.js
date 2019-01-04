@@ -974,3 +974,12 @@ export const generateTaskDevDetailInfo = (token, projectid, devids) => {
 export const generateTaskTaizgangInfo = (token, projectid, devids, areaid) => {
   return `${Test}/taskexport/generateTaskTaizgangInfo?token=${token}&projectid=${projectid}&devids=${devids}&areaid=${areaid}`
 }
+
+//  刘哥的接口, 目前 开始时间 结束时间, 定死(没有意义)
+export const generateTaskWorksInfo = (token, projectid, devids) => {
+  return `${Test}/taskexport/generateTaskWorksInfo?token=${token}&projectid=${projectid}&devids=${devids}&start=2017-1-1&end=2019-1-1`
+}
+
+export const IsNeedAlarmSys = (token) => {
+  return `${Test}/auth/IsNeedAlarmSys?token=${token}`
+}

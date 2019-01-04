@@ -2,7 +2,7 @@
   <div class="admin_child">
     <ul class="threelevel_header">
       <li class="threelevel_litwo">
-        <el-checkbox v-model="checkedData" @change="checkedChange"></el-checkbox>
+        <!--<el-checkbox v-model="checkedData" @change="checkedChange"></el-checkbox>-->
         设施编码
       </li>
       <li class="threelevel_litwo">
@@ -61,9 +61,9 @@
       <li :key="$index" :id="dataset.areaid"  v-for="(dataset, $index) in tabChild" class="threelevel_list_li">
         <ul :id="dataset.id" class="threelevel_list_ul">
           <li :title="dataset.devicecode" class="threelevel_litwo">
-            <span class="threelevel_lithreeSSpan">
-              <el-checkbox v-if="dataset.selectbox" v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>
-            </span>
+            <!--<span class="threelevel_lithreeSSpan">-->
+              <!--<el-checkbox v-if="dataset.selectbox" v-model="dataset.checked" :disabled="dataset.disabled"></el-checkbox>-->
+            <!--</span>-->
             {{dataset.devicecode}}
           </li>
           <li :title="dataset.devicename" class="threelevel_litwo">

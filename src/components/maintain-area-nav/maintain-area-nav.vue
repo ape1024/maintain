@@ -1,8 +1,8 @@
 <template>
   <div class="area-nav area-nav-tree-change">
     <div class="switch-content">
-      <img src="./map.png" alt="地图" v-show="switchState" @click="switchContent('map')">
-      <img src="./table.png" alt="表格" v-show="!switchState" @click="switchContent('table')">
+       <img src="./map.png" alt="地图" v-show="switchState && isHasMap" @click="switchContent('map')">
+       <img src="./table.png" alt="表格" v-show="!switchState" @click="switchContent('table')">
     </div>
     <div class="title">{{title}}</div>
     <div class="subtitle">
@@ -31,7 +31,7 @@
 <script>
 import SearchBox from 'base/search-box/search-box'
 import SearchList from 'base/search-list/search-list'
-import { getTreeByProjectId } from 'api/user'
+import { getTreeByProjectId, IsNeedAlarmSys } from 'api/user'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { SearchData } from 'common/js/area'
 import { projectMixin } from 'common/js/mixin'
@@ -48,6 +48,7 @@ export default {
     return {
       switchState: false,
       searchState: false,
+      isHasMap: false,
       searchList: [],
       selected: -1,
       searchListState: false,
@@ -68,6 +69,7 @@ export default {
   },
   methods: {
     switchContent (r) {
+      // if (!this.isHasMap) return
       if (!this.treeStructure.length) return
       this.switchState = !this.switchState
       this.$router.push({
@@ -90,9 +92,22 @@ export default {
         this.searchState = true
         // 保存树结构
         this.updateTreeStructure(data)
+        // 默认加载表格
+        this.switchContent('table')
         // 默认加载地图
-        this.firstLoad && this.updateMap({treeData: new SearchData(data[0])})
-        this.firstLoad = false
+        // this.firstLoad && this.updateMap({treeData: new SearchData(data[0])})
+        // this.firstLoad = false
+        // 判断用户是否有 切换地图的权限
+        let token = JSON.parse(window.sessionStorage.token)
+        this.axios.post(IsNeedAlarmSys(token)).then((response) => {
+          if (response.data.code === 0) {
+            if (response.data.data === 1) {
+              this.isHasMap = true
+            } else {
+              this.isHasMap = false
+            }
+          }
+        })
       })
     },
     handleNodeClick (data) {
