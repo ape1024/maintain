@@ -436,6 +436,8 @@ export default {
                   this.DetailsByDeviceId()
                   //  审核后, 将全选设置成false
                   this.checked = false
+                  //  审核后, 讲审核意见设置为空
+                  this.textarea = ''
                 }
               })
             })
